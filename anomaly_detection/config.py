@@ -10,6 +10,36 @@ DEFAULT_TICKERS = [
     "NVDA", "MSFT",                     # AI infrastructure
 ]
 
+# --- Ticker display names ---
+TICKER_NAMES = {
+    "ZIP": "ZipRecruiter",
+    "KELYA": "Kelly Services",
+    "ASGN": "ASGN Inc.",
+    "MAN": "ManpowerGroup",
+    "^GSPC": "S&P 500",
+    "^NDX": "Nasdaq-100",
+    "TTD": "The Trade Desk",
+    "META": "Meta Platforms",
+    "GOOGL": "Alphabet",
+    "NVDA": "NVIDIA",
+    "MSFT": "Microsoft",
+}
+
+# --- Ticker sector groupings ---
+TICKER_SECTORS = {
+    "ZIP": "Staffing", "KELYA": "Staffing", "ASGN": "Staffing", "MAN": "Staffing",
+    "^GSPC": "Benchmark", "^NDX": "Benchmark",
+    "TTD": "Ad Platform", "META": "Ad Platform", "GOOGL": "Ad Platform",
+    "NVDA": "AI Infra", "MSFT": "AI Infra",
+}
+
+
+def ticker_display(ticker: str) -> str:
+    """Return 'CompanyName (TICKER)' for display."""
+    name = TICKER_NAMES.get(ticker)
+    return f"{name} ({ticker})" if name else ticker
+
+
 # --- Data Settings ---
 DEFAULT_LOOKBACK_DAYS = 365
 MIN_DATA_POINTS = 30
@@ -63,5 +93,4 @@ ENSEMBLE_WEIGHTS = {
 # --- Output Paths ---
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
-HISTORY_DIR = os.path.join(DATA_DIR, "history")
 DOCS_DIR = os.path.join(PROJECT_ROOT, "docs")

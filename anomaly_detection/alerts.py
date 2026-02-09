@@ -1,4 +1,4 @@
-"""Alert generation — human-readable summaries and structured JSON."""
+"""Signal generation — translates anomaly detection into actionable trading signals."""
 
 import json
 import logging
@@ -7,68 +7,144 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
+from .config import TICKER_NAMES, ticker_display
+
 logger = logging.getLogger(__name__)
 
-SEVERITY_MAP = {4: "CRITICAL", 3: "HIGH", 2: "MODERATE", 1: "LOW"}
+# --- Signal types and their meaning ---
+# BUY:   Mean-reversion long — oversold, selling pressure fading
+# SELL:  Mean-reversion exit — overbought, buying pressure fading
+# LONG:  Momentum long — accelerating upward breakout
+# SHORT: Momentum short — accelerating downward breakdown
+# REDUCE: Regime change — structural break, reduce exposure
+# WATCH: Anomaly detected but no clear directional signal yet
+
+SIGNAL_CONFIG = {
+    "BUY":    {"color": "#00C853", "icon": "arrow_upward",    "label": "Buy"},
+    "SELL":   {"color": "#D50000", "icon": "arrow_downward",  "label": "Sell"},
+    "LONG":   {"color": "#00897B", "icon": "trending_up",     "label": "Long"},
+    "SHORT":  {"color": "#FF6D00", "icon": "trending_down",   "label": "Short"},
+    "REDUCE": {"color": "#F9A825", "icon": "warning",         "label": "Reduce Exposure"},
+    "WATCH":  {"color": "#42A5F5", "icon": "visibility",      "label": "Watch"},
+}
 
 
-def _describe_anomaly(row: pd.Series) -> str:
-    """Generate a plain-English sentence explaining one anomaly."""
-    parts = []
+def _derive_signal(row: pd.Series) -> tuple[str, str]:
+    """Derive an actionable trading signal from an anomaly row.
 
-    # Lead with the most tangible signal: price vs. trend
+    Returns (signal_type, confidence) where confidence is
+    'Strong', 'Moderate', or 'Developing'.
+    """
     dev = row.get("deviation_pct", 0)
-    trajectory = row.get("trajectory", "normal")
+    traj = row.get("trajectory", "normal")
+    n_methods = int(row.get("methods_flagged", 0))
+    fourier_flag = bool(row.get("fourier_anomaly", False))
+    mp_flag = bool(row.get("mp_anomaly", False))
 
-    if abs(dev) > 1:
-        direction = "above" if dev > 0 else "below"
-        lead = f"Price is {abs(dev):.1f}% {direction} its moving average"
-        # Attach trajectory to the same sentence
-        if trajectory == "breakout":
-            lead += " with an extreme breakout from trend"
-        elif trajectory == "accelerating":
-            lead += " and momentum is building"
-        elif trajectory == "decelerating":
-            lead += " and momentum is fading"
-        parts.append(lead)
-    elif trajectory != "normal":
-        labels = {"breakout": "Extreme breakout from trend", "accelerating": "Momentum is building", "decelerating": "Momentum is fading"}
-        parts.append(labels.get(trajectory, trajectory))
+    confidence = "Strong" if n_methods >= 3 else "Moderate" if n_methods >= 2 else "Developing"
 
-    # Add color about what methods detected
-    method_details = []
-    if row.get("fourier_anomaly"):
-        method_details.append("trading rhythm has changed structurally")
-    if row.get("mp_anomaly"):
-        method_details.append("recent price pattern has no historical match")
-    if row.get("ensemble_anomaly"):
-        method_details.append("multiple statistical tests confirm unusual behavior")
+    # --- Mean-reversion BUY: deeply oversold + selling exhaustion ---
+    if dev < -8 and traj in ("decelerating", "normal") and n_methods >= 2:
+        return "BUY", confidence
+    if dev < -5 and traj == "decelerating" and n_methods >= 2:
+        return "BUY", confidence
 
-    if method_details:
-        parts.append(". ".join(d.capitalize() for d in method_details))
+    # --- Mean-reversion SELL: deeply overbought + buying exhaustion ---
+    if dev > 8 and traj in ("decelerating", "normal") and n_methods >= 2:
+        return "SELL", confidence
+    if dev > 5 and traj == "decelerating" and n_methods >= 2:
+        return "SELL", confidence
 
-    n = int(row.get("methods_flagged", 0))
-    if n >= 2:
-        parts.append(f"{n} of 4 detection methods flagged this")
+    # --- Momentum SHORT: accelerating decline ---
+    if dev < -3 and traj in ("accelerating", "breakout") and n_methods >= 2:
+        return "SHORT", confidence
 
-    if not parts:
-        parts.append("Elevated anomaly score across detection methods")
+    # --- Momentum LONG: accelerating rally ---
+    if dev > 3 and traj in ("accelerating", "breakout") and n_methods >= 2:
+        return "LONG", confidence
 
-    return ". ".join(parts) + "."
+    # --- Structural regime change (Fourier + Matrix Profile agree) ---
+    if fourier_flag and mp_flag:
+        return "REDUCE", confidence
+
+    # --- Overbought/oversold without clear trajectory ---
+    if dev < -8 and n_methods >= 2:
+        return "BUY", "Developing"
+    if dev > 8 and n_methods >= 2:
+        return "SELL", "Developing"
+
+    return "WATCH", confidence
+
+
+def _describe_signal(row: pd.Series, signal: str, confidence: str) -> str:
+    """Generate a plain-English actionable description for a signal."""
+    ticker = row["Ticker"]
+    display = ticker_display(ticker)
+    dev = row.get("deviation_pct", 0)
+    traj = row.get("trajectory", "normal")
+    ewma_val = row.get("ewma_value", 0)
+    close = row.get("Close", 0)
+    n_methods = int(row.get("methods_flagged", 0))
+
+    direction = "above" if dev > 0 else "below"
+    abs_dev = abs(dev)
+
+    # Build the core observation
+    if abs_dev > 1:
+        position = f"{display} is trading {abs_dev:.1f}% {direction} its 20-day moving average (${ewma_val:,.2f})"
+    else:
+        position = f"{display} is near its 20-day moving average"
+
+    # Build the action rationale
+    if signal == "BUY":
+        if traj == "decelerating":
+            rationale = "Selling pressure is fading, suggesting a potential bounce back toward the trend line."
+        else:
+            rationale = f"The stock appears oversold at {n_methods} standard deviations from normal. Mean-reversion toward ${ewma_val:,.2f} is likely."
+        action = f"Consider entering a long position targeting the ${ewma_val:,.2f} moving average."
+
+    elif signal == "SELL":
+        if traj == "decelerating":
+            rationale = "Buying momentum is exhausting, suggesting the rally may be losing steam."
+        else:
+            rationale = f"The stock appears overbought at {n_methods} standard deviations from normal. A pullback toward ${ewma_val:,.2f} is likely."
+        action = f"Consider taking profits or tightening stops. Fair value near ${ewma_val:,.2f}."
+
+    elif signal == "LONG":
+        rationale = "Upward momentum is accelerating with multiple detection methods confirming the move."
+        action = "Consider a momentum-based long position with a trailing stop below the trend line."
+
+    elif signal == "SHORT":
+        rationale = "Downward momentum is accelerating with multiple detection methods confirming the decline."
+        action = "Consider a short position or protective puts. Set stops above the recent high."
+
+    elif signal == "REDUCE":
+        rationale = "Both frequency analysis and pattern matching detect a structural regime change. The stock's behavior has shifted in a way that has no recent historical precedent."
+        action = "Reduce position size until the new regime clarifies. Avoid new entries."
+
+    else:  # WATCH
+        parts = []
+        if row.get("fourier_anomaly"):
+            parts.append("trading rhythm has shifted")
+        if row.get("mp_anomaly"):
+            parts.append("price pattern is unprecedented")
+        if row.get("ensemble_anomaly"):
+            parts.append("statistical tests flag unusual behavior")
+        detail = " and ".join(parts) if parts else "anomaly score is elevated"
+        rationale = f"Detection methods flagged this because {detail}, but no clear directional signal has emerged yet."
+        action = "Monitor for follow-through before taking a position."
+
+    return f"{position}. {rationale} {action}"
 
 
 def generate_alerts(results: pd.DataFrame, top_n: int = 50) -> list[dict]:
-    """Generate structured alerts from detection results.
-
-    Focuses on the most recent anomaly per ticker to avoid flooding
-    the dashboard with repeats of the same event.
-    """
+    """Generate structured trading signals from detection results."""
     anomalies = results[results["consensus_anomaly"]].copy()
     if anomalies.empty:
         logger.info("No anomalies detected.")
         return []
 
-    # Keep only the most recent anomaly per ticker, plus any high-severity historical ones
+    # Keep the most recent anomaly per ticker + any high-severity historical ones
     latest_per_ticker = anomalies.sort_values("Date").groupby("Ticker").tail(1)
     high_severity = anomalies[anomalies["methods_flagged"] >= 3]
     combined = pd.concat([latest_per_ticker, high_severity]).drop_duplicates(subset=["Ticker", "Date"])
@@ -77,15 +153,21 @@ def generate_alerts(results: pd.DataFrame, top_n: int = 50) -> list[dict]:
     alerts = []
     for _, row in combined.head(top_n).iterrows():
         n_methods = int(row.get("methods_flagged", 0))
-        severity = SEVERITY_MAP.get(n_methods, "LOW")
+        signal, confidence = _derive_signal(row)
+
         alert = {
             "ticker": row["Ticker"],
+            "ticker_name": TICKER_NAMES.get(row["Ticker"], row["Ticker"]),
+            "display": ticker_display(row["Ticker"]),
             "date": row["Date"].strftime("%Y-%m-%d") if hasattr(row["Date"], "strftime") else str(row["Date"]),
             "close": round(float(row["Close"]), 2),
-            "severity": severity,
+            "signal": signal,
+            "signal_label": SIGNAL_CONFIG[signal]["label"],
+            "signal_color": SIGNAL_CONFIG[signal]["color"],
+            "confidence": confidence,
             "methods_flagged": n_methods,
             "consensus_score": round(float(row["consensus_score"]), 4),
-            "description": _describe_anomaly(row),
+            "description": _describe_signal(row, signal, confidence),
             "details": {
                 "fourier_score": round(float(row.get("fourier_score", 0)), 4),
                 "mp_score": round(float(row.get("mp_score", 0)), 4),
@@ -93,53 +175,58 @@ def generate_alerts(results: pd.DataFrame, top_n: int = 50) -> list[dict]:
                 "ewma_score": round(float(row.get("ewma_score", 0)), 4),
                 "trajectory": row.get("trajectory", "normal"),
                 "deviation_pct": round(float(row.get("deviation_pct", 0)), 2),
+                "ewma_value": round(float(row.get("ewma_value", 0)), 2),
             },
         }
         alerts.append(alert)
 
+    # Sort: actionable signals first (BUY/SELL/SHORT/LONG), then by confidence, then score
+    signal_priority = {"BUY": 0, "SELL": 0, "SHORT": 1, "LONG": 1, "REDUCE": 2, "WATCH": 3}
+    confidence_priority = {"Strong": 0, "Moderate": 1, "Developing": 2}
     alerts.sort(key=lambda a: (
-        {"CRITICAL": 0, "HIGH": 1, "MODERATE": 2, "LOW": 3}[a["severity"]],
+        signal_priority.get(a["signal"], 4),
+        confidence_priority.get(a["confidence"], 3),
         -a["consensus_score"],
     ))
 
     logger.info(
-        "Generated %d alerts (%d CRITICAL, %d HIGH)",
+        "Generated %d signals (%d actionable, %d watch)",
         len(alerts),
-        sum(1 for a in alerts if a["severity"] == "CRITICAL"),
-        sum(1 for a in alerts if a["severity"] == "HIGH"),
+        sum(1 for a in alerts if a["signal"] not in ("WATCH", "REDUCE")),
+        sum(1 for a in alerts if a["signal"] == "WATCH"),
     )
     return alerts
 
 
 def alerts_to_json(alerts: list[dict], path: str) -> None:
-    """Write alerts to a JSON file."""
+    """Write signals to a JSON file."""
     output = {
         "generated_at": datetime.utcnow().isoformat() + "Z",
-        "total_alerts": len(alerts),
-        "alerts": alerts,
+        "total_signals": len(alerts),
+        "signals": alerts,
     }
     with open(path, "w") as f:
         json.dump(output, f, indent=2)
-    logger.info("Alerts written to %s", path)
+    logger.info("Signals written to %s", path)
 
 
 def alerts_to_markdown(alerts: list[dict]) -> str:
-    """Render alerts as a Markdown summary."""
+    """Render signals as a Markdown summary."""
     if not alerts:
-        return "## Anomaly Detection Report\n\nNo anomalies detected.\n"
+        return "## Trading Signals Report\n\nNo anomalies detected.\n"
 
     lines = [
-        "## Anomaly Detection Report",
+        "## Trading Signals Report",
         f"*Generated {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}*\n",
-        f"**{len(alerts)} anomalies detected**\n",
-        "| Severity | Ticker | Date | Close | Score | Description |",
-        "|----------|--------|------|-------|-------|-------------|",
+        f"**{len(alerts)} signals generated**\n",
+        "| Signal | Confidence | Ticker | Date | Close | Score | Description |",
+        "|--------|-----------|--------|------|-------|-------|-------------|",
     ]
 
     for a in alerts:
         desc = a["description"][:90] + "..." if len(a["description"]) > 90 else a["description"]
         lines.append(
-            f"| {a['severity']} | **{a['ticker']}** | {a['date']} "
+            f"| {a['signal_label']} | {a['confidence']} | **{a['display']}** | {a['date']} "
             f"| ${a['close']:,.2f} | {a['consensus_score']:.3f} | {desc} |"
         )
 

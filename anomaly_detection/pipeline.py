@@ -14,7 +14,7 @@ from datetime import datetime
 import pandas as pd
 
 from .alerts import alerts_to_json, alerts_to_markdown, generate_alerts
-from .config import DATA_DIR, DEFAULT_LOOKBACK_DAYS, DEFAULT_SENSITIVITY, DEFAULT_TICKERS, DOCS_DIR, HISTORY_DIR
+from .config import DATA_DIR, DEFAULT_LOOKBACK_DAYS, DEFAULT_SENSITIVITY, DEFAULT_TICKERS, DOCS_DIR
 from .data_fetch import compute_features, fetch_multiple
 from .detection.engine import run_all
 from .visualization.dashboard import generate_dashboard
@@ -27,40 +27,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# --- History management ---
-
-def _load_history() -> list[dict]:
-    """Load all historical run summaries from data/history/."""
-    index_path = os.path.join(HISTORY_DIR, "index.json")
-    if os.path.exists(index_path):
-        with open(index_path) as f:
-            return json.load(f)
-    return []
-
-
-def _save_history(history: list[dict]) -> None:
-    """Save the history index."""
-    os.makedirs(HISTORY_DIR, exist_ok=True)
-    index_path = os.path.join(HISTORY_DIR, "index.json")
-    with open(index_path, "w") as f:
-        json.dump(history, f, indent=2)
-
-
-def _save_run_snapshot(run_date: str, alerts: list[dict], summary: dict) -> None:
-    """Save a snapshot of this run's alerts for historical tracking."""
-    os.makedirs(HISTORY_DIR, exist_ok=True)
-    snapshot = {
-        "run_date": run_date,
-        "summary": summary,
-        "alerts": alerts,
-    }
-    snapshot_path = os.path.join(HISTORY_DIR, f"run_{run_date}.json")
-    with open(snapshot_path, "w") as f:
-        json.dump(snapshot, f, indent=2)
-
-
-# --- Main pipeline ---
-
 def run(
     tickers: list[str] | None = None,
     sensitivity: str = DEFAULT_SENSITIVITY,
@@ -69,8 +35,6 @@ def run(
     """Execute the full anomaly detection pipeline."""
     os.makedirs(DATA_DIR, exist_ok=True)
     os.makedirs(DOCS_DIR, exist_ok=True)
-
-    run_date = datetime.utcnow().strftime("%Y-%m-%d")
 
     # Stage 1: Fetch
     logger.info("=" * 60)
@@ -92,9 +56,9 @@ def run(
     results = run_all(featured_df, sensitivity=sensitivity)
     results.to_csv(os.path.join(DATA_DIR, "detection_results.csv"), index=False)
 
-    # Stage 4: Alerts
+    # Stage 4: Signals
     logger.info("=" * 60)
-    logger.info("STAGE 4: Generating alerts")
+    logger.info("STAGE 4: Generating trading signals")
     logger.info("=" * 60)
     alerts = generate_alerts(results)
     alerts_to_json(alerts, os.path.join(DATA_DIR, "alerts.json"))
@@ -102,45 +66,32 @@ def run(
 
     # Build summary
     summary = {
-        "run_date": run_date,
+        "run_date": datetime.utcnow().strftime("%Y-%m-%d"),
         "tickers_analyzed": int(results["Ticker"].nunique()),
         "total_observations": len(results),
         "anomalies_detected": int(results["consensus_anomaly"].sum()),
-        "critical_alerts": sum(1 for a in alerts if a["severity"] == "CRITICAL"),
-        "high_alerts": sum(1 for a in alerts if a["severity"] == "HIGH"),
+        "actionable_signals": sum(1 for a in alerts if a["signal"] not in ("WATCH", "REDUCE")),
+        "total_signals": len(alerts),
         "sensitivity": sensitivity,
         "lookback_days": lookback_days,
     }
 
-    # Stage 5: History
+    # Stage 5: Dashboard
     logger.info("=" * 60)
-    logger.info("STAGE 5: Updating history")
-    logger.info("=" * 60)
-    history = _load_history()
-    # Replace if same date already exists, otherwise append
-    history = [h for h in history if h.get("run_date") != run_date]
-    history.append(summary)
-    history.sort(key=lambda h: h["run_date"])
-    _save_history(history)
-    _save_run_snapshot(run_date, alerts, summary)
-    logger.info("History updated: %d total runs", len(history))
-
-    # Stage 6: Dashboard
-    logger.info("=" * 60)
-    logger.info("STAGE 6: Building dashboard")
+    logger.info("STAGE 5: Building dashboard")
     logger.info("=" * 60)
     dashboard_path = generate_dashboard(
         results, alerts,
         sensitivity=sensitivity,
         lookback_days=lookback_days,
-        history_data=history,
     )
 
     summary["dashboard_path"] = dashboard_path
 
     logger.info("=" * 60)
-    logger.info("DONE  |  %d tickers  |  %d anomalies  |  %s",
-                summary["tickers_analyzed"], summary["anomalies_detected"], dashboard_path)
+    logger.info("DONE  |  %d tickers  |  %d anomalies  |  %d signals  |  %s",
+                summary["tickers_analyzed"], summary["anomalies_detected"],
+                summary["total_signals"], dashboard_path)
     logger.info("=" * 60)
 
     return summary
