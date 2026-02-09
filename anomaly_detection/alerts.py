@@ -1,4 +1,4 @@
-"""Alert generation — produces human-readable summaries and structured JSON."""
+"""Alert generation — human-readable summaries and structured JSON."""
 
 import json
 import logging
@@ -9,82 +9,73 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-# Severity mapping based on number of methods in agreement
-SEVERITY_MAP = {
-    4: "CRITICAL",
-    3: "HIGH",
-    2: "MODERATE",
-    1: "LOW",
-}
-
-TRAJECTORY_LABELS = {
-    "breakout": "Breakout — extreme deviation from trend",
-    "accelerating": "Accelerating — momentum building",
-    "decelerating": "Decelerating — momentum fading",
-    "normal": "Normal",
-}
+SEVERITY_MAP = {4: "CRITICAL", 3: "HIGH", 2: "MODERATE", 1: "LOW"}
 
 
 def _describe_anomaly(row: pd.Series) -> str:
-    """Generate a plain-English explanation for one anomaly."""
+    """Generate a plain-English sentence explaining one anomaly."""
     parts = []
-    methods = []
 
-    if row.get("fourier_anomaly"):
-        methods.append("Frequency Analysis")
-        parts.append("trading rhythm has shifted from historical pattern")
-    if row.get("mp_anomaly"):
-        methods.append("Pattern Matching")
-        parts.append("price pattern is unlike anything seen in recent history")
-    if row.get("ensemble_anomaly"):
-        methods.append("Statistical Ensemble")
-        # Break down which components contributed
-        components = []
-        if row.get("zscore_component", 0) > 0.5:
-            components.append("statistical outlier")
-        if row.get("seasonal_component", 0) > 0.5:
-            components.append("seasonal deviation")
-        if row.get("iforest_component", 0) > 0.5:
-            components.append("multivariate outlier")
-        if components:
-            parts.append(f"flagged as {', '.join(components)}")
-        else:
-            parts.append("multiple statistical tests flagged unusual activity")
-    if row.get("ewma_anomaly"):
-        methods.append("Trend Analysis")
-        dev = row.get("deviation_pct", 0)
-        direction = "above" if dev > 0 else "below"
-        parts.append(f"price is {abs(dev):.1f}% {direction} its moving average")
-
+    # Lead with the most tangible signal: price vs. trend
+    dev = row.get("deviation_pct", 0)
     trajectory = row.get("trajectory", "normal")
-    if trajectory != "normal":
-        parts.append(TRAJECTORY_LABELS.get(trajectory, trajectory))
 
-    detection_summary = "; ".join(parts) if parts else "Anomalous activity detected"
-    method_list = ", ".join(methods) if methods else "Consensus"
+    if abs(dev) > 1:
+        direction = "above" if dev > 0 else "below"
+        lead = f"Price is {abs(dev):.1f}% {direction} its moving average"
+        # Attach trajectory to the same sentence
+        if trajectory == "breakout":
+            lead += " with an extreme breakout from trend"
+        elif trajectory == "accelerating":
+            lead += " and momentum is building"
+        elif trajectory == "decelerating":
+            lead += " and momentum is fading"
+        parts.append(lead)
+    elif trajectory != "normal":
+        labels = {"breakout": "Extreme breakout from trend", "accelerating": "Momentum is building", "decelerating": "Momentum is fading"}
+        parts.append(labels.get(trajectory, trajectory))
 
-    return f"[{method_list}] {detection_summary}"
+    # Add color about what methods detected
+    method_details = []
+    if row.get("fourier_anomaly"):
+        method_details.append("trading rhythm has changed structurally")
+    if row.get("mp_anomaly"):
+        method_details.append("recent price pattern has no historical match")
+    if row.get("ensemble_anomaly"):
+        method_details.append("multiple statistical tests confirm unusual behavior")
+
+    if method_details:
+        parts.append(". ".join(method_details).capitalize())
+
+    n = int(row.get("methods_flagged", 0))
+    if n >= 2:
+        parts.append(f"{n} of 4 detection methods flagged this")
+
+    if not parts:
+        parts.append("Elevated anomaly score across detection methods")
+
+    return ". ".join(parts) + "."
 
 
-def generate_alerts(
-    results: pd.DataFrame,
-    top_n: int = 50,
-) -> list[dict]:
+def generate_alerts(results: pd.DataFrame, top_n: int = 50) -> list[dict]:
     """Generate structured alerts from detection results.
 
-    Returns a list of alert dicts, sorted by severity then consensus score.
+    Focuses on the most recent anomaly per ticker to avoid flooding
+    the dashboard with repeats of the same event.
     """
     anomalies = results[results["consensus_anomaly"]].copy()
-
     if anomalies.empty:
-        logger.info("No anomalies detected — no alerts generated.")
+        logger.info("No anomalies detected.")
         return []
 
-    # Focus on the most recent date per ticker if many anomalies
-    anomalies = anomalies.sort_values("consensus_score", ascending=False)
+    # Keep only the most recent anomaly per ticker, plus any high-severity historical ones
+    latest_per_ticker = anomalies.sort_values("Date").groupby("Ticker").tail(1)
+    high_severity = anomalies[anomalies["methods_flagged"] >= 3]
+    combined = pd.concat([latest_per_ticker, high_severity]).drop_duplicates(subset=["Ticker", "Date"])
+    combined = combined.sort_values("consensus_score", ascending=False)
 
     alerts = []
-    for _, row in anomalies.head(top_n).iterrows():
+    for _, row in combined.head(top_n).iterrows():
         n_methods = int(row.get("methods_flagged", 0))
         severity = SEVERITY_MAP.get(n_methods, "LOW")
         alert = {
@@ -106,12 +97,17 @@ def generate_alerts(
         }
         alerts.append(alert)
 
-    alerts.sort(key=lambda a: ({"CRITICAL": 0, "HIGH": 1, "MODERATE": 2, "LOW": 3}[a["severity"]], -a["consensus_score"]))
+    alerts.sort(key=lambda a: (
+        {"CRITICAL": 0, "HIGH": 1, "MODERATE": 2, "LOW": 3}[a["severity"]],
+        -a["consensus_score"],
+    ))
 
-    logger.info("Generated %d alerts (%d CRITICAL, %d HIGH)",
-                len(alerts),
-                sum(1 for a in alerts if a["severity"] == "CRITICAL"),
-                sum(1 for a in alerts if a["severity"] == "HIGH"))
+    logger.info(
+        "Generated %d alerts (%d CRITICAL, %d HIGH)",
+        len(alerts),
+        sum(1 for a in alerts if a["severity"] == "CRITICAL"),
+        sum(1 for a in alerts if a["severity"] == "HIGH"),
+    )
     return alerts
 
 
@@ -128,7 +124,7 @@ def alerts_to_json(alerts: list[dict], path: str) -> None:
 
 
 def alerts_to_markdown(alerts: list[dict]) -> str:
-    """Render alerts as a Markdown summary table."""
+    """Render alerts as a Markdown summary."""
     if not alerts:
         return "## Anomaly Detection Report\n\nNo anomalies detected.\n"
 
@@ -136,23 +132,15 @@ def alerts_to_markdown(alerts: list[dict]) -> str:
         "## Anomaly Detection Report",
         f"*Generated {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}*\n",
         f"**{len(alerts)} anomalies detected**\n",
-        "| Severity | Ticker | Date | Close | Score | Methods | Description |",
-        "|----------|--------|------|-------|-------|---------|-------------|",
+        "| Severity | Ticker | Date | Close | Score | Description |",
+        "|----------|--------|------|-------|-------|-------------|",
     ]
 
-    severity_badge = {
-        "CRITICAL": "🔴 CRITICAL",
-        "HIGH": "🟠 HIGH",
-        "MODERATE": "🟡 MODERATE",
-        "LOW": "🔵 LOW",
-    }
-
     for a in alerts:
-        badge = severity_badge.get(a["severity"], a["severity"])
-        desc = a["description"][:80] + "..." if len(a["description"]) > 80 else a["description"]
+        desc = a["description"][:90] + "..." if len(a["description"]) > 90 else a["description"]
         lines.append(
-            f"| {badge} | **{a['ticker']}** | {a['date']} | ${a['close']:,.2f} "
-            f"| {a['consensus_score']:.3f} | {a['methods_flagged']}/4 | {desc} |"
+            f"| {a['severity']} | **{a['ticker']}** | {a['date']} "
+            f"| ${a['close']:,.2f} | {a['consensus_score']:.3f} | {desc} |"
         )
 
     return "\n".join(lines) + "\n"
