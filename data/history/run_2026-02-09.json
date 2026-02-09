@@ -1,6 +1,15 @@
 {
-  "generated_at": "2026-02-09T18:16:25.273275Z",
-  "total_alerts": 6,
+  "run_date": "2026-02-09",
+  "summary": {
+    "run_date": "2026-02-09",
+    "tickers_analyzed": 5,
+    "total_observations": 615,
+    "anomalies_detected": 16,
+    "critical_alerts": 0,
+    "high_alerts": 1,
+    "sensitivity": "medium",
+    "lookback_days": 180
+  },
   "alerts": [
     {
       "ticker": "MSFT",

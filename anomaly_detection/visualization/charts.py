@@ -1,6 +1,5 @@
-"""Chart generation — creates Plotly figures for the dashboard."""
+"""Chart generation — clean Plotly figures for the dashboard."""
 
-import json
 import logging
 
 import numpy as np
@@ -10,209 +9,183 @@ from plotly.subplots import make_subplots
 
 logger = logging.getLogger(__name__)
 
-# Color scheme
-COLORS = {
-    "price": "#2962FF",
-    "ewma": "#FF6D00",
-    "anomaly_critical": "#D50000",
-    "anomaly_high": "#FF6D00",
-    "anomaly_moderate": "#FFD600",
-    "anomaly_low": "#2979FF",
-    "volume": "rgba(41, 98, 255, 0.3)",
-    "band_fill": "rgba(41, 98, 255, 0.08)",
-    "grid": "#E0E0E0",
-    "bg": "#FAFAFA",
-}
+# --- Color palette ---
+BLUE = "#2962FF"
+RED = "#D50000"
+ORANGE = "#FF6D00"
+AMBER = "#F9A825"
+GRAY = "#9E9E9E"
+LIGHT_GRAY = "#E0E0E0"
 
 SEVERITY_COLORS = {
-    "CRITICAL": COLORS["anomaly_critical"],
-    "HIGH": COLORS["anomaly_high"],
-    "MODERATE": COLORS["anomaly_moderate"],
-    "LOW": COLORS["anomaly_low"],
+    "CRITICAL": RED,
+    "HIGH": ORANGE,
+    "MODERATE": AMBER,
+    "LOW": "#42A5F5",
 }
 
 
 def ticker_chart(df_ticker: pd.DataFrame, ticker: str) -> str:
-    """Generate an interactive price + anomaly chart for one ticker.
-
-    Returns the Plotly figure as a JSON string for embedding.
-    """
+    """Single clean chart: price line + EWMA + anomaly markers, with a score panel below."""
     df = df_ticker.sort_values("Date").copy()
 
     fig = make_subplots(
-        rows=3,
-        cols=1,
+        rows=2, cols=1,
         shared_xaxes=True,
-        vertical_spacing=0.04,
-        row_heights=[0.55, 0.25, 0.20],
-        subplot_titles=[
-            f"{ticker} — Price & Anomalies",
-            "Detection Scores",
-            "Volume",
-        ],
+        vertical_spacing=0.06,
+        row_heights=[0.7, 0.3],
     )
 
-    # --- Row 1: Price line + EWMA + anomaly markers ---
+    # --- Price line ---
     fig.add_trace(
         go.Scatter(
             x=df["Date"], y=df["Close"],
-            mode="lines", name="Close",
-            line=dict(color=COLORS["price"], width=1.5),
-            hovertemplate="%{x|%b %d, %Y}<br>Close: $%{y:,.2f}<extra></extra>",
+            mode="lines", name="Price",
+            line=dict(color=BLUE, width=2),
+            hovertemplate="%{x|%b %d, %Y}<br><b>$%{y:,.2f}</b><extra></extra>",
         ),
         row=1, col=1,
     )
 
+    # --- EWMA trend line ---
     if "ewma_value" in df.columns:
         fig.add_trace(
             go.Scatter(
                 x=df["Date"], y=df["ewma_value"],
-                mode="lines", name="EWMA",
-                line=dict(color=COLORS["ewma"], width=1, dash="dash"),
-                hovertemplate="%{x|%b %d, %Y}<br>EWMA: $%{y:,.2f}<extra></extra>",
+                mode="lines", name="Trend (EWMA)",
+                line=dict(color=ORANGE, width=1.5, dash="dot"),
+                hovertemplate="%{x|%b %d, %Y}<br>Trend: $%{y:,.2f}<extra></extra>",
             ),
             row=1, col=1,
         )
 
-    # Anomaly markers by severity
-    anomalies = df[df["consensus_anomaly"] == True].copy()
+    # --- Anomaly markers (one trace per severity for legend) ---
+    anomalies = df[df.get("consensus_anomaly", pd.Series(dtype=bool)) == True].copy()
     if not anomalies.empty:
-        for severity, color in SEVERITY_COLORS.items():
-            sev_mask = anomalies["methods_flagged"] >= {"CRITICAL": 4, "HIGH": 3, "MODERATE": 2, "LOW": 1}[severity]
-            sev_max = anomalies["methods_flagged"] <= {"CRITICAL": 4, "HIGH": 3, "MODERATE": 2, "LOW": 1}[severity]
-            subset = anomalies[sev_mask & sev_max]
+        severity_ranges = [
+            ("CRITICAL", lambda m: m >= 4),
+            ("HIGH",     lambda m: m == 3),
+            ("MODERATE", lambda m: m == 2),
+            ("LOW",      lambda m: m <= 1),
+        ]
+        for sev_name, sev_fn in severity_ranges:
+            mask = anomalies["methods_flagged"].apply(sev_fn)
+            subset = anomalies[mask]
             if subset.empty:
                 continue
             fig.add_trace(
                 go.Scatter(
                     x=subset["Date"], y=subset["Close"],
-                    mode="markers", name=f"{severity}",
-                    marker=dict(color=color, size=8, symbol="diamond",
-                                line=dict(width=1, color="white")),
+                    mode="markers",
+                    name=sev_name,
+                    marker=dict(
+                        color=SEVERITY_COLORS[sev_name],
+                        size=10 if sev_name in ("CRITICAL", "HIGH") else 8,
+                        symbol="diamond",
+                        line=dict(width=1.5, color="white"),
+                    ),
                     hovertemplate=(
-                        f"<b>{severity}</b><br>"
+                        f"<b>{sev_name}</b><br>"
                         "%{x|%b %d, %Y}<br>"
-                        "Close: $%{y:,.2f}<br>"
-                        "<extra></extra>"
+                        "$%{y:,.2f}<extra></extra>"
                     ),
                 ),
                 row=1, col=1,
             )
 
-    # --- Row 2: Detection scores ---
-    score_cols = {
-        "fourier_score": ("Fourier", "#7C4DFF"),
-        "mp_score": ("Matrix Profile", "#00BFA5"),
-        "ensemble_score": ("Ensemble", "#FF6D00"),
-        "ewma_score": ("EWMA", "#D50000"),
-    }
-    for col, (name, color) in score_cols.items():
-        if col in df.columns:
-            fig.add_trace(
-                go.Scatter(
-                    x=df["Date"], y=df[col],
-                    mode="lines", name=name,
-                    line=dict(color=color, width=1),
-                    hovertemplate=f"{name}: %{{y:.4f}}<extra></extra>",
-                ),
-                row=2, col=1,
-            )
-
-    # --- Row 3: Volume ---
-    if "Volume" in df.columns:
+    # --- Consensus score (bottom panel) ---
+    if "consensus_score" in df.columns:
         fig.add_trace(
             go.Bar(
-                x=df["Date"], y=df["Volume"],
-                name="Volume",
-                marker_color=COLORS["volume"],
-                hovertemplate="%{x|%b %d, %Y}<br>Volume: %{y:,.0f}<extra></extra>",
+                x=df["Date"],
+                y=df["consensus_score"],
+                name="Anomaly Score",
+                marker_color=[
+                    RED if s > 0.6 else ORANGE if s > 0.4 else AMBER if s > 0.2 else LIGHT_GRAY
+                    for s in df["consensus_score"]
+                ],
+                hovertemplate="%{x|%b %d, %Y}<br>Score: %{y:.3f}<extra></extra>",
             ),
-            row=3, col=1,
+            row=2, col=1,
         )
 
     fig.update_layout(
-        height=700,
+        height=500,
         template="plotly_white",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        margin=dict(l=60, r=30, t=60, b=40),
+        showlegend=True,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font_size=11),
+        margin=dict(l=55, r=20, t=30, b=30),
         hovermode="x unified",
-        font=dict(family="Inter, -apple-system, sans-serif", size=12),
+        font=dict(family="Inter, system-ui, sans-serif", size=12),
     )
-    fig.update_xaxes(gridcolor=COLORS["grid"], row=1, col=1)
-    fig.update_yaxes(title_text="Price ($)", gridcolor=COLORS["grid"], row=1, col=1)
-    fig.update_yaxes(title_text="Score", gridcolor=COLORS["grid"], row=2, col=1)
-    fig.update_yaxes(title_text="Volume", gridcolor=COLORS["grid"], row=3, col=1)
+    fig.update_xaxes(gridcolor=LIGHT_GRAY)
+    fig.update_yaxes(title_text="Price ($)", gridcolor=LIGHT_GRAY, row=1, col=1)
+    fig.update_yaxes(title_text="Score", gridcolor=LIGHT_GRAY, row=2, col=1)
 
     return fig.to_json()
 
 
-def summary_heatmap(results: pd.DataFrame) -> str:
-    """Generate a heatmap of consensus scores across tickers and recent dates.
+def scoreboard_chart(results: pd.DataFrame) -> str:
+    """Horizontal bar chart: latest consensus score per ticker, sorted by score.
 
-    Returns a Plotly figure as a JSON string.
+    This is the hero chart — at a glance, which tickers need attention.
     """
-    # Get last 30 trading days
-    recent = results.sort_values("Date").groupby("Ticker").tail(30)
-    pivot = recent.pivot_table(
-        index="Ticker", columns="Date", values="consensus_score", aggfunc="first"
-    )
-    pivot = pivot.fillna(0)
+    latest = results.sort_values("Date").groupby("Ticker").tail(5)
+    avg_recent = latest.groupby("Ticker")["consensus_score"].mean().sort_values(ascending=True)
 
-    # Format dates for display
-    date_labels = [d.strftime("%b %d") if hasattr(d, "strftime") else str(d) for d in pivot.columns]
+    colors = [
+        RED if s > 0.5 else ORANGE if s > 0.35 else AMBER if s > 0.2 else "#90CAF9"
+        for s in avg_recent.values
+    ]
 
     fig = go.Figure(
-        data=go.Heatmap(
-            z=pivot.values,
-            x=date_labels,
-            y=pivot.index.tolist(),
-            colorscale=[
-                [0, "#F5F5F5"],
-                [0.5, "#FFE082"],
-                [0.75, "#FF8A65"],
-                [1.0, "#D50000"],
-            ],
-            hovertemplate="Ticker: %{y}<br>Date: %{x}<br>Score: %{z:.4f}<extra></extra>",
-            colorbar=dict(title="Score"),
+        go.Bar(
+            x=avg_recent.values,
+            y=avg_recent.index.tolist(),
+            orientation="h",
+            marker_color=colors,
+            hovertemplate="<b>%{y}</b><br>Score: %{x:.3f}<extra></extra>",
         )
     )
     fig.update_layout(
-        title="Anomaly Score Heatmap (Last 30 Trading Days)",
-        height=max(400, len(pivot) * 25 + 100),
+        height=max(300, len(avg_recent) * 32 + 80),
         template="plotly_white",
-        font=dict(family="Inter, -apple-system, sans-serif", size=12),
-        margin=dict(l=80, r=30, t=60, b=60),
+        xaxis_title="Anomaly Score (recent 5-day avg)",
+        margin=dict(l=60, r=20, t=20, b=40),
+        font=dict(family="Inter, system-ui, sans-serif", size=12),
     )
+    fig.update_xaxes(gridcolor=LIGHT_GRAY, range=[0, max(avg_recent.values.max() * 1.1, 0.1)])
+
     return fig.to_json()
 
 
-def alert_distribution_chart(alerts: list[dict]) -> str:
-    """Pie chart of alert severity distribution."""
-    if not alerts:
+def history_chart(history_data: list[dict]) -> str:
+    """Line chart showing total anomaly count per run date."""
+    if not history_data:
         return "{}"
 
-    severity_counts = {}
-    for a in alerts:
-        s = a["severity"]
-        severity_counts[s] = severity_counts.get(s, 0) + 1
+    dates = [h["run_date"] for h in history_data]
+    counts = [h["anomalies_detected"] for h in history_data]
 
-    labels = list(severity_counts.keys())
-    values = list(severity_counts.values())
-    colors = [SEVERITY_COLORS.get(l, "#999") for l in labels]
-
-    fig = go.Figure(
-        data=[go.Pie(
-            labels=labels, values=values,
-            marker=dict(colors=colors),
-            hole=0.4,
-            hovertemplate="%{label}: %{value} alerts<extra></extra>",
-        )]
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=dates, y=counts,
+            mode="lines+markers",
+            name="Anomalies",
+            line=dict(color=RED, width=2),
+            marker=dict(size=6),
+            hovertemplate="%{x}<br><b>%{y} anomalies</b><extra></extra>",
+        )
     )
     fig.update_layout(
-        title="Alert Severity Distribution",
-        height=350,
+        height=250,
         template="plotly_white",
-        font=dict(family="Inter, -apple-system, sans-serif", size=12),
-        margin=dict(l=30, r=30, t=60, b=30),
+        margin=dict(l=50, r=20, t=20, b=30),
+        font=dict(family="Inter, system-ui, sans-serif", size=12),
+        yaxis_title="Anomalies Detected",
     )
+    fig.update_xaxes(gridcolor=LIGHT_GRAY)
+    fig.update_yaxes(gridcolor=LIGHT_GRAY)
+
     return fig.to_json()

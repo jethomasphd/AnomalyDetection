@@ -3,230 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Anomaly Detection Dashboard</title>
+    <title>Stock Anomaly Detection</title>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2962FF;
-            --danger: #D50000;
-            --warning: #FF6D00;
-            --caution: #FFD600;
-            --info: #2979FF;
-            --bg: #FAFAFA;
+            --blue: #2962FF;
+            --red: #D50000;
+            --orange: #FF6D00;
+            --amber: #F9A825;
+            --green: #00C853;
+            --bg: #F5F5F5;
             --surface: #FFFFFF;
-            --text: #212121;
-            --text-secondary: #616161;
-            --border: #E0E0E0;
-            --radius: 12px;
-            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
-            --shadow-lg: 0 4px 12px rgba(0,0,0,0.1);
+            --text: #1A1A1A;
+            --muted: #6B7280;
+            --border: #E5E7EB;
+            --radius: 10px;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.6;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* --- Header --- */
         .header {
-            background: linear-gradient(135deg, #1a237e, #283593);
+            background: linear-gradient(135deg, #0D1B2A 0%, #1B2838 100%);
             color: white;
-            padding: 2rem 0;
-            text-align: center;
+            padding: 2.5rem 2rem 2rem;
         }
-        .header h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; }
-        .header p { color: rgba(255,255,255,0.8); margin-top: 0.3rem; font-size: 0.95rem; }
-        .header .timestamp { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 0.5rem; }
+        .header-inner { max-width: 1300px; margin: 0 auto; }
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+        }
+        .header .subtitle {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
 
-        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+        /* --- Container --- */
+        .container { max-width: 1300px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
 
-        /* Stats cards */
-        .stats-grid {
+        /* --- Stat row --- */
+        .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
         }
-        .stat-card {
+        .stat {
             background: var(--surface);
             border-radius: var(--radius);
-            padding: 1.2rem;
-            box-shadow: var(--shadow);
-            text-align: center;
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--border);
         }
-        .stat-card .value { font-size: 2rem; font-weight: 700; color: var(--primary); }
-        .stat-card .label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
-        .stat-card.danger .value { color: var(--danger); }
-        .stat-card.warning .value { color: var(--warning); }
+        .stat .num { font-size: 1.8rem; font-weight: 700; line-height: 1.2; }
+        .stat .lbl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.15rem; }
+        .stat.red .num { color: var(--red); }
+        .stat.orange .num { color: var(--orange); }
+        .stat.blue .num { color: var(--blue); }
 
-        /* Cards */
+        /* --- Cards --- */
         .card {
             background: var(--surface);
             border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            margin-bottom: 1.25rem;
             overflow: hidden;
         }
-        .card-header {
-            padding: 1rem 1.5rem;
+        .card-head {
+            padding: 0.85rem 1.25rem;
             border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-weight: 600;
+            font-size: 0.95rem;
         }
-        .card-header h2 { font-size: 1.1rem; font-weight: 600; }
-        .card-body { padding: 1rem 1.5rem; }
+        .card-body { padding: 1rem 1.25rem; }
+        .card-body.flush { padding: 0; }
 
-        /* Alert table */
-        .alert-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        .alert-table th {
+        /* --- Two column layout --- */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+        @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+        /* --- Alert table --- */
+        .tbl { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .tbl th {
             text-align: left;
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 1rem;
             background: var(--bg);
             font-weight: 600;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--text-secondary);
+            color: var(--muted);
         }
-        .alert-table td { padding: 0.75rem 1rem; border-top: 1px solid var(--border); }
-        .alert-table tr:hover { background: #f5f8ff; }
+        .tbl td { padding: 0.65rem 1rem; border-top: 1px solid var(--border); vertical-align: top; }
+        .tbl tr:hover { background: #F9FAFB; }
 
-        .badge {
+        .pill {
             display: inline-block;
-            padding: 0.2rem 0.6rem;
+            padding: 0.15rem 0.5rem;
             border-radius: 4px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 700;
             letter-spacing: 0.03em;
         }
-        .badge-critical { background: #ffebee; color: var(--danger); }
-        .badge-high { background: #fff3e0; color: var(--warning); }
-        .badge-moderate { background: #fffde7; color: #F57F17; }
-        .badge-low { background: #e3f2fd; color: var(--info); }
+        .pill-critical { background: #FFEBEE; color: var(--red); }
+        .pill-high { background: #FFF3E0; color: var(--orange); }
+        .pill-moderate { background: #FFF8E1; color: #E65100; }
+        .pill-low { background: #E3F2FD; color: #1565C0; }
 
-        .methods-bar {
-            display: flex;
-            gap: 2px;
-        }
-        .methods-bar .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--border);
-        }
-        .methods-bar .dot.active { background: var(--danger); }
+        .desc { font-size: 0.8rem; color: var(--muted); max-width: 380px; line-height: 1.4; }
 
-        .description-text { font-size: 0.82rem; color: var(--text-secondary); max-width: 400px; }
+        .dots { display: flex; gap: 3px; align-items: center; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: #E0E0E0; }
+        .dot.on { background: var(--red); }
 
-        /* Ticker selector */
+        /* --- Ticker nav --- */
         .ticker-nav {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.4rem;
-            padding: 1rem 1.5rem;
+            gap: 0.35rem;
+            padding: 0.75rem 1.25rem;
             border-bottom: 1px solid var(--border);
         }
-        .ticker-btn {
-            padding: 0.4rem 0.8rem;
+        .tbtn {
+            padding: 0.3rem 0.7rem;
             border: 1px solid var(--border);
             border-radius: 6px;
             background: var(--surface);
             cursor: pointer;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 500;
-            transition: all 0.15s;
+            font-family: inherit;
+            transition: all 0.12s;
         }
-        .ticker-btn:hover { border-color: var(--primary); color: var(--primary); }
-        .ticker-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .ticker-btn.has-anomaly { border-color: var(--danger); }
-        .ticker-btn.has-anomaly.active { background: var(--danger); }
+        .tbtn:hover { border-color: var(--blue); color: var(--blue); }
+        .tbtn.active { background: var(--blue); color: white; border-color: var(--blue); }
+        .tbtn.flagged { border-left: 3px solid var(--red); }
 
-        /* Chart container */
-        .chart-container { min-height: 400px; }
-
-        /* How it works section */
-        .methods-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1rem;
-        }
-        .method-card {
-            padding: 1.2rem;
+        /* --- Methods explainer --- */
+        .methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem; }
+        .method {
+            padding: 1rem;
             border: 1px solid var(--border);
             border-radius: 8px;
+            background: var(--bg);
         }
-        .method-card h3 { font-size: 0.95rem; margin-bottom: 0.3rem; }
-        .method-card .question { font-style: italic; color: var(--primary); font-size: 0.85rem; margin-bottom: 0.5rem; }
-        .method-card p { font-size: 0.82rem; color: var(--text-secondary); }
+        .method h4 { font-size: 0.88rem; margin-bottom: 0.15rem; }
+        .method .q { color: var(--blue); font-style: italic; font-size: 0.8rem; margin-bottom: 0.35rem; }
+        .method p { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
 
-        /* Footer */
         .footer {
             text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
+            padding: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--muted);
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container { padding: 1rem; }
-            .alert-table { font-size: 0.8rem; }
-            .description-text { max-width: 200px; }
-        }
+        .empty-msg { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.9rem; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Stock Anomaly Detection</h1>
-        <p>Multi-method statistical surveillance across {{ n_tickers }} tickers</p>
-        <div class="timestamp">Last updated: {{ generated_at }}</div>
+        <div class="header-inner">
+            <h1>Stock Anomaly Detection</h1>
+            <div class="subtitle">{{ n_tickers }} tickers &middot; {{ sensitivity }} sensitivity &middot; Updated {{ generated_at }}</div>
+        </div>
     </div>
 
     <div class="container">
-        <!-- Stats overview -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="value">{{ n_tickers }}</div>
-                <div class="label">Tickers Monitored</div>
-            </div>
-            <div class="stat-card danger">
-                <div class="value">{{ n_anomalies }}</div>
-                <div class="label">Anomalies Detected</div>
-            </div>
-            <div class="stat-card warning">
-                <div class="value">{{ n_critical }}</div>
-                <div class="label">Critical Alerts</div>
-            </div>
-            <div class="stat-card">
-                <div class="value">{{ lookback_days }}d</div>
-                <div class="label">Lookback Window</div>
-            </div>
-            <div class="stat-card">
-                <div class="value">{{ sensitivity }}</div>
-                <div class="label">Sensitivity</div>
-            </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat blue"><div class="num">{{ n_tickers }}</div><div class="lbl">Tickers Monitored</div></div>
+            <div class="stat red"><div class="num">{{ n_anomalies }}</div><div class="lbl">Anomalies Detected</div></div>
+            <div class="stat orange"><div class="num">{{ n_high }}</div><div class="lbl">High+ Alerts</div></div>
+            <div class="stat"><div class="num">{{ lookback_days }}d</div><div class="lbl">Lookback Window</div></div>
+            <div class="stat"><div class="num">{{ n_runs }}</div><div class="lbl">Historical Runs</div></div>
         </div>
 
-        <!-- Heatmap -->
-        <div class="card">
-            <div class="card-header"><h2>Anomaly Heatmap</h2></div>
-            <div class="card-body">
-                <div id="heatmap-chart" class="chart-container"></div>
+        <!-- Scoreboard + History side-by-side -->
+        <div class="two-col">
+            <div class="card">
+                <div class="card-head">Which tickers need attention?</div>
+                <div class="card-body">
+                    <div id="scoreboard-chart"></div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-head">Detection trend over time</div>
+                <div class="card-body">
+                    {% if has_history %}
+                    <div id="history-chart"></div>
+                    {% else %}
+                    <div class="empty-msg">History will appear after multiple runs.</div>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
         <!-- Alert table -->
         <div class="card">
-            <div class="card-header">
-                <h2>Active Alerts</h2>
-                <span style="font-size: 0.82rem; color: var(--text-secondary);">Sorted by severity</span>
-            </div>
-            <div class="card-body" style="padding: 0; overflow-x: auto;">
-                <table class="alert-table">
+            <div class="card-head">Latest Alerts</div>
+            <div class="card-body flush" style="overflow-x: auto;">
+                {% if alerts %}
+                <table class="tbl">
                     <thead>
                         <tr>
                             <th>Severity</th>
@@ -235,143 +223,119 @@
                             <th>Close</th>
                             <th>Score</th>
                             <th>Methods</th>
-                            <th>Description</th>
+                            <th>What happened</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for alert in alerts %}
+                        {% for a in alerts %}
                         <tr>
-                            <td><span class="badge badge-{{ alert.severity|lower }}">{{ alert.severity }}</span></td>
-                            <td><strong>{{ alert.ticker }}</strong></td>
-                            <td>{{ alert.date }}</td>
-                            <td>${{ alert.close }}</td>
-                            <td>{{ alert.consensus_score }}</td>
+                            <td><span class="pill pill-{{ a.severity|lower }}">{{ a.severity }}</span></td>
+                            <td><strong>{{ a.ticker }}</strong></td>
+                            <td>{{ a.date }}</td>
+                            <td>${{ "%.2f"|format(a.close) }}</td>
+                            <td>{{ "%.3f"|format(a.consensus_score) }}</td>
                             <td>
-                                <div class="methods-bar">
+                                <div class="dots">
                                     {% for i in range(4) %}
-                                    <div class="dot {% if i < alert.methods_flagged %}active{% endif %}"></div>
+                                    <div class="dot {% if i < a.methods_flagged %}on{% endif %}"></div>
                                     {% endfor %}
                                 </div>
                             </td>
-                            <td><span class="description-text">{{ alert.description }}</span></td>
+                            <td><span class="desc">{{ a.description }}</span></td>
                         </tr>
                         {% endfor %}
-                        {% if not alerts %}
-                        <tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No anomalies detected — all tickers within normal ranges.</td></tr>
-                        {% endif %}
                     </tbody>
                 </table>
+                {% else %}
+                <div class="empty-msg">No anomalies detected — all tickers are within normal ranges.</div>
+                {% endif %}
             </div>
         </div>
 
-        <!-- Alert distribution -->
-        {% if alerts %}
+        <!-- Per-ticker deep dive -->
         <div class="card">
-            <div class="card-header"><h2>Alert Distribution</h2></div>
-            <div class="card-body">
-                <div id="distribution-chart" class="chart-container" style="min-height: 350px;"></div>
-            </div>
-        </div>
-        {% endif %}
-
-        <!-- Per-ticker charts -->
-        <div class="card">
-            <div class="card-header"><h2>Ticker Analysis</h2></div>
+            <div class="card-head">Ticker Deep Dive</div>
             <div class="ticker-nav" id="ticker-nav">
-                {% for ticker in tickers %}
-                <button class="ticker-btn {% if ticker in anomaly_tickers %}has-anomaly{% endif %} {% if loop.first %}active{% endif %}"
-                        onclick="showTicker('{{ ticker }}', this)">
-                    {{ ticker }}
-                </button>
+                {% for t in tickers %}
+                <button class="tbtn {% if t in anomaly_tickers %}flagged{% endif %} {% if loop.first %}active{% endif %}"
+                        onclick="showTicker('{{ t }}', this)">{{ t }}</button>
                 {% endfor %}
             </div>
             <div class="card-body">
-                <div id="ticker-chart" class="chart-container"></div>
+                <div id="ticker-chart" style="min-height: 400px;"></div>
             </div>
         </div>
 
         <!-- How it works -->
         <div class="card">
-            <div class="card-header"><h2>How It Works</h2></div>
+            <div class="card-head">How detection works</div>
             <div class="card-body">
-                <p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
-                    This system uses four independent statistical methods to detect anomalies.
-                    When multiple methods agree, we have higher confidence something unusual is happening.
+                <p style="margin-bottom: 0.75rem; color: var(--muted); font-size: 0.85rem;">
+                    Four independent statistical methods analyze each stock. When multiple methods agree,
+                    confidence is high. Diamond markers on charts show where anomalies were detected.
                 </p>
-                <div class="methods-grid">
-                    <div class="method-card">
-                        <h3>Fourier Transform</h3>
-                        <div class="question">"Has the rhythm of this stock changed?"</div>
-                        <p>Analyzes the frequency spectrum of price movements. When trading
-                        patterns shift (e.g., from choppy to trending), it signals a structural change.</p>
+                <div class="methods">
+                    <div class="method">
+                        <h4>Fourier Transform</h4>
+                        <div class="q">"Has the rhythm of this stock changed?"</div>
+                        <p>Decomposes price into frequency components. When the pattern
+                        shifts (e.g., choppy to trending), it flags a structural change.</p>
                     </div>
-                    <div class="method-card">
-                        <h3>Matrix Profile</h3>
-                        <div class="question">"Is this stock doing something it's never done?"</div>
-                        <p>Finds the most similar historical subsequence for each recent window.
-                        If no good match exists, the current pattern is truly novel.</p>
+                    <div class="method">
+                        <h4>Matrix Profile</h4>
+                        <div class="q">"Is this stock doing something it's never done?"</div>
+                        <p>Searches all historical subsequences for a match. If no
+                        similar pattern exists, the behavior is truly novel.</p>
                     </div>
-                    <div class="method-card">
-                        <h3>Statistical Ensemble</h3>
-                        <div class="question">"Do multiple statistical tests agree it's unusual?"</div>
-                        <p>Combines Z-score outlier detection (40%), seasonal decomposition residuals (30%),
-                        and Isolation Forest machine learning (30%) into one score.</p>
+                    <div class="method">
+                        <h4>Statistical Ensemble</h4>
+                        <div class="q">"Do multiple stats tests agree it's unusual?"</div>
+                        <p>Combines Z-score outlier detection (40%), seasonal
+                        decomposition (30%), and Isolation Forest ML (30%).</p>
                     </div>
-                    <div class="method-card">
-                        <h3>EWMA Trend Analysis</h3>
-                        <div class="question">"Is this stock's momentum abnormal?"</div>
-                        <p>Tracks deviation from the exponentially weighted moving average and
-                        classifies the trajectory as normal, accelerating, decelerating, or breakout.</p>
+                    <div class="method">
+                        <h4>EWMA Trend</h4>
+                        <div class="q">"Is this stock's momentum abnormal?"</div>
+                        <p>Tracks deviation from the exponential moving average and
+                        classifies trajectory: normal, accelerating, decelerating, or breakout.</p>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 
     <div class="footer">
-        <p>Stock Anomaly Detection System &mdash; Data from Yahoo Finance &mdash; Updated automatically via GitHub Actions</p>
+        Stock Anomaly Detection &mdash; Jacob E. Thomas, PhD &mdash; Data via Yahoo Finance &mdash; Updated automatically via GitHub Actions
     </div>
 
     <script>
-        // Embedded chart data (rendered by Jinja2)
         const tickerCharts = {{ ticker_charts_json }};
-        const heatmapData = {{ heatmap_json }};
-        const distributionData = {{ distribution_json }};
+        const scoreboardData = {{ scoreboard_json }};
+        const historyData = {{ history_json }};
+        const plotCfg = {responsive: true, displayModeBar: false};
 
-        // Render heatmap
-        if (heatmapData && Object.keys(heatmapData).length > 0) {
-            Plotly.newPlot('heatmap-chart', heatmapData.data, heatmapData.layout, {responsive: true});
+        // Scoreboard
+        if (scoreboardData && scoreboardData.data) {
+            Plotly.newPlot('scoreboard-chart', scoreboardData.data, scoreboardData.layout, plotCfg);
         }
 
-        // Render distribution
-        if (distributionData && Object.keys(distributionData).length > 0) {
-            const distEl = document.getElementById('distribution-chart');
-            if (distEl) {
-                Plotly.newPlot('distribution-chart', distributionData.data, distributionData.layout, {responsive: true});
-            }
+        // History
+        const histEl = document.getElementById('history-chart');
+        if (histEl && historyData && historyData.data) {
+            Plotly.newPlot('history-chart', historyData.data, historyData.layout, plotCfg);
         }
 
-        // Ticker chart switching
-        const tickerList = Object.keys(tickerCharts);
-        if (tickerList.length > 0) {
-            showTicker(tickerList[0]);
-        }
+        // Ticker switching
+        const tList = Object.keys(tickerCharts);
+        if (tList.length > 0) showTicker(tList[0]);
 
-        function showTicker(ticker, btn) {
-            const chartData = tickerCharts[ticker];
-            if (chartData) {
-                Plotly.newPlot('ticker-chart', chartData.data, chartData.layout, {responsive: true});
-            }
-            // Update active button
-            document.querySelectorAll('.ticker-btn').forEach(b => b.classList.remove('active'));
-            if (btn) {
-                btn.classList.add('active');
-            } else {
-                const buttons = document.querySelectorAll('.ticker-btn');
-                buttons.forEach(b => {
-                    if (b.textContent.trim() === ticker) b.classList.add('active');
-                });
-            }
+        function showTicker(t, btn) {
+            const d = tickerCharts[t];
+            if (d) Plotly.newPlot('ticker-chart', d.data, d.layout, plotCfg);
+            document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+            if (btn) { btn.classList.add('active'); }
+            else { document.querySelectorAll('.tbtn').forEach(b => { if (b.textContent.trim() === t) b.classList.add('active'); }); }
         }
     </script>
 </body>
