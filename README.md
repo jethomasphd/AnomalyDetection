@@ -2,15 +2,15 @@
 
 **Author:** Jacob E. Thomas, PhD
 
-A general-purpose anomaly detection system for stock market data. Runs four independent statistical methods against any Yahoo Finance ticker, generates plain-English alerts ranked by severity, and publishes an interactive dashboard to GitHub Pages — automatically, every trading day.
+A general-purpose anomaly detection system for stock market data. Runs four independent statistical methods against Yahoo Finance tickers, translates anomalies into **actionable trading signals** (Buy, Sell, Long, Short), and publishes an interactive dashboard to GitHub Pages — automatically, every trading day.
 
-Built for decision-makers who need actionable signals without deep statistical expertise.
+Built for decision-makers who need clear, actionable intelligence without deep statistical expertise.
 
 ---
 
 ## What it does
 
-Each ticker is analyzed by four independent detection algorithms. When multiple methods independently flag the same day, the system assigns a severity level:
+Each ticker is analyzed by four independent detection algorithms. When anomalies are detected, the system derives a trading signal based on how far price has deviated from its trend and which direction momentum is heading.
 
 | Method | What it answers |
 |--------|----------------|
@@ -19,12 +19,25 @@ Each ticker is analyzed by four independent detection algorithms. When multiple 
 | **Statistical Ensemble** | Do Z-scores, seasonal decomposition, and Isolation Forest all agree? |
 | **EWMA Trend** | Is this stock's *momentum* abnormal? |
 
-| Severity | Meaning |
-|----------|---------|
-| CRITICAL | All 4 methods agree |
-| HIGH | 3 of 4 methods agree |
-| MODERATE | 2 of 4 methods agree |
-| LOW | 1 method or elevated consensus score |
+| Signal | Meaning |
+|--------|---------|
+| **Buy** | Oversold — price is far below trend, selling pressure fading. Mean-reversion opportunity. |
+| **Sell** | Overbought — price is far above trend, buying pressure fading. Consider taking profits. |
+| **Long** | Upward momentum accelerating — trend-following opportunity. |
+| **Short** | Downward momentum accelerating — consider protective positions. |
+| **Reduce** | Regime change detected — reduce exposure until new pattern clarifies. |
+| **Watch** | Anomaly detected, awaiting confirmation before acting. |
+
+---
+
+## Default watchlist
+
+| Sector | Tickers |
+|--------|---------|
+| Staffing & Recruitment | ZipRecruiter (ZIP), Kelly Services (KELYA), ASGN Inc. (ASGN), ManpowerGroup (MAN) |
+| Market Benchmarks | S&P 500 (^GSPC), Nasdaq-100 (^NDX) |
+| Ad Platforms | The Trade Desk (TTD), Meta Platforms (META), Alphabet (GOOGL) |
+| AI Infrastructure | NVIDIA (NVDA), Microsoft (MSFT) |
 
 ---
 
@@ -33,7 +46,7 @@ Each ticker is analyzed by four independent detection algorithms. When multiple 
 ```bash
 pip install -r requirements.txt
 
-# Run with defaults (20 major tickers, medium sensitivity)
+# Run with defaults (11 tickers, medium sensitivity)
 python -m anomaly_detection
 
 # Specific tickers
@@ -45,8 +58,7 @@ python -m anomaly_detection --sensitivity high --lookback 180
 
 Results:
 - **`docs/index.html`** — interactive dashboard (open in browser)
-- **`data/alerts.json`** — structured alert data
-- **`data/history/`** — run-over-run snapshots for trend tracking
+- **`data/alerts.json`** — structured signal data
 
 ---
 
@@ -60,20 +72,14 @@ Manual trigger: Actions > Stock Anomaly Detection > Run workflow.
 
 ---
 
-## Historical tracking
-
-Each run saves a snapshot to `data/history/`. The dashboard shows anomaly count trends over time, so you can see whether the market is getting noisier or calmer run-over-run.
-
----
-
 ## Project structure
 
 ```
 anomaly_detection/
-  config.py              # All tunable parameters
+  config.py              # All tunable parameters + ticker names
   data_fetch.py          # Yahoo Finance API + feature engineering
-  pipeline.py            # Orchestration + history management
-  alerts.py              # Plain-English alert generation
+  pipeline.py            # 5-stage orchestration
+  alerts.py              # Trading signal derivation
   detection/
     engine.py            # Runs all 4 methods, computes consensus
     fourier.py           # Frequency-domain structural change
@@ -86,8 +92,7 @@ anomaly_detection/
     templates/
       dashboard.html     # GitHub Pages template
 data/
-  alerts.json            # Latest alerts
-  history/               # Run-over-run snapshots
+  alerts.json            # Latest trading signals
 docs/
   index.html             # Dashboard (GitHub Pages)
 ```
@@ -100,7 +105,7 @@ Edit `anomaly_detection/config.py` or pass CLI flags:
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `DEFAULT_TICKERS` | 20 majors | SPY, QQQ, AAPL, MSFT, NVDA, etc. |
+| `DEFAULT_TICKERS` | 11 tickers | Staffing, benchmarks, ad platforms, AI infra |
 | `--sensitivity` | medium | low (99.5%ile) / medium (97.5%ile) / high (95%ile) |
 | `--lookback` | 365 | Days of historical data |
 | `METHOD_WEIGHTS` | Ensemble 30%, MP 25%, EWMA 25%, Fourier 20% | Consensus score weighting |
@@ -111,4 +116,4 @@ Works with any Yahoo Finance symbol: US equities, ETFs, crypto (BTC-USD), indice
 
 ## Derived from
 
-Adapts the four-method detection architecture from a CPM anomaly detection system built for recruitment marketing (see `CPM_ANOMALY_DETECTION_SPEC (1).md`), re-engineered for general-purpose stock market surveillance.
+Adapts the four-method detection architecture from a CPM anomaly detection system built for recruitment marketing (see `CPM_ANOMALY_DETECTION_SPEC (1).md`), re-engineered for general-purpose stock market surveillance with actionable trading signals.
