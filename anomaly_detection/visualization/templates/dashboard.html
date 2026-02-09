@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Anomaly Detection Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        :root {
+            --primary: #2962FF;
+            --danger: #D50000;
+            --warning: #FF6D00;
+            --caution: #FFD600;
+            --info: #2979FF;
+            --bg: #FAFAFA;
+            --surface: #FFFFFF;
+            --text: #212121;
+            --text-secondary: #616161;
+            --border: #E0E0E0;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-lg: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a237e, #283593);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+        .header h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; }
+        .header p { color: rgba(255,255,255,0.8); margin-top: 0.3rem; font-size: 0.95rem; }
+        .header .timestamp { font-size: 0.8rem; color: rgba(255,255,255,0.6); margin-top: 0.5rem; }
+
+        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+
+        /* Stats cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        .stat-card .value { font-size: 2rem; font-weight: 700; color: var(--primary); }
+        .stat-card .label { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-card.danger .value { color: var(--danger); }
+        .stat-card.warning .value { color: var(--warning); }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-header h2 { font-size: 1.1rem; font-weight: 600; }
+        .card-body { padding: 1rem 1.5rem; }
+
+        /* Alert table */
+        .alert-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .alert-table th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background: var(--bg);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+        }
+        .alert-table td { padding: 0.75rem 1rem; border-top: 1px solid var(--border); }
+        .alert-table tr:hover { background: #f5f8ff; }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+        .badge-critical { background: #ffebee; color: var(--danger); }
+        .badge-high { background: #fff3e0; color: var(--warning); }
+        .badge-moderate { background: #fffde7; color: #F57F17; }
+        .badge-low { background: #e3f2fd; color: var(--info); }
+
+        .methods-bar {
+            display: flex;
+            gap: 2px;
+        }
+        .methods-bar .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+        }
+        .methods-bar .dot.active { background: var(--danger); }
+
+        .description-text { font-size: 0.82rem; color: var(--text-secondary); max-width: 400px; }
+
+        /* Ticker selector */
+        .ticker-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .ticker-btn {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface);
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        .ticker-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .ticker-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .ticker-btn.has-anomaly { border-color: var(--danger); }
+        .ticker-btn.has-anomaly.active { background: var(--danger); }
+
+        /* Chart container */
+        .chart-container { min-height: 400px; }
+
+        /* How it works section */
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .method-card {
+            padding: 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        .method-card h3 { font-size: 0.95rem; margin-bottom: 0.3rem; }
+        .method-card .question { font-style: italic; color: var(--primary); font-size: 0.85rem; margin-bottom: 0.5rem; }
+        .method-card p { font-size: 0.82rem; color: var(--text-secondary); }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .alert-table { font-size: 0.8rem; }
+            .description-text { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Stock Anomaly Detection</h1>
+        <p>Multi-method statistical surveillance across {{ n_tickers }} tickers</p>
+        <div class="timestamp">Last updated: {{ generated_at }}</div>
+    </div>
+
+    <div class="container">
+        <!-- Stats overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="value">{{ n_tickers }}</div>
+                <div class="label">Tickers Monitored</div>
+            </div>
+            <div class="stat-card danger">
+                <div class="value">{{ n_anomalies }}</div>
+                <div class="label">Anomalies Detected</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="value">{{ n_critical }}</div>
+                <div class="label">Critical Alerts</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">{{ lookback_days }}d</div>
+                <div class="label">Lookback Window</div>
+            </div>
+            <div class="stat-card">
+                <div class="value">{{ sensitivity }}</div>
+                <div class="label">Sensitivity</div>
+            </div>
+        </div>
+
+        <!-- Heatmap -->
+        <div class="card">
+            <div class="card-header"><h2>Anomaly Heatmap</h2></div>
+            <div class="card-body">
+                <div id="heatmap-chart" class="chart-container"></div>
+            </div>
+        </div>
+
+        <!-- Alert table -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Active Alerts</h2>
+                <span style="font-size: 0.82rem; color: var(--text-secondary);">Sorted by severity</span>
+            </div>
+            <div class="card-body" style="padding: 0; overflow-x: auto;">
+                <table class="alert-table">
+                    <thead>
+                        <tr>
+                            <th>Severity</th>
+                            <th>Ticker</th>
+                            <th>Date</th>
+                            <th>Close</th>
+                            <th>Score</th>
+                            <th>Methods</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alert in alerts %}
+                        <tr>
+                            <td><span class="badge badge-{{ alert.severity|lower }}">{{ alert.severity }}</span></td>
+                            <td><strong>{{ alert.ticker }}</strong></td>
+                            <td>{{ alert.date }}</td>
+                            <td>${{ alert.close }}</td>
+                            <td>{{ alert.consensus_score }}</td>
+                            <td>
+                                <div class="methods-bar">
+                                    {% for i in range(4) %}
+                                    <div class="dot {% if i < alert.methods_flagged %}active{% endif %}"></div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td><span class="description-text">{{ alert.description }}</span></td>
+                        </tr>
+                        {% endfor %}
+                        {% if not alerts %}
+                        <tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No anomalies detected — all tickers within normal ranges.</td></tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Alert distribution -->
+        {% if alerts %}
+        <div class="card">
+            <div class="card-header"><h2>Alert Distribution</h2></div>
+            <div class="card-body">
+                <div id="distribution-chart" class="chart-container" style="min-height: 350px;"></div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Per-ticker charts -->
+        <div class="card">
+            <div class="card-header"><h2>Ticker Analysis</h2></div>
+            <div class="ticker-nav" id="ticker-nav">
+                {% for ticker in tickers %}
+                <button class="ticker-btn {% if ticker in anomaly_tickers %}has-anomaly{% endif %} {% if loop.first %}active{% endif %}"
+                        onclick="showTicker('{{ ticker }}', this)">
+                    {{ ticker }}
+                </button>
+                {% endfor %}
+            </div>
+            <div class="card-body">
+                <div id="ticker-chart" class="chart-container"></div>
+            </div>
+        </div>
+
+        <!-- How it works -->
+        <div class="card">
+            <div class="card-header"><h2>How It Works</h2></div>
+            <div class="card-body">
+                <p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
+                    This system uses four independent statistical methods to detect anomalies.
+                    When multiple methods agree, we have higher confidence something unusual is happening.
+                </p>
+                <div class="methods-grid">
+                    <div class="method-card">
+                        <h3>Fourier Transform</h3>
+                        <div class="question">"Has the rhythm of this stock changed?"</div>
+                        <p>Analyzes the frequency spectrum of price movements. When trading
+                        patterns shift (e.g., from choppy to trending), it signals a structural change.</p>
+                    </div>
+                    <div class="method-card">
+                        <h3>Matrix Profile</h3>
+                        <div class="question">"Is this stock doing something it's never done?"</div>
+                        <p>Finds the most similar historical subsequence for each recent window.
+                        If no good match exists, the current pattern is truly novel.</p>
+                    </div>
+                    <div class="method-card">
+                        <h3>Statistical Ensemble</h3>
+                        <div class="question">"Do multiple statistical tests agree it's unusual?"</div>
+                        <p>Combines Z-score outlier detection (40%), seasonal decomposition residuals (30%),
+                        and Isolation Forest machine learning (30%) into one score.</p>
+                    </div>
+                    <div class="method-card">
+                        <h3>EWMA Trend Analysis</h3>
+                        <div class="question">"Is this stock's momentum abnormal?"</div>
+                        <p>Tracks deviation from the exponentially weighted moving average and
+                        classifies the trajectory as normal, accelerating, decelerating, or breakout.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Stock Anomaly Detection System &mdash; Data from Yahoo Finance &mdash; Updated automatically via GitHub Actions</p>
+    </div>
+
+    <script>
+        // Embedded chart data (rendered by Jinja2)
+        const tickerCharts = {{ ticker_charts_json }};
+        const heatmapData = {{ heatmap_json }};
+        const distributionData = {{ distribution_json }};
+
+        // Render heatmap
+        if (heatmapData && Object.keys(heatmapData).length > 0) {
+            Plotly.newPlot('heatmap-chart', heatmapData.data, heatmapData.layout, {responsive: true});
+        }
+
+        // Render distribution
+        if (distributionData && Object.keys(distributionData).length > 0) {
+            const distEl = document.getElementById('distribution-chart');
+            if (distEl) {
+                Plotly.newPlot('distribution-chart', distributionData.data, distributionData.layout, {responsive: true});
+            }
+        }
+
+        // Ticker chart switching
+        const tickerList = Object.keys(tickerCharts);
+        if (tickerList.length > 0) {
+            showTicker(tickerList[0]);
+        }
+
+        function showTicker(ticker, btn) {
+            const chartData = tickerCharts[ticker];
+            if (chartData) {
+                Plotly.newPlot('ticker-chart', chartData.data, chartData.layout, {responsive: true});
+            }
+            // Update active button
+            document.querySelectorAll('.ticker-btn').forEach(b => b.classList.remove('active'));
+            if (btn) {
+                btn.classList.add('active');
+            } else {
+                const buttons = document.querySelectorAll('.ticker-btn');
+                buttons.forEach(b => {
+                    if (b.textContent.trim() === ticker) b.classList.add('active');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
