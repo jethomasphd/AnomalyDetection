@@ -45,7 +45,7 @@ def _describe_anomaly(row: pd.Series) -> str:
         method_details.append("multiple statistical tests confirm unusual behavior")
 
     if method_details:
-        parts.append(". ".join(method_details).capitalize())
+        parts.append(". ".join(d.capitalize() for d in method_details))
 
     n = int(row.get("methods_flagged", 0))
     if n >= 2:
