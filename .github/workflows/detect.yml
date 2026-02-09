@@ -1,0 +1,88 @@
+name: Stock Anomaly Detection
+
+on:
+  schedule:
+    # Run every weekday at 6:00 PM UTC (after US market close)
+    - cron: '0 18 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      tickers:
+        description: 'Comma-separated tickers (leave empty for defaults)'
+        required: false
+        default: ''
+      sensitivity:
+        description: 'Detection sensitivity'
+        required: false
+        default: 'medium'
+        type: choice
+        options:
+          - low
+          - medium
+          - high
+      lookback_days:
+        description: 'Days of historical data'
+        required: false
+        default: '365'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run anomaly detection
+        run: |
+          python -m anomaly_detection.pipeline \
+            --sensitivity "${{ github.event.inputs.sensitivity || 'medium' }}" \
+            --lookback "${{ github.event.inputs.lookback_days || '365' }}" \
+            ${{ github.event.inputs.tickers && format('--tickers "{0}"', github.event.inputs.tickers) || '' }}
+
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/ data/
+          git diff --staged --quiet || git commit -m "Update anomaly detection results [$(date -u +%Y-%m-%d)]"
+          git push
+
+  deploy-pages:
+    needs: detect
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Pull latest
+        run: git pull origin ${{ github.ref_name }}
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
