@@ -3,39 +3,35 @@
 import os
 
 # --- Default Tickers ---
-# A broad watchlist covering major stocks, ETFs, and sectors.
-# Users can override via CLI or config file.
 DEFAULT_TICKERS = [
     "SPY", "QQQ", "IWM", "DIA",       # Major index ETFs
     "AAPL", "MSFT", "GOOGL", "AMZN",   # Big tech
-    "NVDA", "META", "TSLA",             # Growth/momentum
+    "NVDA", "META", "TSLA",             # Growth / momentum
     "JPM", "GS", "BAC",                 # Financials
     "XLE", "XLF", "XLV", "XLK",        # Sector ETFs
-    "GLD", "TLT", "VIX",               # Macro indicators
+    "GLD", "TLT",                       # Macro indicators
 ]
 
 # --- Data Settings ---
 DEFAULT_LOOKBACK_DAYS = 365
-MIN_DATA_POINTS = 30  # Minimum observations needed for detection
+MIN_DATA_POINTS = 30
 
 # --- Sensitivity Presets ---
-# Maps to percentile thresholds for anomaly scoring.
-# Higher percentile = fewer anomalies flagged (more conservative).
 SENSITIVITY_PRESETS = {
     "low": {
         "percentile": 99.5,
         "z_threshold": 3.0,
-        "description": "Only extreme anomalies — high confidence, few alerts",
+        "description": "Only extreme anomalies",
     },
     "medium": {
         "percentile": 97.5,
         "z_threshold": 2.5,
-        "description": "Balanced — catches meaningful moves without noise",
+        "description": "Balanced detection",
     },
     "high": {
         "percentile": 95.0,
         "z_threshold": 2.0,
-        "description": "Sensitive — flags emerging patterns early",
+        "description": "Sensitive — catches early signals",
     },
 }
 
@@ -50,14 +46,14 @@ METHOD_WEIGHTS = {
 }
 
 # --- EWMA Parameters ---
-EWMA_SPAN = 20  # ~1 trading month
+EWMA_SPAN = 20
 EWMA_TREND_WINDOW = 5
 
 # --- Matrix Profile Parameters ---
 MP_SUBSEQUENCE_LENGTH = 10
 
 # --- Fourier Parameters ---
-FOURIER_TOP_K = 5  # Top frequency components to analyze
+FOURIER_TOP_K = 5
 
 # --- Ensemble Weights ---
 ENSEMBLE_WEIGHTS = {
@@ -67,5 +63,7 @@ ENSEMBLE_WEIGHTS = {
 }
 
 # --- Output Paths ---
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-DOCS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "docs")
+PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
+DATA_DIR = os.path.join(PROJECT_ROOT, "data")
+HISTORY_DIR = os.path.join(DATA_DIR, "history")
+DOCS_DIR = os.path.join(PROJECT_ROOT, "docs")

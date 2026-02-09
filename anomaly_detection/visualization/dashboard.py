@@ -9,7 +9,7 @@ import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
 from ..config import DOCS_DIR
-from .charts import alert_distribution_chart, summary_heatmap, ticker_chart
+from .charts import history_chart, scoreboard_chart, ticker_chart
 
 logger = logging.getLogger(__name__)
 
@@ -21,52 +21,49 @@ def generate_dashboard(
     alerts: list[dict],
     sensitivity: str = "medium",
     lookback_days: int = 365,
+    history_data: list[dict] | None = None,
     output_path: str | None = None,
 ) -> str:
-    """Generate the full HTML dashboard and write it to disk.
-
-    Returns the path to the generated HTML file.
-    """
+    """Generate the full HTML dashboard and write it to disk."""
     output_path = output_path or os.path.join(DOCS_DIR, "index.html")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
     tickers = sorted(results["Ticker"].unique())
-    anomaly_tickers = set()
-    if alerts:
-        anomaly_tickers = {a["ticker"] for a in alerts}
+    anomaly_tickers = {a["ticker"] for a in alerts} if alerts else set()
+    history_data = history_data or []
 
-    # Generate per-ticker charts
+    # Per-ticker charts
     ticker_charts = {}
     for ticker in tickers:
         df_t = results[results["Ticker"] == ticker]
-        chart_json = ticker_chart(df_t, ticker)
-        ticker_charts[ticker] = json.loads(chart_json)
+        ticker_charts[ticker] = json.loads(ticker_chart(df_t, ticker))
 
-    # Generate summary charts
-    heatmap_json = summary_heatmap(results)
-    distribution_json = alert_distribution_chart(alerts)
+    # Summary charts
+    scoreboard_json = scoreboard_chart(results)
+    history_json = history_chart(history_data) if history_data else "{}"
 
-    # Count stats
-    n_anomalies = results["consensus_anomaly"].sum() if "consensus_anomaly" in results.columns else 0
-    n_critical = sum(1 for a in alerts if a["severity"] == "CRITICAL")
+    # Stats
+    n_anomalies = int(results["consensus_anomaly"].sum()) if "consensus_anomaly" in results.columns else 0
+    n_high = sum(1 for a in alerts if a["severity"] in ("CRITICAL", "HIGH"))
 
-    # Render template
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=False)
     template = env.get_template("dashboard.html")
 
     html = template.render(
         n_tickers=len(tickers),
-        n_anomalies=int(n_anomalies),
-        n_critical=n_critical,
+        n_anomalies=n_anomalies,
+        n_high=n_high,
+        n_runs=len(history_data),
         lookback_days=lookback_days,
         sensitivity=sensitivity.capitalize(),
         generated_at=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
         alerts=alerts,
         tickers=tickers,
         anomaly_tickers=anomaly_tickers,
+        has_history=len(history_data) > 1,
         ticker_charts_json=json.dumps(ticker_charts),
-        heatmap_json=heatmap_json,
-        distribution_json=distribution_json,
+        scoreboard_json=scoreboard_json,
+        history_json=history_json,
     )
 
     with open(output_path, "w") as f:
