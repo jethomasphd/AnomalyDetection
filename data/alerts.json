@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-02-09T17:32:28.517612Z",
-  "total_alerts": 16,
+  "generated_at": "2026-02-09T17:46:00.870041Z",
+  "total_alerts": 50,
   "alerts": [
     {
       "ticker": "MSFT",
@@ -8,66 +8,49 @@
       "close": 393.67,
       "severity": "HIGH",
       "methods_flagged": 3,
-      "consensus_score": 0.6302,
+      "consensus_score": 0.7265,
       "description": "[Frequency Analysis, Statistical Ensemble, Trend Analysis] trading rhythm has shifted from historical pattern; flagged as statistical outlier, multivariate outlier; price is 11.7% below its moving average",
       "details": {
-        "fourier_score": 0.2746,
-        "mp_score": 0.387,
-        "ensemble_score": 0.7618,
+        "fourier_score": 0.9461,
+        "mp_score": 0.371,
+        "ensemble_score": 0.6486,
         "ewma_score": 1.0,
         "trajectory": "normal",
         "deviation_pct": -11.69
       }
     },
     {
-      "ticker": "AAPL",
-      "date": "2026-01-20",
-      "close": 246.7,
-      "severity": "MODERATE",
-      "methods_flagged": 2,
-      "consensus_score": 0.5959,
-      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, seasonal deviation, multivariate outlier; price is 6.2% below its moving average",
-      "details": {
-        "fourier_score": 0.0472,
-        "mp_score": 0.4623,
-        "ensemble_score": 0.9052,
-        "ewma_score": 0.7972,
-        "trajectory": "normal",
-        "deviation_pct": -6.24
-      }
-    },
-    {
       "ticker": "MSFT",
       "date": "2026-02-06",
       "close": 401.14,
-      "severity": "MODERATE",
-      "methods_flagged": 2,
-      "consensus_score": 0.5865,
-      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, seasonal deviation, multivariate outlier; price is 9.2% below its moving average",
+      "severity": "HIGH",
+      "methods_flagged": 3,
+      "consensus_score": 0.678,
+      "description": "[Frequency Analysis, Statistical Ensemble, Trend Analysis] trading rhythm has shifted from historical pattern; flagged as statistical outlier, seasonal deviation; price is 9.2% below its moving average",
       "details": {
-        "fourier_score": 0.2523,
-        "mp_score": 0.3156,
-        "ensemble_score": 0.8715,
+        "fourier_score": 0.9041,
+        "mp_score": 0.3158,
+        "ensemble_score": 0.7419,
         "ewma_score": 0.7826,
         "trajectory": "normal",
         "deviation_pct": -9.15
       }
     },
     {
-      "ticker": "SPY",
-      "date": "2025-11-20",
-      "close": 650.61,
-      "severity": "MODERATE",
-      "methods_flagged": 2,
-      "consensus_score": 0.5737,
-      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, seasonal deviation, multivariate outlier; price is 2.6% below its moving average",
+      "ticker": "TLT",
+      "date": "2025-09-11",
+      "close": 88.7,
+      "severity": "HIGH",
+      "methods_flagged": 3,
+      "consensus_score": 0.5111,
+      "description": "[Frequency Analysis, Statistical Ensemble, Trend Analysis] trading rhythm has shifted from historical pattern; flagged as statistical outlier; price is 3.0% above its moving average",
       "details": {
-        "fourier_score": 0.0583,
-        "mp_score": 0.4357,
-        "ensemble_score": 0.6771,
-        "ewma_score": 1.0,
+        "fourier_score": 0.4292,
+        "mp_score": 0.2744,
+        "ensemble_score": 0.5285,
+        "ewma_score": 0.7925,
         "trajectory": "normal",
-        "deviation_pct": -2.65
+        "deviation_pct": 3.0
       }
     },
     {
@@ -76,49 +59,423 @@
       "close": 411.21,
       "severity": "MODERATE",
       "methods_flagged": 2,
-      "consensus_score": 0.571,
+      "consensus_score": 0.6554,
       "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, multivariate outlier; price is 9.7% below its moving average; Decelerating \u2014 momentum fading",
       "details": {
-        "fourier_score": 0.1592,
-        "mp_score": 0.5483,
-        "ensemble_score": 0.6518,
+        "fourier_score": 0.6465,
+        "mp_score": 0.5485,
+        "ensemble_score": 0.608,
         "ewma_score": 0.8263,
         "trajectory": "decelerating",
         "deviation_pct": -9.66
       }
     },
     {
-      "ticker": "JPM",
-      "date": "2026-01-06",
-      "close": 334.61,
+      "ticker": "GOOGL",
+      "date": "2025-11-24",
+      "close": 318.37,
       "severity": "MODERATE",
       "methods_flagged": 2,
-      "consensus_score": 0.5412,
-      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, multivariate outlier; price is 4.3% above its moving average",
+      "consensus_score": 0.6048,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, multivariate outlier; price is 12.0% above its moving average",
       "details": {
-        "fourier_score": 0.0582,
-        "mp_score": 0.3435,
-        "ensemble_score": 0.7427,
-        "ewma_score": 0.8834,
+        "fourier_score": 0.1265,
+        "mp_score": 0.4233,
+        "ensemble_score": 0.7622,
+        "ewma_score": 0.9801,
         "trajectory": "normal",
-        "deviation_pct": 4.32
+        "deviation_pct": 11.99
+      }
+    },
+    {
+      "ticker": "TLT",
+      "date": "2025-09-08",
+      "close": 88.11,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.6033,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier; price is 3.2% above its moving average",
+      "details": {
+        "fourier_score": 0.3864,
+        "mp_score": 0.4793,
+        "ensemble_score": 0.654,
+        "ewma_score": 0.8399,
+        "trajectory": "normal",
+        "deviation_pct": 3.18
+      }
+    },
+    {
+      "ticker": "XLV",
+      "date": "2025-11-25",
+      "close": 158.1,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5925,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, seasonal deviation, multivariate outlier; price is 5.3% above its moving average",
+      "details": {
+        "fourier_score": 0.3514,
+        "mp_score": 0.4565,
+        "ensemble_score": 0.6861,
+        "ewma_score": 0.8093,
+        "trajectory": "normal",
+        "deviation_pct": 5.35
+      }
+    },
+    {
+      "ticker": "JPM",
+      "date": "2025-04-04",
+      "close": 207.32,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5903,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as seasonal deviation, multivariate outlier; price is 12.2% below its moving average; Decelerating \u2014 momentum fading",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.6411,
+        "ensemble_score": 0.6,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -12.15
+      }
+    },
+    {
+      "ticker": "TLT",
+      "date": "2025-05-21",
+      "close": 81.21,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5862,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, multivariate outlier; price is 3.1% below its moving average",
+      "details": {
+        "fourier_score": 0.2456,
+        "mp_score": 0.4992,
+        "ensemble_score": 0.6977,
+        "ewma_score": 0.812,
+        "trajectory": "normal",
+        "deviation_pct": -3.07
+      }
+    },
+    {
+      "ticker": "XLF",
+      "date": "2025-04-04",
+      "close": 43.75,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5776,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as seasonal deviation, multivariate outlier; price is 9.8% below its moving average; Decelerating \u2014 momentum fading",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.5943,
+        "ensemble_score": 0.5969,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -9.8
+      }
+    },
+    {
+      "ticker": "XLV",
+      "date": "2025-05-14",
+      "close": 127.03,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5772,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, seasonal deviation, multivariate outlier; price is 5.1% below its moving average",
+      "details": {
+        "fourier_score": 0.1034,
+        "mp_score": 0.5023,
+        "ensemble_score": 0.7978,
+        "ewma_score": 0.7663,
+        "trajectory": "normal",
+        "deviation_pct": -5.06
+      }
+    },
+    {
+      "ticker": "META",
+      "date": "2026-01-29",
+      "close": 738.31,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5766,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, seasonal deviation, multivariate outlier; price is 12.4% above its moving average",
+      "details": {
+        "fourier_score": 0.0789,
+        "mp_score": 0.3355,
+        "ensemble_score": 0.8802,
+        "ewma_score": 0.8516,
+        "trajectory": "normal",
+        "deviation_pct": 12.45
+      }
+    },
+    {
+      "ticker": "AMZN",
+      "date": "2025-11-03",
+      "close": 254.0,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5712,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, multivariate outlier; price is 11.6% above its moving average; Accelerating \u2014 momentum building",
+      "details": {
+        "fourier_score": 0.1371,
+        "mp_score": 0.3396,
+        "ensemble_score": 0.7411,
+        "ewma_score": 0.9462,
+        "trajectory": "accelerating",
+        "deviation_pct": 11.62
+      }
+    },
+    {
+      "ticker": "GOOGL",
+      "date": "2025-09-03",
+      "close": 230.3,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5593,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, multivariate outlier; price is 11.9% above its moving average",
+      "details": {
+        "fourier_score": 0.0054,
+        "mp_score": 0.3657,
+        "ensemble_score": 0.7473,
+        "ewma_score": 0.9705,
+        "trajectory": "normal",
+        "deviation_pct": 11.88
+      }
+    },
+    {
+      "ticker": "BAC",
+      "date": "2025-04-04",
+      "close": 33.82,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5588,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as seasonal deviation, multivariate outlier; price is 16.2% below its moving average; Decelerating \u2014 momentum fading",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.5453,
+        "ensemble_score": 0.5749,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -16.22
+      }
+    },
+    {
+      "ticker": "AMZN",
+      "date": "2026-02-06",
+      "close": 210.32,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5569,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, seasonal deviation; price is 10.2% below its moving average; Decelerating \u2014 momentum fading",
+      "details": {
+        "fourier_score": 0.1558,
+        "mp_score": 0.4176,
+        "ensemble_score": 0.7158,
+        "ewma_score": 0.8265,
+        "trajectory": "decelerating",
+        "deviation_pct": -10.15
+      }
+    },
+    {
+      "ticker": "GOOGL",
+      "date": "2025-09-15",
+      "close": 251.45,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5481,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, multivariate outlier; price is 11.9% above its moving average",
+      "details": {
+        "fourier_score": 0.2144,
+        "mp_score": 0.351,
+        "ensemble_score": 0.5815,
+        "ewma_score": 0.9721,
+        "trajectory": "normal",
+        "deviation_pct": 11.9
       }
     },
     {
       "ticker": "AAPL",
-      "date": "2025-09-22",
-      "close": 255.83,
+      "date": "2025-07-17",
+      "close": 209.58,
       "severity": "MODERATE",
       "methods_flagged": 2,
-      "consensus_score": 0.5273,
-      "description": "[Statistical Ensemble, Trend Analysis] flagged as seasonal deviation, multivariate outlier; price is 7.8% above its moving average",
+      "consensus_score": 0.542,
+      "description": "[Frequency Analysis, Pattern Matching] trading rhythm has shifted from historical pattern; price pattern is unlike anything seen in recent history",
+      "details": {
+        "fourier_score": 1.2736,
+        "mp_score": 0.926,
+        "ensemble_score": 0.132,
+        "ewma_score": 0.0645,
+        "trajectory": "normal",
+        "deviation_pct": 1.17
+      }
+    },
+    {
+      "ticker": "SPY",
+      "date": "2025-04-04",
+      "close": 500.92,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5362,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as seasonal deviation, multivariate outlier; price is 9.6% below its moving average",
       "details": {
         "fourier_score": 0.0,
-        "mp_score": 0.4359,
-        "ensemble_score": 0.561,
+        "mp_score": 0.591,
+        "ensemble_score": 0.4614,
         "ewma_score": 1.0,
         "trajectory": "normal",
-        "deviation_pct": 7.83
+        "deviation_pct": -9.64
+      }
+    },
+    {
+      "ticker": "DIA",
+      "date": "2025-04-04",
+      "close": 378.62,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5315,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as seasonal deviation, multivariate outlier; price is 8.1% below its moving average",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.5198,
+        "ensemble_score": 0.5139,
+        "ewma_score": 0.9893,
+        "trajectory": "normal",
+        "deviation_pct": -8.13
+      }
+    },
+    {
+      "ticker": "GLD",
+      "date": "2026-01-28",
+      "close": 494.56,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5271,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, seasonal deviation, multivariate outlier; price is 12.9% above its moving average",
+      "details": {
+        "fourier_score": 0.0258,
+        "mp_score": 0.2316,
+        "ensemble_score": 0.7136,
+        "ewma_score": 1.0,
+        "trajectory": "normal",
+        "deviation_pct": 12.94
+      }
+    },
+    {
+      "ticker": "XLK",
+      "date": "2026-02-05",
+      "close": 135.63,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5245,
+      "description": "[Frequency Analysis, Statistical Ensemble] trading rhythm has shifted from historical pattern; flagged as statistical outlier",
+      "details": {
+        "fourier_score": 0.8091,
+        "mp_score": 0.3495,
+        "ensemble_score": 0.5531,
+        "ewma_score": 0.4374,
+        "trajectory": "normal",
+        "deviation_pct": -5.62
+      }
+    },
+    {
+      "ticker": "GLD",
+      "date": "2026-01-29",
+      "close": 495.9,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5213,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier, seasonal deviation, multivariate outlier; price is 11.8% above its moving average",
+      "details": {
+        "fourier_score": 0.0366,
+        "mp_score": 0.237,
+        "ensemble_score": 0.7536,
+        "ewma_score": 0.9146,
+        "trajectory": "normal",
+        "deviation_pct": 11.84
+      }
+    },
+    {
+      "ticker": "GS",
+      "date": "2025-04-04",
+      "close": 463.68,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5203,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as seasonal deviation, multivariate outlier; price is 14.7% below its moving average; Decelerating \u2014 momentum fading",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.4895,
+        "ensemble_score": 0.493,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -14.7
+      }
+    },
+    {
+      "ticker": "GOOGL",
+      "date": "2025-11-25",
+      "close": 323.23,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.52,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as statistical outlier; price is 12.2% above its moving average; Accelerating \u2014 momentum building",
+      "details": {
+        "fourier_score": 0.0868,
+        "mp_score": 0.2801,
+        "ensemble_score": 0.6086,
+        "ewma_score": 1.0,
+        "trajectory": "accelerating",
+        "deviation_pct": 12.24
+      }
+    },
+    {
+      "ticker": "SPY",
+      "date": "2025-04-08",
+      "close": 492.19,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5084,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as seasonal deviation, multivariate outlier; price is 9.5% below its moving average; Decelerating \u2014 momentum fading",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.5062,
+        "ensemble_score": 0.4531,
+        "ewma_score": 0.9837,
+        "trajectory": "decelerating",
+        "deviation_pct": -9.48
+      }
+    },
+    {
+      "ticker": "XLE",
+      "date": "2025-04-04",
+      "close": 38.4,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5063,
+      "description": "[Statistical Ensemble, Trend Analysis] flagged as seasonal deviation, multivariate outlier; price is 12.5% below its moving average; Decelerating \u2014 momentum fading",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.3693,
+        "ensemble_score": 0.5696,
+        "ewma_score": 0.9726,
+        "trajectory": "decelerating",
+        "deviation_pct": -12.46
+      }
+    },
+    {
+      "ticker": "DIA",
+      "date": "2025-12-11",
+      "close": 486.63,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.4991,
+      "description": "[Frequency Analysis, Statistical Ensemble] trading rhythm has shifted from historical pattern; flagged as statistical outlier",
+      "details": {
+        "fourier_score": 0.5431,
+        "mp_score": 0.536,
+        "ensemble_score": 0.5903,
+        "ewma_score": 0.3175,
+        "trajectory": "normal",
+        "deviation_pct": 2.61
       }
     },
     {
@@ -127,83 +484,15 @@
       "close": 433.5,
       "severity": "LOW",
       "methods_flagged": 1,
-      "consensus_score": 0.6124,
+      "consensus_score": 0.7008,
       "description": "[Statistical Ensemble] flagged as statistical outlier, seasonal deviation, multivariate outlier",
       "details": {
-        "fourier_score": 0.162,
-        "mp_score": 0.7167,
-        "ensemble_score": 0.8226,
+        "fourier_score": 0.5804,
+        "mp_score": 0.717,
+        "ensemble_score": 0.8379,
         "ewma_score": 0.6163,
         "trajectory": "normal",
         "deviation_pct": -7.21
-      }
-    },
-    {
-      "ticker": "JPM",
-      "date": "2025-12-11",
-      "close": 315.95,
-      "severity": "LOW",
-      "methods_flagged": 1,
-      "consensus_score": 0.5503,
-      "description": "[Pattern Matching] price pattern is unlike anything seen in recent history",
-      "details": {
-        "fourier_score": 0.0246,
-        "mp_score": 1.0,
-        "ensemble_score": 0.5357,
-        "ewma_score": 0.5388,
-        "trajectory": "normal",
-        "deviation_pct": 2.63
-      }
-    },
-    {
-      "ticker": "JPM",
-      "date": "2026-01-05",
-      "close": 332.54,
-      "severity": "LOW",
-      "methods_flagged": 1,
-      "consensus_score": 0.5392,
-      "description": "[Statistical Ensemble] flagged as statistical outlier, multivariate outlier",
-      "details": {
-        "fourier_score": 0.0296,
-        "mp_score": 0.4116,
-        "ensemble_score": 0.7276,
-        "ewma_score": 0.8482,
-        "trajectory": "normal",
-        "deviation_pct": 4.15
-      }
-    },
-    {
-      "ticker": "JPM",
-      "date": "2025-12-09",
-      "close": 299.16,
-      "severity": "LOW",
-      "methods_flagged": 1,
-      "consensus_score": 0.5385,
-      "description": "[Statistical Ensemble] flagged as seasonal deviation, multivariate outlier",
-      "details": {
-        "fourier_score": 0.0277,
-        "mp_score": 0.7096,
-        "ensemble_score": 0.7601,
-        "ewma_score": 0.5099,
-        "trajectory": "normal",
-        "deviation_pct": -2.49
-      }
-    },
-    {
-      "ticker": "MSFT",
-      "date": "2026-01-30",
-      "close": 430.29,
-      "severity": "LOW",
-      "methods_flagged": 0,
-      "consensus_score": 0.5232,
-      "description": "[Consensus] Decelerating \u2014 momentum fading",
-      "details": {
-        "fourier_score": 0.1239,
-        "mp_score": 0.6351,
-        "ensemble_score": 0.6192,
-        "ewma_score": 0.6154,
-        "trajectory": "decelerating",
-        "deviation_pct": -7.19
       }
     },
     {
@@ -212,32 +501,15 @@
       "close": 414.19,
       "severity": "LOW",
       "methods_flagged": 1,
-      "consensus_score": 0.5184,
-      "description": "[Trend Analysis] price is 8.2% below its moving average",
+      "consensus_score": 0.6128,
+      "description": "[Frequency Analysis] trading rhythm has shifted from historical pattern",
       "details": {
-        "fourier_score": 0.2421,
-        "mp_score": 0.4342,
-        "ensemble_score": 0.6189,
+        "fourier_score": 0.854,
+        "mp_score": 0.4344,
+        "ensemble_score": 0.5257,
         "ewma_score": 0.7029,
         "trajectory": "normal",
         "deviation_pct": -8.22
-      }
-    },
-    {
-      "ticker": "NVDA",
-      "date": "2025-10-29",
-      "close": 207.03,
-      "severity": "LOW",
-      "methods_flagged": 1,
-      "consensus_score": 0.512,
-      "description": "[Trend Analysis] price is 10.5% above its moving average; Accelerating \u2014 momentum building",
-      "details": {
-        "fourier_score": 0.0,
-        "mp_score": 0.488,
-        "ensemble_score": 0.4668,
-        "ewma_score": 1.0,
-        "trajectory": "accelerating",
-        "deviation_pct": 10.49
       }
     },
     {
@@ -246,32 +518,338 @@
       "close": 423.37,
       "severity": "LOW",
       "methods_flagged": 0,
-      "consensus_score": 0.5107,
+      "consensus_score": 0.5752,
       "description": "[Consensus] Decelerating \u2014 momentum fading",
       "details": {
-        "fourier_score": 0.1192,
-        "mp_score": 0.5899,
-        "ensemble_score": 0.5663,
+        "fourier_score": 0.5198,
+        "mp_score": 0.5901,
+        "ensemble_score": 0.5141,
         "ewma_score": 0.6779,
         "trajectory": "decelerating",
         "deviation_pct": -7.93
       }
     },
     {
-      "ticker": "JPM",
-      "date": "2025-12-24",
-      "close": 327.69,
+      "ticker": "META",
+      "date": "2025-10-30",
+      "close": 665.93,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5697,
+      "description": "[Statistical Ensemble] flagged as statistical outlier, seasonal deviation, multivariate outlier",
+      "details": {
+        "fourier_score": 0.0669,
+        "mp_score": 0.7379,
+        "ensemble_score": 0.7536,
+        "ewma_score": 0.5833,
+        "trajectory": "normal",
+        "deviation_pct": -8.53
+      }
+    },
+    {
+      "ticker": "META",
+      "date": "2025-07-31",
+      "close": 772.29,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5649,
+      "description": "[Statistical Ensemble] flagged as statistical outlier, seasonal deviation, multivariate outlier",
+      "details": {
+        "fourier_score": 0.1288,
+        "mp_score": 0.7286,
+        "ensemble_score": 0.7208,
+        "ewma_score": 0.5632,
+        "trajectory": "normal",
+        "deviation_pct": 8.24
+      }
+    },
+    {
+      "ticker": "MSFT",
+      "date": "2026-01-30",
+      "close": 430.29,
       "severity": "LOW",
       "methods_flagged": 0,
-      "consensus_score": 0.4939,
+      "consensus_score": 0.5649,
+      "description": "[Consensus] Decelerating \u2014 momentum fading",
+      "details": {
+        "fourier_score": 0.474,
+        "mp_score": 0.6353,
+        "ensemble_score": 0.5249,
+        "ewma_score": 0.6154,
+        "trajectory": "decelerating",
+        "deviation_pct": -7.19
+      }
+    },
+    {
+      "ticker": "XLV",
+      "date": "2025-07-31",
+      "close": 129.29,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5545,
+      "description": "[Statistical Ensemble] flagged as seasonal deviation, multivariate outlier",
+      "details": {
+        "fourier_score": 0.6677,
+        "mp_score": 0.5799,
+        "ensemble_score": 0.5786,
+        "ewma_score": 0.4096,
+        "trajectory": "normal",
+        "deviation_pct": -2.71
+      }
+    },
+    {
+      "ticker": "XLV",
+      "date": "2025-10-01",
+      "close": 142.86,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.546,
+      "description": "[Statistical Ensemble] flagged as statistical outlier, seasonal deviation, multivariate outlier",
+      "details": {
+        "fourier_score": 0.2004,
+        "mp_score": 0.3332,
+        "ensemble_score": 0.8256,
+        "ewma_score": 0.6998,
+        "trajectory": "normal",
+        "deviation_pct": 4.63
+      }
+    },
+    {
+      "ticker": "XLV",
+      "date": "2025-09-02",
+      "close": 136.35,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5338,
+      "description": "[Pattern Matching] price pattern is unlike anything seen in recent history",
+      "details": {
+        "fourier_score": 0.8064,
+        "mp_score": 1.0,
+        "ensemble_score": 0.2326,
+        "ewma_score": 0.2109,
+        "trajectory": "normal",
+        "deviation_pct": 1.39
+      }
+    },
+    {
+      "ticker": "XLK",
+      "date": "2025-04-04",
+      "close": 90.78,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5284,
+      "description": "[Trend Analysis] price is 12.8% below its moving average; Decelerating \u2014 momentum fading",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.5769,
+        "ensemble_score": 0.4473,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -12.84
+      }
+    },
+    {
+      "ticker": "IWM",
+      "date": "2025-08-22",
+      "close": 233.38,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.528,
+      "description": "[Statistical Ensemble] flagged as statistical outlier, seasonal deviation, multivariate outlier",
+      "details": {
+        "fourier_score": 0.0921,
+        "mp_score": 0.8279,
+        "ensemble_score": 0.6903,
+        "ewma_score": 0.3823,
+        "trajectory": "normal",
+        "deviation_pct": 4.3
+      }
+    },
+    {
+      "ticker": "AMZN",
+      "date": "2025-10-31",
+      "close": 244.22,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.522,
+      "description": "[Statistical Ensemble] flagged as statistical outlier, multivariate outlier",
+      "details": {
+        "fourier_score": 0.1218,
+        "mp_score": 0.5211,
+        "ensemble_score": 0.6374,
+        "ewma_score": 0.7045,
+        "trajectory": "normal",
+        "deviation_pct": 8.65
+      }
+    },
+    {
+      "ticker": "QQQ",
+      "date": "2025-04-04",
+      "close": 421.16,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5216,
+      "description": "[Trend Analysis] price is 10.9% below its moving average",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.5367,
+        "ensemble_score": 0.4581,
+        "ewma_score": 1.0,
+        "trajectory": "normal",
+        "deviation_pct": -10.95
+      }
+    },
+    {
+      "ticker": "TLT",
+      "date": "2025-09-05",
+      "close": 86.95,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5148,
+      "description": "[Statistical Ensemble] flagged as statistical outlier",
+      "details": {
+        "fourier_score": 0.2981,
+        "mp_score": 0.6912,
+        "ensemble_score": 0.465,
+        "ewma_score": 0.5715,
+        "trajectory": "normal",
+        "deviation_pct": 2.16
+      }
+    },
+    {
+      "ticker": "AAPL",
+      "date": "2025-07-18",
+      "close": 210.74,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5128,
+      "description": "[Pattern Matching] price pattern is unlike anything seen in recent history",
+      "details": {
+        "fourier_score": 1.0254,
+        "mp_score": 0.9527,
+        "ensemble_score": 0.1601,
+        "ewma_score": 0.0862,
+        "trajectory": "normal",
+        "deviation_pct": 1.56
+      }
+    },
+    {
+      "ticker": "XLV",
+      "date": "2025-09-11",
+      "close": 138.49,
+      "severity": "LOW",
+      "methods_flagged": 0,
+      "consensus_score": 0.5103,
       "description": "[Consensus] Anomalous activity detected",
       "details": {
-        "fourier_score": 0.0385,
-        "mp_score": 0.3834,
-        "ensemble_score": 0.5921,
-        "ewma_score": 0.8509,
+        "fourier_score": 0.8246,
+        "mp_score": 0.5016,
+        "ensemble_score": 0.4726,
+        "ewma_score": 0.313,
         "trajectory": "normal",
-        "deviation_pct": 4.16
+        "deviation_pct": 2.07
+      }
+    },
+    {
+      "ticker": "XLV",
+      "date": "2025-08-29",
+      "close": 136.22,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.508,
+      "description": "[Frequency Analysis] trading rhythm has shifted from historical pattern",
+      "details": {
+        "fourier_score": 0.8554,
+        "mp_score": 0.8441,
+        "ensemble_score": 0.237,
+        "ewma_score": 0.2189,
+        "trajectory": "normal",
+        "deviation_pct": 1.45
+      }
+    },
+    {
+      "ticker": "META",
+      "date": "2025-10-31",
+      "close": 647.82,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5077,
+      "description": "[Statistical Ensemble] flagged as statistical outlier; Decelerating \u2014 momentum fading",
+      "details": {
+        "fourier_score": 0.0932,
+        "mp_score": 0.5939,
+        "ensemble_score": 0.5612,
+        "ewma_score": 0.6888,
+        "trajectory": "decelerating",
+        "deviation_pct": -10.07
+      }
+    },
+    {
+      "ticker": "XLV",
+      "date": "2025-10-03",
+      "close": 144.21,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5075,
+      "description": "[Trend Analysis] price is 4.7% above its moving average",
+      "details": {
+        "fourier_score": 0.3304,
+        "mp_score": 0.4099,
+        "ensemble_score": 0.5434,
+        "ewma_score": 0.7039,
+        "trajectory": "normal",
+        "deviation_pct": 4.65
+      }
+    },
+    {
+      "ticker": "MSFT",
+      "date": "2026-01-21",
+      "close": 444.11,
+      "severity": "LOW",
+      "methods_flagged": 0,
+      "consensus_score": 0.5042,
+      "description": "[Consensus] Anomalous activity detected",
+      "details": {
+        "fourier_score": 0.6723,
+        "mp_score": 0.3901,
+        "ensemble_score": 0.5112,
+        "ewma_score": 0.4754,
+        "trajectory": "normal",
+        "deviation_pct": -5.56
+      }
+    },
+    {
+      "ticker": "TSLA",
+      "date": "2025-09-12",
+      "close": 395.94,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5024,
+      "description": "[Statistical Ensemble] flagged as statistical outlier; Accelerating \u2014 momentum building",
+      "details": {
+        "fourier_score": 0.1558,
+        "mp_score": 0.5983,
+        "ensemble_score": 0.6093,
+        "ewma_score": 0.5554,
+        "trajectory": "accelerating",
+        "deviation_pct": 14.2
+      }
+    },
+    {
+      "ticker": "XLV",
+      "date": "2025-11-21",
+      "close": 153.95,
+      "severity": "LOW",
+      "methods_flagged": 0,
+      "consensus_score": 0.499,
+      "description": "[Consensus] Anomalous activity detected",
+      "details": {
+        "fourier_score": 0.365,
+        "mp_score": 0.6442,
+        "ensemble_score": 0.4339,
+        "ewma_score": 0.539,
+        "trajectory": "normal",
+        "deviation_pct": 3.56
       }
     }
   ]
