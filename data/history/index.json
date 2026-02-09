@@ -1,12 +1,12 @@
 [
   {
     "run_date": "2026-02-09",
-    "tickers_analyzed": 5,
-    "total_observations": 615,
-    "anomalies_detected": 16,
+    "tickers_analyzed": 20,
+    "total_observations": 1200,
+    "anomalies_detected": 30,
     "critical_alerts": 0,
     "high_alerts": 1,
-    "sensitivity": "medium",
-    "lookback_days": 180
+    "sensitivity": "low",
+    "lookback_days": 90
   }
 ]

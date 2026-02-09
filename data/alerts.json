@@ -1,22 +1,56 @@
 {
-  "generated_at": "2026-02-09T18:16:25.273275Z",
-  "total_alerts": 6,
+  "generated_at": "2026-02-09T18:19:34.159447Z",
+  "total_alerts": 16,
   "alerts": [
     {
-      "ticker": "MSFT",
-      "date": "2026-02-05",
-      "close": 393.67,
+      "ticker": "BAC",
+      "date": "2026-01-14",
+      "close": 52.48,
       "severity": "HIGH",
       "methods_flagged": 3,
-      "consensus_score": 0.6302,
-      "description": "Price is 11.7% below its moving average. Trading rhythm has changed structurally. multiple statistical tests confirm unusual behavior. 3 of 4 detection methods flagged this.",
+      "consensus_score": 0.6755,
+      "description": "Price is 4.7% below its moving average. Recent price pattern has no historical match. multiple statistical tests confirm unusual behavior. 3 of 4 detection methods flagged this.",
       "details": {
-        "fourier_score": 0.2746,
-        "mp_score": 0.387,
-        "ensemble_score": 0.7618,
+        "fourier_score": 0.0,
+        "mp_score": 1.0,
+        "ensemble_score": 0.585,
         "ewma_score": 1.0,
         "trajectory": "normal",
-        "deviation_pct": -11.69
+        "deviation_pct": -4.72
+      }
+    },
+    {
+      "ticker": "AMZN",
+      "date": "2026-02-06",
+      "close": 210.32,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.572,
+      "description": "Price is 10.2% below its moving average and momentum is fading. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.5678,
+        "ensemble_score": 0.6,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -10.17
+      }
+    },
+    {
+      "ticker": "META",
+      "date": "2026-01-29",
+      "close": 738.31,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5648,
+      "description": "Price is 12.5% above its moving average. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.5391,
+        "ensemble_score": 0.6,
+        "ewma_score": 1.0,
+        "trajectory": "normal",
+        "deviation_pct": 12.49
       }
     },
     {
@@ -25,83 +59,219 @@
       "close": 246.7,
       "severity": "MODERATE",
       "methods_flagged": 2,
-      "consensus_score": 0.5959,
-      "description": "Price is 6.2% below its moving average. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
+      "consensus_score": 0.5449,
+      "description": "Price is 6.3% below its moving average. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
       "details": {
-        "fourier_score": 0.0472,
-        "mp_score": 0.4623,
-        "ensemble_score": 0.9052,
-        "ewma_score": 0.7972,
-        "trajectory": "normal",
-        "deviation_pct": -6.24
-      }
-    },
-    {
-      "ticker": "MSFT",
-      "date": "2026-02-06",
-      "close": 401.14,
-      "severity": "MODERATE",
-      "methods_flagged": 2,
-      "consensus_score": 0.5865,
-      "description": "Price is 9.2% below its moving average. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
-      "details": {
-        "fourier_score": 0.2523,
-        "mp_score": 0.3156,
-        "ensemble_score": 0.8715,
-        "ewma_score": 0.7826,
-        "trajectory": "normal",
-        "deviation_pct": -9.15
-      }
-    },
-    {
-      "ticker": "SPY",
-      "date": "2025-11-20",
-      "close": 650.61,
-      "severity": "MODERATE",
-      "methods_flagged": 2,
-      "consensus_score": 0.5737,
-      "description": "Price is 2.6% below its moving average. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
-      "details": {
-        "fourier_score": 0.0583,
-        "mp_score": 0.4357,
-        "ensemble_score": 0.6771,
+        "fourier_score": 0.0,
+        "mp_score": 0.4595,
+        "ensemble_score": 0.6,
         "ewma_score": 1.0,
         "trajectory": "normal",
-        "deviation_pct": -2.65
+        "deviation_pct": -6.28
+      }
+    },
+    {
+      "ticker": "IWM",
+      "date": "2026-02-06",
+      "close": 265.02,
+      "severity": "MODERATE",
+      "methods_flagged": 2,
+      "consensus_score": 0.5175,
+      "description": "Price is 1.5% above its moving average. Recent price pattern has no historical match. multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 1.0,
+        "ensemble_score": 0.6,
+        "ewma_score": 0.3499,
+        "trajectory": "normal",
+        "deviation_pct": 1.49
+      }
+    },
+    {
+      "ticker": "TLT",
+      "date": "2026-01-20",
+      "close": 86.32,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5845,
+      "description": "Price is 1.2% below its moving average. Multiple statistical tests confirm unusual behavior.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.9024,
+        "ensemble_score": 0.5291,
+        "ewma_score": 0.8009,
+        "trajectory": "normal",
+        "deviation_pct": -1.2
+      }
+    },
+    {
+      "ticker": "GS",
+      "date": "2026-01-15",
+      "close": 975.86,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.566,
+      "description": "Price is 6.1% above its moving average. Multiple statistical tests confirm unusual behavior.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.8576,
+        "ensemble_score": 0.6,
+        "ewma_score": 0.6862,
+        "trajectory": "normal",
+        "deviation_pct": 6.11
+      }
+    },
+    {
+      "ticker": "XLF",
+      "date": "2026-01-20",
+      "close": 53.2,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5491,
+      "description": "Price is 2.7% below its moving average. Multiple statistical tests confirm unusual behavior.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.6361,
+        "ensemble_score": 0.5618,
+        "ewma_score": 0.8862,
+        "trajectory": "normal",
+        "deviation_pct": -2.73
+      }
+    },
+    {
+      "ticker": "QQQ",
+      "date": "2026-02-05",
+      "close": 597.03,
+      "severity": "LOW",
+      "methods_flagged": 0,
+      "consensus_score": 0.545,
+      "description": "Price is 3.5% below its moving average.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.6741,
+        "ensemble_score": 0.5626,
+        "ewma_score": 0.8308,
+        "trajectory": "normal",
+        "deviation_pct": -3.5
+      }
+    },
+    {
+      "ticker": "DIA",
+      "date": "2026-02-06",
+      "close": 501.03,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.541,
+      "description": "Price is 1.9% above its moving average. Multiple statistical tests confirm unusual behavior.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.8307,
+        "ensemble_score": 0.6,
+        "ewma_score": 0.6133,
+        "trajectory": "normal",
+        "deviation_pct": 1.92
+      }
+    },
+    {
+      "ticker": "TSLA",
+      "date": "2026-01-20",
+      "close": 419.25,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5353,
+      "description": "Price is 5.7% below its moving average. Multiple statistical tests confirm unusual behavior.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.8387,
+        "ensemble_score": 0.6,
+        "ewma_score": 0.5824,
+        "trajectory": "normal",
+        "deviation_pct": -5.74
+      }
+    },
+    {
+      "ticker": "BAC",
+      "date": "2026-02-06",
+      "close": 56.53,
+      "severity": "LOW",
+      "methods_flagged": 0,
+      "consensus_score": 0.5159,
+      "description": "Price is 4.6% above its moving average.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.4306,
+        "ensemble_score": 0.5485,
+        "ewma_score": 0.9748,
+        "trajectory": "normal",
+        "deviation_pct": 4.61
+      }
+    },
+    {
+      "ticker": "XLK",
+      "date": "2026-02-05",
+      "close": 135.63,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5048,
+      "description": "Price is 5.6% below its moving average.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.4884,
+        "ensemble_score": 0.4422,
+        "ewma_score": 1.0,
+        "trajectory": "normal",
+        "deviation_pct": -5.62
+      }
+    },
+    {
+      "ticker": "XLE",
+      "date": "2025-12-16",
+      "close": 43.44,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.492,
+      "description": "Price is 3.4% below its moving average. Multiple statistical tests confirm unusual behavior.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.9354,
+        "ensemble_score": 0.4872,
+        "ewma_score": 0.4479,
+        "trajectory": "normal",
+        "deviation_pct": -3.39
       }
     },
     {
       "ticker": "JPM",
-      "date": "2026-01-06",
-      "close": 334.61,
-      "severity": "MODERATE",
-      "methods_flagged": 2,
-      "consensus_score": 0.5412,
-      "description": "Price is 4.3% above its moving average. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
+      "date": "2026-01-20",
+      "close": 302.74,
+      "severity": "LOW",
+      "methods_flagged": 0,
+      "consensus_score": 0.4709,
+      "description": "Price is 4.6% below its moving average.",
       "details": {
-        "fourier_score": 0.0582,
-        "mp_score": 0.3435,
-        "ensemble_score": 0.7427,
-        "ewma_score": 0.8834,
+        "fourier_score": 0.0,
+        "mp_score": 0.4934,
+        "ensemble_score": 0.3785,
+        "ewma_score": 0.9362,
         "trajectory": "normal",
-        "deviation_pct": 4.32
+        "deviation_pct": -4.59
       }
     },
     {
-      "ticker": "NVDA",
-      "date": "2025-10-29",
-      "close": 207.03,
+      "ticker": "MSFT",
+      "date": "2026-01-29",
+      "close": 433.5,
       "severity": "LOW",
-      "methods_flagged": 1,
-      "consensus_score": 0.512,
-      "description": "Price is 10.5% above its moving average and momentum is building.",
+      "methods_flagged": 0,
+      "consensus_score": 0.4641,
+      "description": "Price is 7.2% below its moving average.",
       "details": {
         "fourier_score": 0.0,
-        "mp_score": 0.488,
-        "ensemble_score": 0.4668,
-        "ewma_score": 1.0,
-        "trajectory": "accelerating",
-        "deviation_pct": 10.49
+        "mp_score": 0.6254,
+        "ensemble_score": 0.5125,
+        "ewma_score": 0.616,
+        "trajectory": "normal",
+        "deviation_pct": -7.2
       }
     }
   ]
