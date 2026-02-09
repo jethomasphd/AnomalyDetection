@@ -1,36 +1,38 @@
-# Stock Anomaly Detection
+# RG Anomaly Detection Suite
 
-**Author:** Jacob E. Thomas, PhD
+**Author:** Jacob E. Thomas, PhD | Results Generation
 
-A general-purpose anomaly detection system for stock market data. Runs four independent statistical methods against Yahoo Finance tickers, translates anomalies into **actionable trading signals** (Buy, Sell, Long, Short), and publishes an interactive dashboard to GitHub Pages — automatically, every trading day.
+An in-house anomaly detection system applied to securities adjacent to recruitment marketing, advertising platforms, AI infrastructure, and market benchmarks. Four independent statistical methods analyze each ticker daily, identify anomalous behavior, and translate it into **actionable trading signals** — Buy, Sell, Long, Short, Reduce, or Watch.
 
-Built for decision-makers who need clear, actionable intelligence without deep statistical expertise.
+Built for decision-makers who need clear, actionable intelligence without deep statistical expertise. Updated automatically every trading day.
+
+**[View the live dashboard](https://jethomasphd.github.io/AnomalyDetection/)**  |  **[Read the User Manual](USERMANUAL.md)**
 
 ---
 
-## What it does
+## How it works
 
-Each ticker is analyzed by four independent detection algorithms. When anomalies are detected, the system derives a trading signal based on how far price has deviated from its trend and which direction momentum is heading.
+Four detection methods run independently against each ticker. When multiple methods flag the same date, the system derives a signal based on price deviation and momentum trajectory.
 
-| Method | What it answers |
-|--------|----------------|
+| Method | The question it answers |
+|--------|------------------------|
 | **Fourier Transform** | Has the *rhythm* of this stock changed? |
-| **Matrix Profile** | Is this stock doing something it's *never done before*? |
+| **Matrix Profile (STUMPY)** | Is this stock doing something it's *never done before*? |
 | **Statistical Ensemble** | Do Z-scores, seasonal decomposition, and Isolation Forest all agree? |
-| **EWMA Trend** | Is this stock's *momentum* abnormal? |
+| **EWMA Trend Analysis** | Is this stock's *momentum* abnormal? |
 
-| Signal | Meaning |
-|--------|---------|
-| **Buy** | Oversold — price is far below trend, selling pressure fading. Mean-reversion opportunity. |
-| **Sell** | Overbought — price is far above trend, buying pressure fading. Consider taking profits. |
-| **Long** | Upward momentum accelerating — trend-following opportunity. |
-| **Short** | Downward momentum accelerating — consider protective positions. |
-| **Reduce** | Regime change detected — reduce exposure until new pattern clarifies. |
-| **Watch** | Anomaly detected, awaiting confirmation before acting. |
+## Signals
 
----
+| Signal | When it fires | What to do |
+|--------|---------------|------------|
+| **Buy** | Oversold + selling pressure fading | Mean-reversion long targeting the moving average |
+| **Sell** | Overbought + buying pressure fading | Take profits or tighten stops |
+| **Long** | Accelerating upward momentum | Ride the trend with a trailing stop |
+| **Short** | Accelerating downward momentum | Protective positions or short exposure |
+| **Reduce** | Structural regime change | Cut position size until the new pattern clarifies |
+| **Watch** | Anomaly detected, direction unclear | Monitor for follow-through |
 
-## Default watchlist
+## Watchlist
 
 | Sector | Tickers |
 |--------|---------|
@@ -45,10 +47,14 @@ Each ticker is analyzed by four independent detection algorithms. When anomalies
 
 ```bash
 pip install -r requirements.txt
-
-# Run with defaults (11 tickers, medium sensitivity)
 python -m anomaly_detection
+```
 
+The dashboard opens at `docs/index.html`. Signal data is written to `data/alerts.json`.
+
+For custom runs:
+
+```bash
 # Specific tickers
 python -m anomaly_detection --tickers "AAPL,MSFT,GOOGL,TSLA"
 
@@ -56,19 +62,11 @@ python -m anomaly_detection --tickers "AAPL,MSFT,GOOGL,TSLA"
 python -m anomaly_detection --sensitivity high --lookback 180
 ```
 
-Results:
-- **`docs/index.html`** — interactive dashboard (open in browser)
-- **`data/alerts.json`** — structured signal data
+## Automated runs
 
----
+GitHub Actions runs the full pipeline every weekday at 6:00 PM UTC (after US market close), commits results, and deploys the dashboard to GitHub Pages.
 
-## Automated runs (GitHub Actions)
-
-The included workflow runs every weekday at 6:00 PM UTC (after US market close), commits results, and deploys the dashboard to GitHub Pages.
-
-**Setup:** In repo settings, go to Pages > Source > select **GitHub Actions**.
-
-Manual trigger: Actions > Stock Anomaly Detection > Run workflow.
+**Setup:** Repo settings > Pages > Source > **GitHub Actions**.
 
 ---
 
@@ -76,44 +74,29 @@ Manual trigger: Actions > Stock Anomaly Detection > Run workflow.
 
 ```
 anomaly_detection/
-  config.py              # All tunable parameters + ticker names
+  config.py              # Tickers, names, sectors, all tunable parameters
   data_fetch.py          # Yahoo Finance API + feature engineering
   pipeline.py            # 5-stage orchestration
-  alerts.py              # Trading signal derivation
+  alerts.py              # Signal derivation (Buy/Sell/Long/Short/Reduce/Watch)
   detection/
-    engine.py            # Runs all 4 methods, computes consensus
+    engine.py            # Consensus scoring across all 4 methods
     fourier.py           # Frequency-domain structural change
     matrix_profile.py    # STUMPY novelty detection
-    ensemble.py          # Z-score + seasonal + Isolation Forest
-    ewma.py              # Trend deviation + trajectory
+    ensemble.py          # Z-score + seasonal decomposition + Isolation Forest
+    ewma.py              # Trend deviation + trajectory classification
   visualization/
-    charts.py            # Plotly chart generation
-    dashboard.py         # Jinja2 HTML renderer
+    charts.py            # Plotly interactive charts
+    dashboard.py         # Jinja2 HTML rendering
     templates/
-      dashboard.html     # GitHub Pages template
-data/
-  alerts.json            # Latest trading signals
-docs/
-  index.html             # Dashboard (GitHub Pages)
+      dashboard.html     # Dashboard template (GitHub Pages)
 ```
 
 ---
 
-## Configuration
+## Provenance
 
-Edit `anomaly_detection/config.py` or pass CLI flags:
-
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `DEFAULT_TICKERS` | 11 tickers | Staffing, benchmarks, ad platforms, AI infra |
-| `--sensitivity` | medium | low (99.5%ile) / medium (97.5%ile) / high (95%ile) |
-| `--lookback` | 365 | Days of historical data |
-| `METHOD_WEIGHTS` | Ensemble 30%, MP 25%, EWMA 25%, Fourier 20% | Consensus score weighting |
-
-Works with any Yahoo Finance symbol: US equities, ETFs, crypto (BTC-USD), indices (^GSPC).
+Adapts the four-method anomaly detection architecture originally developed for CPM monitoring in recruitment marketing campaigns, re-engineered for general-purpose securities surveillance. See the [User Manual](USERMANUAL.md) for full technical details, configuration reference, and signal derivation logic.
 
 ---
 
-## Derived from
-
-Adapts the four-method detection architecture from a CPM anomaly detection system built for recruitment marketing (see `CPM_ANOMALY_DETECTION_SPEC (1).md`), re-engineered for general-purpose stock market surveillance with actionable trading signals.
+*Results Generation — Jacob E. Thomas, PhD*
