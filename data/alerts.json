@@ -1,226 +1,175 @@
 {
-  "generated_at": "2026-02-09T18:46:45.314915Z",
-  "total_alerts": 13,
+  "generated_at": "2026-02-09T18:50:51.047700Z",
+  "total_alerts": 10,
   "alerts": [
-    {
-      "ticker": "MSFT",
-      "date": "2026-02-05",
-      "close": 393.67,
-      "severity": "HIGH",
-      "methods_flagged": 3,
-      "consensus_score": 0.7265,
-      "description": "Price is 11.7% below its moving average. Trading rhythm has changed structurally. Multiple statistical tests confirm unusual behavior. 3 of 4 detection methods flagged this.",
-      "details": {
-        "fourier_score": 0.9461,
-        "mp_score": 0.371,
-        "ensemble_score": 0.6486,
-        "ewma_score": 1.0,
-        "trajectory": "normal",
-        "deviation_pct": -11.69
-      }
-    },
-    {
-      "ticker": "MSFT",
-      "date": "2026-02-06",
-      "close": 401.14,
-      "severity": "HIGH",
-      "methods_flagged": 3,
-      "consensus_score": 0.678,
-      "description": "Price is 9.2% below its moving average. Trading rhythm has changed structurally. Multiple statistical tests confirm unusual behavior. 3 of 4 detection methods flagged this.",
-      "details": {
-        "fourier_score": 0.9041,
-        "mp_score": 0.3158,
-        "ensemble_score": 0.7419,
-        "ewma_score": 0.7826,
-        "trajectory": "normal",
-        "deviation_pct": -9.15
-      }
-    },
-    {
-      "ticker": "ZIP",
-      "date": "2026-02-05",
-      "close": 1.92,
-      "severity": "HIGH",
-      "methods_flagged": 3,
-      "consensus_score": 0.6244,
-      "description": "Price is 29.3% below its moving average and momentum is fading. Trading rhythm has changed structurally. Multiple statistical tests confirm unusual behavior. 3 of 4 detection methods flagged this.",
-      "details": {
-        "fourier_score": 0.6213,
-        "mp_score": 0.2995,
-        "ensemble_score": 0.5843,
-        "ewma_score": 1.0,
-        "trajectory": "decelerating",
-        "deviation_pct": -29.3
-      }
-    },
     {
       "ticker": "META",
       "date": "2026-01-29",
       "close": 738.31,
       "severity": "MODERATE",
       "methods_flagged": 2,
-      "consensus_score": 0.5766,
-      "description": "Price is 12.4% above its moving average. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
-      "details": {
-        "fourier_score": 0.0789,
-        "mp_score": 0.3355,
-        "ensemble_score": 0.8802,
-        "ewma_score": 0.8516,
-        "trajectory": "normal",
-        "deviation_pct": 12.45
-      }
-    },
-    {
-      "ticker": "ZIP",
-      "date": "2026-02-06",
-      "close": 2.11,
-      "severity": "MODERATE",
-      "methods_flagged": 2,
-      "consensus_score": 0.552,
-      "description": "Price is 20.6% below its moving average. Trading rhythm has changed structurally. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
-      "details": {
-        "fourier_score": 0.6798,
-        "mp_score": 0.3217,
-        "ensemble_score": 0.5325,
-        "ewma_score": 0.7037,
-        "trajectory": "normal",
-        "deviation_pct": -20.62
-      }
-    },
-    {
-      "ticker": "^GSPC",
-      "date": "2025-04-08",
-      "close": 4982.77,
-      "severity": "MODERATE",
-      "methods_flagged": 2,
-      "consensus_score": 0.5206,
-      "description": "Price is 9.6% below its moving average and momentum is fading. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
+      "consensus_score": 0.5648,
+      "description": "Price is 12.5% above its moving average. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
       "details": {
         "fourier_score": 0.0,
-        "mp_score": 0.506,
-        "ensemble_score": 0.4904,
-        "ewma_score": 0.9879,
-        "trajectory": "decelerating",
-        "deviation_pct": -9.55
+        "mp_score": 0.5391,
+        "ensemble_score": 0.6,
+        "ewma_score": 1.0,
+        "trajectory": "normal",
+        "deviation_pct": 12.49
       }
     },
     {
       "ticker": "MAN",
-      "date": "2026-02-02",
-      "close": 36.68,
+      "date": "2026-01-30",
+      "close": 36.33,
       "severity": "MODERATE",
       "methods_flagged": 2,
-      "consensus_score": 0.5032,
-      "description": "Price is 16.4% above its moving average and momentum is building. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
+      "consensus_score": 0.5122,
+      "description": "Price is 17.4% above its moving average and momentum is building. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
       "details": {
-        "fourier_score": 0.2303,
-        "mp_score": 0.4886,
-        "ensemble_score": 0.5376,
-        "ewma_score": 0.6948,
+        "fourier_score": 0.0,
+        "mp_score": 0.5243,
+        "ensemble_score": 0.4372,
+        "ewma_score": 1.0,
         "trajectory": "accelerating",
-        "deviation_pct": 16.4
-      }
-    },
-    {
-      "ticker": "TTD",
-      "date": "2025-12-09",
-      "close": 39.4,
-      "severity": "MODERATE",
-      "methods_flagged": 2,
-      "consensus_score": 0.407,
-      "description": "Price is 3.8% below its moving average. Trading rhythm has changed structurally. Recent price pattern has no historical match. 2 of 4 detection methods flagged this.",
-      "details": {
-        "fourier_score": 0.4418,
-        "mp_score": 0.9608,
-        "ensemble_score": 0.1747,
-        "ewma_score": 0.1039,
-        "trajectory": "normal",
-        "deviation_pct": -3.81
-      }
-    },
-    {
-      "ticker": "NVDA",
-      "date": "2026-02-06",
-      "close": 185.41,
-      "severity": "MODERATE",
-      "methods_flagged": 2,
-      "consensus_score": 0.3781,
-      "description": "Trading rhythm has changed structurally. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
-      "details": {
-        "fourier_score": 0.6128,
-        "mp_score": 0.364,
-        "ensemble_score": 0.5099,
-        "ewma_score": 0.0463,
-        "trajectory": "normal",
-        "deviation_pct": 0.76
-      }
-    },
-    {
-      "ticker": "GOOGL",
-      "date": "2026-02-06",
-      "close": 322.86,
-      "severity": "MODERATE",
-      "methods_flagged": 2,
-      "consensus_score": 0.354,
-      "description": "Price is 2.3% below its moving average. Trading rhythm has changed structurally. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
-      "details": {
-        "fourier_score": 0.4723,
-        "mp_score": 0.2603,
-        "ensemble_score": 0.4915,
-        "ewma_score": 0.1881,
-        "trajectory": "normal",
-        "deviation_pct": -2.3
-      }
-    },
-    {
-      "ticker": "ASGN",
-      "date": "2026-01-21",
-      "close": 51.05,
-      "severity": "LOW",
-      "methods_flagged": 0,
-      "consensus_score": 0.4821,
-      "description": "Price is 4.0% above its moving average.",
-      "details": {
-        "fourier_score": 0.2051,
-        "mp_score": 0.8918,
-        "ensemble_score": 0.4766,
-        "ewma_score": 0.3008,
-        "trajectory": "normal",
-        "deviation_pct": 4.05
+        "deviation_pct": 17.35
       }
     },
     {
       "ticker": "^NDX",
-      "date": "2025-09-30",
-      "close": 24679.99,
+      "date": "2026-02-05",
+      "close": 24548.69,
       "severity": "LOW",
-      "methods_flagged": 1,
-      "consensus_score": 0.4709,
-      "description": "Price is 1.7% above its moving average. Recent price pattern has no historical match.",
+      "methods_flagged": 0,
+      "consensus_score": 0.5372,
+      "description": "Price is 3.5% below its moving average.",
       "details": {
-        "fourier_score": 0.3783,
-        "mp_score": 1.0,
-        "ensemble_score": 0.3508,
-        "ewma_score": 0.1597,
+        "fourier_score": 0.0,
+        "mp_score": 0.6625,
+        "ensemble_score": 0.555,
+        "ewma_score": 0.8204,
         "trajectory": "normal",
-        "deviation_pct": 1.74
+        "deviation_pct": -3.47
       }
     },
     {
       "ticker": "KELYA",
-      "date": "2025-11-20",
-      "close": 8.08,
+      "date": "2026-02-02",
+      "close": 11.19,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.5061,
+      "description": "Price is 12.0% above its moving average and momentum is building. Multiple statistical tests confirm unusual behavior.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.4754,
+        "ensemble_score": 0.5273,
+        "ewma_score": 0.9162,
+        "trajectory": "accelerating",
+        "deviation_pct": 12.03
+      }
+    },
+    {
+      "ticker": "TTD",
+      "date": "2026-02-06",
+      "close": 27.04,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.4723,
+      "description": "Price is 15.4% below its moving average. Multiple statistical tests confirm unusual behavior.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.3786,
+        "ensemble_score": 0.6,
+        "ewma_score": 0.7906,
+        "trajectory": "normal",
+        "deviation_pct": -15.39
+      }
+    },
+    {
+      "ticker": "MSFT",
+      "date": "2026-01-29",
+      "close": 433.5,
       "severity": "LOW",
       "methods_flagged": 0,
-      "consensus_score": 0.4659,
-      "description": "Price is 16.3% below its moving average.",
+      "consensus_score": 0.4641,
+      "description": "Price is 7.2% below its moving average.",
       "details": {
-        "fourier_score": 0.0546,
-        "mp_score": 0.482,
-        "ensemble_score": 0.4865,
-        "ewma_score": 0.7543,
+        "fourier_score": 0.0,
+        "mp_score": 0.6254,
+        "ensemble_score": 0.5125,
+        "ewma_score": 0.616,
         "trajectory": "normal",
-        "deviation_pct": -16.32
+        "deviation_pct": -7.2
+      }
+    },
+    {
+      "ticker": "ASGN",
+      "date": "2026-02-04",
+      "close": 53.28,
+      "severity": "LOW",
+      "methods_flagged": 0,
+      "consensus_score": 0.4611,
+      "description": "Price is 5.4% above its moving average.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.6133,
+        "ensemble_score": 0.4392,
+        "ewma_score": 0.7042,
+        "trajectory": "normal",
+        "deviation_pct": 5.42
+      }
+    },
+    {
+      "ticker": "^GSPC",
+      "date": "2026-01-20",
+      "close": 6796.86,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.4565,
+      "description": "Price is 1.5% below its moving average. Multiple statistical tests confirm unusual behavior.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.6618,
+        "ensemble_score": 0.5865,
+        "ewma_score": 0.4606,
+        "trajectory": "normal",
+        "deviation_pct": -1.48
+      }
+    },
+    {
+      "ticker": "NVDA",
+      "date": "2026-02-05",
+      "close": 171.88,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.4553,
+      "description": "Price is 6.5% below its moving average and momentum is fading.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.4442,
+        "ensemble_score": 0.3142,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -6.51
+      }
+    },
+    {
+      "ticker": "GOOGL",
+      "date": "2025-12-17",
+      "close": 296.72,
+      "severity": "LOW",
+      "methods_flagged": 1,
+      "consensus_score": 0.4472,
+      "description": "Price is 3.7% below its moving average. Multiple statistical tests confirm unusual behavior.",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.8208,
+        "ensemble_score": 0.4857,
+        "ewma_score": 0.3851,
+        "trajectory": "normal",
+        "deviation_pct": -3.69
       }
     }
   ]
