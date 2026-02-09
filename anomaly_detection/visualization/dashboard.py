@@ -9,7 +9,15 @@ import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
 from ..config import DOCS_DIR
-from .charts import history_chart, scoreboard_chart, ticker_chart
+from .charts import (
+    history_chart,
+    method_ensemble_chart,
+    method_ewma_chart,
+    method_fourier_chart,
+    method_mp_chart,
+    scoreboard_chart,
+    ticker_chart,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -32,11 +40,18 @@ def generate_dashboard(
     anomaly_tickers = {a["ticker"] for a in alerts} if alerts else set()
     history_data = history_data or []
 
-    # Per-ticker charts
+    # Per-ticker main charts + method detail charts
     ticker_charts = {}
+    method_charts = {}
     for ticker in tickers:
         df_t = results[results["Ticker"] == ticker]
         ticker_charts[ticker] = json.loads(ticker_chart(df_t, ticker))
+        method_charts[ticker] = {
+            "fourier": json.loads(method_fourier_chart(df_t, ticker)),
+            "matrix_profile": json.loads(method_mp_chart(df_t, ticker)),
+            "ensemble": json.loads(method_ensemble_chart(df_t, ticker)),
+            "ewma": json.loads(method_ewma_chart(df_t, ticker)),
+        }
 
     # Summary charts
     scoreboard_json = scoreboard_chart(results)
@@ -62,6 +77,7 @@ def generate_dashboard(
         anomaly_tickers=anomaly_tickers,
         has_history=len(history_data) > 1,
         ticker_charts_json=json.dumps(ticker_charts),
+        method_charts_json=json.dumps(method_charts),
         scoreboard_json=scoreboard_json,
         history_json=history_json,
     )

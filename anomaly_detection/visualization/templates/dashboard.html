@@ -30,28 +30,17 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- Header --- */
         .header {
             background: linear-gradient(135deg, #0D1B2A 0%, #1B2838 100%);
             color: white;
             padding: 2.5rem 2rem 2rem;
         }
         .header-inner { max-width: 1300px; margin: 0 auto; }
-        .header h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-        }
-        .header .subtitle {
-            color: rgba(255,255,255,0.6);
-            font-size: 0.85rem;
-            margin-top: 0.25rem;
-        }
+        .header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; }
+        .header .subtitle { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.25rem; }
 
-        /* --- Container --- */
         .container { max-width: 1300px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
 
-        /* --- Stat row --- */
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -70,7 +59,6 @@
         .stat.orange .num { color: var(--orange); }
         .stat.blue .num { color: var(--blue); }
 
-        /* --- Cards --- */
         .card {
             background: var(--surface);
             border-radius: var(--radius);
@@ -87,32 +75,21 @@
         .card-body { padding: 1rem 1.25rem; }
         .card-body.flush { padding: 0; }
 
-        /* --- Two column layout --- */
         .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
         @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
 
-        /* --- Alert table --- */
         .tbl { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         .tbl th {
-            text-align: left;
-            padding: 0.6rem 1rem;
-            background: var(--bg);
-            font-weight: 600;
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--muted);
+            text-align: left; padding: 0.6rem 1rem; background: var(--bg);
+            font-weight: 600; font-size: 0.7rem; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--muted);
         }
         .tbl td { padding: 0.65rem 1rem; border-top: 1px solid var(--border); vertical-align: top; }
         .tbl tr:hover { background: #F9FAFB; }
 
         .pill {
-            display: inline-block;
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            letter-spacing: 0.03em;
+            display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px;
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.03em;
         }
         .pill-critical { background: #FFEBEE; color: var(--red); }
         .pill-high { background: #FFF3E0; color: var(--orange); }
@@ -120,53 +97,59 @@
         .pill-low { background: #E3F2FD; color: #1565C0; }
 
         .desc { font-size: 0.8rem; color: var(--muted); max-width: 380px; line-height: 1.4; }
-
         .dots { display: flex; gap: 3px; align-items: center; }
         .dot { width: 7px; height: 7px; border-radius: 50%; background: #E0E0E0; }
         .dot.on { background: var(--red); }
 
-        /* --- Ticker nav --- */
         .ticker-nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.35rem;
-            padding: 0.75rem 1.25rem;
-            border-bottom: 1px solid var(--border);
+            display: flex; flex-wrap: wrap; gap: 0.35rem;
+            padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border);
         }
         .tbtn {
-            padding: 0.3rem 0.7rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: var(--surface);
-            cursor: pointer;
-            font-size: 0.78rem;
-            font-weight: 500;
-            font-family: inherit;
-            transition: all 0.12s;
+            padding: 0.3rem 0.7rem; border: 1px solid var(--border); border-radius: 6px;
+            background: var(--surface); cursor: pointer; font-size: 0.78rem;
+            font-weight: 500; font-family: inherit; transition: all 0.12s;
         }
         .tbtn:hover { border-color: var(--blue); color: var(--blue); }
         .tbtn.active { background: var(--blue); color: white; border-color: var(--blue); }
         .tbtn.flagged { border-left: 3px solid var(--red); }
 
-        /* --- Methods explainer --- */
-        .methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0.75rem; }
-        .method {
-            padding: 1rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            background: var(--bg);
+        /* Method detail charts in deep dive */
+        .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        @media (max-width: 900px) { .method-grid { grid-template-columns: 1fr; } }
+        .method-panel {
+            border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
         }
-        .method h4 { font-size: 0.88rem; margin-bottom: 0.15rem; }
-        .method .q { color: var(--blue); font-style: italic; font-size: 0.8rem; margin-bottom: 0.35rem; }
-        .method p { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
+        .method-panel-head {
+            padding: 0.5rem 0.75rem; background: var(--bg);
+            font-size: 0.78rem; font-weight: 600; color: var(--muted);
+            border-bottom: 1px solid var(--border);
+        }
+        .method-panel-body { padding: 0.5rem; }
+
+        /* Technical deep dive section */
+        .tech-section { margin-top: 0.75rem; }
+        .tech-section h3 {
+            font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;
+            padding-top: 1rem; border-top: 1px solid var(--border);
+        }
+        .tech-section h3:first-child { border-top: none; padding-top: 0; }
+        .tech-section p, .tech-section li {
+            font-size: 0.82rem; color: var(--muted); line-height: 1.6;
+        }
+        .tech-section ul { margin: 0.4rem 0 0.8rem 1.2rem; }
+        .tech-section .formula {
+            font-family: 'Courier New', monospace; background: var(--bg);
+            padding: 0.5rem 0.75rem; border-radius: 6px; margin: 0.5rem 0;
+            font-size: 0.78rem; overflow-x: auto; border: 1px solid var(--border);
+        }
+        .tech-section .highlight {
+            color: var(--blue); font-weight: 500;
+        }
 
         .footer {
-            text-align: center;
-            padding: 1.5rem;
-            font-size: 0.75rem;
-            color: var(--muted);
+            text-align: center; padding: 1.5rem; font-size: 0.75rem; color: var(--muted);
         }
-
         .empty-msg { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.9rem; }
     </style>
 </head>
@@ -189,13 +172,11 @@
             <div class="stat"><div class="num">{{ n_runs }}</div><div class="lbl">Historical Runs</div></div>
         </div>
 
-        <!-- Scoreboard + History side-by-side -->
+        <!-- Scoreboard + History -->
         <div class="two-col">
             <div class="card">
                 <div class="card-head">Which tickers need attention?</div>
-                <div class="card-body">
-                    <div id="scoreboard-chart"></div>
-                </div>
+                <div class="card-body"><div id="scoreboard-chart"></div></div>
             </div>
             <div class="card">
                 <div class="card-head">Detection trend over time</div>
@@ -252,7 +233,7 @@
             </div>
         </div>
 
-        <!-- Per-ticker deep dive -->
+        <!-- Per-ticker deep dive with method charts -->
         <div class="card">
             <div class="card-head">Ticker Deep Dive</div>
             <div class="ticker-nav" id="ticker-nav">
@@ -263,42 +244,147 @@
             </div>
             <div class="card-body">
                 <div id="ticker-chart" style="min-height: 400px;"></div>
+                <div class="method-grid">
+                    <div class="method-panel">
+                        <div class="method-panel-head">Fourier Transform &mdash; "Has the rhythm changed?"</div>
+                        <div class="method-panel-body"><div id="method-fourier"></div></div>
+                    </div>
+                    <div class="method-panel">
+                        <div class="method-panel-head">Matrix Profile &mdash; "Never-before-seen pattern?"</div>
+                        <div class="method-panel-body"><div id="method-mp"></div></div>
+                    </div>
+                    <div class="method-panel">
+                        <div class="method-panel-head">Statistical Ensemble &mdash; "Do independent tests agree?"</div>
+                        <div class="method-panel-body"><div id="method-ensemble"></div></div>
+                    </div>
+                    <div class="method-panel">
+                        <div class="method-panel-head">EWMA Trend &mdash; "Is momentum abnormal?"</div>
+                        <div class="method-panel-body"><div id="method-ewma"></div></div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- How it works -->
+        <!-- How it works (summary) -->
         <div class="card">
             <div class="card-head">How detection works</div>
             <div class="card-body">
                 <p style="margin-bottom: 0.75rem; color: var(--muted); font-size: 0.85rem;">
-                    Four independent statistical methods analyze each stock. When multiple methods agree,
-                    confidence is high. Diamond markers on charts show where anomalies were detected.
+                    Four independent statistical methods analyze each stock every trading day. Each method looks for a
+                    different type of anomaly. When multiple methods independently flag the same day, we assign higher
+                    severity. Colored circles on the price chart mark flagged dates — red for high confidence, blue for single-method flags.
                 </p>
-                <div class="methods">
-                    <div class="method">
-                        <h4>Fourier Transform</h4>
-                        <div class="q">"Has the rhythm of this stock changed?"</div>
-                        <p>Decomposes price into frequency components. When the pattern
-                        shifts (e.g., choppy to trending), it flags a structural change.</p>
-                    </div>
-                    <div class="method">
-                        <h4>Matrix Profile</h4>
-                        <div class="q">"Is this stock doing something it's never done?"</div>
-                        <p>Searches all historical subsequences for a match. If no
-                        similar pattern exists, the behavior is truly novel.</p>
-                    </div>
-                    <div class="method">
-                        <h4>Statistical Ensemble</h4>
-                        <div class="q">"Do multiple stats tests agree it's unusual?"</div>
-                        <p>Combines Z-score outlier detection (40%), seasonal
-                        decomposition (30%), and Isolation Forest ML (30%).</p>
-                    </div>
-                    <div class="method">
-                        <h4>EWMA Trend</h4>
-                        <div class="q">"Is this stock's momentum abnormal?"</div>
-                        <p>Tracks deviation from the exponential moving average and
-                        classifies trajectory: normal, accelerating, decelerating, or breakout.</p>
-                    </div>
+                <p style="color: var(--muted); font-size: 0.85rem;">
+                    The <strong>consensus score</strong> is a weighted average of all four method scores (Ensemble 30%, Matrix Profile 25%,
+                    EWMA 25%, Fourier 20%). A day is flagged as anomalous when two or more methods agree, or when the
+                    consensus score exceeds the 97.5th percentile of its historical distribution.
+                </p>
+            </div>
+        </div>
+
+        <!-- Technical deep dive -->
+        <div class="card">
+            <div class="card-head">Technical Details</div>
+            <div class="card-body">
+                <div class="tech-section">
+
+                    <h3>1. Fourier Transform &mdash; Frequency-Domain Structural Change</h3>
+                    <p>
+                        Every stock has a characteristic "rhythm" — how its price oscillates over time. The Fourier Transform
+                        decomposes a price series into its constituent frequency components, revealing whether the stock is
+                        cycling at 5-day, 20-day, or 60-day intervals. When the energy distribution across these frequencies
+                        shifts significantly from the historical baseline, it signals a <span class="highlight">structural regime change</span>.
+                    </p>
+                    <p><strong>How it works:</strong></p>
+                    <ul>
+                        <li>Compute the full-history frequency spectrum as a baseline (top-5 frequency components by energy)</li>
+                        <li>Slide a 60-day window across the series and compute the local spectrum at each point</li>
+                        <li>Measure the symmetric KL divergence between the local and baseline spectra</li>
+                        <li>Flag dates where divergence exceeds the sensitivity percentile threshold</li>
+                    </ul>
+                    <div class="formula">D(local, baseline) = 0.5 &times; &Sigma; [ local &times; log(local/baseline) + baseline &times; log(baseline/local) ]</div>
+                    <p>
+                        <strong>What it catches:</strong> Transitions between mean-reverting and trending regimes, sudden changes
+                        in volatility structure, shifts from choppy trading to directional momentum. These are structural breaks
+                        that other point-estimate methods often miss.
+                    </p>
+
+                    <h3>2. Matrix Profile &mdash; Subsequence Novelty Detection</h3>
+                    <p>
+                        The Matrix Profile algorithm (powered by <span class="highlight">STUMPY</span>) answers a simple question:
+                        for every recent window of price action, what is the most similar historical window? If even the
+                        best historical match is poor, the current pattern is <span class="highlight">genuinely novel</span> —
+                        something the stock has never done before.
+                    </p>
+                    <p><strong>How it works:</strong></p>
+                    <ul>
+                        <li>Define a subsequence length (10 trading days by default)</li>
+                        <li>For each 10-day window, compute its Euclidean distance to every other 10-day window in the series</li>
+                        <li>Record the minimum distance (nearest-neighbor distance) — this is the Matrix Profile value</li>
+                        <li>Normalize all distances to [0, 1] and flag values above the sensitivity threshold</li>
+                    </ul>
+                    <p>
+                        <strong>What it catches:</strong> Unprecedented price patterns, breakouts into entirely new territory,
+                        earnings reactions that don't match any historical analog, and "first-time" moves that statistical
+                        methods calibrated on history may underweight.
+                    </p>
+
+                    <h3>3. Statistical Ensemble &mdash; Three Independent Tests</h3>
+                    <p>
+                        Rather than relying on any single statistical test, the ensemble combines three approaches with
+                        complementary strengths. Each component is normalized to [0, 1] and weighted:
+                    </p>
+                    <ul>
+                        <li><strong>Z-Score (40%):</strong> Rolling 60-day z-score of closing price. Measures how many standard
+                        deviations the current price is from its recent mean. Simple, interpretable, effective for sudden moves.</li>
+                        <li><strong>Seasonal Decomposition (30%):</strong> STL decomposition with a 5-day (weekly) period extracts
+                        trend, seasonal, and residual components. The magnitude of the residual — what's left after removing
+                        trend and seasonality — indicates unexplained behavior.</li>
+                        <li><strong>Isolation Forest (30%):</strong> A tree-based machine learning model that isolates outliers by
+                        randomly partitioning feature space. Operates on three features simultaneously (price level, daily return,
+                        20-day volatility), catching multivariate anomalies invisible to univariate methods.</li>
+                    </ul>
+                    <div class="formula">ensemble_score = 0.4 &times; zscore + 0.3 &times; seasonal_residual + 0.3 &times; isolation_forest</div>
+                    <p>
+                        <strong>What it catches:</strong> Statistical outliers, unusual price moves after controlling for seasonality,
+                        and multivariate outliers where the combination of price level, return, and volatility is unusual even when
+                        each individually might not be.
+                    </p>
+
+                    <h3>4. EWMA Trend Analysis &mdash; Momentum Deviation</h3>
+                    <p>
+                        The Exponentially Weighted Moving Average gives more weight to recent prices, creating a responsive
+                        trend line. The system measures how far price has deviated from this trend and classifies the
+                        <span class="highlight">trajectory</span> — not just the position, but the direction of change.
+                    </p>
+                    <p><strong>How it works:</strong></p>
+                    <ul>
+                        <li>Compute a 20-day EWMA (roughly one trading month) as the trend baseline</li>
+                        <li>Calculate deviation as a percentage: (price - EWMA) / EWMA</li>
+                        <li>Classify trajectory over a 5-day window using the slope of deviation:
+                            <strong>breakout</strong> (magnitude &gt; 80% of historical range),
+                            <strong>accelerating</strong> (slope &gt; 0.02),
+                            <strong>decelerating</strong> (slope &lt; -0.02),
+                            or <strong>normal</strong>
+                        </li>
+                        <li>Flag dates where normalized absolute deviation exceeds the sensitivity threshold</li>
+                    </ul>
+                    <p>
+                        <strong>What it catches:</strong> Overextended rallies or selloffs, momentum reversals, and stocks drifting
+                        persistently away from their trend. This is often the most immediately actionable signal for business users
+                        because it directly answers "how far from normal is this stock right now?"
+                    </p>
+
+                    <h3>Consensus Scoring</h3>
+                    <p>
+                        The four method scores are combined into a single <strong>consensus score</strong> using a weighted average.
+                        A day is flagged as anomalous if (a) two or more individual methods flag it, OR (b) the consensus score
+                        exceeds the 97.5th percentile of the full distribution. This dual-trigger approach balances sensitivity
+                        with specificity — method agreement provides high confidence, while the percentile threshold catches
+                        cases where multiple methods are elevated but none individually cross their threshold.
+                    </p>
+                    <div class="formula">consensus = 0.20 &times; fourier + 0.25 &times; matrix_profile + 0.30 &times; ensemble + 0.25 &times; ewma</div>
+
                 </div>
             </div>
         </div>
@@ -311,28 +397,35 @@
 
     <script>
         const tickerCharts = {{ ticker_charts_json }};
+        const methodCharts = {{ method_charts_json }};
         const scoreboardData = {{ scoreboard_json }};
         const historyData = {{ history_json }};
         const plotCfg = {responsive: true, displayModeBar: false};
 
-        // Scoreboard
         if (scoreboardData && scoreboardData.data) {
             Plotly.newPlot('scoreboard-chart', scoreboardData.data, scoreboardData.layout, plotCfg);
         }
-
-        // History
         const histEl = document.getElementById('history-chart');
         if (histEl && historyData && historyData.data) {
             Plotly.newPlot('history-chart', historyData.data, historyData.layout, plotCfg);
         }
 
-        // Ticker switching
         const tList = Object.keys(tickerCharts);
         if (tList.length > 0) showTicker(tList[0]);
 
         function showTicker(t, btn) {
             const d = tickerCharts[t];
             if (d) Plotly.newPlot('ticker-chart', d.data, d.layout, plotCfg);
+
+            // Render method detail charts for this ticker
+            const m = methodCharts[t];
+            if (m) {
+                if (m.fourier && m.fourier.data) Plotly.newPlot('method-fourier', m.fourier.data, m.fourier.layout, plotCfg);
+                if (m.matrix_profile && m.matrix_profile.data) Plotly.newPlot('method-mp', m.matrix_profile.data, m.matrix_profile.layout, plotCfg);
+                if (m.ensemble && m.ensemble.data) Plotly.newPlot('method-ensemble', m.ensemble.data, m.ensemble.layout, plotCfg);
+                if (m.ewma && m.ewma.data) Plotly.newPlot('method-ewma', m.ewma.data, m.ewma.layout, plotCfg);
+            }
+
             document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
             if (btn) { btn.classList.add('active'); }
             else { document.querySelectorAll('.tbtn').forEach(b => { if (b.textContent.trim() === t) b.classList.add('active'); }); }
