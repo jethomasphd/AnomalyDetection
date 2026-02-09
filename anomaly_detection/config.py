@@ -4,12 +4,10 @@ import os
 
 # --- Default Tickers ---
 DEFAULT_TICKERS = [
-    "SPY", "QQQ", "IWM", "DIA",       # Major index ETFs
-    "AAPL", "MSFT", "GOOGL", "AMZN",   # Big tech
-    "NVDA", "META", "TSLA",             # Growth / momentum
-    "JPM", "GS", "BAC",                 # Financials
-    "XLE", "XLF", "XLV", "XLK",        # Sector ETFs
-    "GLD", "TLT",                       # Macro indicators
+    "ZIP", "KELYA", "ASGN", "MAN",     # Staffing & recruitment
+    "^GSPC", "^NDX",                    # Market benchmarks
+    "TTD", "META", "GOOGL",             # Advertising / LLM-adjacent platforms
+    "NVDA", "MSFT",                     # AI infrastructure
 ]
 
 # --- Data Settings ---
