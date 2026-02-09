@@ -170,12 +170,12 @@
       "close": 322.86,
       "severity": "MODERATE",
       "methods_flagged": 2,
-      "consensus_score": 0.3539,
+      "consensus_score": 0.354,
       "description": "Price is 2.3% below its moving average. Trading rhythm has changed structurally. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
       "details": {
         "fourier_score": 0.4723,
         "mp_score": 0.2603,
-        "ensemble_score": 0.491,
+        "ensemble_score": 0.4915,
         "ewma_score": 0.1881,
         "trajectory": "normal",
         "deviation_pct": -2.3
