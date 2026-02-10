@@ -5,7 +5,8 @@ import os
 # --- Data Settings ---
 DEFAULT_DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data.csv")
 MIN_DATA_POINTS = 30
-MIN_DAILY_SENDS = 50  # Minimum average daily sends to include a domain
+MIN_DAILY_SENDS = 5000    # Minimum average daily sends to include a domain
+MIN_DAILY_CLICKS = 500    # Minimum average daily clicks to include a domain
 
 # --- Sensitivity Presets ---
 SENSITIVITY_PRESETS = {

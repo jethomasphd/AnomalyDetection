@@ -41,7 +41,12 @@ The system reads from `data.csv` in the `RGDelivery/` directory. This is Gmail d
 Before any analysis, the data is cleaned in two passes:
 
 1. **Row-level filter:** Any row with `Sent < 5000` is dropped. Low-volume sends produce noisy click data that distorts anomaly detection.
-2. **Domain-level filter:** A domain must have at least 30 days of data (after the row filter) and an average of at least 50 daily sends to be included in the analysis.
+2. **Domain-level filter:** A domain must meet all three criteria (after the row filter) to be included:
+   - At least **30 days** of data
+   - Average of at least **5,000 daily sends**
+   - Average of at least **500 daily clicks**
+
+   This focuses the analysis on high-volume, high-engagement domains where anomalies are operationally meaningful.
 
 ---
 
@@ -276,7 +281,8 @@ All parameters live in `email_anomaly/config.py`:
 |-----------|---------|------------------|
 | `DEFAULT_DATA_PATH` | `data.csv` | Path to the input CSV file |
 | `MIN_DATA_POINTS` | 30 | Minimum days of data for a domain to qualify |
-| `MIN_DAILY_SENDS` | 50 | Minimum average daily sends for a domain to qualify |
+| `MIN_DAILY_SENDS` | 5,000 | Minimum average daily sends for a domain to qualify |
+| `MIN_DAILY_CLICKS` | 500 | Minimum average daily clicks for a domain to qualify |
 | `DEFAULT_SENSITIVITY` | medium | Detection threshold — low / medium / high |
 | `METHOD_WEIGHTS` | MP 30%, Ensemble 30%, EWMA 25%, Fourier 15% | Consensus weighting |
 | `EWMA_SPAN` | 20 | EWMA lookback in days |
