@@ -35,6 +35,13 @@ def load_data(
 
     df["Date"] = pd.to_datetime(df["Date"])
 
+    # Drop rows where Sent < 5000 (low-volume sends are noise)
+    rows_before = len(df)
+    df = df[df["Sent"] >= 5000]
+    rows_dropped = rows_before - len(df)
+    if rows_dropped > 0:
+        logger.info("Dropped %d rows with Sent < 5000 (%d remaining)", rows_dropped, len(df))
+
     # Filter to specific domains if provided
     if domains:
         df = df[df["Domain"].isin(domains)]
