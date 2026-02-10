@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-10T17:12:22.055486Z",
+  "generated_at": "2026-02-10T19:17:31.299394Z",
   "total_signals": 50,
   "signals": [
     {
@@ -245,28 +245,6 @@
       }
     },
     {
-      "domain": "jobbravery.net",
-      "display": "jobbravery.net",
-      "date": "2026-02-10",
-      "clicks": 91,
-      "signal": "WARM",
-      "signal_label": "Warm",
-      "signal_color": "#00C853",
-      "confidence": "Strong",
-      "methods_flagged": 3,
-      "consensus_score": 0.8736,
-      "description": "jobbravery.net is clicking 52.2% below its 20-day moving average (190 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
-      "details": {
-        "fourier_score": 0.1573,
-        "mp_score": 1.0,
-        "ensemble_score": 1.0,
-        "ewma_score": 1.0,
-        "trajectory": "decelerating",
-        "deviation_pct": -52.2,
-        "ewma_value": 190.37
-      }
-    },
-    {
       "domain": "arrangedjobs.com",
       "display": "arrangedjobs.com",
       "date": "2026-02-10",
@@ -484,28 +462,6 @@
         "trajectory": "decelerating",
         "deviation_pct": -71.89,
         "ewma_value": 2490.59
-      }
-    },
-    {
-      "domain": "manyactivejobs.co.uk",
-      "display": "manyactivejobs.co.uk",
-      "date": "2026-02-10",
-      "clicks": 162,
-      "signal": "WARM",
-      "signal_label": "Warm",
-      "signal_color": "#00C853",
-      "confidence": "Strong",
-      "methods_flagged": 3,
-      "consensus_score": 0.8604,
-      "description": "manyactivejobs.co.uk is clicking 54.4% below its 20-day moving average (355 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
-      "details": {
-        "fourier_score": 0.2917,
-        "mp_score": 0.9785,
-        "ensemble_score": 1.0,
-        "ewma_score": 0.8924,
-        "trajectory": "decelerating",
-        "deviation_pct": -54.4,
-        "ewma_value": 355.24
       }
     },
     {
@@ -883,25 +839,25 @@
       }
     },
     {
-      "domain": "azurla.com",
-      "display": "azurla.com",
+      "domain": "jobsflagcareers.com",
+      "display": "jobsflagcareers.com",
       "date": "2026-02-10",
-      "clicks": 89,
+      "clicks": 879,
       "signal": "WARM",
       "signal_label": "Warm",
       "signal_color": "#00C853",
       "confidence": "Strong",
       "methods_flagged": 3,
-      "consensus_score": 0.8386,
-      "description": "azurla.com is clicking 70.6% below its 20-day moving average (302 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "consensus_score": 0.8362,
+      "description": "jobsflagcareers.com is clicking 57.8% below its 20-day moving average (2,081 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
       "details": {
-        "fourier_score": 0.0092,
-        "mp_score": 0.9574,
+        "fourier_score": 0.0219,
+        "mp_score": 0.9431,
         "ensemble_score": 1.0,
         "ewma_score": 1.0,
         "trajectory": "decelerating",
-        "deviation_pct": -70.56,
-        "ewma_value": 302.27
+        "deviation_pct": -57.76,
+        "ewma_value": 2080.79
       }
     },
     {
@@ -1100,6 +1056,50 @@
         "trajectory": "decelerating",
         "deviation_pct": -72.76,
         "ewma_value": 2107.03
+      }
+    },
+    {
+      "domain": "jobguide360.com",
+      "display": "jobguide360.com",
+      "date": "2026-02-10",
+      "clicks": 183,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.8361,
+      "description": "jobguide360.com is clicking 74.9% below its 20-day moving average (730 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.1362,
+        "mp_score": 0.8857,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -74.92,
+        "ewma_value": 729.61
+      }
+    },
+    {
+      "domain": "jobscave.com",
+      "display": "jobscave.com",
+      "date": "2026-02-10",
+      "clicks": 159,
+      "signal": "INVESTIGATE",
+      "signal_label": "Investigate",
+      "signal_color": "#7C4DFF",
+      "confidence": "Strong",
+      "methods_flagged": 4,
+      "consensus_score": 0.8314,
+      "description": "jobscave.com is clicking 67.0% below its 20-day moving average (482 clicks). Both frequency analysis and pattern matching detect a structural regime change. The click engagement rhythm has fundamentally shifted. Check for ISP policy changes, ESP platform issues, DNS/authentication changes. Cross-reference against industry news and ESP status pages.",
+      "details": {
+        "fourier_score": 0.1584,
+        "mp_score": 0.9643,
+        "ensemble_score": 0.8945,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -66.99,
+        "ewma_value": 481.69
       }
     }
   ]

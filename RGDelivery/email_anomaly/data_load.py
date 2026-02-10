@@ -6,7 +6,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-from .config import DEFAULT_DATA_PATH, MIN_DATA_POINTS, MIN_DAILY_SENDS
+from .config import DEFAULT_DATA_PATH, MIN_DATA_POINTS, MIN_DAILY_CLICKS, MIN_DAILY_SENDS
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +16,7 @@ def load_data(
     domains: Optional[list[str]] = None,
     min_data_points: int = MIN_DATA_POINTS,
     min_daily_sends: int = MIN_DAILY_SENDS,
+    min_daily_clicks: int = MIN_DAILY_CLICKS,
 ) -> pd.DataFrame:
     """Load email click data from CSV and filter to qualifying domains.
 
@@ -53,16 +54,26 @@ def load_data(
     qualifying = domain_counts[domain_counts >= min_data_points].index
     df = df[df["Domain"].isin(qualifying)]
 
-    # Filter to domains with sufficient send volume
-    if min_daily_sends > 0:
-        avg_sends = df.groupby("Domain")["Sent"].mean()
-        qualifying = avg_sends[avg_sends >= min_daily_sends].index
-        df = df[df["Domain"].isin(qualifying)]
+    # Filter to domains with sufficient send volume and click volume
+    domain_stats = df.groupby("Domain").agg(avg_sent=("Sent", "mean"), avg_clicks=("Clicks", "mean"))
+    qualifying = domain_stats[
+        (domain_stats["avg_sent"] >= min_daily_sends)
+        & (domain_stats["avg_clicks"] >= min_daily_clicks)
+    ].index
+    domains_before = df["Domain"].nunique()
+    df = df[df["Domain"].isin(qualifying)]
+    domains_dropped = domains_before - df["Domain"].nunique()
+    if domains_dropped > 0:
+        logger.info(
+            "Dropped %d domains below volume thresholds (avg sends >= %d, avg clicks >= %d) — %d domains remaining",
+            domains_dropped, min_daily_sends, min_daily_clicks, df["Domain"].nunique(),
+        )
 
     if df.empty:
         raise RuntimeError(
-            f"No domains qualify (need >= {min_data_points} days "
-            f"and >= {min_daily_sends} avg daily sends)"
+            f"No domains qualify (need >= {min_data_points} days, "
+            f">= {min_daily_sends} avg daily sends, "
+            f"and >= {min_daily_clicks} avg daily clicks)"
         )
 
     # Keep relevant columns
