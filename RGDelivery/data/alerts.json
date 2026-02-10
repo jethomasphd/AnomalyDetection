@@ -1,51 +1,7 @@
 {
-  "generated_at": "2026-02-10T15:13:10.273399Z",
+  "generated_at": "2026-02-10T17:12:22.055486Z",
   "total_signals": 50,
   "signals": [
-    {
-      "domain": "jobscaretaker.com",
-      "display": "jobscaretaker.com",
-      "date": "2026-01-14",
-      "clicks": 1,
-      "signal": "LOCKDOWN",
-      "signal_label": "Lockdown",
-      "signal_color": "#D50000",
-      "confidence": "Strong",
-      "methods_flagged": 3,
-      "consensus_score": 1.1085,
-      "description": "jobscaretaker.com is clicking 950.0% above its 20-day moving average (0 clicks). Extreme click spike breaks all historical patterns \u2014 possible system malfunction or deliberate attack. Freeze all automated engagement-based sends. Check for list bombing pattern. Verify tracking pixel/link integrity. Review for compromised API keys.",
-      "details": {
-        "fourier_score": 3.2312,
-        "mp_score": 1.0,
-        "ensemble_score": 0.246,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": 950.0,
-        "ewma_value": 0.1
-      }
-    },
-    {
-      "domain": "ca.jbe.best-jobs-online.com",
-      "display": "ca.jbe.best-jobs-online.com",
-      "date": "2026-02-10",
-      "clicks": 65,
-      "signal": "PAUSE",
-      "signal_label": "Pause",
-      "signal_color": "#D50000",
-      "confidence": "Strong",
-      "methods_flagged": 3,
-      "consensus_score": 0.8838,
-      "description": "ca.jbe.best-jobs-online.com is clicking 85.9% below its 20-day moving average (462 clicks). Extreme click-rate collapse detected. This is a structural break \u2014 possible blocklisting, spam trap hit, or authentication failure. Pause all campaigns immediately. Run full diagnostic: blocklist check, Google Postmaster review, authentication audit. Do not resume until root cause is identified.",
-      "details": {
-        "fourier_score": 0.2255,
-        "mp_score": 1.0,
-        "ensemble_score": 1.0,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": -85.94,
-        "ewma_value": 462.29
-      }
-    },
     {
       "domain": "us.jbe.best-jobs-online.com",
       "display": "us.jbe.best-jobs-online.com",
@@ -69,157 +25,25 @@
       }
     },
     {
-      "domain": "mx.jbe.best-jobs-online.com",
-      "display": "mx.jbe.best-jobs-online.com",
-      "date": "2026-02-10",
-      "clicks": 12,
-      "signal": "PAUSE",
-      "signal_label": "Pause",
-      "signal_color": "#D50000",
+      "domain": "fr2.jbe.best-jobs-online.com",
+      "display": "fr2.jbe.best-jobs-online.com",
+      "date": "2026-01-11",
+      "clicks": 836,
+      "signal": "QUARANTINE",
+      "signal_label": "Quarantine",
+      "signal_color": "#FF8F00",
       "confidence": "Strong",
       "methods_flagged": 3,
-      "consensus_score": 0.8715,
-      "description": "mx.jbe.best-jobs-online.com is clicking 90.0% below its 20-day moving average (120 clicks). Extreme click-rate collapse detected. This is a structural break \u2014 possible blocklisting, spam trap hit, or authentication failure. Pause all campaigns immediately. Run full diagnostic: blocklist check, Google Postmaster review, authentication audit. Do not resume until root cause is identified.",
+      "consensus_score": 0.8519,
+      "description": "fr2.jbe.best-jobs-online.com is clicking 31.9% above its 20-day moving average (634 clicks). Accelerating click spike without proportional conversion lift suggests escalating contamination or list attack. Quarantine affected segment from engagement-based decisioning. Investigate list bombing, link scanner deployment, or compromised tracking domain.",
       "details": {
-        "fourier_score": 0.281,
-        "mp_score": 0.9313,
-        "ensemble_score": 1.0,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": -90.03,
-        "ewma_value": 120.39
-      }
-    },
-    {
-      "domain": "us3.jbe.best-jobs-online.com",
-      "display": "us3.jbe.best-jobs-online.com",
-      "date": "2026-02-10",
-      "clicks": 277,
-      "signal": "PAUSE",
-      "signal_label": "Pause",
-      "signal_color": "#D50000",
-      "confidence": "Strong",
-      "methods_flagged": 3,
-      "consensus_score": 0.8603,
-      "description": "us3.jbe.best-jobs-online.com is clicking 90.8% below its 20-day moving average (3,025 clicks). Extreme click-rate collapse detected. This is a structural break \u2014 possible blocklisting, spam trap hit, or authentication failure. Pause all campaigns immediately. Run full diagnostic: blocklist check, Google Postmaster review, authentication audit. Do not resume until root cause is identified.",
-      "details": {
-        "fourier_score": 0.0689,
+        "fourier_score": 0.0124,
         "mp_score": 1.0,
         "ensemble_score": 1.0,
         "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": -90.84,
-        "ewma_value": 3025.12
-      }
-    },
-    {
-      "domain": "jobcuteness.com",
-      "display": "jobcuteness.com",
-      "date": "2026-01-20",
-      "clicks": 2,
-      "signal": "LOCKDOWN",
-      "signal_label": "Lockdown",
-      "signal_color": "#D50000",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.937,
-      "description": "jobcuteness.com is clicking 924.5% above its 20-day moving average (0 clicks). Extreme click spike breaks all historical patterns \u2014 possible system malfunction or deliberate attack. Freeze all automated engagement-based sends. Check for list bombing pattern. Verify tracking pixel/link integrity. Review for compromised API keys.",
-      "details": {
-        "fourier_score": 4.0246,
-        "mp_score": 0.0,
-        "ensemble_score": 0.3,
-        "ewma_score": 0.9731,
-        "trajectory": "breakout",
-        "deviation_pct": 924.49,
-        "ewma_value": 0.2
-      }
-    },
-    {
-      "domain": "es2.jbe.best-jobs-online.com",
-      "display": "es2.jbe.best-jobs-online.com",
-      "date": "2026-02-10",
-      "clicks": 108,
-      "signal": "PAUSE",
-      "signal_label": "Pause",
-      "signal_color": "#D50000",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.8471,
-      "description": "es2.jbe.best-jobs-online.com is clicking 84.0% below its 20-day moving average (677 clicks). Extreme click-rate collapse detected. This is a structural break \u2014 possible blocklisting, spam trap hit, or authentication failure. Pause all campaigns immediately. Run full diagnostic: blocklist check, Google Postmaster review, authentication audit. Do not resume until root cause is identified.",
-      "details": {
-        "fourier_score": 0.0517,
-        "mp_score": 0.9644,
-        "ensemble_score": 1.0,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": -84.04,
-        "ewma_value": 676.54
-      }
-    },
-    {
-      "domain": "de2.jbe.best-jobs-online.com",
-      "display": "de2.jbe.best-jobs-online.com",
-      "date": "2026-02-10",
-      "clicks": 88,
-      "signal": "PAUSE",
-      "signal_label": "Pause",
-      "signal_color": "#D50000",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.8405,
-      "description": "de2.jbe.best-jobs-online.com is clicking 86.5% below its 20-day moving average (650 clicks). Extreme click-rate collapse detected. This is a structural break \u2014 possible blocklisting, spam trap hit, or authentication failure. Pause all campaigns immediately. Run full diagnostic: blocklist check, Google Postmaster review, authentication audit. Do not resume until root cause is identified.",
-      "details": {
-        "fourier_score": 0.0353,
-        "mp_score": 0.9505,
-        "ensemble_score": 1.0,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": -86.47,
-        "ewma_value": 650.22
-      }
-    },
-    {
-      "domain": "erinaceousweb.com",
-      "display": "erinaceousweb.com",
-      "date": "2026-02-10",
-      "clicks": 11,
-      "signal": "PAUSE",
-      "signal_label": "Pause",
-      "signal_color": "#D50000",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.8369,
-      "description": "erinaceousweb.com is clicking 83.5% below its 20-day moving average (67 clicks). Extreme click-rate collapse detected. This is a structural break \u2014 possible blocklisting, spam trap hit, or authentication failure. Pause all campaigns immediately. Run full diagnostic: blocklist check, Google Postmaster review, authentication audit. Do not resume until root cause is identified.",
-      "details": {
-        "fourier_score": 0.0599,
-        "mp_score": 0.9308,
-        "ensemble_score": 0.9955,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": -83.54,
-        "ewma_value": 66.83
-      }
-    },
-    {
-      "domain": "jobbmore.com",
-      "display": "jobbmore.com",
-      "date": "2026-01-24",
-      "clicks": 405,
-      "signal": "LOCKDOWN",
-      "signal_label": "Lockdown",
-      "signal_color": "#D50000",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.8358,
-      "description": "jobbmore.com is clicking 93.1% above its 20-day moving average (210 clicks). Extreme click spike breaks all historical patterns \u2014 possible system malfunction or deliberate attack. Freeze all automated engagement-based sends. Check for list bombing pattern. Verify tracking pixel/link integrity. Review for compromised API keys.",
-      "details": {
-        "fourier_score": 0.2117,
-        "mp_score": 0.847,
-        "ensemble_score": 1.0,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": 93.12,
-        "ewma_value": 209.71
+        "trajectory": "accelerating",
+        "deviation_pct": 31.92,
+        "ewma_value": 633.71
       }
     },
     {
@@ -377,25 +201,25 @@
       }
     },
     {
-      "domain": "aucareersonline.com",
-      "display": "aucareersonline.com",
+      "domain": "jobfire.net",
+      "display": "jobfire.net",
       "date": "2026-02-10",
-      "clicks": 123,
+      "clicks": 487,
       "signal": "WARM",
       "signal_label": "Warm",
       "signal_color": "#00C853",
       "confidence": "Strong",
       "methods_flagged": 3,
-      "consensus_score": 0.8757,
-      "description": "aucareersonline.com is clicking 62.5% below its 20-day moving average (328 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "consensus_score": 0.8756,
+      "description": "jobfire.net is clicking 58.6% below its 20-day moving average (1,176 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
       "details": {
-        "fourier_score": 0.4975,
-        "mp_score": 0.8765,
-        "ensemble_score": 0.9606,
+        "fourier_score": 0.1708,
+        "mp_score": 1.0,
+        "ensemble_score": 1.0,
         "ewma_score": 1.0,
         "trajectory": "decelerating",
-        "deviation_pct": -62.53,
-        "ewma_value": 328.28
+        "deviation_pct": -58.59,
+        "ewma_value": 1176.13
       }
     },
     {
@@ -418,6 +242,28 @@
         "trajectory": "decelerating",
         "deviation_pct": -68.56,
         "ewma_value": 2919.39
+      }
+    },
+    {
+      "domain": "jobbravery.net",
+      "display": "jobbravery.net",
+      "date": "2026-02-10",
+      "clicks": 91,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.8736,
+      "description": "jobbravery.net is clicking 52.2% below its 20-day moving average (190 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.1573,
+        "mp_score": 1.0,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -52.2,
+        "ewma_value": 190.37
       }
     },
     {
@@ -531,6 +377,28 @@
       }
     },
     {
+      "domain": "composedcareers.com",
+      "display": "composedcareers.com",
+      "date": "2026-02-10",
+      "clicks": 771,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.8669,
+      "description": "composedcareers.com is clicking 53.3% below its 20-day moving average (1,649 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.1127,
+        "mp_score": 1.0,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -53.26,
+        "ewma_value": 1649.47
+      }
+    },
+    {
       "domain": "winklepickertwins.com",
       "display": "winklepickertwins.com",
       "date": "2026-02-10",
@@ -597,28 +465,6 @@
       }
     },
     {
-      "domain": "au2.jbe.best-jobs-online.com",
-      "display": "au2.jbe.best-jobs-online.com",
-      "date": "2026-02-10",
-      "clicks": 46,
-      "signal": "WARM",
-      "signal_label": "Warm",
-      "signal_color": "#00C853",
-      "confidence": "Strong",
-      "methods_flagged": 3,
-      "consensus_score": 0.8627,
-      "description": "au2.jbe.best-jobs-online.com is clicking 62.0% below its 20-day moving average (121 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
-      "details": {
-        "fourier_score": 0.1123,
-        "mp_score": 0.9862,
-        "ensemble_score": 1.0,
-        "ewma_score": 1.0,
-        "trajectory": "decelerating",
-        "deviation_pct": -62.05,
-        "ewma_value": 121.21
-      }
-    },
-    {
       "domain": "ratoonleaf.com",
       "display": "ratoonleaf.com",
       "date": "2026-02-10",
@@ -638,6 +484,50 @@
         "trajectory": "decelerating",
         "deviation_pct": -71.89,
         "ewma_value": 2490.59
+      }
+    },
+    {
+      "domain": "manyactivejobs.co.uk",
+      "display": "manyactivejobs.co.uk",
+      "date": "2026-02-10",
+      "clicks": 162,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.8604,
+      "description": "manyactivejobs.co.uk is clicking 54.4% below its 20-day moving average (355 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.2917,
+        "mp_score": 0.9785,
+        "ensemble_score": 1.0,
+        "ewma_score": 0.8924,
+        "trajectory": "decelerating",
+        "deviation_pct": -54.4,
+        "ewma_value": 355.24
+      }
+    },
+    {
+      "domain": "employmenthunter.co.uk",
+      "display": "employmenthunter.co.uk",
+      "date": "2026-02-10",
+      "clicks": 405,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.8603,
+      "description": "employmenthunter.co.uk is clicking 54.1% below its 20-day moving average (883 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.0684,
+        "mp_score": 1.0,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -54.15,
+        "ewma_value": 883.29
       }
     },
     {
@@ -663,6 +553,28 @@
       }
     },
     {
+      "domain": "thedirectlist.com",
+      "display": "thedirectlist.com",
+      "date": "2026-02-10",
+      "clicks": 443,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.8557,
+      "description": "thedirectlist.com is clicking 72.7% below its 20-day moving average (1,623 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.0378,
+        "mp_score": 1.0,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -72.71,
+        "ewma_value": 1623.24
+      }
+    },
+    {
       "domain": "tablemountainemployment.com",
       "display": "tablemountainemployment.com",
       "date": "2026-02-10",
@@ -685,6 +597,28 @@
       }
     },
     {
+      "domain": "ca2.jbe.best-jobs-online.com",
+      "display": "ca2.jbe.best-jobs-online.com",
+      "date": "2026-01-11",
+      "clicks": 977,
+      "signal": "AUDIT",
+      "signal_label": "Audit",
+      "signal_color": "#F9A825",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.8555,
+      "description": "ca2.jbe.best-jobs-online.com is clicking 51.9% above its 20-day moving average (643 clicks). Click spike is likely bot contamination \u2014 security scanners may be prefetching links. Analyze click timing distribution for bot signatures. Check user-agent strings for scanners (Barracuda, Mimecast, Proofpoint). Filter contaminated data before segmentation decisions.",
+      "details": {
+        "fourier_score": 0.0363,
+        "mp_score": 1.0,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "normal",
+        "deviation_pct": 51.89,
+        "ewma_value": 643.24
+      }
+    },
+    {
       "domain": "slothjob.net",
       "display": "slothjob.net",
       "date": "2026-02-10",
@@ -704,6 +638,28 @@
         "trajectory": "decelerating",
         "deviation_pct": -58.77,
         "ewma_value": 4048.18
+      }
+    },
+    {
+      "domain": "jobnyc.net",
+      "display": "jobnyc.net",
+      "date": "2026-02-10",
+      "clicks": 916,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.8545,
+      "description": "jobnyc.net is clicking 54.9% below its 20-day moving average (2,029 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.0302,
+        "mp_score": 0.9999,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -54.86,
+        "ewma_value": 2029.26
       }
     },
     {
@@ -773,6 +729,94 @@
       }
     },
     {
+      "domain": "email-getarealcareer.com",
+      "display": "email-getarealcareer.com",
+      "date": "2026-02-10",
+      "clicks": 286,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.8436,
+      "description": "email-getarealcareer.com is clicking 79.3% below its 20-day moving average (1,379 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.1815,
+        "mp_score": 0.888,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -79.26,
+        "ewma_value": 1378.88
+      }
+    },
+    {
+      "domain": "properjobsearch.co.uk",
+      "display": "properjobsearch.co.uk",
+      "date": "2026-02-10",
+      "clicks": 808,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.8414,
+      "description": "properjobsearch.co.uk is clicking 50.0% below its 20-day moving average (1,617 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.1961,
+        "mp_score": 0.8733,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -50.03,
+        "ewma_value": 1617.03
+      }
+    },
+    {
+      "domain": "datajobsearch.net",
+      "display": "datajobsearch.net",
+      "date": "2026-02-10",
+      "clicks": 207,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.8404,
+      "description": "datajobsearch.net is clicking 69.4% below its 20-day moving average (676 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.161,
+        "mp_score": 0.8875,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -69.4,
+        "ewma_value": 676.36
+      }
+    },
+    {
+      "domain": "joblistify.com",
+      "display": "joblistify.com",
+      "date": "2026-02-10",
+      "clicks": 946,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.84,
+      "description": "joblistify.com is clicking 60.6% below its 20-day moving average (2,400 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.027,
+        "mp_score": 0.9532,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -60.58,
+        "ewma_value": 2399.93
+      }
+    },
+    {
       "domain": "animatedjob.net",
       "display": "animatedjob.net",
       "date": "2026-02-10",
@@ -836,6 +880,28 @@
         "trajectory": "decelerating",
         "deviation_pct": -64.14,
         "ewma_value": 3140.03
+      }
+    },
+    {
+      "domain": "azurla.com",
+      "display": "azurla.com",
+      "date": "2026-02-10",
+      "clicks": 89,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.8386,
+      "description": "azurla.com is clicking 70.6% below its 20-day moving average (302 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.0092,
+        "mp_score": 0.9574,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -70.56,
+        "ewma_value": 302.27
       }
     },
     {
@@ -971,6 +1037,28 @@
       }
     },
     {
+      "domain": "jobcrown.co.uk",
+      "display": "jobcrown.co.uk",
+      "date": "2026-02-10",
+      "clicks": 587,
+      "signal": "WARM",
+      "signal_label": "Warm",
+      "signal_color": "#00C853",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.842,
+      "description": "jobcrown.co.uk is clicking 53.3% below its 20-day moving average (1,257 clicks). Click rate decline is stabilizing \u2014 reputation damage may be bottoming. Reduce volume 40-60%. Shift to most engaged segments only. Monitor 3-5 send cycles before restoring volume.",
+      "details": {
+        "fourier_score": 0.1779,
+        "mp_score": 0.8844,
+        "ensemble_score": 1.0,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -53.3,
+        "ewma_value": 1256.84
+      }
+    },
+    {
       "domain": "flagjobscenter.com",
       "display": "flagjobscenter.com",
       "date": "2026-02-10",
@@ -1012,94 +1100,6 @@
         "trajectory": "decelerating",
         "deviation_pct": -72.76,
         "ewma_value": 2107.03
-      }
-    },
-    {
-      "domain": "fr2.jbe.best-jobs-online.com",
-      "display": "fr2.jbe.best-jobs-online.com",
-      "date": "2026-02-10",
-      "clicks": 109,
-      "signal": "INVESTIGATE",
-      "signal_label": "Investigate",
-      "signal_color": "#7C4DFF",
-      "confidence": "Strong",
-      "methods_flagged": 4,
-      "consensus_score": 0.8936,
-      "description": "fr2.jbe.best-jobs-online.com is clicking 82.7% below its 20-day moving average (632 clicks). Both frequency analysis and pattern matching detect a structural regime change. The click engagement rhythm has fundamentally shifted. Check for ISP policy changes, ESP platform issues, DNS/authentication changes. Cross-reference against industry news and ESP status pages.",
-      "details": {
-        "fourier_score": 0.2908,
-        "mp_score": 1.0,
-        "ensemble_score": 1.0,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": -82.74,
-        "ewma_value": 631.6
-      }
-    },
-    {
-      "domain": "jobscave.com",
-      "display": "jobscave.com",
-      "date": "2026-02-10",
-      "clicks": 159,
-      "signal": "INVESTIGATE",
-      "signal_label": "Investigate",
-      "signal_color": "#7C4DFF",
-      "confidence": "Strong",
-      "methods_flagged": 4,
-      "consensus_score": 0.8381,
-      "description": "jobscave.com is clicking 66.9% below its 20-day moving average (480 clicks). Both frequency analysis and pattern matching detect a structural regime change. The click engagement rhythm has fundamentally shifted. Check for ISP policy changes, ESP platform issues, DNS/authentication changes. Cross-reference against industry news and ESP status pages.",
-      "details": {
-        "fourier_score": 0.328,
-        "mp_score": 0.922,
-        "ensemble_score": 0.8744,
-        "ewma_score": 1.0,
-        "trajectory": "decelerating",
-        "deviation_pct": -66.87,
-        "ewma_value": 479.92
-      }
-    },
-    {
-      "domain": "otterlyjobs.com",
-      "display": "otterlyjobs.com",
-      "date": "2026-01-24",
-      "clicks": 1,
-      "signal": "WATCH",
-      "signal_label": "Watch",
-      "signal_color": "#42A5F5",
-      "confidence": "Developing",
-      "methods_flagged": 1,
-      "consensus_score": 0.8678,
-      "description": "otterlyjobs.com is clicking 909.8% above its 20-day moving average (0 clicks). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor next 2-3 send cycles. If anomaly persists, re-evaluate.",
-      "details": {
-        "fourier_score": 3.791,
-        "mp_score": 0.0,
-        "ensemble_score": 0.199,
-        "ewma_score": 0.9577,
-        "trajectory": "breakout",
-        "deviation_pct": 909.81,
-        "ewma_value": 0.1
-      }
-    },
-    {
-      "domain": "impressivestarcareers.com",
-      "display": "impressivestarcareers.com",
-      "date": "2026-01-24",
-      "clicks": 1,
-      "signal": "WATCH",
-      "signal_label": "Watch",
-      "signal_color": "#42A5F5",
-      "confidence": "Developing",
-      "methods_flagged": 1,
-      "consensus_score": 0.8667,
-      "description": "impressivestarcareers.com is clicking 938.0% above its 20-day moving average (0 clicks). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor next 2-3 send cycles. If anomaly persists, re-evaluate.",
-      "details": {
-        "fourier_score": 3.7877,
-        "mp_score": 0.0,
-        "ensemble_score": 0.1724,
-        "ewma_score": 0.9873,
-        "trajectory": "breakout",
-        "deviation_pct": 937.98,
-        "ewma_value": 0.1
       }
     }
   ]
