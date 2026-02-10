@@ -19274,7 +19274,7 @@ jobbandit.com,2025-12-02,1,527,0.0,0.0,False,0.656151,False,0.018184,False,0.0,0
 jobbandit.com,2025-12-03,0,534,-1.0,0.0,False,0.590925,False,0.092275,False,0.0,0.3076,0.0,0.239533,False,0.56,-100.0,breakout,0.26484325,0,False
 jobbandit.com,2025-12-04,1,525,inf,0.0,False,0.656151,False,0.053115,False,0.0,0.1771,0.0,0.159362,False,0.6,66.53,decelerating,0.2526203,0,False
 jobbandit.com,2025-12-05,1,518,0.0,0.0,False,1.0,False,0.075359,False,0.0,0.2512,0.0,0.135593,False,0.64,56.61,decelerating,0.35650595,0,False
-jobbandit.com,2025-12-06,0,516,-1.0,0.0,False,1.0,True,0.001945,False,0.0,0.0065,0.0,0.239533,False,0.58,-100.0,breakout,0.36046675,1,False
+jobbandit.com,2025-12-06,0,516,-1.0,0.0,False,1.0,False,0.001945,False,0.0,0.0065,0.0,0.239533,False,0.58,-100.0,breakout,0.36046675,0,False
 jobbandit.com,2025-12-07,0,514,,0.0,False,0.96278,False,0.044573,False,0.0,0.1486,0.0,0.239533,False,0.52,-100.0,breakout,0.36208914999999997,0,False
 jobbandit.com,2025-12-08,0,512,,0.0,False,1.0,False,0.054046,False,0.0,0.1802,0.0,0.239533,False,0.47,-100.0,breakout,0.37609705,0,False
 jobbandit.com,2025-12-09,0,514,,0.0,False,0.847627,False,0.012602,False,0.0,0.042,0.0,0.239533,False,0.43,-100.0,breakout,0.31795195000000004,0,False
@@ -24931,7 +24931,7 @@ jobregator.com,2025-12-22,0,375,,0.097157,False,0.872235,False,0.065397,False,0.
 jobregator.com,2025-12-23,0,376,,0.097157,False,0.872235,False,0.102842,False,0.1226,0.1793,0.0,0.105263,False,0.21,-100.0,breakout,0.33341239999999994,0,False
 jobregator.com,2025-12-24,0,375,,0.097157,False,1.0,True,0.06209,False,0.1226,0.0435,0.0,0.105263,False,0.19,-100.0,breakout,0.3595163,1,False
 jobregator.com,2025-12-25,0,374,,0.097157,False,0.0,False,0.06242,False,0.1226,0.0446,0.0,0.105263,False,0.17,-100.0,breakout,0.059615299999999996,0,False
-jobregator.com,2025-12-26,1,373,inf,0.120714,False,1.0,True,0.282617,False,0.4444,0.3495,0.0,0.310857,False,0.25,295.31,breakout,0.48060644999999996,1,False
+jobregator.com,2025-12-26,1,373,inf,0.120714,False,1.0,False,0.282617,False,0.4444,0.3495,0.0,0.310857,False,0.25,295.31,breakout,0.48060644999999996,0,False
 jobregator.com,2025-12-27,0,373,-1.0,0.07782,False,0.0,False,0.124674,False,0.1226,0.2521,0.0,0.105263,False,0.23,-100.0,breakout,0.07539095,0,False
 jobregator.com,2025-12-28,0,371,,0.07782,False,0.0,False,0.126129,False,0.1226,0.257,0.0,0.105263,False,0.21,-100.0,breakout,0.07582744999999999,0,False
 jobregator.com,2025-12-29,1,371,inf,0.099301,False,0.0,False,0.281823,False,0.4444,0.3468,0.0,0.26723,False,0.28,253.87,breakout,0.16624955,0,False
