@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Click Anomaly Detection — Deliverability Signals</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #2962FF;
+            --red: #D50000;
+            --orange: #FF6D00;
+            --amber: #F9A825;
+            --green: #00C853;
+            --teal: #00897B;
+            --purple: #7C4DFF;
+            --bg: #F5F5F5;
+            --surface: #FFFFFF;
+            --text: #1A1A1A;
+            --muted: #6B7280;
+            --border: #E5E7EB;
+            --radius: 10px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0D1B2A 0%, #1B2838 100%);
+            color: white;
+            padding: 2.5rem 2rem 2rem;
+        }
+        .header-inner { max-width: 1300px; margin: 0 auto; }
+        .header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.03em; }
+        .header .subtitle { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.25rem; }
+
+        .container { max-width: 1300px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+        .stat {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--border);
+        }
+        .stat .num { font-size: 1.8rem; font-weight: 700; line-height: 1.2; }
+        .stat .lbl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.15rem; }
+        .stat.red .num { color: var(--red); }
+        .stat.green .num { color: var(--green); }
+        .stat.blue .num { color: var(--blue); }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 1.25rem;
+            overflow: hidden;
+        }
+        .card-head {
+            padding: 0.85rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .card-body { padding: 1rem 1.25rem; }
+        .card-body.flush { padding: 0; }
+
+        /* Signal table */
+        .tbl { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .tbl th {
+            text-align: left; padding: 0.6rem 1rem; background: var(--bg);
+            font-weight: 600; font-size: 0.7rem; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--muted);
+        }
+        .tbl td { padding: 0.65rem 1rem; border-top: 1px solid var(--border); vertical-align: top; }
+        .tbl tr:hover { background: #F9FAFB; }
+
+        .signal-pill {
+            display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; color: white;
+        }
+        .signal-warm { background: var(--green); }
+        .signal-throttle { background: var(--orange); }
+        .signal-pause { background: var(--red); }
+        .signal-investigate { background: var(--purple); }
+        .signal-audit { background: var(--amber); color: #1A1A1A; }
+        .signal-quarantine { background: #FF8F00; }
+        .signal-lockdown { background: var(--red); }
+        .signal-watch { background: #90CAF9; color: #1A1A1A; }
+
+        .confidence { font-size: 0.72rem; font-weight: 500; }
+        .conf-strong { color: var(--green); }
+        .conf-moderate { color: var(--orange); }
+        .conf-developing { color: var(--muted); }
+
+        .desc { font-size: 0.8rem; color: var(--muted); max-width: 420px; line-height: 1.4; }
+        .domain-label { font-weight: 600; font-size: 0.8rem; word-break: break-all; }
+        .dots { display: flex; gap: 3px; align-items: center; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: #E0E0E0; }
+        .dot.on { background: var(--red); }
+
+        /* Domain nav */
+        .domain-nav {
+            display: flex; flex-wrap: wrap; gap: 0.35rem;
+            padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border);
+        }
+        .dbtn {
+            padding: 0.3rem 0.7rem; border: 1px solid var(--border); border-radius: 6px;
+            background: var(--surface); cursor: pointer; font-size: 0.7rem;
+            font-weight: 500; font-family: inherit; transition: all 0.12s;
+            line-height: 1.3; max-width: 220px; overflow: hidden; text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .dbtn:hover { border-color: var(--blue); color: var(--blue); }
+        .dbtn.active { background: var(--blue); color: white; border-color: var(--blue); }
+        .dbtn.flagged { border-left: 3px solid var(--red); }
+
+        /* Method detail charts in deep dive */
+        .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        @media (max-width: 900px) { .method-grid { grid-template-columns: 1fr; } }
+        .method-panel {
+            border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+        }
+        .method-panel-head {
+            padding: 0.5rem 0.75rem; background: var(--bg);
+            font-size: 0.78rem; font-weight: 600; color: var(--muted);
+            border-bottom: 1px solid var(--border);
+        }
+        .method-panel-body { padding: 0.5rem; }
+
+        /* Technical deep dive section */
+        .tech-section { margin-top: 0.75rem; }
+        .tech-section h3 {
+            font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;
+            padding-top: 1rem; border-top: 1px solid var(--border);
+        }
+        .tech-section h3:first-child { border-top: none; padding-top: 0; }
+        .tech-section p, .tech-section li {
+            font-size: 0.82rem; color: var(--muted); line-height: 1.6;
+        }
+        .tech-section ul { margin: 0.4rem 0 0.8rem 1.2rem; }
+        .tech-section .formula {
+            font-family: 'Courier New', monospace; background: var(--bg);
+            padding: 0.5rem 0.75rem; border-radius: 6px; margin: 0.5rem 0;
+            font-size: 0.78rem; overflow-x: auto; border: 1px solid var(--border);
+        }
+        .tech-section .highlight {
+            color: var(--blue); font-weight: 500;
+        }
+
+        /* Signal legend */
+        .signal-legend {
+            display: flex; flex-wrap: wrap; gap: 1rem; padding: 0.75rem 0;
+            font-size: 0.78rem; color: var(--muted);
+        }
+        .signal-legend-item { display: flex; align-items: center; gap: 0.35rem; }
+        .signal-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        .footer {
+            text-align: center; padding: 1.5rem; font-size: 0.75rem; color: var(--muted);
+        }
+        .empty-msg { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-inner">
+            <h1>Email Click Anomaly Detection</h1>
+            <div class="subtitle">{{ n_domains }} sending domains &middot; {{ sensitivity }} sensitivity &middot; {{ date_range_days }}-day range &middot; Updated {{ generated_at }}</div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat blue"><div class="num">{{ n_domains }}</div><div class="lbl">Domains Monitored</div></div>
+            <div class="stat red"><div class="num">{{ n_anomalies }}</div><div class="lbl">Anomalies Detected</div></div>
+            <div class="stat green"><div class="num">{{ n_actionable }}</div><div class="lbl">Actionable Signals</div></div>
+            <div class="stat"><div class="num">{{ date_range_days }}d</div><div class="lbl">Date Range</div></div>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="card">
+            <div class="card-head">Which domains need attention?</div>
+            <div class="card-body"><div id="scoreboard-chart"></div></div>
+        </div>
+
+        <!-- Deliverability Signals table -->
+        <div class="card">
+            <div class="card-head">Deliverability Signals</div>
+            <div class="card-body flush" style="overflow-x: auto;">
+                {% if alerts %}
+                <div style="padding: 0.5rem 1rem 0;">
+                    <div class="signal-legend">
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#00C853"></div> Warm &mdash; reduce volume, send to engaged only</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#FF6D00"></div> Throttle &mdash; cut volume 70-90%, check auth</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#D50000"></div> Pause &mdash; halt sends, full diagnostic</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#7C4DFF"></div> Investigate &mdash; structural regime change</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#F9A825"></div> Audit &mdash; filter bot clicks from data</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#FF8F00"></div> Quarantine &mdash; isolate segment, investigate</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#D50000"></div> Lockdown &mdash; freeze automated flows</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#90CAF9"></div> Watch &mdash; monitor next 2-3 send cycles</div>
+                    </div>
+                </div>
+                <table class="tbl">
+                    <thead>
+                        <tr>
+                            <th>Signal</th>
+                            <th>Confidence</th>
+                            <th>Domain</th>
+                            <th>Date</th>
+                            <th>Clicks</th>
+                            <th>Methods</th>
+                            <th>What to do &amp; why</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in alerts %}
+                        <tr>
+                            <td><span class="signal-pill signal-{{ a.signal|lower }}">{{ a.signal_label }}</span></td>
+                            <td><span class="confidence conf-{{ a.confidence|lower }}">{{ a.confidence }}</span></td>
+                            <td><div class="domain-label">{{ a.domain }}</div></td>
+                            <td>{{ a.date }}</td>
+                            <td>{{ "{:,}".format(a.clicks) }}</td>
+                            <td>
+                                <div class="dots">
+                                    {% for i in range(4) %}
+                                    <div class="dot {% if i < a.methods_flagged %}on{% endif %}"></div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td><span class="desc">{{ a.description }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-msg">No anomalies detected — all domains are clicking within normal ranges.</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Per-domain deep dive with method charts -->
+        <div class="card">
+            <div class="card-head">Domain Deep Dive</div>
+            <div class="domain-nav" id="domain-nav">
+                {% for di in domain_info %}
+                <button class="dbtn {% if di.has_signal %}flagged{% endif %} {% if loop.first %}active{% endif %}"
+                        onclick="showDomain('{{ di.domain }}', this)"
+                        title="{{ di.domain }}">
+                    {{ di.display }}
+                </button>
+                {% endfor %}
+            </div>
+            <div class="card-body">
+                <div id="domain-chart" style="min-height: 400px;"></div>
+                <div class="method-grid">
+                    <div class="method-panel">
+                        <div class="method-panel-head">Fourier Transform &mdash; Has the engagement rhythm changed?</div>
+                        <div class="method-panel-body"><div id="method-fourier"></div></div>
+                    </div>
+                    <div class="method-panel">
+                        <div class="method-panel-head">Matrix Profile &mdash; Never-before-seen click pattern?</div>
+                        <div class="method-panel-body"><div id="method-mp"></div></div>
+                    </div>
+                    <div class="method-panel">
+                        <div class="method-panel-head">Statistical Ensemble &mdash; Do independent tests agree?</div>
+                        <div class="method-panel-body"><div id="method-ensemble"></div></div>
+                    </div>
+                    <div class="method-panel">
+                        <div class="method-panel-head">EWMA Trend &mdash; Is click momentum abnormal?</div>
+                        <div class="method-panel-body"><div id="method-ewma"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How signals are derived -->
+        <div class="card">
+            <div class="card-head">How signals are derived</div>
+            <div class="card-body">
+                <p style="margin-bottom: 0.75rem; color: var(--muted); font-size: 0.85rem;">
+                    Four independent detection methods analyze each sending domain's click time series daily. When anomalies
+                    are detected, the system translates them into <strong>actionable deliverability signals</strong> based on
+                    two dimensions: <em>how far</em> clicks have deviated from their trend, and <em>which direction</em>
+                    the trajectory is heading.
+                </p>
+                <p style="margin-bottom: 0.75rem; color: var(--muted); font-size: 0.85rem;">
+                    <strong>DROP signals</strong> (Warm/Throttle/Pause) fire when click rates fall below the moving average.
+                    Drops are the deliverability emergency &mdash; every send during a reputation crisis is either medicine or
+                    poison. The trajectory determines how aggressively to reduce volume.
+                </p>
+                <p style="margin-bottom: 0.75rem; color: var(--muted); font-size: 0.85rem;">
+                    <strong>SPIKE signals</strong> (Audit/Quarantine/Lockdown) fire when click rates surge above trend.
+                    Unlike stocks, click spikes in email are almost never good news &mdash; they typically indicate bot
+                    contamination, security scanner prefetching, or list attacks.
+                </p>
+                <p style="color: var(--muted); font-size: 0.85rem;">
+                    <strong>Confidence</strong> reflects how many detection methods independently agree: Strong (3-4 methods),
+                    Moderate (2 methods), or Developing (1 method with high score).
+                </p>
+            </div>
+        </div>
+
+        <!-- Technical deep dive -->
+        <div class="card">
+            <div class="card-head">Technical Details</div>
+            <div class="card-body">
+                <div class="tech-section">
+
+                    <h3>1. Fourier Transform &mdash; Frequency-Domain Structural Change</h3>
+                    <p>
+                        Every sending domain has a characteristic engagement "rhythm" &mdash; how its clicks oscillate over time
+                        due to send cadence, day-of-week patterns, and seasonal effects. The Fourier Transform decomposes the
+                        click series into frequency components. When the energy distribution shifts significantly from the
+                        historical baseline, it signals a <span class="highlight">structural regime change</span> in engagement.
+                    </p>
+                    <p><strong>How it works:</strong></p>
+                    <ul>
+                        <li>Compute the full-history frequency spectrum as a baseline (top-5 frequency components)</li>
+                        <li>Slide a 30-day window across the series and compute the local spectrum at each point</li>
+                        <li>Measure symmetric KL divergence between local and baseline spectra</li>
+                        <li>Flag dates where divergence exceeds the sensitivity percentile threshold</li>
+                    </ul>
+                    <div class="formula">D(local, baseline) = 0.5 &times; &Sigma; [ local &times; log(local/baseline) + baseline &times; log(baseline/local) ]</div>
+                    <p>
+                        <strong>What it catches:</strong> ISP policy changes, ESP platform issues, authentication failures
+                        that structurally alter engagement patterns.
+                    </p>
+
+                    <h3>2. Matrix Profile &mdash; Subsequence Novelty Detection</h3>
+                    <p>
+                        The Matrix Profile algorithm (powered by <span class="highlight">STUMPY</span>) answers: for every
+                        recent 7-day window of click activity, what is the most similar historical window? If even the best
+                        match is poor, the current pattern is <span class="highlight">genuinely novel</span> &mdash; something
+                        the domain has never done before.
+                    </p>
+                    <p><strong>How it works:</strong></p>
+                    <ul>
+                        <li>Define a subsequence length (7 days &mdash; one week of email data)</li>
+                        <li>For each 7-day window, compute its Euclidean distance to every other 7-day window in history</li>
+                        <li>Record the minimum distance (nearest-neighbor distance) &mdash; the Matrix Profile value</li>
+                        <li>Normalize all distances to [0, 1] and flag values above the sensitivity threshold</li>
+                    </ul>
+                    <p>
+                        <strong>What it catches:</strong> Bot deployments, list bombing attacks, sudden ISP filtering,
+                        unprecedented drops from blocklisting. This method is weighted 30% (up from 25% in the stock system)
+                        because novelty detection is critical for email &mdash; "never-before-seen click pattern" almost always
+                        means an external event.
+                    </p>
+
+                    <h3>3. Statistical Ensemble &mdash; Three Independent Tests</h3>
+                    <p>
+                        Combines three approaches with complementary strengths:
+                    </p>
+                    <ul>
+                        <li><strong>Z-Score (40%):</strong> Rolling 30-day z-score of click counts. Measures how many standard
+                        deviations current clicks are from the recent mean.</li>
+                        <li><strong>Seasonal Decomposition (30%):</strong> STL decomposition with a 7-day (weekly) period extracts
+                        trend, seasonal, and residual components. The residual magnitude indicates unexplained behavior.</li>
+                        <li><strong>Isolation Forest (30%):</strong> A tree-based ML model isolating outliers by partitioning
+                        feature space (click count, daily change, 20-day volatility).</li>
+                    </ul>
+                    <div class="formula">ensemble_score = 0.4 &times; zscore + 0.3 &times; seasonal_residual + 0.3 &times; isolation_forest</div>
+
+                    <h3>4. EWMA Trend Analysis &mdash; Click Momentum</h3>
+                    <p>
+                        The Exponentially Weighted Moving Average creates a responsive trend line for click counts.
+                        The system measures deviation from trend and classifies the <span class="highlight">trajectory</span>:
+                    </p>
+                    <ul>
+                        <li>Compute a 20-day EWMA as the click baseline</li>
+                        <li>Calculate deviation percentage: (clicks &minus; EWMA) / EWMA</li>
+                        <li>Classify trajectory over 5-day window:
+                            <strong>breakout</strong> (&gt; 80% of historical range),
+                            <strong>accelerating</strong> (slope &gt; 0.02),
+                            <strong>decelerating</strong> (slope &lt; -0.02),
+                            or <strong>normal</strong>
+                        </li>
+                    </ul>
+                    <p>
+                        <strong>Signal mapping:</strong> EWMA trajectory is the primary driver of signal direction.
+                        Drops are emergencies (Warm/Throttle/Pause). Spikes are contamination (Audit/Quarantine/Lockdown).
+                        Direction matters first, then trajectory determines severity.
+                    </p>
+
+                    <h3>Consensus Scoring &amp; Signal Derivation</h3>
+                    <p>
+                        The four method scores combine into a weighted <strong>consensus score</strong> (retuned for email).
+                        A day is flagged anomalous when two or more methods agree, or the consensus score exceeds
+                        the 97.5th percentile. The signal type is then determined by deviation direction and trajectory.
+                    </p>
+                    <div class="formula">consensus = 0.15 &times; fourier + 0.30 &times; matrix_profile + 0.30 &times; ensemble + 0.25 &times; ewma</div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Deliverability Stack -->
+        <div class="card">
+            <div class="card-head">Deliverability Diagnostic Stack</div>
+            <div class="card-body">
+                <div class="tech-section">
+                    <p>When a DROP signal fires, investigate in this order (each layer can cause drops in the layers above it):</p>
+                    <div class="formula">
+Layer 5:  CONTENT          &larr; Spam trigger words, image ratio, link density
+Layer 4:  ENGAGEMENT       &larr; List fatigue, segment staleness, send frequency
+Layer 3:  REPUTATION       &larr; Complaint rates, spam trap hits, blocklist status
+Layer 2:  AUTHENTICATION   &larr; SPF, DKIM, DMARC alignment failures
+Layer 1:  INFRASTRUCTURE   &larr; IP warming state, DNS records, ESP platform issues
+                    </div>
+                    <p style="margin-top: 0.5rem;">
+                        <strong>Rule of thumb:</strong> If the anomaly is isolated to one campaign &rarr; start at Layer 5.
+                        If it spans multiple campaigns on one ISP &rarr; start at Layer 3.
+                        If it spans all ISPs &rarr; start at Layer 1.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Email Click Anomaly Detection &mdash; Jacob E. Thomas, PhD &mdash; RG Deliverability Suite &mdash; Upload new data.csv and re-run to update
+    </div>
+
+    <script>
+        const domainCharts = {{ domain_charts_json }};
+        const methodCharts = {{ method_charts_json }};
+        const scoreboardData = {{ scoreboard_json }};
+        const plotCfg = {responsive: true, displayModeBar: false};
+
+        if (scoreboardData && scoreboardData.data) {
+            Plotly.newPlot('scoreboard-chart', scoreboardData.data, scoreboardData.layout, plotCfg);
+        }
+
+        const dList = Object.keys(domainCharts);
+        if (dList.length > 0) showDomain(dList[0]);
+
+        function showDomain(d, btn) {
+            const data = domainCharts[d];
+            if (data) Plotly.newPlot('domain-chart', data.data, data.layout, plotCfg);
+
+            const m = methodCharts[d];
+            if (m) {
+                if (m.fourier && m.fourier.data) Plotly.newPlot('method-fourier', m.fourier.data, m.fourier.layout, plotCfg);
+                if (m.matrix_profile && m.matrix_profile.data) Plotly.newPlot('method-mp', m.matrix_profile.data, m.matrix_profile.layout, plotCfg);
+                if (m.ensemble && m.ensemble.data) Plotly.newPlot('method-ensemble', m.ensemble.data, m.ensemble.layout, plotCfg);
+                if (m.ewma && m.ewma.data) Plotly.newPlot('method-ewma', m.ewma.data, m.ewma.layout, plotCfg);
+            }
+
+            document.querySelectorAll('.dbtn').forEach(b => b.classList.remove('active'));
+            if (btn) { btn.classList.add('active'); }
+            else {
+                document.querySelectorAll('.dbtn').forEach(b => {
+                    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(d)) b.classList.add('active');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
