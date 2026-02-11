@@ -56,6 +56,7 @@ def generate_dashboard(
     # Stats
     n_anomalies = int(results["consensus_anomaly"].sum()) if "consensus_anomaly" in results.columns else 0
     n_actionable = sum(1 for a in alerts if a["signal"] not in ("WATCH", "REDUCE"))
+    n_new_signals = sum(1 for a in alerts if a.get("is_new", False))
 
     # Build ticker display info for template
     ticker_info = []
@@ -75,6 +76,7 @@ def generate_dashboard(
         n_tickers=len(tickers),
         n_anomalies=n_anomalies,
         n_actionable=n_actionable,
+        n_new_signals=n_new_signals,
         lookback_days=lookback_days,
         sensitivity=sensitivity.capitalize(),
         generated_at=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),

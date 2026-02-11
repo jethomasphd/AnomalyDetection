@@ -12,6 +12,18 @@ The goal is straightforward: surface the moments that matter. When a sending dom
 
 The dashboard updates automatically via GitHub Actions whenever you upload a new `data.csv`, or you can run it locally at any time.
 
+### Incremental Processing
+
+The system preserves signals across runs. When the pipeline executes:
+
+1. **Previous alerts are loaded** from `data/alerts.json` before new detection begins.
+2. **New alerts are generated** from the current detection run and tagged with a **NEW** badge.
+3. **Alerts are merged** — new signals take precedence for the same (domain, date) pair; previous signals that are no longer in the current window are preserved as historical context.
+4. **Signals are sorted by date** — the most recent detections appear at the top of the dashboard, so you always see what's new first.
+5. **The alert history is capped at 200 entries** to prevent unbounded growth while retaining meaningful context.
+
+This means you can upload a new `data.csv` and immediately see what changed compared to the last run. Historical signals remain visible (slightly dimmed) for reference, while fresh detections are highlighted with an orange **NEW** badge.
+
 ---
 
 ## Data Requirements
@@ -267,9 +279,11 @@ Layer 1:  INFRASTRUCTURE   ← IP warming state, DNS records, ESP platform issue
 | File | Description |
 |------|-------------|
 | `docs/index.html` | The interactive dashboard — open in any browser |
-| `data/alerts.json` | Structured signal data in JSON format |
+| `data/alerts.json` | Structured signal data in JSON format — **persisted across runs** for incremental processing |
 | `data/email_data.csv` | Feature-engineered click data (regenerated each run) |
 | `data/detection_results.csv` | Full detection results with all method scores (regenerated each run) |
+
+**Note:** `alerts.json` now includes additional fields per signal: `run_date` (when the signal was last evaluated), `is_new` (whether it appeared in the most recent run), and `first_detected` (when the signal was first seen). The file also includes a top-level `new_signals` count.
 
 ---
 
