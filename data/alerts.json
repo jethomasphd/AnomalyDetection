@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-11T14:46:51.820980Z",
+  "generated_at": "2026-02-11T18:48:46.161130Z",
   "total_signals": 13,
   "new_signals": 13,
   "signals": [
@@ -222,7 +222,7 @@
       "signal_color": "#42A5F5",
       "confidence": "Developing",
       "methods_flagged": 1,
-      "consensus_score": 0.4844,
+      "consensus_score": 0.4843,
       "description": "Alphabet (GOOGL) is trading 4.3% above its 20-day moving average ($306.90). Detection methods flagged this because price pattern is unprecedented, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-02-11",
       "is_new": true,
@@ -230,7 +230,7 @@
       "details": {
         "fourier_score": 0.0205,
         "mp_score": 1.0,
-        "ensemble_score": 0.4721,
+        "ensemble_score": 0.4717,
         "ewma_score": 0.3545,
         "trajectory": "normal",
         "deviation_pct": 4.34,
