@@ -14,10 +14,14 @@ Signal types (from instructions.md):
 
   Ambiguous:
     WATCH:       Anomaly detected but no clear direction
+
+Supports incremental processing: new alerts merge with previously saved alerts
+so that the dashboard accumulates history across runs.
 """
 
 import json
 import logging
+import os
 from datetime import datetime
 
 import numpy as np
@@ -147,6 +151,7 @@ def _describe_signal(row: pd.Series, signal: str, confidence: str) -> str:
 
 def generate_alerts(results: pd.DataFrame, top_n: int = 50) -> list[dict]:
     """Generate structured deliverability signals from detection results."""
+    run_date = datetime.utcnow().strftime("%Y-%m-%d")
     anomalies = results[results["consensus_anomaly"]].copy()
     if anomalies.empty:
         logger.info("No anomalies detected.")
@@ -175,6 +180,9 @@ def generate_alerts(results: pd.DataFrame, top_n: int = 50) -> list[dict]:
             "methods_flagged": n_methods,
             "consensus_score": round(float(row["consensus_score"]), 4),
             "description": _describe_signal(row, signal, confidence),
+            "run_date": run_date,
+            "is_new": True,
+            "first_detected": run_date,
             "details": {
                 "fourier_score": round(float(row.get("fourier_score", 0)), 4),
                 "mp_score": round(float(row.get("mp_score", 0)), 4),
@@ -187,20 +195,8 @@ def generate_alerts(results: pd.DataFrame, top_n: int = 50) -> list[dict]:
         }
         alerts.append(alert)
 
-    # Sort: actionable signals first, then by confidence, then score
-    signal_priority = {
-        "PAUSE": 0, "LOCKDOWN": 0,
-        "THROTTLE": 1, "QUARANTINE": 1,
-        "WARM": 2, "AUDIT": 2,
-        "INVESTIGATE": 3,
-        "WATCH": 4,
-    }
-    confidence_priority = {"Strong": 0, "Moderate": 1, "Developing": 2}
-    alerts.sort(key=lambda a: (
-        signal_priority.get(a["signal"], 5),
-        confidence_priority.get(a["confidence"], 3),
-        -a["consensus_score"],
-    ))
+    # Sort: newest date first (most recent signals at top), then by consensus score
+    alerts.sort(key=lambda a: (a["date"], a["consensus_score"]), reverse=True)
 
     logger.info(
         "Generated %d signals (%d actionable, %d watch)",
@@ -211,16 +207,74 @@ def generate_alerts(results: pd.DataFrame, top_n: int = 50) -> list[dict]:
     return alerts
 
 
+def load_previous_alerts(path: str) -> list[dict]:
+    """Load previously saved alerts from a JSON file, if it exists."""
+    if not os.path.isfile(path):
+        return []
+    try:
+        with open(path) as f:
+            data = json.load(f)
+        previous = data.get("signals", [])
+        logger.info("Loaded %d previous alerts from %s", len(previous), path)
+        return previous
+    except (json.JSONDecodeError, KeyError, TypeError):
+        logger.warning("Could not parse previous alerts from %s — starting fresh", path)
+        return []
+
+
+def merge_alerts(new_alerts: list[dict], previous_alerts: list[dict], max_alerts: int = 200) -> list[dict]:
+    """Merge new alerts with previous alerts for incremental processing.
+
+    - New alerts take precedence for the same (domain, date) pair.
+    - Previous alerts that don't overlap are preserved with is_new=False.
+    - Final list is sorted by date descending (newest first).
+    - Capped at max_alerts to prevent unbounded growth.
+    """
+    run_date = datetime.utcnow().strftime("%Y-%m-%d")
+
+    # Index new alerts by (domain, date) for fast lookup
+    new_keys = {(a["domain"], a["date"]) for a in new_alerts}
+
+    # Mark all previous alerts as not-new, preserve first_detected
+    merged = list(new_alerts)  # new alerts already have is_new=True
+    for prev in previous_alerts:
+        key = (prev.get("domain"), prev.get("date"))
+        if key not in new_keys:
+            prev["is_new"] = False
+            prev["run_date"] = prev.get("run_date", run_date)
+            prev["first_detected"] = prev.get("first_detected", prev.get("date", run_date))
+            merged.append(prev)
+        else:
+            # New alert takes precedence — but preserve first_detected from previous
+            for new_a in new_alerts:
+                if (new_a["domain"], new_a["date"]) == key:
+                    new_a["first_detected"] = prev.get("first_detected", prev.get("date", run_date))
+                    break
+
+    # Sort: newest date first, then by consensus score descending
+    merged.sort(key=lambda a: (a["date"], a.get("consensus_score", 0)), reverse=True)
+
+    if len(merged) > max_alerts:
+        merged = merged[:max_alerts]
+
+    n_new = sum(1 for a in merged if a.get("is_new"))
+    n_prev = len(merged) - n_new
+    logger.info("Merged alerts: %d new + %d historical = %d total", n_new, n_prev, len(merged))
+    return merged
+
+
 def alerts_to_json(alerts: list[dict], path: str) -> None:
     """Write signals to a JSON file."""
+    n_new = sum(1 for a in alerts if a.get("is_new"))
     output = {
         "generated_at": datetime.utcnow().isoformat() + "Z",
         "total_signals": len(alerts),
+        "new_signals": n_new,
         "signals": alerts,
     }
     with open(path, "w") as f:
         json.dump(output, f, indent=2)
-    logger.info("Signals written to %s", path)
+    logger.info("Signals written to %s (%d new, %d total)", path, n_new, len(alerts))
 
 
 def alerts_to_markdown(alerts: list[dict]) -> str:

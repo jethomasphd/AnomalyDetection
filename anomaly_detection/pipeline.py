@@ -13,7 +13,7 @@ from datetime import datetime
 
 import pandas as pd
 
-from .alerts import alerts_to_json, alerts_to_markdown, generate_alerts
+from .alerts import alerts_to_json, alerts_to_markdown, generate_alerts, load_previous_alerts, merge_alerts
 from .config import DATA_DIR, DEFAULT_LOOKBACK_DAYS, DEFAULT_SENSITIVITY, DEFAULT_TICKERS, DOCS_DIR
 from .data_fetch import compute_features, fetch_multiple
 from .detection.engine import run_all
@@ -56,12 +56,15 @@ def run(
     results = run_all(featured_df, sensitivity=sensitivity)
     results.to_csv(os.path.join(DATA_DIR, "detection_results.csv"), index=False)
 
-    # Stage 4: Signals
+    # Stage 4: Signals (incremental — merge with previous run)
     logger.info("=" * 60)
-    logger.info("STAGE 4: Generating trading signals")
+    logger.info("STAGE 4: Generating trading signals (incremental)")
     logger.info("=" * 60)
-    alerts = generate_alerts(results)
-    alerts_to_json(alerts, os.path.join(DATA_DIR, "alerts.json"))
+    alerts_path = os.path.join(DATA_DIR, "alerts.json")
+    previous_alerts = load_previous_alerts(alerts_path)
+    new_alerts = generate_alerts(results)
+    alerts = merge_alerts(new_alerts, previous_alerts)
+    alerts_to_json(alerts, alerts_path)
     print("\n" + alerts_to_markdown(alerts))
 
     # Build summary

@@ -4,7 +4,7 @@
 
 An in-house anomaly detection system applied to securities adjacent to recruitment marketing, advertising platforms, AI infrastructure, and market benchmarks. Four independent statistical methods analyze each ticker daily, identify anomalous behavior, and translate it into **actionable trading signals** — Buy, Sell, Long, Short, Reduce, or Watch.
 
-Built for decision-makers who need clear, actionable intelligence without deep statistical expertise. Updated automatically every trading day.
+Built for decision-makers who need clear, actionable intelligence without deep statistical expertise. Updated automatically every trading day with **incremental processing** — each run preserves previous signals and highlights what's new.
 
 **[View the live dashboard](https://jethomasphd.github.io/AnomalyDetection/)**  |  **[Read the User Manual](USERMANUAL.md)**
 
@@ -65,6 +65,8 @@ python -m anomaly_detection --sensitivity high --lookback 180
 ## Automated runs
 
 GitHub Actions runs the full pipeline every weekday at 6:00 PM UTC (after US market close), commits results, and deploys the dashboard to GitHub Pages.
+
+**Incremental by default:** Each run loads previous `alerts.json`, merges new detections, and sorts by date (newest first). Fresh signals get a **NEW** badge. Historical signals are preserved and dimmed. No data is lost between runs.
 
 **Setup:** Repo settings > Pages > Source > **GitHub Actions**.
 

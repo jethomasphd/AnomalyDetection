@@ -12,6 +12,18 @@ The goal is straightforward: surface the moments that matter. When a staffing co
 
 Everything runs automatically via GitHub Actions and publishes to a live dashboard on GitHub Pages.
 
+### Incremental Processing
+
+The system preserves signals across runs. When the pipeline executes:
+
+1. **Previous alerts are loaded** from `data/alerts.json` before new detection begins.
+2. **New alerts are generated** from the current detection run and tagged with a **NEW** badge.
+3. **Alerts are merged** — new signals take precedence for the same (ticker, date) pair; previous signals that are no longer in the current window are preserved as historical context.
+4. **Signals are sorted by date** — the most recent detections appear at the top of the dashboard, so you always see what's new first.
+5. **The alert history is capped at 200 entries** to prevent unbounded growth while retaining meaningful context.
+
+This means you can check the dashboard daily or weekly and immediately see what changed since your last visit. Historical signals remain visible (slightly dimmed) for reference, while fresh detections are highlighted with an orange **NEW** badge.
+
 ---
 
 ## The Watchlist
@@ -221,9 +233,11 @@ python -m anomaly_detection --sensitivity low
 | File | Description |
 |------|-------------|
 | `docs/index.html` | The interactive dashboard — open in any browser |
-| `data/alerts.json` | Structured signal data in JSON format (for programmatic consumption) |
+| `data/alerts.json` | Structured signal data in JSON format — **persisted across runs** for incremental processing |
 | `data/stock_data.csv` | Raw price data with computed features (regenerated each run) |
 | `data/detection_results.csv` | Full detection results with all method scores (regenerated each run) |
+
+**Note:** `alerts.json` now includes additional fields per signal: `run_date` (when the signal was last evaluated), `is_new` (whether it appeared in the most recent run), and `first_detected` (when the signal was first seen). The file also includes a top-level `new_signals` count.
 
 ---
 
