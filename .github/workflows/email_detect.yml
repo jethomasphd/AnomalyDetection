@@ -2,6 +2,8 @@ name: Email Click Anomaly Detection
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'RGDelivery/data.csv'
   workflow_dispatch:
