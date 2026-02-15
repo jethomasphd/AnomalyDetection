@@ -75,13 +75,22 @@ def load_data(
     if rows_dropped > 0:
         logger.info("Dropped %d rows with missing SpamRate (%d remaining)", rows_dropped, len(df))
 
-    # --- Filter 3: Specific domains if requested ---
+    # --- Filter 3: Drop observations with SpamRate > 5% as outliers ---
+    # Individual observations above 5% are data artifacts, not real spam rates.
+    # We drop the observation, not the entire domain.
+    rows_before = len(df)
+    df = df[df["SpamRate"] <= 0.05]
+    outliers_dropped = rows_before - len(df)
+    if outliers_dropped > 0:
+        logger.info("Dropped %d outlier observations with SpamRate > 5%% (%d remaining)", outliers_dropped, len(df))
+
+    # --- Filter 4: Specific domains if requested ---
     if domains:
         df = df[df["Domain"].isin(domains)]
         if df.empty:
             raise RuntimeError(f"No data found for specified domains: {domains}")
 
-    # --- Filter 4: Enough history ---
+    # --- Filter 5: Enough history ---
     domain_counts = df.groupby("Domain").size()
     qualifying = domain_counts[domain_counts >= min_data_points].index
     domains_before = df["Domain"].nunique()
