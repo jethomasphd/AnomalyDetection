@@ -89,10 +89,33 @@ def _google_threshold_context(spam_rate: float) -> str:
         return f"Spam rate is {pct:.2f}% — above 3%. Deliverability is at significant risk."
 
 
+def _is_dip(row: pd.Series) -> bool:
+    """Check if this anomaly is a dip (spam rate going DOWN — that's good).
+
+    A dip means spam rate is below its recent trend. This is a positive
+    development that we note for awareness but don't escalate into action.
+    """
+    dev = row.get("deviation_pct", 0)
+    spam_rate_change = row.get("spam_rate_change", 0)
+    traj = row.get("trajectory", "normal")
+
+    # Below trend AND not accelerating upward = dip
+    if dev < 0 and traj in ("normal", "decelerating"):
+        return True
+    # Strong negative deviation regardless of trajectory
+    if dev < -3:
+        return True
+    return False
+
+
 def _derive_signal(row: pd.Series, previous_domains: set) -> tuple[str, str]:
     """Derive an actionable signal from an anomaly row.
 
     Returns (signal_type, confidence).
+
+    Key distinction: spikes (bad) vs dips (good).
+    Dips = spam rate going DOWN = positive = cap at WATCH.
+    Spikes = spam rate going UP = negative = escalate normally.
     """
     dev = row.get("deviation_pct", 0)
     traj = row.get("trajectory", "normal")
@@ -104,6 +127,11 @@ def _derive_signal(row: pd.Series, previous_domains: set) -> tuple[str, str]:
     domain = row["Domain"]
 
     confidence = "Strong" if n_methods >= 3 else "Moderate" if n_methods >= 2 else "Developing"
+
+    # --- DIP FILTER: spam rate going DOWN is good news ---
+    # Cap at WATCH — we note it for awareness but don't escalate.
+    if _is_dip(row):
+        return "WATCH", confidence
 
     # CRITICAL: Domain was previously warned and is STILL anomalous
     if domain in previous_domains and n_methods >= 2:
@@ -213,7 +241,15 @@ def _describe_signal(row: pd.Series, signal: str, confidence: str) -> str:
             f"Not an emergency yet, but keep an eye on this domain over the next few days."
         )
 
-    # WATCH
+    # WATCH — distinguish dips (good) from generic watches
+    if _is_dip(row):
+        return (
+            f"Good news for {domain} — spam rate is dipping. "
+            f"Currently at {spam_pct:.2f}%, which is {abs_dev:.0f}% below its recent trend "
+            f"({ewma_pct:.2f}%). {threshold_note} "
+            f"No action needed. Whatever you're doing, keep doing it."
+        )
+
     parts = []
     if row.get("fourier_anomaly"):
         parts.append("the spam rate rhythm shifted slightly")

@@ -53,11 +53,18 @@ def load_data(
 
     logger.info("Raw data: %d rows, %d domains", len(df), df["Domain"].nunique())
 
-    # --- Filter 1: Only MEDIUM and HIGH reputation domains ---
+    # --- Filter 1: Only domains with MEDIUM or HIGH reputation on their MOST RECENT date ---
+    # We check each domain's reputation on its latest date of record.
+    # If a domain's most recent reputation is LOW or NONE, we exclude it entirely.
+    # This ensures we only monitor domains that currently have standing with Google.
     rows_before = len(df)
-    df = df[df["DomainReputation"].isin(VALID_REPUTATIONS)]
+    latest_date_per_domain = df.sort_values("Date").groupby("Domain").tail(1)
+    qualifying_domains = latest_date_per_domain[
+        latest_date_per_domain["DomainReputation"].isin(VALID_REPUTATIONS)
+    ]["Domain"].unique()
+    df = df[df["Domain"].isin(qualifying_domains)]
     logger.info(
-        "Reputation filter (MEDIUM/HIGH): kept %d of %d rows (%d domains)",
+        "Reputation filter (MEDIUM/HIGH on most recent date): kept %d of %d rows (%d domains)",
         len(df), rows_before, df["Domain"].nunique(),
     )
 

@@ -10,172 +10,147 @@
     <style>
         :root {
             --jamaica-green: #009B3A;
+            --jamaica-green-dark: #007A2E;
             --jamaica-gold: #FED100;
-            --jamaica-black: #1A1A1A;
+            --jamaica-gold-dark: #C4A200;
+            --jamaica-black: #0A0A0A;
             --red: #D50000;
             --dark-red: #B71C1C;
             --orange: #FF6D00;
             --deep-orange: #E65100;
             --blue: #2962FF;
             --teal: #00897B;
-            --purple: #7C4DFF;
             --light-blue: #90CAF9;
-            --bg: #F5F5F5;
+            --bg: #F7F8FA;
             --surface: #FFFFFF;
-            --text: #1A1A1A;
+            --text: #111827;
+            --text-secondary: #4B5563;
             --muted: #6B7280;
             --border: #E5E7EB;
-            --radius: 12px;
+            --border-light: #F3F4F6;
+            --radius: 8px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--bg);
             color: var(--text);
-            line-height: 1.5;
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
 
         /* ================================================================
-           HERO HEADER — The "What the F***" moment
+           HEADER — Serious. Olympic. Commanding.
            ================================================================ */
         .header {
-            background: linear-gradient(135deg, #0D1B2A 0%, #132A15 40%, #0D2818 70%, #1A0D28 100%);
+            background: var(--jamaica-black);
             color: white;
-            padding: 0;
-            border-bottom: 5px solid var(--jamaica-gold);
+            border-bottom: 4px solid var(--jamaica-gold);
             position: relative;
-            overflow: hidden;
         }
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 40px,
-                rgba(254, 209, 0, 0.03) 40px,
-                rgba(254, 209, 0, 0.03) 80px
-            );
-            animation: stripe-shift 20s linear infinite;
-        }
-        @keyframes stripe-shift {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(80px); }
-        }
-
-        .header-top {
+        .header-inner {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1.5rem 2rem 0;
-            position: relative;
-            z-index: 2;
+            gap: 1.5rem;
         }
-        .header-left { display: flex; align-items: center; gap: 1rem; }
-        .header-right { display: flex; align-items: center; gap: 1rem; }
-
-        .bobsled-icon {
-            width: 56px; height: 56px;
-            filter: drop-shadow(0 2px 8px rgba(254, 209, 0, 0.4));
-        }
-        .flag-icon { width: 40px; height: 28px; border-radius: 3px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-        .sanka-badge {
-            width: 64px; height: 64px;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
-            animation: sanka-wobble 3s ease-in-out infinite;
-        }
-        @keyframes sanka-wobble {
-            0%, 100% { transform: rotate(-3deg); }
-            50% { transform: rotate(3deg); }
-        }
-
-        .header h1 {
-            font-size: 2rem; font-weight: 900; letter-spacing: -0.03em;
-            line-height: 1.1;
-        }
-        .header h1 .gold { color: var(--jamaica-gold); }
-        .header .subtitle { color: rgba(255,255,255,0.55); font-size: 0.82rem; margin-top: 0.25rem; }
-
-        /* Chant banner — integrated into header */
-        .chant-strip {
-            position: relative; z-index: 2;
-            max-width: 1400px; margin: 0 auto;
-            padding: 1.25rem 2rem 1.5rem;
-        }
-        .chant-track {
+        .header-brand {
             display: flex;
             align-items: center;
-            gap: 0;
-            background: rgba(0, 155, 58, 0.15);
-            border: 2px solid rgba(254, 209, 0, 0.4);
-            border-radius: 50px;
-            padding: 0.5rem 1rem;
+            gap: 1.25rem;
+        }
+        .header-brand img {
+            height: 52px;
+            width: auto;
+            border-radius: 4px;
+        }
+        .brand-text h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 1.15;
+        }
+        .brand-text h1 .gold { color: var(--jamaica-gold); }
+        .brand-text .subtitle {
+            color: rgba(255,255,255,0.45);
+            font-size: 0.78rem;
+            margin-top: 0.15rem;
+            font-weight: 400;
+        }
+        .header-badges {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .header-badges img {
+            height: 44px;
+            width: auto;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .sanka-img {
+            height: 52px !important;
+            width: 52px !important;
+            border-radius: 50% !important;
+            object-fit: cover;
+            border: 2px solid var(--jamaica-gold) !important;
+        }
+
+        /* Chant bar */
+        .chant-bar {
+            background: #111;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        .chant-inner {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 0.6rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.4);
             overflow-x: auto;
             white-space: nowrap;
         }
-        .chant-step {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.3rem 0.8rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: rgba(255,255,255,0.8);
-            flex-shrink: 0;
-        }
-        .chant-step .chant-emoji { font-size: 1rem; }
-        .chant-step .chant-label { color: var(--jamaica-gold); }
-        .chant-step .chant-desc { color: rgba(255,255,255,0.5); font-weight: 400; font-size: 0.7rem; }
-        .chant-arrow { color: rgba(254, 209, 0, 0.4); font-size: 1rem; flex-shrink: 0; padding: 0 0.2rem; }
-
-        /* Tagline */
-        .tagline-bar {
-            position: relative; z-index: 2;
-            text-align: center;
-            padding: 0 2rem 1.25rem;
-            max-width: 1400px; margin: 0 auto;
-        }
-        .tagline-bar .quote {
-            color: var(--jamaica-gold);
-            font-size: 1rem;
-            font-style: italic;
-            font-weight: 600;
-            opacity: 0.9;
-        }
+        .chant-inner .step { color: var(--jamaica-gold); font-weight: 600; }
+        .chant-inner .sep { color: rgba(255,255,255,0.15); margin: 0 0.15rem; }
 
         /* ================================================================
-           CONTAINER & STATS
+           LAYOUT
            ================================================================ */
-        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
+        .container { max-width: 1360px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
 
+        /* ================================================================
+           STATS
+           ================================================================ */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 0.85rem;
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+            gap: 0.75rem;
             margin-bottom: 1.5rem;
         }
         .stat {
             background: var(--surface);
             border-radius: var(--radius);
-            padding: 1.1rem 1.3rem;
+            padding: 1rem 1.15rem;
             border: 1px solid var(--border);
-            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: var(--shadow-sm);
         }
-        .stat:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .stat .num { font-size: 2rem; font-weight: 800; line-height: 1.2; }
+        .stat .num { font-size: 1.75rem; font-weight: 800; line-height: 1.2; color: var(--text); }
         .stat .lbl {
-            font-size: 0.7rem; color: var(--muted); text-transform: uppercase;
-            letter-spacing: 0.06em; margin-top: 0.2rem; font-weight: 500;
+            font-size: 0.68rem; color: var(--muted); text-transform: uppercase;
+            letter-spacing: 0.06em; margin-top: 0.15rem; font-weight: 500;
         }
         .stat.red .num { color: var(--red); }
         .stat.green .num { color: var(--jamaica-green); }
         .stat.blue .num { color: var(--blue); }
-        .stat.gold .num { color: #B8860B; }
+        .stat.gold .num { color: var(--jamaica-gold-dark); }
 
         /* ================================================================
            CARDS
@@ -184,41 +159,107 @@
             background: var(--surface);
             border-radius: var(--radius);
             border: 1px solid var(--border);
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow-sm);
         }
         .card-head {
-            padding: 1rem 1.5rem;
+            padding: 0.85rem 1.25rem;
             border-bottom: 1px solid var(--border);
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.88rem;
+            color: var(--text);
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-        .card-head-icon { font-size: 1.15rem; }
-        .card-body { padding: 1.25rem 1.5rem; }
+        .card-head .card-icon { color: var(--muted); flex-shrink: 0; }
+        .card-body { padding: 1rem 1.25rem; }
         .card-body.flush { padding: 0; }
 
         /* ================================================================
-           SIGNAL TABLE — Top 10 with Show More
+           DOMAIN RANKING LIST (replaces bar chart)
            ================================================================ */
-        .tbl { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .ranking-list { list-style: none; }
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.6rem 1.25rem;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .ranking-item:last-child { border-bottom: none; }
+        .ranking-item:hover { background: var(--border-light); }
+        .ranking-rank {
+            width: 28px; height: 28px;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 700;
+            background: var(--bg); color: var(--muted);
+            flex-shrink: 0;
+        }
+        .ranking-item.flagged .ranking-rank { background: #FEE2E2; color: var(--red); }
+        .ranking-domain {
+            flex: 1;
+            font-weight: 500;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .ranking-rate {
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            min-width: 60px;
+            text-align: right;
+        }
+        .ranking-bar-wrap {
+            width: 100px; height: 6px;
+            background: var(--border-light);
+            border-radius: 3px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .ranking-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        .ranking-rep {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .rep-HIGH { background: #DCFCE7; color: #166534; }
+        .rep-MEDIUM { background: #FEF9C3; color: #854D0E; }
+        .ranking-overflow { display: none; }
+        .ranking-overflow.revealed { display: flex; }
+        .ranking-toggle-wrap {
+            text-align: center;
+            padding: 0.6rem 1.25rem 0.85rem;
+        }
+
+        /* ================================================================
+           SIGNAL TABLE
+           ================================================================ */
+        .tbl { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
         .tbl th {
-            text-align: left; padding: 0.65rem 1rem; background: var(--bg);
-            font-weight: 600; font-size: 0.7rem; text-transform: uppercase;
+            text-align: left; padding: 0.6rem 1rem; background: var(--bg);
+            font-weight: 600; font-size: 0.68rem; text-transform: uppercase;
             letter-spacing: 0.05em; color: var(--muted);
             position: sticky; top: 0; z-index: 1;
         }
-        .tbl td { padding: 0.7rem 1rem; border-top: 1px solid var(--border); vertical-align: top; }
-        .tbl tr:hover { background: #F9FAFB; }
+        .tbl td { padding: 0.6rem 1rem; border-top: 1px solid var(--border-light); vertical-align: top; }
+        .tbl tr:hover { background: #FAFBFC; }
         .tbl tr.hidden-row { display: none; }
         .tbl tr.hidden-row.revealed { display: table-row; }
 
         .signal-pill {
-            display: inline-block; padding: 0.2rem 0.65rem; border-radius: 5px;
-            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; color: white;
+            display: inline-block; padding: 0.18rem 0.55rem; border-radius: 4px;
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em; color: white;
         }
         .signal-watch { background: var(--light-blue); color: #1A1A1A; }
         .signal-heads_up { background: var(--jamaica-gold); color: #1A1A1A; }
@@ -228,279 +269,212 @@
         .signal-critical { background: var(--dark-red); }
 
         .new-badge {
-            display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px;
-            font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em;
-            background: linear-gradient(135deg, var(--jamaica-green), #00C853); color: white;
-            margin-left: 0.4rem; vertical-align: middle; text-transform: uppercase;
-            animation: pulse-new 2s ease-in-out infinite;
+            display: inline-block; padding: 0.12rem 0.4rem; border-radius: 3px;
+            font-size: 0.58rem; font-weight: 700; letter-spacing: 0.06em;
+            background: var(--jamaica-green); color: white;
+            margin-left: 0.35rem; vertical-align: middle; text-transform: uppercase;
         }
-        @keyframes pulse-new {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        .historical-row { opacity: 0.65; }
+        .historical-row { opacity: 0.55; }
         .historical-row:hover { opacity: 1; }
 
-        .confidence { font-size: 0.72rem; font-weight: 600; }
+        .confidence { font-size: 0.7rem; font-weight: 600; }
         .conf-strong { color: var(--jamaica-green); }
         .conf-moderate { color: var(--orange); }
         .conf-developing { color: var(--muted); }
-
-        .tagline-cell {
-            font-size: 0.72rem; font-style: italic; color: var(--muted);
-            white-space: nowrap;
-        }
-        .desc { font-size: 0.8rem; color: var(--muted); max-width: 420px; line-height: 1.4; }
-        .domain-label { font-weight: 600; font-size: 0.8rem; word-break: break-all; }
+        .tagline-cell { font-size: 0.7rem; font-style: italic; color: var(--muted); white-space: nowrap; }
+        .desc { font-size: 0.78rem; color: var(--text-secondary); max-width: 400px; line-height: 1.5; }
+        .domain-label { font-weight: 600; font-size: 0.78rem; word-break: break-all; }
         .dots { display: flex; gap: 3px; align-items: center; }
-        .dot { width: 7px; height: 7px; border-radius: 50%; background: #E0E0E0; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; background: #E0E0E0; }
         .dot.on { background: var(--red); }
 
-        /* Signal legend */
         .signal-legend {
-            display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0.75rem 0;
-            font-size: 0.75rem; color: var(--muted);
+            display: flex; flex-wrap: wrap; gap: 0.75rem; padding: 0.6rem 0;
+            font-size: 0.72rem; color: var(--muted);
         }
-        .signal-legend-item { display: flex; align-items: center; gap: 0.35rem; }
-        .signal-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .signal-legend-item { display: flex; align-items: center; gap: 0.3rem; }
+        .signal-legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-        /* Show More button */
-        .show-more-wrap {
-            text-align: center;
-            padding: 0.75rem 1rem 1rem;
-            border-top: 1px solid var(--border);
-        }
-        .show-more-btn {
-            display: inline-flex; align-items: center; gap: 0.4rem;
-            padding: 0.5rem 1.5rem;
-            border: 2px solid var(--jamaica-green);
-            border-radius: 50px;
-            background: transparent;
-            color: var(--jamaica-green);
-            font-size: 0.8rem;
-            font-weight: 700;
+        /* Toggle button (shared) */
+        .toggle-btn {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.4rem 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface);
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
             font-family: inherit;
             cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: 0.02em;
+            transition: all 0.15s;
         }
-        .show-more-btn:hover {
-            background: var(--jamaica-green);
-            color: white;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 155, 58, 0.3);
-        }
-        .show-more-btn .arrow { transition: transform 0.2s; }
-        .show-more-btn.expanded .arrow { transform: rotate(180deg); }
+        .toggle-btn:hover { border-color: var(--jamaica-green); color: var(--jamaica-green); }
+        .toggle-btn .arrow { transition: transform 0.2s; font-size: 0.6rem; }
+        .toggle-btn.expanded .arrow { transform: rotate(180deg); }
 
         /* ================================================================
-           DOMAIN NAV — Top 10 with Show More
+           DOMAIN DEEP DIVE
            ================================================================ */
-        .domain-nav-wrap { border-bottom: 1px solid var(--border); }
-        .domain-nav {
-            display: flex; flex-wrap: wrap; gap: 0.4rem;
-            padding: 0.85rem 1.5rem;
-        }
-        .domain-nav .dbtn.hidden-domain { display: none; }
-        .domain-nav .dbtn.hidden-domain.revealed { display: inline-block; }
-        .domain-show-more {
+        .domain-selector-wrap {
+            padding: 0.85rem 1.25rem;
+            border-bottom: 1px solid var(--border);
             display: flex;
-            justify-content: center;
-            padding: 0 1.5rem 0.85rem;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
         }
-
+        .domain-selector-label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
+        }
+        .domain-top-btns {
+            display: flex; flex-wrap: wrap; gap: 0.35rem;
+        }
         .dbtn {
-            padding: 0.35rem 0.8rem; border: 1px solid var(--border); border-radius: 8px;
-            background: var(--surface); cursor: pointer; font-size: 0.72rem;
-            font-weight: 500; font-family: inherit; transition: all 0.15s;
-            line-height: 1.3; max-width: 220px; overflow: hidden; text-overflow: ellipsis;
-            white-space: nowrap;
+            padding: 0.3rem 0.7rem; border: 1px solid var(--border); border-radius: 6px;
+            background: var(--surface); cursor: pointer; font-size: 0.7rem;
+            font-weight: 500; font-family: inherit; transition: all 0.12s;
+            line-height: 1.3; max-width: 200px; overflow: hidden; text-overflow: ellipsis;
+            white-space: nowrap; color: var(--text);
         }
         .dbtn:hover { border-color: var(--jamaica-green); color: var(--jamaica-green); }
         .dbtn.active {
-            background: linear-gradient(135deg, var(--jamaica-green), #007A2E);
-            color: white; border-color: var(--jamaica-green);
-            box-shadow: 0 2px 8px rgba(0, 155, 58, 0.3);
+            background: var(--jamaica-black);
+            color: var(--jamaica-gold);
+            border-color: var(--jamaica-black);
         }
         .dbtn.flagged { border-left: 3px solid var(--red); }
 
-        /* Method detail charts */
-        .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.25rem; }
+        .domain-dropdown-sep {
+            width: 1px; height: 24px; background: var(--border);
+            flex-shrink: 0; margin: 0 0.25rem;
+        }
+
+        .domain-dropdown {
+            padding: 0.35rem 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 500;
+            color: var(--text);
+            background: var(--surface);
+            cursor: pointer;
+            max-width: 240px;
+        }
+        .domain-dropdown:focus { outline: none; border-color: var(--jamaica-green); }
+
+        /* Method grid */
+        .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
         @media (max-width: 900px) { .method-grid { grid-template-columns: 1fr; } }
         .method-panel {
-            border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
-            transition: box-shadow 0.15s;
+            border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
         }
-        .method-panel:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .method-panel-head {
-            padding: 0.6rem 0.85rem; background: var(--bg);
-            font-size: 0.78rem; font-weight: 600; color: var(--muted);
+            padding: 0.5rem 0.75rem; background: var(--bg);
+            font-size: 0.75rem; font-weight: 600; color: var(--muted);
             border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 0.4rem;
         }
-        .method-panel-head .method-icon { font-size: 0.9rem; }
         .method-panel-body { padding: 0.5rem; }
 
         /* ================================================================
-           TECH SECTION & HOW IT WORKS
+           COLLAPSIBLE SECTIONS
            ================================================================ */
-        .tech-section { margin-top: 0.75rem; }
+        .collapsible-trigger { cursor: pointer; user-select: none; }
+        .collapsible-trigger .toggle-icon {
+            transition: transform 0.2s; display: inline-block;
+            color: var(--muted); font-size: 0.7rem;
+        }
+        .collapsible-trigger.open .toggle-icon { transform: rotate(90deg); }
+        .collapsible-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+        .collapsible-body.open { max-height: 5000px; }
+
+        /* ================================================================
+           TECH SECTIONS
+           ================================================================ */
         .tech-section h3 {
-            font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;
-            padding-top: 1rem; border-top: 1px solid var(--border);
-            display: flex; align-items: center; gap: 0.4rem;
+            font-size: 0.92rem; font-weight: 700; margin-bottom: 0.4rem;
+            padding-top: 0.85rem; border-top: 1px solid var(--border);
         }
         .tech-section h3:first-child { border-top: none; padding-top: 0; }
-        .tech-section p, .tech-section li {
-            font-size: 0.82rem; color: var(--muted); line-height: 1.65;
-        }
-        .tech-section ul { margin: 0.4rem 0 0.8rem 1.2rem; }
+        .tech-section p, .tech-section li { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.65; }
+        .tech-section ul { margin: 0.4rem 0 0.75rem 1.2rem; }
         .tech-section .formula {
             font-family: 'Courier New', monospace; background: var(--bg);
-            padding: 0.6rem 0.85rem; border-radius: 8px; margin: 0.5rem 0;
-            font-size: 0.78rem; overflow-x: auto; border: 1px solid var(--border);
+            padding: 0.55rem 0.8rem; border-radius: 6px; margin: 0.5rem 0;
+            font-size: 0.75rem; overflow-x: auto; border: 1px solid var(--border);
             line-height: 1.7;
         }
-        .tech-section .highlight { color: var(--jamaica-green); font-weight: 600; }
-
-        /* Collapsible "How It Works" */
-        .collapsible-trigger {
-            cursor: pointer;
-            user-select: none;
-        }
-        .collapsible-trigger .toggle-icon { transition: transform 0.2s; display: inline-block; }
-        .collapsible-trigger.open .toggle-icon { transform: rotate(90deg); }
-        .collapsible-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease;
-        }
-        .collapsible-body.open {
-            max-height: 5000px;
-        }
+        .tech-section .highlight { color: var(--jamaica-green-dark); font-weight: 600; }
 
         /* ================================================================
            FOOTER
            ================================================================ */
         .footer {
-            text-align: center; padding: 2rem 1.5rem; font-size: 0.75rem; color: var(--muted);
+            text-align: center; padding: 1.5rem; font-size: 0.72rem; color: var(--muted);
             border-top: 1px solid var(--border);
         }
-        .footer .footer-bobsled { margin-bottom: 0.5rem; opacity: 0.3; }
-        .empty-msg { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.9rem; }
+        .empty-msg { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.88rem; }
 
-        /* Smooth scrolling */
         html { scroll-behavior: smooth; }
 
-        /* Print-friendly */
         @media print {
-            .header { background: var(--jamaica-green) !important; }
-            .show-more-btn, .domain-show-more { display: none; }
+            .toggle-btn { display: none; }
             .tbl tr.hidden-row { display: table-row !important; }
-            .dbtn.hidden-domain { display: inline-block !important; }
+            .ranking-overflow { display: flex !important; }
+            .collapsible-body { max-height: none !important; }
         }
     </style>
 </head>
 <body>
 
     <!-- ================================================================
-         HEADER — The moment they land
+         HEADER
          ================================================================ -->
     <div class="header">
-        <div class="header-top">
-            <div class="header-left">
-                <!-- Bobsled Icon (SVG) -->
-                <svg class="bobsled-icon" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <ellipse cx="32" cy="50" rx="26" ry="6" fill="rgba(254,209,0,0.15)"/>
-                    <path d="M8 38 C8 34, 12 28, 20 26 L44 24 C52 23, 58 28, 58 32 L58 38 C58 42, 54 44, 48 44 L16 44 C12 44, 8 42, 8 38Z" fill="var(--jamaica-green)" stroke="var(--jamaica-gold)" stroke-width="2"/>
-                    <path d="M16 44 L48 44" stroke="var(--jamaica-gold)" stroke-width="1.5"/>
-                    <rect x="14" y="28" width="8" height="12" rx="2" fill="var(--jamaica-gold)" opacity="0.8"/>
-                    <rect x="26" y="27" width="8" height="12" rx="2" fill="var(--jamaica-gold)" opacity="0.8"/>
-                    <rect x="38" y="26" width="8" height="12" rx="2" fill="var(--jamaica-gold)" opacity="0.8"/>
-                    <circle cx="16" cy="48" r="3.5" fill="#333" stroke="var(--jamaica-gold)" stroke-width="1"/>
-                    <circle cx="48" cy="48" r="3.5" fill="#333" stroke="var(--jamaica-gold)" stroke-width="1"/>
-                    <path d="M54 30 L60 22 L62 24" stroke="var(--jamaica-gold)" stroke-width="2" stroke-linecap="round" fill="none"/>
-                </svg>
-                <div>
-                    <h1><span class="gold">Cool Runnings</span> Spam Monitor</h1>
-                    <div class="subtitle">{{ n_domains }} domains &middot; {{ sensitivity }} sensitivity &middot; {{ date_range_days }}-day window &middot; {{ generated_at }}</div>
-                </div>
-            </div>
-            <div class="header-right">
-                <!-- Jamaican Flag (SVG) -->
-                <svg class="flag-icon" viewBox="0 0 60 40" xmlns="http://www.w3.org/2000/svg">
+        <div class="header-inner">
+            <div class="header-brand">
+                <!-- Jamaican Flag -->
+                <svg viewBox="0 0 60 40" style="height:36px;width:54px;border-radius:3px;border:1px solid rgba(255,255,255,0.1);flex-shrink:0">
                     <rect width="60" height="40" fill="#009B3A"/>
-                    <polygon points="0,0 30,20 0,40" fill="#1A1A1A"/>
-                    <polygon points="60,0 30,20 60,40" fill="#1A1A1A"/>
-                    <polygon points="0,0 30,20 60,0" fill="#FED100" opacity="0.0"/>
-                    <polygon points="0,40 30,20 60,40" fill="#FED100" opacity="0.0"/>
-                    <line x1="0" y1="0" x2="60" y2="40" stroke="#FED100" stroke-width="5"/>
-                    <line x1="60" y1="0" x2="0" y2="40" stroke="#FED100" stroke-width="5"/>
+                    <polygon points="0,0 30,20 0,40" fill="#000"/>
+                    <polygon points="60,0 30,20 60,40" fill="#000"/>
+                    <line x1="0" y1="0" x2="60" y2="40" stroke="#FED100" stroke-width="5.5"/>
+                    <line x1="60" y1="0" x2="0" y2="40" stroke="#FED100" stroke-width="5.5"/>
                 </svg>
-                <!-- Sanka Head (SVG caricature) -->
-                <svg class="sanka-badge" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="32" cy="34" r="22" fill="#8B5E3C"/>
-                    <circle cx="32" cy="34" r="20" fill="#A0714F"/>
-                    <ellipse cx="25" cy="31" rx="3" ry="3.5" fill="white"/>
-                    <ellipse cx="39" cy="31" rx="3" ry="3.5" fill="white"/>
-                    <circle cx="25.5" cy="31.5" r="1.8" fill="#1A1A1A"/>
-                    <circle cx="39.5" cy="31.5" r="1.8" fill="#1A1A1A"/>
-                    <ellipse cx="32" cy="39" rx="7" ry="4" fill="#8B5E3C"/>
-                    <path d="M27 38 Q32 44 37 38" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/>
-                    <ellipse cx="32" cy="36" rx="3" ry="1.5" fill="#8B5E3C"/>
-                    <ellipse cx="32" cy="35.5" rx="2.5" ry="1.2" fill="#A0714F"/>
-                    <!-- Beanie hat -->
-                    <path d="M12 28 Q12 12, 32 10 Q52 12, 52 28" fill="#FED100"/>
-                    <rect x="12" y="26" width="40" height="5" rx="2" fill="var(--jamaica-green)"/>
-                    <rect x="12" y="24" width="40" height="3" rx="1" fill="#1A1A1A"/>
-                    <circle cx="32" cy="8" r="3" fill="var(--jamaica-green)"/>
-                    <!-- Eyebrow raise = surprise -->
-                    <path d="M21 26 Q25 22 29 26" stroke="#1A1A1A" stroke-width="1.5" fill="none"/>
-                    <path d="M35 26 Q39 22 43 26" stroke="#1A1A1A" stroke-width="1.5" fill="none"/>
-                </svg>
-            </div>
-        </div>
-
-        <!-- Chant progression strip -->
-        <div class="chant-strip">
-            <div class="chant-track">
-                <div class="chant-step">
-                    <span class="chant-label">Feel the Rhythm</span>
-                    <span class="chant-desc">pattern changed</span>
-                </div>
-                <span class="chant-arrow">&rarr;</span>
-                <div class="chant-step">
-                    <span class="chant-label">Feel the Rhyme</span>
-                    <span class="chant-desc">never seen before</span>
-                </div>
-                <span class="chant-arrow">&rarr;</span>
-                <div class="chant-step">
-                    <span class="chant-label">Get on Up</span>
-                    <span class="chant-desc">3 tests agree</span>
-                </div>
-                <span class="chant-arrow">&rarr;</span>
-                <div class="chant-step">
-                    <span class="chant-label">It's Bobsled Time!</span>
-                    <span class="chant-desc">momentum locked in</span>
-                </div>
-                <span class="chant-arrow">&rarr;</span>
-                <div class="chant-step">
-                    <span style="color: var(--red); font-weight: 700;">Sanka, Ya Dead?</span>
-                    <span class="chant-desc">I warned you!</span>
+                <div class="brand-text">
+                    <h1><span class="gold">Cool Runnings</span> Spam Monitor</h1>
+                    <div class="subtitle">{{ n_domains }} domains &middot; {{ sensitivity }} sensitivity &middot; {{ date_range_days }}d window &middot; {{ generated_at }}</div>
                 </div>
             </div>
+            <div class="header-badges">
+                <img class="sanka-img"
+                     src="https://assets.mycast.io/actor_images/actor-sanka-coffie-cool-runnings-451950_large.jpg?1654817017"
+                     alt="Sanka Coffie"
+                     onerror="this.style.display='none'">
+            </div>
         </div>
+    </div>
 
-        <div class="tagline-bar">
-            <span class="quote">"Feel the rhythm, feel the rhyme, get on up, it's bobsled time!"</span>
+    <!-- Chant bar -->
+    <div class="chant-bar">
+        <div class="chant-inner">
+            <span class="step">Feel the Rhythm</span><span class="sep">&rarr;</span>
+            <span class="step">Feel the Rhyme</span><span class="sep">&rarr;</span>
+            <span class="step">Get on Up</span><span class="sep">&rarr;</span>
+            <span class="step">It's Bobsled Time!</span><span class="sep">&rarr;</span>
+            <span style="color:rgba(213,0,0,0.7);font-weight:600;">Sanka, Ya Dead?</span>
         </div>
     </div>
 
     <div class="container">
 
-        <!-- ================================================================
-             STATS STRIP
-             ================================================================ -->
+        <!-- Stats -->
         <div class="stats">
             <div class="stat blue"><div class="num">{{ n_domains }}</div><div class="lbl">Domains Monitored</div></div>
             <div class="stat red"><div class="num">{{ n_anomalies }}</div><div class="lbl">Anomalies Detected</div></div>
@@ -513,31 +487,57 @@
         </div>
 
         <!-- ================================================================
-             SCOREBOARD — Which domains need attention?
-             ================================================================ -->
-        <div class="card">
-            <div class="card-head"><span class="card-head-icon">&#127942;</span> Which domains need attention?</div>
-            <div class="card-body"><div id="scoreboard-chart"></div></div>
-        </div>
-
-        <!-- ================================================================
-             SIGNALS TABLE — Top 10 with Show More
+             DOMAIN RANKING (replaces bar chart)
              ================================================================ -->
         <div class="card">
             <div class="card-head">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                Spam Rate Signals — What Needs Your Attention
+                <svg class="card-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+                Domain Ranking — By Recent Spam Rate
             </div>
-            <div class="card-body flush" style="overflow-x: auto;">
+            <div class="card-body flush">
+                <ul class="ranking-list" id="ranking-list">
+                    {% for d in domain_ranking %}
+                    <li class="ranking-item {% if d.has_signal %}flagged{% endif %} {% if loop.index > 10 %}ranking-overflow{% endif %}"
+                        onclick="showDomainByName('{{ d.domain }}')">
+                        <span class="ranking-rank">{{ loop.index }}</span>
+                        <span class="ranking-domain">{{ d.display }}</span>
+                        <span class="ranking-rep rep-{{ d.reputation }}">{{ d.reputation }}</span>
+                        <span class="ranking-rate" style="color:{% if d.spam_rate > 0.003 %}var(--red){% elif d.spam_rate > 0.001 %}var(--orange){% else %}var(--jamaica-green){% endif %}">{{ d.spam_rate_pct }}</span>
+                        <span class="ranking-bar-wrap">
+                            <span class="ranking-bar" style="width:{{ [d.spam_rate * 10000, 100]|min }}%;background:{% if d.spam_rate > 0.003 %}var(--red){% elif d.spam_rate > 0.001 %}var(--orange){% else %}var(--jamaica-green){% endif %}"></span>
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% if domain_ranking|length > 10 %}
+                <div class="ranking-toggle-wrap">
+                    <button class="toggle-btn" onclick="toggleRanking(this)">
+                        <span class="btn-text">Show All {{ domain_ranking|length }} Domains</span>
+                        <span class="arrow">&#9660;</span>
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ================================================================
+             SIGNALS TABLE
+             ================================================================ -->
+        <div class="card">
+            <div class="card-head">
+                <svg class="card-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Signals — What Needs Attention
+            </div>
+            <div class="card-body flush" style="overflow-x:auto;">
                 {% if alerts %}
-                <div style="padding: 0.6rem 1.5rem 0;">
+                <div style="padding:0.5rem 1.25rem 0;">
                     <div class="signal-legend">
-                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#90CAF9"></div> Watch — "Peace be the journey"</div>
-                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#FED100"></div> Heads Up — "Feel the Rhythm"</div>
-                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#FF6D00"></div> Attention — "Feel the Rhyme"</div>
-                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#E65100"></div> Warning — "Get on Up"</div>
-                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#D50000"></div> Urgent — "It's Bobsled Time"</div>
-                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#B71C1C"></div> Critical — "Sanka, Ya Dead?"</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#90CAF9"></div> Watch</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#FED100"></div> Heads Up</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#FF6D00"></div> Attention</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#E65100"></div> Warning</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#D50000"></div> Urgent</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#B71C1C"></div> Critical</div>
                     </div>
                 </div>
                 <table class="tbl" id="signals-table">
@@ -550,7 +550,7 @@
                             <th>Date</th>
                             <th>Spam Rate</th>
                             <th>Methods</th>
-                            <th>What's Happening &amp; What To Do</th>
+                            <th>What's Happening</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -563,7 +563,7 @@
                             <td><span class="tagline-cell">"{{ a.signal_tagline }}"</span></td>
                             <td><span class="confidence conf-{{ a.confidence|lower }}">{{ a.confidence }}</span></td>
                             <td><div class="domain-label">{{ a.domain }}</div></td>
-                            <td>{{ a.date }}</td>
+                            <td style="white-space:nowrap;">{{ a.date }}</td>
                             <td><strong>{{ a.spam_rate_pct }}</strong></td>
                             <td>
                                 <div class="dots">
@@ -578,72 +578,65 @@
                     </tbody>
                 </table>
                 {% if alerts|length > 10 %}
-                <div class="show-more-wrap">
-                    <button class="show-more-btn" onclick="toggleSignals(this)" id="signals-toggle">
+                <div style="text-align:center;padding:0.6rem 1rem 0.85rem;border-top:1px solid var(--border-light);">
+                    <button class="toggle-btn" onclick="toggleSignals(this)">
                         <span class="btn-text">Show All {{ alerts|length }} Signals</span>
                         <span class="arrow">&#9660;</span>
                     </button>
                 </div>
                 {% endif %}
                 {% else %}
-                <div class="empty-msg">
-                    <svg width="32" height="32" viewBox="0 0 64 64" fill="none" style="margin-bottom: 0.5rem; opacity: 0.3;">
-                        <circle cx="32" cy="32" r="28" stroke="#6B7280" stroke-width="2"/>
-                        <path d="M20 38 Q32 48 44 38" stroke="#6B7280" stroke-width="2" fill="none"/>
-                        <circle cx="24" cy="26" r="2" fill="#6B7280"/>
-                        <circle cx="40" cy="26" r="2" fill="#6B7280"/>
-                    </svg>
-                    <br>Peace be the journey. No anomalies detected &mdash; all domains have normal spam rates.
-                </div>
+                <div class="empty-msg">Peace be the journey. No anomalies detected — all domains are running clean.</div>
                 {% endif %}
             </div>
         </div>
 
         <!-- ================================================================
-             DOMAIN DEEP DIVE — Top 10 with Show More
+             DOMAIN DEEP DIVE
              ================================================================ -->
         <div class="card">
             <div class="card-head">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                Domain Deep Dive — Click to explore
+                <svg class="card-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Domain Deep Dive
             </div>
-            <div class="domain-nav-wrap">
-                <div class="domain-nav" id="domain-nav">
-                    {% for di in domain_info %}
-                    <button class="dbtn {% if di.has_signal %}flagged{% endif %} {% if loop.first %}active{% endif %} {% if loop.index > 10 %}hidden-domain{% endif %}"
+            <div class="domain-selector-wrap">
+                <span class="domain-selector-label">Top Domains</span>
+                <div class="domain-top-btns">
+                    {% for di in top_domains %}
+                    <button class="dbtn {% if di.has_signal %}flagged{% endif %} {% if loop.first %}active{% endif %}"
                             onclick="showDomain('{{ di.domain }}', this)"
-                            title="{{ di.domain }}"
-                            {% if loop.index > 10 %}data-overflow-domain="true"{% endif %}>
+                            title="{{ di.domain }} — {{ di.spam_rate_pct }}">
                         {{ di.display }}
                     </button>
                     {% endfor %}
                 </div>
-                {% if domain_info|length > 10 %}
-                <div class="domain-show-more">
-                    <button class="show-more-btn" onclick="toggleDomains(this)" id="domains-toggle">
-                        <span class="btn-text">Show All {{ domain_info|length }} Domains</span>
-                        <span class="arrow">&#9660;</span>
-                    </button>
-                </div>
+                {% if rest_domains %}
+                <div class="domain-dropdown-sep"></div>
+                <select class="domain-dropdown" onchange="showDomainFromDropdown(this.value, this)" id="domain-dropdown">
+                    <option value="">All {{ rest_domains|length }} other domains...</option>
+                    {% for di in rest_domains %}
+                    <option value="{{ di.domain }}">{{ di.domain }} ({{ di.spam_rate_pct }})</option>
+                    {% endfor %}
+                </select>
                 {% endif %}
             </div>
             <div class="card-body">
-                <div id="domain-chart" style="min-height: 400px;"></div>
+                <div id="domain-chart" style="min-height:380px;"></div>
                 <div class="method-grid">
                     <div class="method-panel">
-                        <div class="method-panel-head"><span class="method-icon">&#127926;</span> "Feel the Rhythm" — Has the spam rate pattern changed?</div>
+                        <div class="method-panel-head">"Feel the Rhythm" — Pattern change detection</div>
                         <div class="method-panel-body"><div id="method-fourier"></div></div>
                     </div>
                     <div class="method-panel">
-                        <div class="method-panel-head"><span class="method-icon">&#127911;</span> "Feel the Rhyme" — Is this something we've never seen before?</div>
+                        <div class="method-panel-head">"Feel the Rhyme" — Unprecedented pattern detection</div>
                         <div class="method-panel-body"><div id="method-mp"></div></div>
                     </div>
                     <div class="method-panel">
-                        <div class="method-panel-head"><span class="method-icon">&#128170;</span> "Get on Up" — Do three independent check-ups agree?</div>
+                        <div class="method-panel-head">"Get on Up" — Multi-test consensus</div>
                         <div class="method-panel-body"><div id="method-ensemble"></div></div>
                     </div>
                     <div class="method-panel">
-                        <div class="method-panel-head"><span class="method-icon">&#128755;</span> "It's Bobsled Time" — Is the trend picking up speed?</div>
+                        <div class="method-panel-head">"It's Bobsled Time" — Trend momentum</div>
                         <div class="method-panel-body"><div id="method-ewma"></div></div>
                     </div>
                 </div>
@@ -651,95 +644,61 @@
         </div>
 
         <!-- ================================================================
-             HOW IT WORKS — Collapsible
+             HOW IT WORKS (collapsed by default)
              ================================================================ -->
         <div class="card">
             <div class="card-head collapsible-trigger" onclick="toggleSection('howit-body', this)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                How This Works (No Jargon, We Promise)
-                <span class="toggle-icon" style="margin-left: auto;">&#9654;</span>
+                <svg class="card-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                How This Works
+                <span class="toggle-icon" style="margin-left:auto;">&#9654;</span>
             </div>
             <div class="collapsible-body" id="howit-body">
                 <div class="card-body">
                     <div class="tech-section">
-                        <p style="margin-bottom: 1rem; font-size: 0.88rem;">
-                            We run <strong>four independent tests</strong> on every domain's spam rate every day.
-                            Think of it like getting four different doctors' opinions. When they agree, you should listen.
-                            Here's what each test looks for, explained using the Cool Runnings chant:
+                        <p style="margin-bottom:0.85rem;font-size:0.85rem;">
+                            Four independent detection methods run daily on every domain.
+                            When they agree, the signal escalates. Spikes (spam rate going UP) trigger action.
+                            Dips (spam rate going DOWN) are noted for awareness only.
                         </p>
 
-                        <h3><span style="color: var(--jamaica-gold);">&#127926;</span> "Feel the Rhythm" — Did the pattern change?</h3>
-                        <p>
-                            Every domain has a natural "rhythm" to its spam rate — it goes up a little, down a little,
-                            following patterns from send cadence and list quality. This test (Fourier Transform) watches
-                            that rhythm. When the rhythm changes in a way that's <span class="highlight">structurally different</span>
-                            from what we've seen before, it fires.
-                        </p>
-                        <p><strong>What it catches:</strong> Slow, structural shifts in how recipients perceive your email.
-                        Something fundamental changed in your sending or your audience.</p>
+                        <h3>"Feel the Rhythm" — Fourier Transform</h3>
+                        <p>Watches the natural rhythm of spam reports. When the spectral signature changes structurally, it fires.</p>
+                        <p><strong>Catches:</strong> Slow, structural shifts in audience perception of your email.</p>
 
-                        <h3><span style="color: var(--jamaica-gold);">&#127911;</span> "Feel the Rhyme" — Is this something new?</h3>
-                        <p>
-                            This test (Matrix Profile) asks a simple question: "In all the history we have for this domain,
-                            has the spam rate <span class="highlight">ever done this before?</span>" If the current week's
-                            pattern has no good match in history, it's genuinely novel — a new verse in the song.
-                        </p>
-                        <p><strong>What it catches:</strong> First-time events — sudden spikes from spam traps,
-                        new list sources going bad, infrastructure changes affecting reputation.</p>
+                        <h3>"Feel the Rhyme" — Matrix Profile</h3>
+                        <p>Asks: "Has the spam rate <span class="highlight">ever done this before?</span>" If the current pattern has no historical match, it's novel.</p>
+                        <p><strong>Catches:</strong> First-time events — spam traps, bad list sources, infrastructure changes.</p>
 
-                        <h3><span style="color: var(--jamaica-gold);">&#128170;</span> "Get on Up" — Do three check-ups agree?</h3>
-                        <p>
-                            Three independent statistical tests each look at the spam rate from a different angle:
-                        </p>
-                        <ul>
-                            <li><strong>Z-Score:</strong> Is today's spam rate far from the recent average? (Like checking your temperature)</li>
-                            <li><strong>Seasonal Decomposition:</strong> After removing weekly patterns, is there unexplained behavior? (Like ruling out "normal" causes)</li>
-                            <li><strong>Isolation Forest:</strong> Does this combination of spam rate + change + volatility look like an outlier? (Like a full blood panel)</li>
-                        </ul>
-                        <p>When all three agree, that's <span class="highlight">three independent confirmations</span>.
-                        Time to pay attention.</p>
+                        <h3>"Get on Up" — Statistical Ensemble</h3>
+                        <p>Three independent tests (Z-Score, Seasonal Decomposition, Isolation Forest) each look from a different angle.</p>
+                        <p><strong>Catches:</strong> Multi-dimensional outliers that no single test would flag alone.</p>
 
-                        <h3><span style="color: var(--jamaica-gold);">&#128755;</span> "It's Bobsled Time" — Is the trend gaining speed?</h3>
-                        <p>
-                            This test (EWMA Trend Analysis) tracks the <span class="highlight">momentum</span> of your spam rate.
-                            Is it accelerating upward? Decelerating? Breaking out? When the momentum locks in,
-                            it's bobsled time — the sled is moving and you need to steer.
-                        </p>
-                        <p><strong>Trajectory types:</strong></p>
-                        <ul>
-                            <li><strong>Normal:</strong> Spam rate is within its usual range. Peace be the journey.</li>
-                            <li><strong>Accelerating:</strong> Spam rate is pulling away from its trend — momentum is building.</li>
-                            <li><strong>Decelerating:</strong> Spam rate is reverting back toward its trend — things are stabilizing.</li>
-                            <li><strong>Breakout:</strong> Extreme deviation — something big happened.</li>
-                        </ul>
+                        <h3>"It's Bobsled Time" — EWMA Trend</h3>
+                        <p>Tracks spam rate <span class="highlight">momentum</span>. Accelerating? Decelerating? Breaking out?</p>
+                        <p><strong>Catches:</strong> Sustained trends that build over days — the sled is moving.</p>
 
-                        <h3>How Alerts Escalate</h3>
-                        <p>
-                            The signal level is determined by how many methods agree and how severe the anomaly is:
-                        </p>
+                        <h3>Alert Escalation</h3>
                         <div class="formula">
-WATCH:    "Peace Be the Journey"   — 1 test sees something. We're watching. No action needed.
-HEADS UP: "Feel the Rhythm"       — The pattern shifted. Keep an eye on this domain.
-ATTENTION:"Feel the Rhyme"        — This is unprecedented. The domain needs attention.
-WARNING:  "Get on Up"             — Multiple tests agree. Time to investigate.
-URGENT:   "It's Bobsled Time"     — Clear momentum. Act now before it gets worse.
-CRITICAL: "Sanka, Ya Dead?"       — I warned you before. You didn't act. Now it's worse.
+WATCH      "Peace Be the Journey"  — 1 test flagged, or a dip (good). Monitoring only.
+HEADS UP   "Feel the Rhythm"       — Pattern shifted. Keep an eye on it.
+ATTENTION  "Feel the Rhyme"        — Unprecedented. Needs attention.
+WARNING    "Get on Up"             — Multiple tests agree. Investigate.
+URGENT     "It's Bobsled Time"     — Clear upward momentum. Act now.
+CRITICAL   "Sanka, Ya Dead?"       — Previously warned, ignored. Now worse.
                         </div>
 
-                        <h3>Google's Spam Rate Thresholds (For Reference)</h3>
-                        <p>Google Postmaster considers these thresholds for email deliverability:</p>
+                        <h3>Google Spam Rate Thresholds</h3>
                         <div class="formula">
-Below 0.10%  — Healthy. You're in good shape.
-0.10 - 0.30% — Within tolerance. Monitor it.
-0.30 - 0.50% — Google is watching. You should be too.
-0.50 - 1.00% — Problem territory. Take action.
-Above 1.00%  — Serious. Deliverability at risk.
-Above 3.00%  — Critical. Your emails may not reach inboxes.
+Below 0.10%  — Healthy.
+0.10 - 0.30% — Within tolerance. Monitor.
+0.30 - 0.50% — Google is watching.
+0.50 - 1.00% — Problem territory.
+Above 1.00%  — Deliverability at risk.
+Above 3.00%  — Critical.
                         </div>
-                        <p style="margin-top: 0.5rem;">
-                            <strong>Remember:</strong> This system doesn't just look at the absolute number —
-                            it detects <em>changes</em> in your spam rate behavior. A domain at 0.4% that's been
-                            stable for months is less concerning than a domain at 0.2% that just doubled from 0.1%.
+                        <p style="margin-top:0.4rem;">
+                            <strong>Key insight:</strong> This system detects <em>changes</em>, not just thresholds.
+                            A stable 0.4% is less concerning than a 0.2% that just doubled from 0.1%.
                         </p>
                     </div>
                 </div>
@@ -747,34 +706,31 @@ Above 3.00%  — Critical. Your emails may not reach inboxes.
         </div>
 
         <!-- ================================================================
-             WHAT TO DO — Collapsible
+             WHAT TO DO (collapsed by default)
              ================================================================ -->
         <div class="card">
             <div class="card-head collapsible-trigger" onclick="toggleSection('action-body', this)">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <svg class="card-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 What To Do When You Get an Alert
-                <span class="toggle-icon" style="margin-left: auto;">&#9654;</span>
+                <span class="toggle-icon" style="margin-left:auto;">&#9654;</span>
             </div>
             <div class="collapsible-body" id="action-body">
                 <div class="card-body">
                     <div class="tech-section">
-                        <p style="margin-bottom: 0.75rem;">
-                            When a domain gets flagged, investigate in this order. Start from the top and work down:
-                        </p>
+                        <p style="margin-bottom:0.6rem;">Investigate in this order:</p>
                         <div class="formula">
-Step 1: CHECK YOUR LISTS     &larr; Did you add new recipients recently? Bad list = bad spam rate.
-Step 2: CHECK YOUR CONTENT   &larr; Did the email content change? Spam trigger words?
-Step 3: CHECK SEND FREQUENCY &larr; Are you sending more often? Too much email = more complaints.
-Step 4: CHECK AUTHENTICATION &larr; SPF, DKIM, DMARC — are they still passing? (This data is in the CSV)
-Step 5: CHECK INFRASTRUCTURE &larr; IP reputation, DNS records, ESP platform issues.
+1. CHECK YOUR LISTS       Did you add new recipients? Bad list = bad spam rate.
+2. CHECK YOUR CONTENT     Did email content change? Spam trigger words?
+3. CHECK SEND FREQUENCY   Sending more often? Too much = more complaints.
+4. CHECK AUTHENTICATION   SPF, DKIM, DMARC still passing?
+5. CHECK INFRASTRUCTURE   IP reputation, DNS, ESP platform issues.
                         </div>
-                        <p style="margin-top: 0.75rem;">
-                            <strong>Rule of thumb:</strong> If only one domain is affected &rarr; probably a list or content issue (Steps 1-2).
-                            If multiple domains are affected &rarr; probably infrastructure (Step 5).
+                        <p style="margin-top:0.6rem;">
+                            <strong>Rule of thumb:</strong> One domain affected = list or content issue (1-2).
+                            Multiple domains = infrastructure (5).
                         </p>
-                        <p style="margin-top: 0.5rem;">
-                            <strong>"I see pride! I see power! I see a bad-ass mother who don't take no crap off of nobody!"</strong>
-                            — That's you, taking control of your deliverability.
+                        <p style="margin-top:0.4rem;font-style:italic;color:var(--muted);">
+                            "I see pride! I see power! I see a bad-ass mother who don't take no crap off of nobody!"
                         </p>
                     </div>
                 </div>
@@ -783,19 +739,9 @@ Step 5: CHECK INFRASTRUCTURE &larr; IP reputation, DNS records, ESP platform iss
 
     </div>
 
-    <!-- ================================================================
-         FOOTER
-         ================================================================ -->
     <div class="footer">
-        <div class="footer-bobsled">
-            <svg width="40" height="24" viewBox="0 0 64 40" fill="none">
-                <path d="M4 28 C4 24, 8 18, 16 16 L40 14 C48 13, 54 18, 54 22 L54 28 C54 32, 50 34, 44 34 L12 34 C8 34, 4 32, 4 28Z" fill="#6B7280" opacity="0.3"/>
-                <circle cx="12" cy="36" r="2.5" fill="#6B7280" opacity="0.3"/>
-                <circle cx="44" cy="36" r="2.5" fill="#6B7280" opacity="0.3"/>
-            </svg>
-        </div>
-        Cool Runnings Google Spam Rate Monitor — Jacob E. Thomas, PhD — RG Deliverability Suite
-        — "Peace be the journey."
+        Cool Runnings Spam Rate Monitor &mdash; Jacob E. Thomas, PhD &mdash; RG Deliverability Suite
+        &mdash; "Peace be the journey."
     </div>
 
     <!-- ================================================================
@@ -804,13 +750,7 @@ Step 5: CHECK INFRASTRUCTURE &larr; IP reputation, DNS records, ESP platform iss
     <script>
         const domainCharts = {{ domain_charts_json }};
         const methodCharts = {{ method_charts_json }};
-        const scoreboardData = {{ scoreboard_json }};
         const plotCfg = {responsive: true, displayModeBar: false};
-
-        // Render scoreboard
-        if (scoreboardData && scoreboardData.data) {
-            Plotly.newPlot('scoreboard-chart', scoreboardData.data, scoreboardData.layout, plotCfg);
-        }
 
         // Show first domain
         const dList = Object.keys(domainCharts);
@@ -828,47 +768,71 @@ Step 5: CHECK INFRASTRUCTURE &larr; IP reputation, DNS records, ESP platform iss
                 if (m.ewma && m.ewma.data) Plotly.newPlot('method-ewma', m.ewma.data, m.ewma.layout, plotCfg);
             }
 
+            // Update button states
             document.querySelectorAll('.dbtn').forEach(b => b.classList.remove('active'));
-            if (btn) { btn.classList.add('active'); }
-            else {
+            if (btn) {
+                btn.classList.add('active');
+                // Reset dropdown if a button was clicked
+                var dd = document.getElementById('domain-dropdown');
+                if (dd) dd.value = '';
+            } else {
                 document.querySelectorAll('.dbtn').forEach(b => {
-                    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(d)) b.classList.add('active');
+                    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + d + "'")) b.classList.add('active');
                 });
             }
         }
 
-        // ============================================================
-        // SHOW MORE / SHOW LESS — Signals Table
-        // ============================================================
+        function showDomainFromDropdown(d, sel) {
+            if (!d) return;
+            // Deactivate all buttons
+            document.querySelectorAll('.dbtn').forEach(b => b.classList.remove('active'));
+            showDomain(d, null);
+        }
+
+        function showDomainByName(d) {
+            // From ranking list click — activate in nav if possible, or use dropdown
+            var found = false;
+            document.querySelectorAll('.dbtn').forEach(b => {
+                if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + d + "'")) {
+                    showDomain(d, b);
+                    found = true;
+                }
+            });
+            if (!found) {
+                var dd = document.getElementById('domain-dropdown');
+                if (dd) { dd.value = d; }
+                showDomain(d, null);
+            }
+            // Scroll to deep dive
+            document.querySelector('.domain-selector-wrap').scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+
+        // Toggle signals table
         function toggleSignals(btn) {
-            const rows = document.querySelectorAll('#signals-table tr[data-overflow]');
-            const expanded = btn.classList.toggle('expanded');
-            rows.forEach(r => r.classList.toggle('revealed', expanded));
-            const total = document.querySelectorAll('#signals-table tbody tr').length;
+            var rows = document.querySelectorAll('#signals-table tr[data-overflow]');
+            var expanded = btn.classList.toggle('expanded');
+            rows.forEach(function(r) { r.classList.toggle('revealed', expanded); });
+            var total = document.querySelectorAll('#signals-table tbody tr').length;
             btn.querySelector('.btn-text').textContent = expanded
-                ? 'Show Top 10 Signals'
+                ? 'Show Top 10'
                 : 'Show All ' + total + ' Signals';
         }
 
-        // ============================================================
-        // SHOW MORE / SHOW LESS — Domain Navigation
-        // ============================================================
-        function toggleDomains(btn) {
-            const btns = document.querySelectorAll('.dbtn[data-overflow-domain]');
-            const expanded = btn.classList.toggle('expanded');
-            btns.forEach(b => b.classList.toggle('revealed', expanded));
-            const total = document.querySelectorAll('.dbtn').length;
+        // Toggle ranking list
+        function toggleRanking(btn) {
+            var items = document.querySelectorAll('.ranking-overflow');
+            var expanded = btn.classList.toggle('expanded');
+            items.forEach(function(el) { el.classList.toggle('revealed', expanded); });
+            var total = document.querySelectorAll('.ranking-item').length;
             btn.querySelector('.btn-text').textContent = expanded
-                ? 'Show Top 10 Domains'
+                ? 'Show Top 10'
                 : 'Show All ' + total + ' Domains';
         }
 
-        // ============================================================
-        // COLLAPSIBLE SECTIONS
-        // ============================================================
+        // Collapsible sections
         function toggleSection(id, trigger) {
-            const body = document.getElementById(id);
-            const isOpen = body.classList.toggle('open');
+            var body = document.getElementById(id);
+            var isOpen = body.classList.toggle('open');
             trigger.classList.toggle('open', isOpen);
         }
     </script>
