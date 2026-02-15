@@ -110,18 +110,24 @@
         .escalation-inner {
             max-width: 1280px;
             margin: 0 auto;
-            padding: 0.45rem 2rem;
+            padding: 0.5rem 2rem;
             display: flex;
             align-items: center;
-            gap: 0.35rem;
+            gap: 0;
             font-size: 0.65rem;
             color: rgba(255,255,255,0.3);
             overflow-x: auto;
             white-space: nowrap;
             letter-spacing: 0.01em;
         }
-        .escalation-inner .s { color: var(--gold); font-weight: 600; opacity: 0.8; }
-        .escalation-inner .d { opacity: 0.2; margin: 0 0.1rem; }
+        .esc-step {
+            display: flex; align-items: center; gap: 0.3rem;
+            padding: 0.2rem 0.55rem;
+            border-radius: 3px;
+        }
+        .esc-step .esc-name { color: var(--gold); font-weight: 700; }
+        .esc-step .esc-meaning { color: rgba(255,255,255,0.35); font-weight: 400; }
+        .esc-arrow { color: rgba(255,255,255,0.12); margin: 0 0.15rem; font-size: 0.6rem; }
 
         /* ================================================================
            INTRO — Philosophy. Two sentences. Then data.
@@ -320,10 +326,11 @@
         .dot.on { background: var(--red); }
 
         .legend-row {
-            display: flex; flex-wrap: wrap; gap: 0.65rem; padding: 0.45rem 0;
-            font-size: 0.68rem; color: var(--muted);
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 0.3rem 1rem; padding: 0.45rem 0;
+            font-size: 0.68rem; color: var(--text);
         }
-        .legend-item { display: flex; align-items: center; gap: 0.25rem; }
+        .legend-item { display: flex; align-items: center; gap: 0.3rem; line-height: 1.4; }
         .legend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
         /* Toggle button */
@@ -468,21 +475,31 @@
     </div>
     <div class="escalation-strip">
         <div class="escalation-inner">
-            <span class="s">Feel the Rhythm</span><span class="d">&rarr;</span>
-            <span class="s">Feel the Rhyme</span><span class="d">&rarr;</span>
-            <span class="s">Get on Up</span><span class="d">&rarr;</span>
-            <span class="s">It's Bobsled Time</span><span class="d">&rarr;</span>
-            <span style="color:rgba(229,57,53,0.6);font-weight:600;">Sanka, Ya Dead?</span>
+            <div class="esc-step"><span class="esc-name">Feel the Rhythm</span><span class="esc-meaning">= pattern changed</span></div>
+            <span class="esc-arrow">&rarr;</span>
+            <div class="esc-step"><span class="esc-name">Feel the Rhyme</span><span class="esc-meaning">= never seen before</span></div>
+            <span class="esc-arrow">&rarr;</span>
+            <div class="esc-step"><span class="esc-name">Get on Up</span><span class="esc-meaning">= 3 tests agree</span></div>
+            <span class="esc-arrow">&rarr;</span>
+            <div class="esc-step"><span class="esc-name">It's Bobsled Time</span><span class="esc-meaning">= trend accelerating</span></div>
+            <span class="esc-arrow">&rarr;</span>
+            <div class="esc-step"><span class="esc-name" style="color:rgba(229,57,53,0.7);">Sanka, Ya Dead?</span><span class="esc-meaning">= warned before, ignored</span></div>
         </div>
     </div>
 
     <!-- INTRO -->
     <div class="intro">
         <p>
-            <strong>Four independent detection methods</strong> analyze every domain's Google Postmaster spam rate daily.
-            When multiple methods agree that something changed, the signal escalates.
-            Spikes trigger action. Dips are noted. This system detects <em>behavioral shifts</em>, not just thresholds &mdash;
-            a domain at 0.2% that just doubled from 0.1% is more urgent than a domain stable at 0.4%.
+            Every day, four independent detection methods analyze every domain's Google Postmaster spam rate.
+            Each method asks a different question:
+            <strong>"Feel the Rhythm"</strong> &mdash; did the <em>pattern</em> of spam reports change?
+            <strong>"Feel the Rhyme"</strong> &mdash; is this something we've <em>never seen before</em>?
+            <strong>"Get on Up"</strong> &mdash; do three independent statistical tests <em>all agree</em> something is off?
+            <strong>"It's Bobsled Time"</strong> &mdash; is the spam rate <em>accelerating upward</em>?
+            When multiple methods fire together, the signal escalates. Spikes (going up) trigger action.
+            Dips (going down) are noted as good news.
+            A domain at 0.2% that just doubled from 0.1% is more urgent than one stable at 0.4% &mdash;
+            this system detects <em>behavioral change</em>, not just thresholds.
         </p>
     </div>
 
@@ -557,14 +574,14 @@
             </div>
             <div class="card-b flush" style="overflow-x:auto;">
                 {% if alerts %}
-                <div style="padding:0.4rem 0.85rem 0;">
+                <div style="padding:0.5rem 0.85rem 0;">
                     <div class="legend-row">
-                        <div class="legend-item"><div class="legend-dot" style="background:#90CAF9"></div>Watch</div>
-                        <div class="legend-item"><div class="legend-dot" style="background:#FED100"></div>Heads Up</div>
-                        <div class="legend-item"><div class="legend-dot" style="background:#FB8C00"></div>Attention</div>
-                        <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div>Warning</div>
-                        <div class="legend-item"><div class="legend-dot" style="background:#E53935"></div>Urgent</div>
-                        <div class="legend-item"><div class="legend-dot" style="background:#B71C1C"></div>Critical</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#90CAF9"></div><strong>Watch</strong> <span style="color:var(--muted)">&mdash; 1 test flagged, or a dip. Monitoring.</span></div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#FED100"></div><strong>Heads Up</strong> <span style="color:var(--muted)">&mdash; pattern shifted. Keep watching.</span></div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#FB8C00"></div><strong>Attention</strong> <span style="color:var(--muted)">&mdash; unprecedented. Needs eyes.</span></div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div><strong>Warning</strong> <span style="color:var(--muted)">&mdash; multiple tests agree. Investigate.</span></div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#E53935"></div><strong>Urgent</strong> <span style="color:var(--muted)">&mdash; accelerating upward. Act now.</span></div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#B71C1C"></div><strong>Critical</strong> <span style="color:var(--muted)">&mdash; warned before, now worse.</span></div>
                     </div>
                 </div>
                 <table class="tbl" id="signals-table">
