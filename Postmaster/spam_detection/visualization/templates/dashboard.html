@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cool Runnings — Google Spam Rate Monitor</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --jamaica-green: #009B3A;
+            --jamaica-gold: #FED100;
+            --jamaica-black: #1A1A1A;
+            --red: #D50000;
+            --dark-red: #B71C1C;
+            --orange: #FF6D00;
+            --deep-orange: #E65100;
+            --blue: #2962FF;
+            --teal: #00897B;
+            --purple: #7C4DFF;
+            --light-blue: #90CAF9;
+            --bg: #F5F5F5;
+            --surface: #FFFFFF;
+            --text: #1A1A1A;
+            --muted: #6B7280;
+            --border: #E5E7EB;
+            --radius: 10px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0D1B2A 0%, #1B2838 50%, #0D2818 100%);
+            color: white;
+            padding: 2.5rem 2rem 2rem;
+            border-bottom: 4px solid var(--jamaica-gold);
+        }
+        .header-inner { max-width: 1300px; margin: 0 auto; }
+        .header h1 {
+            font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em;
+        }
+        .header h1 .gold { color: var(--jamaica-gold); }
+        .header .subtitle { color: rgba(255,255,255,0.6); font-size: 0.85rem; margin-top: 0.25rem; }
+        .header .tagline {
+            color: var(--jamaica-gold); font-size: 0.9rem; font-style: italic;
+            margin-top: 0.5rem; font-weight: 500;
+        }
+
+        .container { max-width: 1300px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+        .stat {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--border);
+        }
+        .stat .num { font-size: 1.8rem; font-weight: 700; line-height: 1.2; }
+        .stat .lbl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.15rem; }
+        .stat.red .num { color: var(--red); }
+        .stat.green .num { color: var(--jamaica-green); }
+        .stat.blue .num { color: var(--blue); }
+        .stat.gold .num { color: #B8860B; }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 1.25rem;
+            overflow: hidden;
+        }
+        .card-head {
+            padding: 0.85rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .card-body { padding: 1rem 1.25rem; }
+        .card-body.flush { padding: 0; }
+
+        /* Signal table */
+        .tbl { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .tbl th {
+            text-align: left; padding: 0.6rem 1rem; background: var(--bg);
+            font-weight: 600; font-size: 0.7rem; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--muted);
+        }
+        .tbl td { padding: 0.65rem 1rem; border-top: 1px solid var(--border); vertical-align: top; }
+        .tbl tr:hover { background: #F9FAFB; }
+
+        .signal-pill {
+            display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em; color: white;
+        }
+        .signal-watch { background: var(--light-blue); color: #1A1A1A; }
+        .signal-heads_up { background: var(--jamaica-gold); color: #1A1A1A; }
+        .signal-attention { background: var(--orange); }
+        .signal-warning { background: var(--deep-orange); }
+        .signal-urgent { background: var(--red); }
+        .signal-critical { background: var(--dark-red); }
+
+        .new-badge {
+            display: inline-block; padding: 0.15rem 0.45rem; border-radius: 4px;
+            font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em;
+            background: linear-gradient(135deg, var(--jamaica-green), #00C853); color: white;
+            margin-left: 0.4rem; vertical-align: middle; text-transform: uppercase;
+            animation: pulse-new 2s ease-in-out infinite;
+        }
+        @keyframes pulse-new {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .historical-row { opacity: 0.7; }
+        .historical-row:hover { opacity: 1; }
+
+        .confidence { font-size: 0.72rem; font-weight: 500; }
+        .conf-strong { color: var(--jamaica-green); }
+        .conf-moderate { color: var(--orange); }
+        .conf-developing { color: var(--muted); }
+
+        .tagline-cell {
+            font-size: 0.72rem; font-style: italic; color: var(--muted);
+            white-space: nowrap;
+        }
+        .desc { font-size: 0.8rem; color: var(--muted); max-width: 420px; line-height: 1.4; }
+        .domain-label { font-weight: 600; font-size: 0.8rem; word-break: break-all; }
+        .dots { display: flex; gap: 3px; align-items: center; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: #E0E0E0; }
+        .dot.on { background: var(--red); }
+
+        /* Domain nav */
+        .domain-nav {
+            display: flex; flex-wrap: wrap; gap: 0.35rem;
+            padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border);
+        }
+        .dbtn {
+            padding: 0.3rem 0.7rem; border: 1px solid var(--border); border-radius: 6px;
+            background: var(--surface); cursor: pointer; font-size: 0.7rem;
+            font-weight: 500; font-family: inherit; transition: all 0.12s;
+            line-height: 1.3; max-width: 220px; overflow: hidden; text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .dbtn:hover { border-color: var(--blue); color: var(--blue); }
+        .dbtn.active { background: var(--jamaica-green); color: white; border-color: var(--jamaica-green); }
+        .dbtn.flagged { border-left: 3px solid var(--red); }
+
+        /* Method detail charts */
+        .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        @media (max-width: 900px) { .method-grid { grid-template-columns: 1fr; } }
+        .method-panel {
+            border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+        }
+        .method-panel-head {
+            padding: 0.5rem 0.75rem; background: var(--bg);
+            font-size: 0.78rem; font-weight: 600; color: var(--muted);
+            border-bottom: 1px solid var(--border);
+        }
+        .method-panel-body { padding: 0.5rem; }
+
+        /* Tech section */
+        .tech-section { margin-top: 0.75rem; }
+        .tech-section h3 {
+            font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;
+            padding-top: 1rem; border-top: 1px solid var(--border);
+        }
+        .tech-section h3:first-child { border-top: none; padding-top: 0; }
+        .tech-section p, .tech-section li {
+            font-size: 0.82rem; color: var(--muted); line-height: 1.6;
+        }
+        .tech-section ul { margin: 0.4rem 0 0.8rem 1.2rem; }
+        .tech-section .formula {
+            font-family: 'Courier New', monospace; background: var(--bg);
+            padding: 0.5rem 0.75rem; border-radius: 6px; margin: 0.5rem 0;
+            font-size: 0.78rem; overflow-x: auto; border: 1px solid var(--border);
+        }
+        .tech-section .highlight { color: var(--jamaica-green); font-weight: 500; }
+
+        /* Signal legend */
+        .signal-legend {
+            display: flex; flex-wrap: wrap; gap: 1rem; padding: 0.75rem 0;
+            font-size: 0.78rem; color: var(--muted);
+        }
+        .signal-legend-item { display: flex; align-items: center; gap: 0.35rem; }
+        .signal-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        /* Chant banner */
+        .chant-banner {
+            background: linear-gradient(135deg, var(--jamaica-green) 0%, #007A2E 100%);
+            color: white; text-align: center; padding: 1rem;
+            font-size: 0.95rem; font-weight: 600;
+            border-radius: var(--radius); margin-bottom: 1.25rem;
+            border: 2px solid var(--jamaica-gold);
+        }
+        .chant-banner .gold { color: var(--jamaica-gold); }
+
+        .footer {
+            text-align: center; padding: 1.5rem; font-size: 0.75rem; color: var(--muted);
+        }
+        .empty-msg { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-inner">
+            <h1><span class="gold">Cool Runnings</span> — Google Spam Rate Monitor</h1>
+            <div class="subtitle">{{ n_domains }} sending domains &middot; {{ sensitivity }} sensitivity &middot; {{ date_range_days }}-day range &middot; Updated {{ generated_at }}</div>
+            <div class="tagline">"Feel the rhythm, feel the rhyme, get on up, it's bobsled time!"</div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Chant Banner -->
+        <div class="chant-banner">
+            <span class="gold">Feel the Rhythm</span> (pattern change) &rarr;
+            <span class="gold">Feel the Rhyme</span> (never seen before) &rarr;
+            <span class="gold">Get on Up</span> (3 tests agree) &rarr;
+            <span class="gold">It's Bobsled Time</span> (momentum locked in) &rarr;
+            Sanka, Ya Dead? (I warned you!)
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat blue"><div class="num">{{ n_domains }}</div><div class="lbl">Domains Monitored</div></div>
+            <div class="stat red"><div class="num">{{ n_anomalies }}</div><div class="lbl">Anomalies Detected</div></div>
+            <div class="stat green"><div class="num">{{ n_actionable }}</div><div class="lbl">Actionable Signals</div></div>
+            <div class="stat gold"><div class="num">{{ n_new_signals }}</div><div class="lbl">New This Run</div></div>
+            {% if n_urgent_critical > 0 %}
+            <div class="stat red" style="border-left: 3px solid var(--dark-red);"><div class="num">{{ n_urgent_critical }}</div><div class="lbl">Urgent / Critical</div></div>
+            {% endif %}
+            <div class="stat"><div class="num">{{ date_range_days }}d</div><div class="lbl">Date Range</div></div>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="card">
+            <div class="card-head">Which domains need attention?</div>
+            <div class="card-body"><div id="scoreboard-chart"></div></div>
+        </div>
+
+        <!-- Signals table -->
+        <div class="card">
+            <div class="card-head">Spam Rate Signals — What Needs Your Attention</div>
+            <div class="card-body flush" style="overflow-x: auto;">
+                {% if alerts %}
+                <div style="padding: 0.5rem 1rem 0;">
+                    <div class="signal-legend">
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#90CAF9"></div> Watch &mdash; "Peace be the journey" (monitoring)</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#FED100"></div> Heads Up &mdash; "Feel the Rhythm" (pattern changed)</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#FF6D00"></div> Attention &mdash; "Feel the Rhyme" (unprecedented)</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#E65100"></div> Warning &mdash; "Get on Up" (tests agree)</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#D50000"></div> Urgent &mdash; "It's Bobsled Time" (act now)</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#B71C1C"></div> Critical &mdash; "Sanka, Ya Dead?" (ignored warning)</div>
+                    </div>
+                </div>
+                <table class="tbl">
+                    <thead>
+                        <tr>
+                            <th>Signal</th>
+                            <th>Cool Runnings</th>
+                            <th>Confidence</th>
+                            <th>Domain</th>
+                            <th>Date</th>
+                            <th>Spam Rate</th>
+                            <th>Methods</th>
+                            <th>What's Happening &amp; What To Do</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in alerts %}
+                        <tr class="{% if not a.get('is_new', false) %}historical-row{% endif %}">
+                            <td>
+                                <span class="signal-pill signal-{{ a.signal|lower }}">{{ a.signal_label }}</span>
+                                {% if a.get('is_new', false) %}<span class="new-badge">New</span>{% endif %}
+                            </td>
+                            <td><span class="tagline-cell">"{{ a.signal_tagline }}"</span></td>
+                            <td><span class="confidence conf-{{ a.confidence|lower }}">{{ a.confidence }}</span></td>
+                            <td><div class="domain-label">{{ a.domain }}</div></td>
+                            <td>{{ a.date }}</td>
+                            <td><strong>{{ a.spam_rate_pct }}</strong></td>
+                            <td>
+                                <div class="dots">
+                                    {% for i in range(4) %}
+                                    <div class="dot {% if i < a.methods_flagged %}on{% endif %}"></div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td><span class="desc">{{ a.description }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-msg">Peace be the journey. No anomalies detected &mdash; all domains have normal spam rates.</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Per-domain deep dive -->
+        <div class="card">
+            <div class="card-head">Domain Deep Dive — Click a domain to explore</div>
+            <div class="domain-nav" id="domain-nav">
+                {% for di in domain_info %}
+                <button class="dbtn {% if di.has_signal %}flagged{% endif %} {% if loop.first %}active{% endif %}"
+                        onclick="showDomain('{{ di.domain }}', this)"
+                        title="{{ di.domain }}">
+                    {{ di.display }}
+                </button>
+                {% endfor %}
+            </div>
+            <div class="card-body">
+                <div id="domain-chart" style="min-height: 400px;"></div>
+                <div class="method-grid">
+                    <div class="method-panel">
+                        <div class="method-panel-head">"Feel the Rhythm" &mdash; Has the spam rate pattern changed?</div>
+                        <div class="method-panel-body"><div id="method-fourier"></div></div>
+                    </div>
+                    <div class="method-panel">
+                        <div class="method-panel-head">"Feel the Rhyme" &mdash; Is this something we've never seen before?</div>
+                        <div class="method-panel-body"><div id="method-mp"></div></div>
+                    </div>
+                    <div class="method-panel">
+                        <div class="method-panel-head">"Get on Up" &mdash; Do three independent check-ups agree?</div>
+                        <div class="method-panel-body"><div id="method-ensemble"></div></div>
+                    </div>
+                    <div class="method-panel">
+                        <div class="method-panel-head">"It's Bobsled Time" &mdash; Is the trend picking up speed?</div>
+                        <div class="method-panel-body"><div id="method-ewma"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- How it works (plain English) -->
+        <div class="card">
+            <div class="card-head">How This Works (No Jargon, We Promise)</div>
+            <div class="card-body">
+                <div class="tech-section">
+                    <p style="margin-bottom: 1rem; font-size: 0.88rem;">
+                        We run <strong>four independent tests</strong> on every domain's spam rate every day.
+                        Think of it like getting four different doctors' opinions. When they agree, you should listen.
+                        Here's what each test looks for, explained using the Cool Runnings chant:
+                    </p>
+
+                    <h3>"Feel the Rhythm" &mdash; Did the pattern change?</h3>
+                    <p>
+                        Every domain has a natural "rhythm" to its spam rate &mdash; it goes up a little, down a little,
+                        following patterns from send cadence and list quality. This test (Fourier Transform) watches
+                        that rhythm. When the rhythm changes in a way that's <span class="highlight">structurally different</span>
+                        from what we've seen before, it fires.
+                    </p>
+                    <p><strong>What it catches:</strong> Slow, structural shifts in how recipients perceive your email.
+                    Something fundamental changed in your sending or your audience.</p>
+
+                    <h3>"Feel the Rhyme" &mdash; Is this something new?</h3>
+                    <p>
+                        This test (Matrix Profile) asks a simple question: "In all the history we have for this domain,
+                        has the spam rate <span class="highlight">ever done this before?</span>" If the current week's
+                        pattern has no good match in history, it's genuinely novel &mdash; a new verse in the song.
+                    </p>
+                    <p><strong>What it catches:</strong> First-time events &mdash; sudden spikes from spam traps,
+                    new list sources going bad, infrastructure changes affecting reputation.</p>
+
+                    <h3>"Get on Up" &mdash; Do three check-ups agree?</h3>
+                    <p>
+                        Three independent statistical tests each look at the spam rate from a different angle:
+                    </p>
+                    <ul>
+                        <li><strong>Z-Score:</strong> Is today's spam rate far from the recent average? (Like checking your temperature)</li>
+                        <li><strong>Seasonal Decomposition:</strong> After removing weekly patterns, is there unexplained behavior? (Like ruling out "normal" causes)</li>
+                        <li><strong>Isolation Forest:</strong> Does this combination of spam rate + change + volatility look like an outlier? (Like a full blood panel)</li>
+                    </ul>
+                    <p>When all three agree, that's <span class="highlight">three independent confirmations</span>.
+                    Time to pay attention.</p>
+
+                    <h3>"It's Bobsled Time" &mdash; Is the trend gaining speed?</h3>
+                    <p>
+                        This test (EWMA Trend Analysis) tracks the <span class="highlight">momentum</span> of your spam rate.
+                        Is it accelerating upward? Decelerating? Breaking out? When the momentum locks in,
+                        it's bobsled time &mdash; the sled is moving and you need to steer.
+                    </p>
+                    <p><strong>Trajectory types:</strong></p>
+                    <ul>
+                        <li><strong>Normal:</strong> Spam rate is within its usual range. Peace be the journey.</li>
+                        <li><strong>Accelerating:</strong> Spam rate is pulling away from its trend &mdash; momentum is building.</li>
+                        <li><strong>Decelerating:</strong> Spam rate is reverting back toward its trend &mdash; things are stabilizing.</li>
+                        <li><strong>Breakout:</strong> Extreme deviation &mdash; something big happened.</li>
+                    </ul>
+
+                    <h3>How Alerts Escalate</h3>
+                    <p>
+                        The signal level is determined by how many methods agree and how severe the anomaly is:
+                    </p>
+                    <div class="formula">
+WATCH:    "Peace Be the Journey"   &mdash; 1 test sees something. We're watching. No action needed.
+HEADS UP: "Feel the Rhythm"       &mdash; The pattern shifted. Keep an eye on this domain.
+ATTENTION:"Feel the Rhyme"        &mdash; This is unprecedented. The domain needs attention.
+WARNING:  "Get on Up"             &mdash; Multiple tests agree. Time to investigate.
+URGENT:   "It's Bobsled Time"     &mdash; Clear momentum. Act now before it gets worse.
+CRITICAL: "Sanka, Ya Dead?"       &mdash; I warned you before. You didn't act. Now it's worse.
+                    </div>
+
+                    <h3>Google's Spam Rate Thresholds (For Reference)</h3>
+                    <p>Google Postmaster considers these thresholds for email deliverability:</p>
+                    <div class="formula">
+Below 0.10%  &mdash; Healthy. You're in good shape.
+0.10 - 0.30% &mdash; Within tolerance. Monitor it.
+0.30 - 0.50% &mdash; Google is watching. You should be too.
+0.50 - 1.00% &mdash; Problem territory. Take action.
+Above 1.00%  &mdash; Serious. Deliverability at risk.
+Above 3.00%  &mdash; Critical. Your emails may not reach inboxes.
+                    </div>
+                    <p style="margin-top: 0.5rem;">
+                        <strong>Remember:</strong> This system doesn't just look at the absolute number &mdash;
+                        it detects <em>changes</em> in your spam rate behavior. A domain at 0.4% that's been
+                        stable for months is less concerning than a domain at 0.2% that just doubled from 0.1%.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- What to do when you get an alert -->
+        <div class="card">
+            <div class="card-head">What To Do When You Get an Alert</div>
+            <div class="card-body">
+                <div class="tech-section">
+                    <p style="margin-bottom: 0.75rem;">
+                        When a domain gets flagged, investigate in this order. Start from the top and work down:
+                    </p>
+                    <div class="formula">
+Step 1: CHECK YOUR LISTS     &larr; Did you add new recipients recently? Bad list = bad spam rate.
+Step 2: CHECK YOUR CONTENT   &larr; Did the email content change? Spam trigger words?
+Step 3: CHECK SEND FREQUENCY &larr; Are you sending more often? Too much email = more complaints.
+Step 4: CHECK AUTHENTICATION &larr; SPF, DKIM, DMARC — are they still passing? (This data is in the CSV)
+Step 5: CHECK INFRASTRUCTURE &larr; IP reputation, DNS records, ESP platform issues.
+                    </div>
+                    <p style="margin-top: 0.75rem;">
+                        <strong>Rule of thumb:</strong> If only one domain is affected &rarr; probably a list or content issue (Steps 1-2).
+                        If multiple domains are affected &rarr; probably infrastructure (Step 5).
+                    </p>
+                    <p style="margin-top: 0.5rem;">
+                        <strong>"I see pride! I see power! I see a bad-ass mother who don't take no crap off of nobody!"</strong>
+                        &mdash; That's you, taking control of your deliverability.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Cool Runnings Google Spam Rate Monitor &mdash; Jacob E. Thomas, PhD &mdash; RG Deliverability Suite
+        &mdash; "Peace be the journey."
+    </div>
+
+    <script>
+        const domainCharts = {{ domain_charts_json }};
+        const methodCharts = {{ method_charts_json }};
+        const scoreboardData = {{ scoreboard_json }};
+        const plotCfg = {responsive: true, displayModeBar: false};
+
+        if (scoreboardData && scoreboardData.data) {
+            Plotly.newPlot('scoreboard-chart', scoreboardData.data, scoreboardData.layout, plotCfg);
+        }
+
+        const dList = Object.keys(domainCharts);
+        if (dList.length > 0) showDomain(dList[0]);
+
+        function showDomain(d, btn) {
+            const data = domainCharts[d];
+            if (data) Plotly.newPlot('domain-chart', data.data, data.layout, plotCfg);
+
+            const m = methodCharts[d];
+            if (m) {
+                if (m.fourier && m.fourier.data) Plotly.newPlot('method-fourier', m.fourier.data, m.fourier.layout, plotCfg);
+                if (m.matrix_profile && m.matrix_profile.data) Plotly.newPlot('method-mp', m.matrix_profile.data, m.matrix_profile.layout, plotCfg);
+                if (m.ensemble && m.ensemble.data) Plotly.newPlot('method-ensemble', m.ensemble.data, m.ensemble.layout, plotCfg);
+                if (m.ewma && m.ewma.data) Plotly.newPlot('method-ewma', m.ewma.data, m.ewma.layout, plotCfg);
+            }
+
+            document.querySelectorAll('.dbtn').forEach(b => b.classList.remove('active'));
+            if (btn) { btn.classList.add('active'); }
+            else {
+                document.querySelectorAll('.dbtn').forEach(b => {
+                    if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(d)) b.classList.add('active');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
