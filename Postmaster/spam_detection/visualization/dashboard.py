@@ -8,18 +8,22 @@ from datetime import datetime
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
-from ..config import DOCS_DIR
+from ..config import DOCS_DIR, GOOGLE_THRESHOLDS
 from .charts import (
     domain_chart,
     method_ensemble_chart,
     method_ewma_chart,
     method_fourier_chart,
     method_mp_chart,
+    overall_spam_rate_chart,
 )
 
 logger = logging.getLogger(__name__)
 
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates")
+
+# Google's compliance threshold (0.3%)
+COMPLIANCE_THRESHOLD = GOOGLE_THRESHOLDS["monitor"]
 
 
 def generate_dashboard(
@@ -53,6 +57,9 @@ def generate_dashboard(
             "ewma": json.loads(method_ewma_chart(df_d, domain)),
         }
 
+    # Overall spam rate chart (6-month avg with linear fit)
+    overall_chart_json = overall_spam_rate_chart(results)
+
     # Stats
     n_anomalies = int(results["consensus_anomaly"].sum()) if "consensus_anomaly" in results.columns else 0
     n_actionable = sum(1 for a in alerts if a["signal"] != "WATCH")
@@ -68,6 +75,12 @@ def generate_dashboard(
         latest_per_domain["Domain"],
         latest_per_domain["DomainReputation"] if "DomainReputation" in latest_per_domain.columns else ["N/A"] * len(latest_per_domain),
     ))
+
+    # Compliance stats: domains over 0.3% threshold
+    n_over_threshold = sum(1 for r in latest_spam.values() if r > COMPLIANCE_THRESHOLD)
+    pct_over_threshold = (n_over_threshold / len(domains) * 100) if domains else 0
+    n_compliant = len(domains) - n_over_threshold
+    pct_compliant = 100 - pct_over_threshold
 
     # Build ranking data: domains sorted by recent spam rate (highest first)
     domain_ranking = []
@@ -109,6 +122,13 @@ def generate_dashboard(
         signal_domains=signal_domains,
         domain_charts_json=json.dumps(domain_charts),
         method_charts_json=json.dumps(method_charts),
+        overall_chart_json=overall_chart_json,
+        # Compliance stats
+        n_over_threshold=n_over_threshold,
+        pct_over_threshold=f"{pct_over_threshold:.0f}",
+        n_compliant=n_compliant,
+        pct_compliant=f"{pct_compliant:.0f}",
+        compliance_threshold_pct=f"{COMPLIANCE_THRESHOLD * 100:.1f}",
     )
 
     with open(output_path, "w") as f:

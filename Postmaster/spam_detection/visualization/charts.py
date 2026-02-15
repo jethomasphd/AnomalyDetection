@@ -363,33 +363,67 @@ def method_ewma_chart(df_domain: pd.DataFrame, domain: str) -> str:
 
 # ---- Summary charts ----
 
-def scoreboard_chart(results: pd.DataFrame) -> str:
-    """Horizontal bar chart: latest consensus score per domain, sorted by score."""
-    latest = results.sort_values("Date").groupby("Domain").tail(5)
-    avg_recent = latest.groupby("Domain")["consensus_score"].mean().sort_values(ascending=True)
+def overall_spam_rate_chart(results: pd.DataFrame) -> str:
+    """Overall spam rate: daily average across all domains with linear trend line.
 
-    labels = [d if len(d) <= 35 else d[:32] + "..." for d in avg_recent.index]
-    scores = avg_recent.values.tolist()
+    Shows the past 6 months of average spam rate with a linear regression fit.
+    """
+    df = results[["Date", "SpamRate"]].copy()
+    daily_avg = df.groupby("Date")["SpamRate"].mean().reset_index().sort_values("Date")
 
-    colors = [
-        RED if s > 0.5 else ORANGE if s > 0.35 else GOLD if s > 0.2 else LIGHT_BLUE
-        for s in scores
-    ]
+    # Last 6 months
+    cutoff = daily_avg["Date"].max() - pd.Timedelta(days=180)
+    daily_avg = daily_avg[daily_avg["Date"] >= cutoff]
 
-    fig = go.Figure(
-        go.Bar(
-            x=scores,
-            y=labels,
-            orientation="h",
-            marker_color=colors,
-            hovertemplate="<b>%{y}</b><br>Score: %{x:.3f}<extra></extra>",
-        )
+    if daily_avg.empty:
+        return "{}"
+
+    dates = daily_avg["Date"].tolist()
+    rates = (daily_avg["SpamRate"] * 100).tolist()
+
+    fig = go.Figure()
+
+    # Daily average line
+    fig.add_trace(go.Scatter(
+        x=dates, y=rates,
+        mode="lines", name="Daily Average",
+        line=dict(color=BLUE, width=2),
+        hovertemplate="%{x|%b %d, %Y}<br><b>%{y:.3f}%</b><extra></extra>",
+    ))
+
+    # Linear trend fit
+    x_numeric = np.arange(len(daily_avg))
+    y_values = daily_avg["SpamRate"].values * 100
+    mask = ~np.isnan(y_values)
+    if mask.sum() >= 2:
+        coeffs = np.polyfit(x_numeric[mask], y_values[mask], 1)
+        trend_line = np.polyval(coeffs, x_numeric)
+        slope_direction = "increasing" if coeffs[0] > 0 else "decreasing"
+        fig.add_trace(go.Scatter(
+            x=dates, y=trend_line.tolist(),
+            mode="lines", name=f"Trend ({slope_direction})",
+            line=dict(color=GOLD if coeffs[0] > 0 else GREEN, width=2, dash="dash"),
+            hovertemplate="Trend: %{y:.3f}%<extra></extra>",
+        ))
+
+    # Google 0.3% threshold
+    fig.add_hline(
+        y=GOOGLE_THRESHOLD * 100,
+        line_dash="dot", line_color=RED, line_width=1,
+        annotation_text="0.3% threshold",
+        annotation_position="top right",
+        annotation_font_size=10,
+        annotation_font_color=RED,
     )
+
     fig.update_layout(
-        height=max(300, len(avg_recent) * 36 + 80),
-        xaxis_title="Anomaly Score (recent 5-day avg)",
-        margin=dict(l=250, r=20, t=20, b=40),
+        height=300,
+        margin=dict(l=50, r=20, t=25, b=30),
+        showlegend=True,
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font_size=11),
+        hovermode="x unified",
         **LAYOUT_DEFAULTS,
     )
-    fig.update_xaxes(gridcolor=LIGHT_GRAY, range=[0, max(max(scores) * 1.1, 0.1)])
+    fig.update_xaxes(gridcolor=LIGHT_GRAY)
+    fig.update_yaxes(title_text="Spam Rate (%)", gridcolor=LIGHT_GRAY)
     return _fig_to_json(fig)
