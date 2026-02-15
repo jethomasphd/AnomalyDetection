@@ -547,7 +547,7 @@
                         onclick="showDomainByName('{{ d.domain }}')">
                         <span class="ranking-rank">{{ loop.index }}</span>
                         <span class="ranking-domain">{{ d.display }}</span>
-                        <span class="ranking-rep rep-{{ d.reputation }}">{{ d.reputation }}</span>
+                        <span class="ranking-rep rep-{{ d.reputation }}">Rep: {{ d.reputation }}</span>
                         <span class="ranking-rate" style="color:{% if d.spam_rate > 0.003 %}var(--red){% elif d.spam_rate > 0.001 %}var(--orange){% else %}var(--green){% endif %}">{{ d.spam_rate_pct }}</span>
                         <span class="ranking-bar-wrap">
                             <span class="ranking-bar" style="width:{{ [d.spam_rate * 10000, 100]|min }}%;background:{% if d.spam_rate > 0.003 %}var(--red){% elif d.spam_rate > 0.001 %}var(--orange){% else %}var(--green){% endif %}"></span>
@@ -730,20 +730,27 @@ Above 1.00%   Deliverability at risk</div>
         <div class="card">
             <div class="card-h coll-trigger" onclick="toggleSection('action', this)">
                 <svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                What To Do
+                What To Do When You Get an Alert
+                <span class="badge" style="background:#FEF3C7;color:#92400E;margin-left:0.5rem;">Under Construction</span>
                 <span class="coll-icon" style="margin-left:auto;">&#9654;</span>
             </div>
             <div class="coll-body" id="action">
                 <div class="card-b">
                     <div class="tech">
+                        <p style="margin-bottom:0.6rem;padding:0.5rem 0.75rem;background:#FEF3C7;border:1px solid #FDE68A;border-radius:4px;font-size:0.78rem;color:#92400E;">
+                            <strong>This section is under construction.</strong>
+                            Response playbooks and escalation workflows are pending consultation with the delivery team.
+                            The detection system is live &mdash; action protocols are being developed with domain experts.
+                        </p>
+                        <p style="margin-bottom:0.5rem;">Preliminary investigation framework (to be refined):</p>
                         <div class="mono">1. CHECK LISTS        New recipients? Bad source?
 2. CHECK CONTENT      Trigger words? Template change?
 3. CHECK FREQUENCY    Sending more often?
 4. CHECK AUTH         SPF / DKIM / DMARC passing?
 5. CHECK INFRA        IP reputation, DNS, ESP issues</div>
                         <p style="margin-top:0.5rem;">
-                            <strong>One domain affected</strong> = list or content (1-2).
-                            <strong>Multiple domains</strong> = infrastructure (5).
+                            <strong>One domain affected</strong> = likely list or content (1-2).
+                            <strong>Multiple domains</strong> = likely infrastructure (5).
                         </p>
                     </div>
                 </div>
