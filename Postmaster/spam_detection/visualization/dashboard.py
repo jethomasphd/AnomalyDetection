@@ -15,7 +15,6 @@ from .charts import (
     method_ewma_chart,
     method_fourier_chart,
     method_mp_chart,
-    scoreboard_chart,
 )
 
 logger = logging.getLogger(__name__)
@@ -54,9 +53,6 @@ def generate_dashboard(
             "ewma": json.loads(method_ewma_chart(df_d, domain)),
         }
 
-    # Summary charts
-    scoreboard_json = scoreboard_chart(results)
-
     # Stats
     n_anomalies = int(results["consensus_anomaly"].sum()) if "consensus_anomaly" in results.columns else 0
     n_actionable = sum(1 for a in alerts if a["signal"] != "WATCH")
@@ -65,14 +61,32 @@ def generate_dashboard(
     # Count by severity
     n_urgent_critical = sum(1 for a in alerts if a["signal"] in ("URGENT", "CRITICAL"))
 
-    # Build domain display info for template
-    domain_info = []
+    # Build domain info with latest spam rate for sorting/display
+    latest_per_domain = results.sort_values("Date").groupby("Domain").tail(1)
+    latest_spam = dict(zip(latest_per_domain["Domain"], latest_per_domain["SpamRate"]))
+    latest_reputation = dict(zip(
+        latest_per_domain["Domain"],
+        latest_per_domain["DomainReputation"] if "DomainReputation" in latest_per_domain.columns else ["N/A"] * len(latest_per_domain),
+    ))
+
+    # Build ranking data: domains sorted by recent spam rate (highest first)
+    domain_ranking = []
     for d in domains:
-        domain_info.append({
+        spam_rate = latest_spam.get(d, 0)
+        domain_ranking.append({
             "domain": d,
-            "display": d if len(d) <= 30 else d[:27] + "...",
+            "display": d if len(d) <= 35 else d[:32] + "...",
+            "spam_rate": spam_rate,
+            "spam_rate_pct": f"{spam_rate * 100:.2f}%",
+            "reputation": latest_reputation.get(d, "N/A"),
             "has_signal": d in signal_domains,
         })
+    domain_ranking.sort(key=lambda x: x["spam_rate"], reverse=True)
+
+    # Build domain_info: top 10 by spam rate as buttons, rest in dropdown (alphabetical)
+    top_domains = domain_ranking[:10]
+    rest_domains = sorted(domain_ranking[10:], key=lambda x: x["domain"])
+    domain_info = top_domains + rest_domains
 
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=False)
     template = env.get_template("dashboard.html")
@@ -89,10 +103,12 @@ def generate_dashboard(
         alerts=alerts,
         domains=domains,
         domain_info=domain_info,
+        top_domains=top_domains,
+        rest_domains=rest_domains,
+        domain_ranking=domain_ranking,
         signal_domains=signal_domains,
         domain_charts_json=json.dumps(domain_charts),
         method_charts_json=json.dumps(method_charts),
-        scoreboard_json=scoreboard_json,
     )
 
     with open(output_path, "w") as f:
