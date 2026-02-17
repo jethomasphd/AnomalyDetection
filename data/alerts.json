@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-16T18:29:43.390395Z",
+  "generated_at": "2026-02-17T18:42:15.073231Z",
   "total_signals": 27,
   "new_signals": 13,
   "signals": [
@@ -16,7 +16,7 @@
       "methods_flagged": 2,
       "consensus_score": 0.5957,
       "description": "ZipRecruiter (ZIP) is trading 26.0% below its 20-day moving average ($2.34). The stock appears oversold at 2 standard deviations from normal. Mean-reversion toward $2.34 is likely. Consider entering a long position targeting the $2.34 moving average.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2026-02-16",
       "details": {
@@ -42,7 +42,7 @@
       "methods_flagged": 2,
       "consensus_score": 0.5655,
       "description": "ASGN Inc. (ASGN) is trading 14.4% below its 20-day moving average ($48.43). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $48.43 moving average.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2026-02-16",
       "details": {
@@ -68,7 +68,7 @@
       "methods_flagged": 0,
       "consensus_score": 0.473,
       "description": "Microsoft (MSFT) is trading 6.2% below its 20-day moving average ($427.61). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2026-02-16",
       "details": {
@@ -94,7 +94,7 @@
       "methods_flagged": 3,
       "consensus_score": 0.6486,
       "description": "ZipRecruiter (ZIP) is trading 29.6% below its 20-day moving average ($2.40). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $2.40 moving average.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2026-02-13",
       "details": {
@@ -172,7 +172,7 @@
       "methods_flagged": 1,
       "consensus_score": 0.4747,
       "description": "Nasdaq-100 (^NDX) is trading 2.4% below its 20-day moving average ($25,283.04). Detection methods flagged this because trading rhythm has shifted, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2026-02-13",
       "details": {
@@ -380,7 +380,7 @@
       "methods_flagged": 3,
       "consensus_score": 0.7607,
       "description": "Microsoft (MSFT) is trading 11.7% below its 20-day moving average ($445.79). The stock appears oversold at 3 standard deviations from normal. Mean-reversion toward $445.79 is likely. Consider entering a long position targeting the $445.79 moving average.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2026-02-05",
       "details": {
@@ -432,7 +432,7 @@
       "methods_flagged": 2,
       "consensus_score": 0.4898,
       "description": "ManpowerGroup (MAN) is trading 16.4% above its 20-day moving average ($31.51). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2026-02-02",
       "details": {
@@ -458,7 +458,7 @@
       "methods_flagged": 2,
       "consensus_score": 0.5845,
       "description": "Meta Platforms (META) is trading 12.4% above its 20-day moving average ($656.54). The stock appears overbought at 2 standard deviations from normal. A pullback toward $656.54 is likely. Consider taking profits or tightening stops. Fair value near $656.54.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2026-01-29",
       "details": {
@@ -510,7 +510,7 @@
       "methods_flagged": 1,
       "consensus_score": 0.483,
       "description": "Alphabet (GOOGL) is trading 4.3% above its 20-day moving average ($306.90). Detection methods flagged this because price pattern is unprecedented, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2025-12-10",
       "details": {
@@ -562,7 +562,7 @@
       "methods_flagged": 0,
       "consensus_score": 0.4719,
       "description": "Kelly Services (KELYA) is trading 16.3% below its 20-day moving average ($9.66). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2025-11-20",
       "details": {
@@ -640,7 +640,7 @@
       "methods_flagged": 2,
       "consensus_score": 0.4465,
       "description": "The Trade Desk (TTD) is trading 29.4% below its 20-day moving average ($71.89). The stock appears oversold at 2 standard deviations from normal. Mean-reversion toward $71.89 is likely. Consider entering a long position targeting the $71.89 moving average.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2026-02-16",
       "details": {
@@ -666,7 +666,7 @@
       "methods_flagged": 1,
       "consensus_score": 0.4769,
       "description": "NVIDIA (NVDA) is trading 16.5% above its 20-day moving average ($116.16). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2026-02-16",
       "details": {
@@ -692,7 +692,7 @@
       "methods_flagged": 2,
       "consensus_score": 0.5233,
       "description": "S&P 500 (^GSPC) is trading 9.6% below its 20-day moving average ($5,510.23). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $5,510.23 moving average.",
-      "run_date": "2026-02-16",
+      "run_date": "2026-02-17",
       "is_new": true,
       "first_detected": "2025-04-08",
       "details": {
