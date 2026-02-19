@@ -415,6 +415,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "abccareerline.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "abccareerline.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "abccareerline.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"abccareerline.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "acejobs.net","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "acejobs.net","2024-11-16","1","1","BAD","0.996",\N,"1",\N,\N,\N
 "acejobs.net","2024-11-17","1","1","BAD","0.996",\N,"1",\N,\N,\N
@@ -818,6 +819,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "acejobs.net","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "acejobs.net","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "acejobs.net","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"acejobs.net","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "actionemployer.net","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "actionemployer.net","2024-11-16","1","1","BAD","1",\N,"1","0.182",\N,\N
 "actionemployer.net","2024-11-17","1","1","BAD","1",\N,"1","0.091",\N,\N
@@ -1201,6 +1203,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "actionemployer.net","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "actionemployer.net","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "actionemployer.net","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"actionemployer.net","2026-02-16","1","1","BAD","1",\N,"1","0.25",\N,\N
 "addressedjobs.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "addressedjobs.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "addressedjobs.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -1617,6 +1620,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "addressedjobs.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "addressedjobs.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "addressedjobs.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"addressedjobs.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "adoptjobs.net","2024-11-15","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "adoptjobs.net","2024-11-16","1","1","HIGH","1",\N,"1","0.005",\N,\N
 "adoptjobs.net","2024-11-17","1","1","HIGH","1",\N,"1","0.005",\N,\N
@@ -2033,6 +2037,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "adoptjobs.net","2026-02-11","1","1","MEDIUM","1",\N,"1","0.004",\N,\N
 "adoptjobs.net","2026-02-13","1","1","MEDIUM","1",\N,"1","0.004",\N,\N
 "adoptjobs.net","2026-02-15","1","1","MEDIUM","1",\N,"1","0.004",\N,\N
+"adoptjobs.net","2026-02-16","1","1","MEDIUM","1",\N,"1","0.003",\N,\N
 "affluentspace.net","2024-11-15","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "affluentspace.net","2024-11-16","1","1","MEDIUM","1",\N,"1","0.003",\N,\N
 "affluentspace.net","2024-11-17","1","1","MEDIUM","1",\N,"1","0.004",\N,\N
@@ -2449,6 +2454,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "affluentspace.net","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "affluentspace.net","2026-02-13","1","1","BAD","1",\N,"1","0.045",\N,\N
 "affluentspace.net","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"affluentspace.net","2026-02-16","1","1","BAD","1",\N,"1","0.043",\N,\N
 "alljobslist.com","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "alljobslist.com","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "alljobslist.com","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -2862,6 +2868,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "alljobslist.com","2026-02-11","1","1","MEDIUM","1",\N,"1",\N,\N,\N
 "alljobslist.com","2026-02-13","1","1","MEDIUM","1",\N,"1",\N,\N,\N
 "alljobslist.com","2026-02-15","1","1","MEDIUM","1",\N,"1",\N,\N,\N
+"alljobslist.com","2026-02-16","1","1","MEDIUM","1",\N,"1",\N,\N,\N
 "altiu.com","2024-11-15","1","1","MEDIUM","1",\N,"1","0.008",\N,\N
 "altiu.com","2024-11-16","1","1","MEDIUM","1",\N,"1","0.009",\N,\N
 "altiu.com","2024-11-17","1","1","MEDIUM","1",\N,"1","0.008",\N,\N
@@ -3278,6 +3285,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "altiu.com","2026-02-11","1","1","LOW","1",\N,"1","0.005",\N,\N
 "altiu.com","2026-02-13","1","1","MEDIUM","1",\N,"1","0.003",\N,\N
 "altiu.com","2026-02-15","1","1","MEDIUM","1",\N,"1","0.005",\N,\N
+"altiu.com","2026-02-16","1","1","MEDIUM","1",\N,"1","0.005",\N,\N
 "animatedjob.net","2024-11-15","1","1","HIGH","1",\N,\N,\N,\N,\N
 "animatedjob.net","2024-11-16","1","1","HIGH","1",\N,\N,\N,\N,\N
 "animatedjob.net","2024-11-17","1","1","HIGH","1",\N,\N,\N,\N,\N
@@ -3694,6 +3702,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "animatedjob.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "animatedjob.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "animatedjob.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"animatedjob.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "approvecareers.net","2024-11-15","1","1","HIGH","1",\N,\N,\N,\N,\N
 "approvecareers.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "approvecareers.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.001",\N,\N
@@ -4110,6 +4119,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "approvecareers.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "approvecareers.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "approvecareers.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.001",\N,\N
+"approvecareers.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "aptena.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "aptena.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "aptena.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -4526,6 +4536,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "aptena.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "aptena.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "aptena.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"aptena.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "arcticfoxjobs.com","2024-11-15","1","1","LOW","1",\N,\N,\N,\N,\N
 "arcticfoxjobs.com","2024-11-16","1","1","LOW","1",\N,\N,\N,\N,\N
 "arcticfoxjobs.com","2024-11-17","1","1","LOW","1",\N,\N,\N,\N,\N
@@ -4942,6 +4953,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "arcticfoxjobs.com","2026-02-11","1","1","LOW","1",\N,\N,\N,\N,\N
 "arcticfoxjobs.com","2026-02-13","1","1","BAD","1",\N,\N,\N,\N,\N
 "arcticfoxjobs.com","2026-02-15","1","1","BAD","1",\N,\N,\N,\N,\N
+"arcticfoxjobs.com","2026-02-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "arrangedjobs.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "arrangedjobs.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "arrangedjobs.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -5358,6 +5370,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "arrangedjobs.com","2026-02-11","1",\N,"HIGH","1",\N,\N,"0.004",\N,\N
 "arrangedjobs.com","2026-02-13","1",\N,"HIGH","1",\N,\N,"0.005",\N,\N
 "arrangedjobs.com","2026-02-15","1",\N,"HIGH","1",\N,\N,"0.004",\N,\N
+"arrangedjobs.com","2026-02-16","1",\N,"HIGH","1",\N,\N,"0.004",\N,\N
 "aucareersonline.com","2025-05-21","1","1","MEDIUM","1",\N,\N,"0.018",\N,\N
 "aucareersonline.com","2025-05-22","1","1","MEDIUM","1",\N,\N,"0.008",\N,\N
 "aucareersonline.com","2025-05-23","1","1","MEDIUM","1",\N,\N,"0.015",\N,\N
@@ -5598,6 +5611,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "aucareersonline.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "aucareersonline.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.008",\N,\N
 "aucareersonline.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"aucareersonline.com","2026-02-16","1","1","HIGH","1",\N,\N,\N,\N,\N
 "aujobcenter.com","2024-11-15","1","1","MEDIUM","1",\N,"1",\N,\N,\N
 "aujobcenter.com","2024-11-16","1","1","MEDIUM","1",\N,"1","0.003",\N,\N
 "aujobcenter.com","2024-11-17","1","1","MEDIUM","1",\N,"1",\N,\N,\N
@@ -6014,6 +6028,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "aujobcenter.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "aujobcenter.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.012",\N,\N
 "aujobcenter.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"aujobcenter.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "australia-employment.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.01",\N,\N
 "australia-employment.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.01",\N,\N
 "australia-employment.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.001",\N,\N
@@ -6430,6 +6445,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "australia-employment.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.008",\N,\N
 "australia-employment.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "australia-employment.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"australia-employment.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.011",\N,\N
 "authoredjobs.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "authoredjobs.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "authoredjobs.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -6846,6 +6862,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "authoredjobs.com","2026-02-11","1",\N,"HIGH","1",\N,\N,"0.004",\N,\N
 "authoredjobs.com","2026-02-13","1",\N,"HIGH","1",\N,\N,"0.004",\N,\N
 "authoredjobs.com","2026-02-15","1",\N,"HIGH","1",\N,\N,"0.005",\N,\N
+"authoredjobs.com","2026-02-16","1",\N,"HIGH","1",\N,\N,"0.003",\N,\N
 "auxsy.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "auxsy.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.008",\N,\N
 "auxsy.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.007",\N,\N
@@ -7262,6 +7279,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "auxsy.com","2026-02-11","1","1","MEDIUM","1",\N,\N,"0.006",\N,\N
 "auxsy.com","2026-02-13","1","1","MEDIUM","1",\N,\N,"0.005",\N,\N
 "auxsy.com","2026-02-15","1","1","MEDIUM","1",\N,\N,"0.007",\N,\N
+"auxsy.com","2026-02-16","1","1","MEDIUM","1",\N,\N,"0.007",\N,\N
 "aviali.com","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "aviali.com","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "aviali.com","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -7969,6 +7987,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "azurla.com","2026-02-11","1","1","MEDIUM","1",\N,\N,"0.008",\N,\N
 "azurla.com","2026-02-13","1","1","MEDIUM","1",\N,\N,"0.013",\N,\N
 "azurla.com","2026-02-15","1","1","MEDIUM","1",\N,\N,"0.007",\N,\N
+"azurla.com","2026-02-16","1","1","MEDIUM","1",\N,\N,"0.005",\N,\N
 "beamingcareer.net","2024-11-15","1","1","BAD","1",\N,"1","0.111",\N,\N
 "beamingcareer.net","2024-11-16","1","1","BAD","1",\N,"1","0.1",\N,\N
 "beamingcareer.net","2024-11-17","1","1","BAD","1",\N,"1","0.111",\N,\N
@@ -8327,6 +8346,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "beamingcareer.net","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "beamingcareer.net","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "beamingcareer.net","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"beamingcareer.net","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "believeemployer.net","2024-11-15","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "believeemployer.net","2024-11-16","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "believeemployer.net","2024-11-17","1","1","HIGH","1",\N,"1","0.004",\N,\N
@@ -8743,6 +8763,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "believeemployer.net","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "believeemployer.net","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "believeemployer.net","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"believeemployer.net","2026-02-16","1","1","BAD","1",\N,"1","0.01",\N,\N
 "benevolentemployer.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "benevolentemployer.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "benevolentemployer.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -9159,6 +9180,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "benevolentemployer.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "benevolentemployer.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "benevolentemployer.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"benevolentemployer.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "best-jobs-online.com","2024-11-15","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "best-jobs-online.com","2024-11-16","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "best-jobs-online.com","2024-11-17","1","1","HIGH","1",\N,"1","0.002",\N,\N
@@ -9575,6 +9597,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "best-jobs-online.com","2026-02-11","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "best-jobs-online.com","2026-02-13","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "best-jobs-online.com","2026-02-15","1","1","HIGH","1",\N,"1","0.001",\N,\N
+"best-jobs-online.com","2026-02-16","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "bestnetworked.com","2024-11-15","1","1","HIGH","1",\N,"1","0.007",\N,\N
 "bestnetworked.com","2024-11-16","1","1","HIGH","1",\N,"1","0.006",\N,\N
 "bestnetworked.com","2024-11-17","1","1","HIGH","1",\N,"1","0.007",\N,\N
@@ -9991,6 +10014,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "bestnetworked.com","2026-02-11","1","1","MEDIUM","1",\N,"1","0.003",\N,\N
 "bestnetworked.com","2026-02-13","1","1","MEDIUM","1",\N,"1","0.004",\N,\N
 "bestnetworked.com","2026-02-15","1","1","MEDIUM","1",\N,"1","0.005",\N,\N
+"bestnetworked.com","2026-02-16","1","1","MEDIUM","1",\N,"1","0.005",\N,\N
 "betterjobsonline.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "betterjobsonline.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "betterjobsonline.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -10407,6 +10431,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "betterjobsonline.com","2026-02-11","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "betterjobsonline.com","2026-02-13","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "betterjobsonline.com","2026-02-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
+"betterjobsonline.com","2026-02-16","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "biz.hirelocal.co.uk","2024-11-22","1","1","HIGH","1",\N,"1",\N,\N,\N
 "biz.hirelocal.co.uk","2024-11-24","1","1","HIGH","1",\N,"1",\N,\N,\N
 "biz.hirelocal.co.uk","2024-11-25","1","1","HIGH","1",\N,"1",\N,\N,\N
@@ -11182,6 +11207,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "bizzjobs.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "bizzjobs.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "bizzjobs.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"bizzjobs.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "careerapproval.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "careerapproval.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "careerapproval.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -11598,6 +11624,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "careerapproval.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "careerapproval.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "careerapproval.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"careerapproval.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "careerarcher.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careerarcher.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careerarcher.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -12014,6 +12041,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "careerarcher.net","2026-02-11","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "careerarcher.net","2026-02-13","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "careerarcher.net","2026-02-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
+"careerarcher.net","2026-02-16","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "careercandy.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "careercandy.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careercandy.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -12430,6 +12458,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "careercandy.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careercandy.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careercandy.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"careercandy.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careercharmer.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careercharmer.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "careercharmer.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -12846,6 +12875,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "careercharmer.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "careercharmer.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "careercharmer.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"careercharmer.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careercougar.com","2024-11-15","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "careercougar.com","2024-11-16","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "careercougar.com","2024-11-17","1","1","HIGH","1",\N,"1","0.002",\N,\N
@@ -13262,6 +13292,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "careercougar.com","2026-02-11","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "careercougar.com","2026-02-13","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "careercougar.com","2026-02-15","1","1","HIGH","1",\N,"1","0.004",\N,\N
+"careercougar.com","2026-02-16","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "careerisland.net","2024-11-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "careerisland.net","2024-11-16","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "careerisland.net","2024-11-17","1","1","HIGH","1",\N,"1","0.003",\N,\N
@@ -13678,6 +13709,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "careerisland.net","2026-02-11","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "careerisland.net","2026-02-13","1","1","HIGH","1",\N,"1","0.005",\N,\N
 "careerisland.net","2026-02-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
+"careerisland.net","2026-02-16","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "careerking.net","2024-11-15","1","1","MEDIUM","1",\N,\N,\N,\N,\N
 "careerking.net","2024-11-16","1","1","MEDIUM","1",\N,\N,\N,\N,\N
 "careerking.net","2024-11-17","1","1","MEDIUM","1",\N,\N,\N,\N,\N
@@ -14094,6 +14126,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "careerking.net","2026-02-11","1","1","LOW","1",\N,"1","0.015",\N,\N
 "careerking.net","2026-02-13","1","1","LOW","1",\N,"1",\N,\N,\N
 "careerking.net","2026-02-15","1","1","LOW","1",\N,"1","0.004",\N,\N
+"careerking.net","2026-02-16","1","1","LOW","1",\N,"1","0.003",\N,\N
 "careerpi.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careerpi.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careerpi.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -14510,6 +14543,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "careerpi.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careerpi.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "careerpi.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
+"careerpi.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "chiliadtimes.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "chiliadtimes.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "chiliadtimes.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -14926,6 +14960,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "chiliadtimes.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "chiliadtimes.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "chiliadtimes.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"chiliadtimes.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "clarifiedjobs.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "clarifiedjobs.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "clarifiedjobs.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.005",\N,\N
@@ -15342,6 +15377,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "clarifiedjobs.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "clarifiedjobs.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "clarifiedjobs.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"clarifiedjobs.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "clixhire.com","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "clixhire.com","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "clixhire.com","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -15758,6 +15794,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "clixhire.com","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "clixhire.com","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "clixhire.com","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"clixhire.com","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "collaboratedcareers.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "collaboratedcareers.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "collaboratedcareers.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.001",\N,\N
@@ -16174,6 +16211,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "collaboratedcareers.com","2026-02-11","1","1","HIGH","1",\N,"1","0.006",\N,\N
 "collaboratedcareers.com","2026-02-13","1","1","HIGH","1",\N,"1","0.005",\N,\N
 "collaboratedcareers.com","2026-02-15","1","1","HIGH","1",\N,"1","0.002",\N,\N
+"collaboratedcareers.com","2026-02-16","1","1","HIGH","1",\N,"1","0.008",\N,\N
 "composedcareers.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "composedcareers.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "composedcareers.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -16590,6 +16628,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "composedcareers.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "composedcareers.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "composedcareers.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
+"composedcareers.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "corejobsearch.net","2024-11-15","1","1","BAD","1",\N,\N,\N,\N,\N
 "corejobsearch.net","2024-11-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "corejobsearch.net","2024-11-17","1","1","BAD","1",\N,\N,\N,\N,\N
@@ -17005,6 +17044,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "corejobsearch.net","2026-02-11","1","1","BAD","1",\N,\N,\N,\N,\N
 "corejobsearch.net","2026-02-13","1","1","BAD","1",\N,\N,\N,\N,\N
 "corejobsearch.net","2026-02-15","1","1","BAD","1",\N,\N,\N,\N,\N
+"corejobsearch.net","2026-02-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "datajobsearch.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "datajobsearch.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "datajobsearch.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.005",\N,\N
@@ -17421,6 +17461,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "datajobsearch.net","2026-02-11","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "datajobsearch.net","2026-02-13","1","1","HIGH","1",\N,"1","0.007",\N,\N
 "datajobsearch.net","2026-02-15","1","1","HIGH","1",\N,"1","0.005",\N,\N
+"datajobsearch.net","2026-02-16","1","1","HIGH","1",\N,"1","0.005",\N,\N
 "drabneedle.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "drabneedle.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "drabneedle.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -17837,6 +17878,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "drabneedle.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "drabneedle.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "drabneedle.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
+"drabneedle.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "email-altiu.com","2024-12-24","1",\N,"BAD","1",\N,"1",\N,\N,\N
 "email-altiu.com","2024-12-26","1",\N,"BAD","1",\N,"1",\N,\N,\N
 "email-altiu.com","2024-12-30","1",\N,"BAD","1",\N,"1",\N,\N,\N
@@ -18200,6 +18242,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "email-altiu.com","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "email-altiu.com","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "email-altiu.com","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"email-altiu.com","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "email-auxsy.com","2024-11-27","1","1","LOW","1",\N,\N,"0.5",\N,\N
 "email-auxsy.com","2024-12-01","1","1","BAD","1",\N,\N,\N,\N,\N
 "email-auxsy.com","2024-12-02","1","1","BAD","1",\N,\N,\N,\N,\N
@@ -18601,6 +18644,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "email-auxsy.com","2026-02-11","1","1","MEDIUM","1",\N,\N,"0.009",\N,\N
 "email-auxsy.com","2026-02-13","1","1","MEDIUM","1",\N,\N,"0.006",\N,\N
 "email-auxsy.com","2026-02-15","1","1","MEDIUM","1",\N,\N,"0.007",\N,\N
+"email-auxsy.com","2026-02-16","1","1","MEDIUM","1",\N,\N,"0.008",\N,\N
 "email-getarealcareer.com","2024-11-15","1","1","HIGH","1",\N,"1","0.005",\N,\N
 "email-getarealcareer.com","2024-11-16","1","1","HIGH","1",\N,"1","0.005",\N,\N
 "email-getarealcareer.com","2024-11-17","1","1","HIGH","1",\N,"1","0.007",\N,\N
@@ -19017,6 +19061,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "email-getarealcareer.com","2026-02-11","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "email-getarealcareer.com","2026-02-13","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "email-getarealcareer.com","2026-02-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
+"email-getarealcareer.com","2026-02-16","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "email-jobicorn.com","2024-11-15","1","1","HIGH","0.999",\N,"1","0.004",\N,\N
 "email-jobicorn.com","2024-11-16","1","1","HIGH","0.999",\N,"1","0.002",\N,\N
 "email-jobicorn.com","2024-11-17","1","1","HIGH","0.999",\N,"1","0.004",\N,\N
@@ -19433,6 +19478,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "email-jobicorn.com","2026-02-11","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "email-jobicorn.com","2026-02-13","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "email-jobicorn.com","2026-02-15","1","1","HIGH","1",\N,"1","0.005",\N,\N
+"email-jobicorn.com","2026-02-16","1","1","HIGH","1",\N,"1","0.006",\N,\N
 "email.uk.jobdiagnosis.com","2024-12-19","1","1","BAD","1",\N,"1",\N,\N,\N
 "email.uk.jobdiagnosis.com","2024-12-20","1","1","BAD","1",\N,"1",\N,\N,\N
 "email.uk.jobdiagnosis.com","2024-12-21","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -19815,6 +19861,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "email.uk.jobdiagnosis.com","2026-02-11","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "email.uk.jobdiagnosis.com","2026-02-13","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "email.uk.jobdiagnosis.com","2026-02-15","1","1","HIGH","1",\N,"1","0.001",\N,\N
+"email.uk.jobdiagnosis.com","2026-02-16","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "emails.aviali.com","2024-11-21","1","1","BAD","1",\N,"1",\N,\N,\N
 "emails.aviali.com","2024-11-22","1","1","BAD","1",\N,"1",\N,\N,\N
 "emails.aviali.com","2025-04-09","1","1","MEDIUM","0.964",\N,"1",\N,\N,\N
@@ -20256,6 +20303,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "employermatch.co.uk","2026-02-11","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "employermatch.co.uk","2026-02-13","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "employermatch.co.uk","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"employermatch.co.uk","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "employmenthunter.co.uk","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "employmenthunter.co.uk","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "employmenthunter.co.uk","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -20672,6 +20720,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "employmenthunter.co.uk","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "employmenthunter.co.uk","2026-02-13","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "employmenthunter.co.uk","2026-02-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
+"employmenthunter.co.uk","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "employmentpursuit.co.uk","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "employmentpursuit.co.uk","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "employmentpursuit.co.uk","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -21088,6 +21137,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "employmentpursuit.co.uk","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "employmentpursuit.co.uk","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "employmentpursuit.co.uk","2026-02-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
+"employmentpursuit.co.uk","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "employmentquest.net","2024-11-15","1","1","BAD","1",\N,\N,\N,\N,\N
 "employmentquest.net","2024-11-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "employmentquest.net","2024-11-17","1","1","BAD","1",\N,\N,\N,\N,\N
@@ -21773,6 +21823,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "fastjobsbranch.net","2026-02-11","1","1","BAD","1",\N,"1","0.111",\N,\N
 "fastjobsbranch.net","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "fastjobsbranch.net","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"fastjobsbranch.net","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "fastjobsunite.net","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "fastjobsunite.net","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "fastjobsunite.net","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -22374,6 +22425,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "flagjobscenter.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "flagjobscenter.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "flagjobscenter.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
+"flagjobscenter.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "flagsjobs.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "flagsjobs.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "flagsjobs.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -22790,6 +22842,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "flagsjobs.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "flagsjobs.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "flagsjobs.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"flagsjobs.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "gabellefree.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "gabellefree.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "gabellefree.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -23206,6 +23259,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "gabellefree.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "gabellefree.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "gabellefree.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"gabellefree.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "getacareer.co.uk","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "getacareer.co.uk","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "getacareer.co.uk","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -23622,6 +23676,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "getacareer.co.uk","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "getacareer.co.uk","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "getacareer.co.uk","2026-02-15","1","1","HIGH","1",\N,\N,"0.006",\N,\N
+"getacareer.co.uk","2026-02-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "getarealcareer.com","2024-11-15","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "getarealcareer.com","2024-11-16","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "getarealcareer.com","2024-11-17","1","1","HIGH","1",\N,"1","0.003",\N,\N
@@ -24038,6 +24093,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "getarealcareer.com","2026-02-11","1","1","MEDIUM","1",\N,"1","0.004",\N,\N
 "getarealcareer.com","2026-02-13","1","1","MEDIUM","1",\N,"1","0.006",\N,\N
 "getarealcareer.com","2026-02-15","1","1","MEDIUM","1",\N,"1","0.002",\N,\N
+"getarealcareer.com","2026-02-16","1","1","MEDIUM","1",\N,"1","0.004",\N,\N
 "harpjob.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "harpjob.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "harpjob.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -24454,6 +24510,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "harpjob.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "harpjob.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "harpjob.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"harpjob.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "hireablejobs.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "hireablejobs.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "hireablejobs.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -24870,6 +24927,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "hireablejobs.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "hireablejobs.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "hireablejobs.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"hireablejobs.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "hirebulletin.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.01",\N,\N
 "hirebulletin.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "hirebulletin.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.008",\N,\N
@@ -25286,6 +25344,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "hirebulletin.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "hirebulletin.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "hirebulletin.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"hirebulletin.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "hiredpeople.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "hiredpeople.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "hiredpeople.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.006",\N,\N
@@ -25702,6 +25761,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "hiredpeople.com","2026-02-11","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "hiredpeople.com","2026-02-13","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "hiredpeople.com","2026-02-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
+"hiredpeople.com","2026-02-16","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "hirelocal.co.uk","2024-11-15","1","1","LOW","1",\N,"1",\N,\N,\N
 "hirelocal.co.uk","2024-11-16","1","1","LOW","1",\N,"1","0.077",\N,\N
 "hirelocal.co.uk","2024-11-17","1","1","LOW","1",\N,"1",\N,\N,\N
@@ -26325,6 +26385,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "ivessi.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "ivessi.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "ivessi.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"ivessi.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jbe.best-jobs-online.com","2024-11-18","1","1",\N,"1",\N,\N,\N,\N,\N
 "jbe.best-jobs-online.com","2024-11-20","1","1","HIGH","0.994",\N,\N,\N,\N,\N
 "jbe.best-jobs-online.com","2024-11-21","1","1","HIGH","0.999",\N,\N,\N,\N,\N
@@ -26727,6 +26788,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jbe.best-jobs-online.com","2026-02-11","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "jbe.best-jobs-online.com","2026-02-13","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "jbe.best-jobs-online.com","2026-02-15","1","1","HIGH","1",\N,"1","0.001",\N,\N
+"jbe.best-jobs-online.com","2026-02-16","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "jipijapa.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jipijapa.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jipijapa.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -27143,6 +27205,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jipijapa.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jipijapa.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jipijapa.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"jipijapa.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobaccomplishment.com","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobaccomplishment.com","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobaccomplishment.com","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -27861,6 +27924,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobadmiration.com","2026-02-11","1","1","MEDIUM","1",\N,"1","0.006",\N,\N
 "jobadmiration.com","2026-02-13","1","1","MEDIUM","1",\N,"1","0.006",\N,\N
 "jobadmiration.com","2026-02-15","1","1","MEDIUM","1",\N,"1","0.007",\N,\N
+"jobadmiration.com","2026-02-16","1","1","MEDIUM","1",\N,"1","0.008",\N,\N
 "jobalien.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.012",\N,\N
 "jobalien.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.01",\N,\N
 "jobalien.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.008",\N,\N
@@ -28277,6 +28341,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobalien.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "jobalien.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "jobalien.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"jobalien.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobbity.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobbity.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobbity.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -28693,6 +28758,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobbity.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobbity.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobbity.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"jobbity.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobbmore.com","2024-11-15","1","1","MEDIUM","1",\N,"1","0.012",\N,\N
 "jobbmore.com","2024-11-16","1","1","MEDIUM","1",\N,"1","0.01",\N,\N
 "jobbmore.com","2024-11-17","1","1","MEDIUM","1",\N,"1","0.011",\N,\N
@@ -29109,6 +29175,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobbmore.com","2026-02-11","1","1","BAD","1",\N,"1","0.033",\N,\N
 "jobbmore.com","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobbmore.com","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"jobbmore.com","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobbravery.net","2024-11-15","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobbravery.net","2024-11-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobbravery.net","2024-11-17","1","1","BAD","1",\N,\N,\N,\N,\N
@@ -29523,6 +29590,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobbravery.net","2026-02-11","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobbravery.net","2026-02-13","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobbravery.net","2026-02-15","1","1","BAD","1",\N,\N,\N,\N,\N
+"jobbravery.net","2026-02-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobbrony.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobbrony.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobbrony.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.001",\N,\N
@@ -29939,6 +30007,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobbrony.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobbrony.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobbrony.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"jobbrony.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobbullet.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobbullet.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobbullet.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -30355,6 +30424,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobbullet.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobbullet.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobbullet.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"jobbullet.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobcafes.com","2024-11-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "jobcafes.com","2024-11-16","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "jobcafes.com","2024-11-17","1","1","HIGH","1",\N,"1","0.003",\N,\N
@@ -30771,6 +30841,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobcafes.com","2026-02-11","1","1","HIGH","1",\N,"1","0.005",\N,\N
 "jobcafes.com","2026-02-13","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "jobcafes.com","2026-02-15","1","1","HIGH","1",\N,"1","0.005",\N,\N
+"jobcafes.com","2026-02-16","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "jobcanyon.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobcanyon.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobcanyon.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -31187,6 +31258,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobcanyon.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobcanyon.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobcanyon.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"jobcanyon.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobcomfortable.com","2024-11-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "jobcomfortable.com","2024-11-16","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "jobcomfortable.com","2024-11-17","1","1","HIGH","1",\N,"1","0.004",\N,\N
@@ -31603,6 +31675,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobcomfortable.com","2026-02-11","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "jobcomfortable.com","2026-02-13","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "jobcomfortable.com","2026-02-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
+"jobcomfortable.com","2026-02-16","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "jobconduit.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobconduit.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobconduit.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -32019,6 +32092,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobconduit.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "jobconduit.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "jobconduit.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"jobconduit.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "jobcontentment.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobcontentment.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobcontentment.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.005",\N,\N
@@ -32435,6 +32509,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobcontentment.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobcontentment.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobcontentment.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"jobcontentment.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobcourage.com","2024-11-15","1","0.81","MEDIUM","1",\N,"1","0.008",\N,\N
 "jobcourage.com","2024-11-16","1","0.816","MEDIUM","1",\N,"1","0.005",\N,\N
 "jobcourage.com","2024-11-17","1","0.81","MEDIUM","1",\N,"1","0.005",\N,\N
@@ -32851,6 +32926,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobcourage.com","2026-02-11","1","0.856","MEDIUM","1",\N,"1","0.008",\N,\N
 "jobcourage.com","2026-02-13","1","0.811","MEDIUM","1",\N,"1","0.003",\N,\N
 "jobcourage.com","2026-02-15","1","0.813","MEDIUM","1",\N,"1","0.003",\N,\N
+"jobcourage.com","2026-02-16","1","0.812","MEDIUM","1",\N,"1",\N,\N,\N
 "jobcrown.co.uk","2024-11-15","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "jobcrown.co.uk","2024-11-16","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "jobcrown.co.uk","2024-11-17","1","1","HIGH","1",\N,\N,"0.001",\N,\N
@@ -33267,6 +33343,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobcrown.co.uk","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobcrown.co.uk","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobcrown.co.uk","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"jobcrown.co.uk","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobdigital.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobdigital.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobdigital.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.001",\N,\N
@@ -33683,6 +33760,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobdigital.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobdigital.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobdigital.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"jobdigital.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobdolphin.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "jobdolphin.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "jobdolphin.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.007",\N,\N
@@ -34099,6 +34177,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobdolphin.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobdolphin.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobdolphin.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"jobdolphin.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobfalcon.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "jobfalcon.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "jobfalcon.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.006",\N,\N
@@ -34515,6 +34594,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobfalcon.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobfalcon.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobfalcon.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"jobfalcon.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobfire.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobfire.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "jobfire.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.001",\N,\N
@@ -34931,6 +35011,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobfire.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "jobfire.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobfire.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"jobfire.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobflight.net","2024-11-15","1","1","MEDIUM","1",\N,\N,"0.008",\N,\N
 "jobflight.net","2024-11-16","1","1","MEDIUM","1",\N,\N,"0.007",\N,\N
 "jobflight.net","2024-11-17","1","1","MEDIUM","1",\N,\N,"0.007",\N,\N
@@ -35347,6 +35428,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobflight.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobflight.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobflight.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"jobflight.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobfurries.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobfurries.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobfurries.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -35763,6 +35845,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobfurries.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobfurries.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobfurries.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"jobfurries.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobgrizzly.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobgrizzly.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobgrizzly.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -36179,6 +36262,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobgrizzly.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobgrizzly.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "jobgrizzly.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.006",\N,\N
+"jobgrizzly.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.008",\N,\N
 "jobguide360.com","2024-11-15","1","1","BAD","1",\N,\N,"0.011",\N,\N
 "jobguide360.com","2024-11-16","1","1","BAD","1",\N,\N,"0.011",\N,\N
 "jobguide360.com","2024-11-17","1","1","BAD","1",\N,\N,"0.01",\N,\N
@@ -36595,6 +36679,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobguide360.com","2026-02-11","1","1","MEDIUM","1",\N,\N,"0.002",\N,\N
 "jobguide360.com","2026-02-13","1","1","MEDIUM","1",\N,\N,"0.003",\N,\N
 "jobguide360.com","2026-02-15","1","1","MEDIUM","1",\N,\N,"0.004",\N,\N
+"jobguide360.com","2026-02-16","1","1","MEDIUM","1",\N,\N,"0.004",\N,\N
 "jobicorn.com","2024-11-15","1","1","MEDIUM","0.999",\N,"1","0.004",\N,\N
 "jobicorn.com","2024-11-16","1","1","MEDIUM","0.998",\N,"1","0.006",\N,\N
 "jobicorn.com","2024-11-17","1","1","MEDIUM","0.998",\N,"1","0.006",\N,\N
@@ -37011,6 +37096,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobicorn.com","2026-02-11","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "jobicorn.com","2026-02-13","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "jobicorn.com","2026-02-15","1","1","HIGH","1",\N,"1","0.005",\N,\N
+"jobicorn.com","2026-02-16","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "jobleague.net","2024-11-15","1","1","MEDIUM","0.999",\N,"1","0.014",\N,\N
 "jobleague.net","2024-11-16","1","1","MEDIUM","0.998",\N,"1","0.021",\N,\N
 "jobleague.net","2024-11-17","1","1","MEDIUM","0.998",\N,"1","0.007",\N,\N
@@ -37427,6 +37513,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobleague.net","2026-02-11","1","1","LOW","1",\N,"1","0.002",\N,\N
 "jobleague.net","2026-02-13","1","1","LOW","1",\N,"1",\N,\N,\N
 "jobleague.net","2026-02-15","1","1","LOW","1",\N,"1","0.004",\N,\N
+"jobleague.net","2026-02-16","1","1","LOW","1",\N,"1",\N,\N,\N
 "joblistify.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "joblistify.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "joblistify.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.005",\N,\N
@@ -37843,6 +37930,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "joblistify.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "joblistify.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "joblistify.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"joblistify.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "joblittle.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "joblittle.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "joblittle.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -38259,6 +38347,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "joblittle.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "joblittle.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "joblittle.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"joblittle.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobmodesty.com","2024-11-15","1","1","MEDIUM","1",\N,\N,"0.004",\N,\N
 "jobmodesty.com","2024-11-16","1","1","MEDIUM","1",\N,\N,"0.005",\N,\N
 "jobmodesty.com","2024-11-17","1","1","MEDIUM","1",\N,\N,"0.005",\N,\N
@@ -38675,6 +38764,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobmodesty.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "jobmodesty.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "jobmodesty.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.007",\N,\N
+"jobmodesty.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "jobmouse.net","2024-11-15","1","1","MEDIUM","1",\N,"1","0.006",\N,\N
 "jobmouse.net","2024-11-16","1","1","MEDIUM","1",\N,"1",\N,\N,\N
 "jobmouse.net","2024-11-17","1","1","MEDIUM","1",\N,"1","0.009",\N,\N
@@ -39091,6 +39181,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobmouse.net","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobmouse.net","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobmouse.net","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"jobmouse.net","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobnyc.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobnyc.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobnyc.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -39507,6 +39598,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobnyc.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.009",\N,\N
 "jobnyc.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.009",\N,\N
 "jobnyc.net","2026-02-15","1","0.999","HIGH","1",\N,\N,"0.008",\N,\N
+"jobnyc.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.01",\N,\N
 "jobozio.com","2024-11-15","1","1","BAD","1",\N,"1","0.116",\N,\N
 "jobozio.com","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobozio.com","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -39923,6 +40015,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobozio.com","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobozio.com","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobozio.com","2026-02-15","1","1","BAD","1",\N,"1","0.136",\N,\N
+"jobozio.com","2026-02-16","1","1","BAD","1",\N,"1","0.13",\N,\N
 "jobpresent.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobpresent.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobpresent.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.005",\N,\N
@@ -40339,6 +40432,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobpresent.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "jobpresent.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.01",\N,\N
 "jobpresent.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.006",\N,\N
+"jobpresent.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.008",\N,\N
 "jobprowl.net","2024-11-15","1","1","LOW","0.999",\N,"1","0.008",\N,\N
 "jobprowl.net","2024-11-16","1","1","LOW","0.998",\N,"1","0.004",\N,\N
 "jobprowl.net","2024-11-17","1","1","LOW","0.998",\N,"1","0.01",\N,\N
@@ -40755,6 +40849,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobprowl.net","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobprowl.net","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobprowl.net","2026-02-15","1","1","LOW","1",\N,"1",\N,\N,\N
+"jobprowl.net","2026-02-16","1","1","LOW","1",\N,"1",\N,\N,\N
 "jobreactor.co.uk","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobreactor.co.uk","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobreactor.co.uk","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -41171,6 +41266,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobreactor.co.uk","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobreactor.co.uk","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobreactor.co.uk","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"jobreactor.co.uk","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobresound.com","2024-11-15","1","1","BAD","0.999",\N,"1",\N,\N,\N
 "jobresound.com","2024-11-16","1","1","BAD","0.996",\N,"1",\N,\N,\N
 "jobresound.com","2024-11-17","1","1","BAD","0.995",\N,"1",\N,\N,\N
@@ -41531,6 +41627,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobresound.com","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobresound.com","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobresound.com","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"jobresound.com","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobs.jobsflag.com","2025-04-30","1",\N,"BAD","1",\N,"0.516",\N,\N,\N
 "jobs.jobsflag.com","2025-05-02","1",\N,"BAD","1",\N,"0.53",\N,\N,\N
 "jobs.jobsflag.com","2025-05-03","1",\N,"BAD","1",\N,"0.499",\N,\N,\N
@@ -41791,6 +41888,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobs.jobsflag.com","2026-02-11","1","1","LOW","1",\N,"0.853","0.003",\N,\N
 "jobs.jobsflag.com","2026-02-13","1","1","LOW","1",\N,"0.875","0.005",\N,\N
 "jobs.jobsflag.com","2026-02-15","1","1","LOW","1",\N,"0.883","0.009",\N,\N
+"jobs.jobsflag.com","2026-02-16","1","1","LOW","1",\N,"0.847","0.002",\N,\N
 "jobs.myjobresource.com","2025-02-28","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobs.myjobresource.com","2025-03-02","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobs.myjobresource.com","2025-03-03","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -42103,6 +42201,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobs.myjobresource.com","2026-02-11","1","1","LOW","1",\N,"1","0.005",\N,\N
 "jobs.myjobresource.com","2026-02-13","1","1","LOW","1",\N,"1","0.007",\N,\N
 "jobs.myjobresource.com","2026-02-15","1","1","LOW","1",\N,"1","0.008",\N,\N
+"jobs.myjobresource.com","2026-02-16","1","1","LOW","1",\N,"1","0.006",\N,\N
 "jobsbetter.net","2024-11-15","1","1","LOW","1",\N,"1","0.006",\N,\N
 "jobsbetter.net","2024-11-16","1","1","LOW","1",\N,"1","0.005",\N,\N
 "jobsbetter.net","2024-11-17","1","1","LOW","1",\N,"1","0.004",\N,\N
@@ -42519,6 +42618,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobsbetter.net","2026-02-11","1","1","LOW","1",\N,"1","0.003",\N,\N
 "jobsbetter.net","2026-02-13","1","1","LOW","1",\N,"1",\N,\N,\N
 "jobsbetter.net","2026-02-15","1","1","LOW","1",\N,"1","0.005",\N,\N
+"jobsbetter.net","2026-02-16","1","1","LOW","1",\N,"1","0.002",\N,\N
 "jobsbox.net","2024-11-15","1","1","LOW","1",\N,"1","0.037",\N,\N
 "jobsbox.net","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobsbox.net","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -42934,6 +43034,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobsbox.net","2026-02-11","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobsbox.net","2026-02-13","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobsbox.net","2026-02-15","1","1","BAD","1",\N,\N,\N,\N,\N
+"jobsbox.net","2026-02-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobscave.com","2024-11-15","1","1","HIGH","1",\N,\N,\N,\N,\N
 "jobscave.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobscave.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -43350,6 +43451,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobscave.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobscave.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobscave.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"jobscave.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobsearchforce.com","2024-11-15","1","1","MEDIUM","1",\N,\N,"0.016",\N,\N
 "jobsearchforce.com","2024-11-16","1","1","MEDIUM","1",\N,\N,"0.048",\N,\N
 "jobsearchforce.com","2024-11-17","1","1","MEDIUM","1",\N,\N,"0.024",\N,\N
@@ -43766,6 +43868,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobsearchforce.com","2026-02-11","1","1","MEDIUM","1",\N,\N,"0.006",\N,\N
 "jobsearchforce.com","2026-02-13","1","1","MEDIUM","1",\N,\N,"0.008",\N,\N
 "jobsearchforce.com","2026-02-15","1","1","MEDIUM","1",\N,\N,"0.01",\N,\N
+"jobsearchforce.com","2026-02-16","1","1","MEDIUM","1",\N,\N,"0.005",\N,\N
 "jobsengineau.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobsengineau.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.009",\N,\N
 "jobsengineau.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.009",\N,\N
@@ -44182,6 +44285,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobsengineau.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "jobsengineau.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobsengineau.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"jobsengineau.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobsexplorerusa.com","2025-09-10","1","1",\N,"1",\N,"1",\N,\N,\N
 "jobsexplorerusa.com","2025-09-21","1","1",\N,"1",\N,"1",\N,\N,\N
 "jobsexplorerusa.com","2025-10-07","1","1",\N,"1",\N,"1",\N,\N,\N
@@ -44281,6 +44385,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobsexplorerusa.com","2026-02-11","1","1",\N,"1",\N,"1","0.003",\N,\N
 "jobsexplorerusa.com","2026-02-13","1","1",\N,"1",\N,"1","0.006",\N,\N
 "jobsexplorerusa.com","2026-02-15","1","1",\N,"1",\N,"1","0.01",\N,\N
+"jobsexplorerusa.com","2026-02-16","1","1",\N,"1",\N,"1","0.005",\N,\N
 "jobsflagcareers.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobsflagcareers.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobsflagcareers.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -44697,6 +44802,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobsflagcareers.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobsflagcareers.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobsflagcareers.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"jobsflagcareers.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobsincareer.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "jobsincareer.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobsincareer.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -45113,6 +45219,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobsincareer.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobsincareer.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobsincareer.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"jobsincareer.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobslancer.com","2024-11-15","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobslancer.com","2024-11-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobslancer.com","2024-11-17","1","1","BAD","1",\N,\N,\N,\N,\N
@@ -45529,6 +45636,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobslancer.com","2026-02-11","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobslancer.com","2026-02-13","1","1","BAD","1",\N,\N,"0.1",\N,\N
 "jobslancer.com","2026-02-15","1","1","BAD","1",\N,\N,\N,\N,\N
+"jobslancer.com","2026-02-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "jobtreadle.com","2024-11-15","1","1","BAD","1",\N,"1","0.079",\N,\N
 "jobtreadle.com","2024-11-16","1","1","BAD","1",\N,"1","0.094",\N,\N
 "jobtreadle.com","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -45944,6 +46052,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobtreadle.com","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobtreadle.com","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobtreadle.com","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"jobtreadle.com","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "jobuliet.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobuliet.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobuliet.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -46360,6 +46469,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobuliet.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobuliet.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobuliet.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
+"jobuliet.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobwend.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "jobwend.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jobwend.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.005",\N,\N
@@ -46776,6 +46886,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jobwend.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobwend.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jobwend.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
+"jobwend.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "jotjob.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "jotjob.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "jotjob.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.007",\N,\N
@@ -47192,6 +47303,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jotjob.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jotjob.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jotjob.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"jotjob.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "jumbucks.net","2024-11-15","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "jumbucks.net","2024-11-16","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "jumbucks.net","2024-11-17","1","1","HIGH","1",\N,"1","0.003",\N,\N
@@ -47608,6 +47720,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "jumbucks.net","2026-02-11","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "jumbucks.net","2026-02-13","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "jumbucks.net","2026-02-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
+"jumbucks.net","2026-02-16","1","1","HIGH","1",\N,"1","0.005",\N,\N
 "localjobstars.com","2024-11-15","1","1","MEDIUM","1",\N,\N,"0.002",\N,\N
 "localjobstars.com","2024-11-16","1","1","MEDIUM","1",\N,\N,"0.004",\N,\N
 "localjobstars.com","2024-11-17","1","1","MEDIUM","1",\N,\N,"0.003",\N,\N
@@ -48024,6 +48137,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "localjobstars.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "localjobstars.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.009",\N,\N
 "localjobstars.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.008",\N,\N
+"localjobstars.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "macrosmaticpheromones.com","2024-11-15","1","1","BAD","1",\N,\N,\N,\N,\N
 "macrosmaticpheromones.com","2024-11-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "macrosmaticpheromones.com","2024-11-17","1","1","BAD","1",\N,\N,\N,\N,\N
@@ -48440,6 +48554,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "macrosmaticpheromones.com","2026-02-11","1","1","BAD","1",\N,\N,\N,\N,\N
 "macrosmaticpheromones.com","2026-02-13","1","1","BAD","1",\N,\N,\N,\N,\N
 "macrosmaticpheromones.com","2026-02-15","1","1","BAD","1",\N,\N,\N,\N,\N
+"macrosmaticpheromones.com","2026-02-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "mail.jobsexplorerusa.com","2025-10-28","1","1","BAD","1",\N,"1",\N,\N,\N
 "mail.jobsexplorerusa.com","2025-10-29","1","1","BAD","1",\N,"1",\N,\N,\N
 "mail.jobsexplorerusa.com","2025-10-30","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -48528,6 +48643,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "mail.jobsexplorerusa.com","2026-02-11","1","1","LOW","1",\N,"1","0.003",\N,\N
 "mail.jobsexplorerusa.com","2026-02-13","1","1","LOW","1",\N,"1","0.006",\N,\N
 "mail.jobsexplorerusa.com","2026-02-15","1","1","LOW","1",\N,"1","0.01",\N,\N
+"mail.jobsexplorerusa.com","2026-02-16","1","1","LOW","1",\N,"1","0.005",\N,\N
 "mail.jobslistingshub.com","2025-07-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "mail.jobslistingshub.com","2025-07-12","1","1","BAD","1",\N,"1",\N,\N,\N
 "mail.jobslistingshub.com","2025-07-13","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -49022,6 +49138,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "manateecareers.com","2026-02-11","1","1","LOW","1",\N,"1","0.022",\N,\N
 "manateecareers.com","2026-02-13","1","1","LOW","1",\N,"1",\N,\N,\N
 "manateecareers.com","2026-02-15","1","1","LOW","1",\N,"1","0.012",\N,\N
+"manateecareers.com","2026-02-16","1","1","LOW","1",\N,"1","0.011",\N,\N
 "manyactivejobs.co.uk","2024-11-15","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "manyactivejobs.co.uk","2024-11-16","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "manyactivejobs.co.uk","2024-11-17","1","1","HIGH","1",\N,"1","0.007",\N,\N
@@ -49438,6 +49555,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "manyactivejobs.co.uk","2026-02-11","1","1","HIGH","1",\N,"1","0.007",\N,\N
 "manyactivejobs.co.uk","2026-02-13","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "manyactivejobs.co.uk","2026-02-15","1","1","HIGH","1",\N,"1","0.005",\N,\N
+"manyactivejobs.co.uk","2026-02-16","1","1","HIGH","1",\N,"1","0.006",\N,\N
 "mapsemployment.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "mapsemployment.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "mapsemployment.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -49854,6 +49972,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "mapsemployment.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "mapsemployment.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "mapsemployment.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"mapsemployment.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "mezzos.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "mezzos.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "mezzos.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -50270,6 +50389,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "mezzos.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "mezzos.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "mezzos.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"mezzos.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "myjobresource.com","2025-02-28","1","1",\N,"1",\N,"1",\N,\N,\N
 "myjobresource.com","2025-03-02","1","1",\N,"1",\N,"1",\N,\N,\N
 "myjobresource.com","2025-03-03","1","1",\N,"1",\N,"1",\N,\N,\N
@@ -50582,6 +50702,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "myjobresource.com","2026-02-11","1","1",\N,"1",\N,"1","0.005",\N,\N
 "myjobresource.com","2026-02-13","1","1",\N,"1",\N,"1","0.007",\N,\N
 "myjobresource.com","2026-02-15","1","1",\N,"1",\N,"1","0.008",\N,\N
+"myjobresource.com","2026-02-16","1","1",\N,"1",\N,"1","0.006",\N,\N
 "newjobpursuit.co.uk","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "newjobpursuit.co.uk","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "newjobpursuit.co.uk","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -50998,6 +51119,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "newjobpursuit.co.uk","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "newjobpursuit.co.uk","2026-02-13","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "newjobpursuit.co.uk","2026-02-15","1","1","HIGH","1",\N,\N,"0.006",\N,\N
+"newjobpursuit.co.uk","2026-02-16","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "newsemployer.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "newsemployer.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "newsemployer.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.001",\N,\N
@@ -51414,6 +51536,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "newsemployer.com","2026-02-11","1","1","HIGH","1",\N,\N,\N,\N,\N
 "newsemployer.com","2026-02-13","1","1","HIGH","1",\N,\N,\N,\N,\N
 "newsemployer.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"newsemployer.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "nudiustertian.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "nudiustertian.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "nudiustertian.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.005",\N,\N
@@ -51830,6 +51953,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "nudiustertian.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "nudiustertian.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "nudiustertian.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"nudiustertian.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "ourjob.net","2024-11-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "ourjob.net","2024-11-16","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "ourjob.net","2024-11-17","1","1","HIGH","1",\N,"1","0.003",\N,\N
@@ -52246,6 +52370,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "ourjob.net","2026-02-11","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "ourjob.net","2026-02-13","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "ourjob.net","2026-02-15","1","1","HIGH","1",\N,"1","0.004",\N,\N
+"ourjob.net","2026-02-16","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "parttimejoblistings.net","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "parttimejoblistings.net","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "parttimejoblistings.net","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -52661,6 +52786,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "parttimejoblistings.net","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "parttimejoblistings.net","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "parttimejoblistings.net","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"parttimejoblistings.net","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "phenomenalwork.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.008",\N,\N
 "phenomenalwork.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "phenomenalwork.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.009",\N,\N
@@ -53077,6 +53203,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "phenomenalwork.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "phenomenalwork.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "phenomenalwork.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"phenomenalwork.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "pijobs.net","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "pijobs.net","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "pijobs.net","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -53809,6 +53936,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "pizzazzy.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "pizzazzy.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "pizzazzy.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"pizzazzy.net","2026-02-16","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "propercareers.com","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "propercareers.com","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "propercareers.com","2024-11-18","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -54283,6 +54411,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "properjobsearch.co.uk","2026-02-11","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "properjobsearch.co.uk","2026-02-13","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "properjobsearch.co.uk","2026-02-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
+"properjobsearch.co.uk","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "pupicornjobs.com","2024-11-15","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "pupicornjobs.com","2024-11-16","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "pupicornjobs.com","2024-11-17","1","1","HIGH","1",\N,"1","0.004",\N,\N
@@ -54699,6 +54828,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "pupicornjobs.com","2026-02-11","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "pupicornjobs.com","2026-02-13","1","1","HIGH","1",\N,"1","0.005",\N,\N
 "pupicornjobs.com","2026-02-15","1","1","HIGH","1",\N,"1","0.006",\N,\N
+"pupicornjobs.com","2026-02-16","1","1","HIGH","1",\N,"1","0.005",\N,\N
 "ratoonleaf.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "ratoonleaf.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "ratoonleaf.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.006",\N,\N
@@ -55115,6 +55245,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "ratoonleaf.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "ratoonleaf.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "ratoonleaf.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"ratoonleaf.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "rg.email.jobdiagnosis.com","2025-03-26","1","0.13","MEDIUM","1",\N,\N,\N,\N,\N
 "rg.email.jobdiagnosis.com","2025-03-27","1","0.306","MEDIUM","1",\N,\N,"0.026",\N,\N
 "rg.email.jobdiagnosis.com","2025-03-28","1","0.401","MEDIUM","1",\N,\N,\N,\N,\N
@@ -55406,6 +55537,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "rg.email.jobdiagnosis.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "rg.email.jobdiagnosis.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "rg.email.jobdiagnosis.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
+"rg.email.jobdiagnosis.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "rg.expertjobmatch.com","2024-11-15","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "rg.expertjobmatch.com","2024-11-16","1","1","HIGH","1",\N,"1","0.002",\N,\N
 "rg.expertjobmatch.com","2024-11-17","1","1","HIGH","1",\N,"1","0.002",\N,\N
@@ -55822,6 +55954,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "rg.expertjobmatch.com","2026-02-11","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "rg.expertjobmatch.com","2026-02-13","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "rg.expertjobmatch.com","2026-02-15","1","1","HIGH","1",\N,"1","0.001",\N,\N
+"rg.expertjobmatch.com","2026-02-16","1","1","HIGH","1",\N,"1","0.001",\N,\N
 "slothjob.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "slothjob.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "slothjob.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -56238,6 +56371,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "slothjob.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "slothjob.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "slothjob.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"slothjob.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "statjobsearch.net","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "statjobsearch.net","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "statjobsearch.net","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -56652,6 +56786,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "statjobsearch.net","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "statjobsearch.net","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "statjobsearch.net","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"statjobsearch.net","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "stunningcareers.net","2024-11-15","1","1","BAD","1",\N,"1",\N,\N,\N
 "stunningcareers.net","2024-11-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "stunningcareers.net","2024-11-17","1","1","BAD","1",\N,"1",\N,\N,\N
@@ -57040,6 +57175,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "stunningcareers.net","2026-02-11","1","1","BAD","1",\N,"1","0.143",\N,\N
 "stunningcareers.net","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "stunningcareers.net","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"stunningcareers.net","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "tablemountainemployment.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "tablemountainemployment.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "tablemountainemployment.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -57456,6 +57592,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "tablemountainemployment.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "tablemountainemployment.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "tablemountainemployment.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.002",\N,\N
+"tablemountainemployment.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "tablemountainjobs.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "tablemountainjobs.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "tablemountainjobs.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.003",\N,\N
@@ -57872,6 +58009,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "tablemountainjobs.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.007",\N,\N
 "tablemountainjobs.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "tablemountainjobs.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"tablemountainjobs.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "thedirectlist.com","2024-11-15","1","1","MEDIUM","1",\N,\N,"0.004",\N,\N
 "thedirectlist.com","2024-11-16","1","1","MEDIUM","1",\N,\N,"0.004",\N,\N
 "thedirectlist.com","2024-11-17","1","1","MEDIUM","1",\N,\N,"0.003",\N,\N
@@ -58288,6 +58426,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "thedirectlist.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "thedirectlist.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "thedirectlist.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.006",\N,\N
+"thedirectlist.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "thesejobs.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.001",\N,\N
 "thesejobs.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "thesejobs.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.001",\N,\N
@@ -58704,6 +58843,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "thesejobs.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "thesejobs.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "thesejobs.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
+"thesejobs.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "turoo.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "turoo.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "turoo.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.006",\N,\N
@@ -59120,6 +59260,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "turoo.net","2026-02-11","1","1","MEDIUM","1",\N,"1","0.006",\N,\N
 "turoo.net","2026-02-13","1","1","MEDIUM","1",\N,"1","0.007",\N,\N
 "turoo.net","2026-02-15","1","1","MEDIUM","1",\N,"1","0.008",\N,\N
+"turoo.net","2026-02-16","1","1","MEDIUM","1",\N,"1","0.01",\N,\N
 "ulotrichous.net","2024-11-15","1","1","BAD","1",\N,\N,\N,\N,\N
 "ulotrichous.net","2024-11-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "ulotrichous.net","2024-11-17","1","1","BAD","1",\N,\N,\N,\N,\N
@@ -59536,6 +59677,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "ulotrichous.net","2026-02-11","1","1","BAD","1",\N,\N,\N,\N,\N
 "ulotrichous.net","2026-02-13","1","1","BAD","1",\N,\N,\N,\N,\N
 "ulotrichous.net","2026-02-15","1","1","BAD","1",\N,\N,\N,\N,\N
+"ulotrichous.net","2026-02-16","1","1","BAD","1",\N,\N,\N,\N,\N
 "valuedcareers.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "valuedcareers.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "valuedcareers.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.002",\N,\N
@@ -59952,6 +60094,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "valuedcareers.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "valuedcareers.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "valuedcareers.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"valuedcareers.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "winklepickertwins.com","2024-11-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "winklepickertwins.com","2024-11-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "winklepickertwins.com","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -60368,6 +60511,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "winklepickertwins.com","2026-02-11","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "winklepickertwins.com","2026-02-13","1","1","HIGH","1",\N,\N,"0.006",\N,\N
 "winklepickertwins.com","2026-02-15","1","1","HIGH","1",\N,\N,"0.005",\N,\N
+"winklepickertwins.com","2026-02-16","1","1","HIGH","1",\N,\N,"0.005",\N,\N
 "yayjobs.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "yayjobs.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "yayjobs.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -60784,6 +60928,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "yayjobs.net","2026-02-11","1","1","HIGH","1",\N,"1","0.003",\N,\N
 "yayjobs.net","2026-02-13","1","1","HIGH","1",\N,"1","0.004",\N,\N
 "yayjobs.net","2026-02-15","1","1","HIGH","1",\N,"1","0.004",\N,\N
+"yayjobs.net","2026-02-16","1","1","HIGH","1",\N,"1","0.005",\N,\N
 "zizzling.net","2024-11-15","1","1","BAD","0.999",\N,"1",\N,\N,\N
 "zizzling.net","2024-11-16","1","1","BAD","0.999",\N,"1",\N,\N,\N
 "zizzling.net","2024-11-17","1","1","BAD","0.999",\N,"1",\N,\N,\N
@@ -61197,6 +61342,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "zizzling.net","2026-02-11","1","1","BAD","1",\N,"1",\N,\N,\N
 "zizzling.net","2026-02-13","1","1","BAD","1",\N,"1",\N,\N,\N
 "zizzling.net","2026-02-15","1","1","BAD","1",\N,"1",\N,\N,\N
+"zizzling.net","2026-02-16","1","1","BAD","1",\N,"1",\N,\N,\N
 "zyzzyvas.net","2024-11-15","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "zyzzyvas.net","2024-11-16","1","1","HIGH","1",\N,\N,"0.004",\N,\N
 "zyzzyvas.net","2024-11-17","1","1","HIGH","1",\N,\N,"0.004",\N,\N
@@ -61613,6 +61759,7 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "zyzzyvas.net","2026-02-11","1","1","HIGH","1",\N,\N,"0.002",\N,\N
 "zyzzyvas.net","2026-02-13","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "zyzzyvas.net","2026-02-15","1","1","HIGH","1",\N,\N,"0.003",\N,\N
+"zyzzyvas.net","2026-02-16","1","1","HIGH","1",\N,\N,"0.003",\N,\N
 "zzydc.com","2024-11-15","1","1","MEDIUM","0.999",\N,"1",\N,\N,\N
 "zzydc.com","2024-11-16","1","1","MEDIUM","1",\N,"1","0.002",\N,\N
 "zzydc.com","2024-11-17","1","1","HIGH","0.999",\N,"1","0.002",\N,\N
@@ -62029,3 +62176,4 @@ domain,date,dkimSuccessRatio,dmarcSuccessRatio,domainReputation,inboundEncryptio
 "zzydc.com","2026-02-11","1","1","LOW","1",\N,"1","0.014",\N,\N
 "zzydc.com","2026-02-13","1","1","LOW","1",\N,"1",\N,\N,\N
 "zzydc.com","2026-02-15","1","1","LOW","1",\N,"1","0.012",\N,\N
+"zzydc.com","2026-02-16","1","1","LOW","1",\N,"1","0.008",\N,\N
