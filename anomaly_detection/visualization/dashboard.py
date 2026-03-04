@@ -18,6 +18,7 @@ from ..config import (
     tickers_by_category,
 )
 from .charts import (
+    attention_heatmap_chart,
     backtest_equity_chart,
     compute_attention_queue,
     compute_backtest,
@@ -84,7 +85,10 @@ def generate_dashboard(
     # Attention Queue
     attention_queue = compute_attention_queue(results, alerts)
 
-    # Backtest
+    # Attention heatmap
+    heatmap_json = attention_heatmap_chart(results)
+
+    # Backtest (full period)
     backtest = compute_backtest(results, alerts)
     backtest_chart_json = backtest_equity_chart(backtest)
 
@@ -116,7 +120,6 @@ def generate_dashboard(
             "category": TICKER_REGISTRY.get(t, {}).get("category", ""),
         })
 
-    # Category grouping for display
     cat_groups = tickers_by_category()
 
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=False)
@@ -139,6 +142,7 @@ def generate_dashboard(
         scoreboard_json=scoreboard_json,
         attention_queue=attention_queue,
         attention_queue_json=json.dumps(attention_queue),
+        heatmap_json=heatmap_json,
         backtest=backtest,
         backtest_chart_json=backtest_chart_json,
         top12_tickers=top12_tickers,

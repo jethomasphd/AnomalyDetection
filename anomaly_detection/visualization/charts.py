@@ -19,38 +19,52 @@ from ..config import TICKER_NAMES, TICKER_REGISTRY, ticker_display
 
 logger = logging.getLogger(__name__)
 
-# --- Color palette ---
-BLUE = "#2962FF"
-RED = "#D50000"
-ORANGE = "#FF6D00"
-AMBER = "#F9A825"
-GRAY = "#9E9E9E"
-LIGHT_GRAY = "#E0E0E0"
-TEAL = "#00897B"
-PURPLE = "#7C4DFF"
-GREEN = "#00C853"
+# --- Dark terminal color palette ---
+NEON_GREEN = "#00E676"
+NEON_BLUE = "#00B0FF"
+NEON_RED = "#FF1744"
+NEON_ORANGE = "#FF9100"
+NEON_AMBER = "#FFD600"
+NEON_TEAL = "#1DE9B6"
+NEON_PURPLE = "#D500F9"
+NEON_CYAN = "#18FFFF"
+DARK_BG = "#0A0E17"
+DARK_SURFACE = "#111827"
+DARK_BORDER = "#1E293B"
+DARK_GRID = "#1E293B"
+MUTED = "#64748B"
+TEXT_PRIMARY = "#E2E8F0"
+
+# Legacy aliases used in chart code
+BLUE = NEON_BLUE
+RED = NEON_RED
+ORANGE = NEON_ORANGE
+AMBER = NEON_AMBER
+GRAY = MUTED
+LIGHT_GRAY = DARK_GRID
+TEAL = NEON_TEAL
+PURPLE = NEON_PURPLE
+GREEN = NEON_GREEN
 
 SIGNAL_COLORS = {
-    "BUY": GREEN,
-    "SELL": RED,
-    "LONG": TEAL,
-    "SHORT": ORANGE,
-    "REDUCE": AMBER,
-    "WATCH": "#42A5F5",
+    "BUY": NEON_GREEN,
+    "SELL": NEON_RED,
+    "LONG": NEON_TEAL,
+    "SHORT": NEON_ORANGE,
+    "REDUCE": NEON_AMBER,
+    "WATCH": NEON_CYAN,
 }
 
 LAYOUT_DEFAULTS = dict(
-    template="plotly_white",
-    font=dict(family="Inter, system-ui, sans-serif", size=12),
+    template="plotly_dark",
+    font=dict(family="'JetBrains Mono', 'SF Mono', 'Fira Code', monospace", size=11, color=TEXT_PRIMARY),
+    paper_bgcolor="rgba(0,0,0,0)",
+    plot_bgcolor="rgba(10,14,23,0.6)",
 )
 
 
 def _fig_to_json(fig) -> str:
-    """Serialize a Plotly figure to JSON with plain arrays (no bdata).
-
-    Uses a custom encoder to handle pandas Timestamps and numpy types
-    that to_plotly_json() leaves as native objects.
-    """
+    """Serialize a Plotly figure to JSON with plain arrays (no bdata)."""
     class _Encoder(json.JSONEncoder):
         def default(self, obj):
             if hasattr(obj, "isoformat"):
@@ -58,7 +72,6 @@ def _fig_to_json(fig) -> str:
             if hasattr(obj, "item"):
                 return obj.item()
             return super().default(obj)
-
     return json.dumps(fig.to_plotly_json(), cls=_Encoder)
 
 
@@ -79,7 +92,7 @@ def ticker_chart(df_ticker: pd.DataFrame, ticker: str, signals: list[dict] | Non
         go.Scatter(
             x=df["Date"].tolist(), y=df["Close"].tolist(),
             mode="lines", name="Price",
-            line=dict(color=BLUE, width=2),
+            line=dict(color=NEON_GREEN, width=2),
             hovertemplate="%{x|%b %d, %Y}<br><b>$%{y:,.2f}</b><extra></extra>",
         ),
         row=1, col=1,
@@ -91,7 +104,7 @@ def ticker_chart(df_ticker: pd.DataFrame, ticker: str, signals: list[dict] | Non
             go.Scatter(
                 x=df["Date"].tolist(), y=df["ewma_value"].tolist(),
                 mode="lines", name="Trend (EWMA)",
-                line=dict(color=ORANGE, width=1.5, dash="dot"),
+                line=dict(color=NEON_BLUE, width=1.5, dash="dot"),
                 hovertemplate="%{x|%b %d, %Y}<br>Trend: $%{y:,.2f}<extra></extra>",
             ),
             row=1, col=1,
@@ -125,7 +138,7 @@ def ticker_chart(df_ticker: pd.DataFrame, ticker: str, signals: list[dict] | Non
                             color=color,
                             size=11 if sig_type in ("BUY", "SELL", "SHORT", "LONG") else 8,
                             symbol="circle",
-                            line=dict(width=2, color="white"),
+                            line=dict(width=2, color=DARK_BG),
                         ),
                         hovertemplate=(
                             f"<b>{label}</b><br>"
@@ -142,8 +155,8 @@ def ticker_chart(df_ticker: pd.DataFrame, ticker: str, signals: list[dict] | Non
                 go.Scatter(
                     x=anomalies["Date"].tolist(), y=anomalies["Close"].tolist(),
                     mode="markers", name="Anomaly",
-                    marker=dict(color=RED, size=9, symbol="circle",
-                                line=dict(width=2, color="white")),
+                    marker=dict(color=NEON_RED, size=9, symbol="circle",
+                                line=dict(width=2, color=DARK_BG)),
                 ),
                 row=1, col=1,
             )
@@ -157,7 +170,7 @@ def ticker_chart(df_ticker: pd.DataFrame, ticker: str, signals: list[dict] | Non
                 y=scores,
                 name="Anomaly Score",
                 marker_color=[
-                    RED if s > 0.6 else ORANGE if s > 0.4 else AMBER if s > 0.2 else LIGHT_GRAY
+                    NEON_RED if s > 0.6 else NEON_ORANGE if s > 0.4 else NEON_AMBER if s > 0.2 else DARK_BORDER
                     for s in scores
                 ],
                 hovertemplate="%{x|%b %d, %Y}<br>Score: %{y:.3f}<extra></extra>",
@@ -166,17 +179,17 @@ def ticker_chart(df_ticker: pd.DataFrame, ticker: str, signals: list[dict] | Non
         )
 
     fig.update_layout(
-        title=dict(text=display_name, font_size=15, x=0.01),
+        title=dict(text=display_name, font_size=14, x=0.01, font_color=TEXT_PRIMARY),
         height=500,
         showlegend=True,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font_size=11),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font_size=10),
         margin=dict(l=55, r=20, t=45, b=30),
         hovermode="x unified",
         **LAYOUT_DEFAULTS,
     )
-    fig.update_xaxes(gridcolor=LIGHT_GRAY)
-    fig.update_yaxes(title_text="Price ($)", gridcolor=LIGHT_GRAY, row=1, col=1)
-    fig.update_yaxes(title_text="Score", gridcolor=LIGHT_GRAY, row=2, col=1)
+    fig.update_xaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
+    fig.update_yaxes(title_text="Price ($)", gridcolor=DARK_GRID, linecolor=DARK_BORDER, row=1, col=1)
+    fig.update_yaxes(title_text="Score", gridcolor=DARK_GRID, linecolor=DARK_BORDER, row=2, col=1)
 
     return _fig_to_json(fig)
 
@@ -184,18 +197,17 @@ def ticker_chart(df_ticker: pd.DataFrame, ticker: str, signals: list[dict] | Non
 # ---- Per-method detail charts ----
 
 def method_fourier_chart(df_ticker: pd.DataFrame, ticker: str) -> str:
-    """Fourier score over time with anomaly threshold region."""
+    """Fourier score over time."""
     df = df_ticker.sort_values("Date").copy()
     if "fourier_score" not in df.columns:
         return "{}"
-    display = ticker_display(ticker)
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=df["Date"].tolist(), y=df["fourier_score"].tolist(),
         mode="lines", name="Fourier Score",
-        line=dict(color=PURPLE, width=1.5),
-        fill="tozeroy", fillcolor="rgba(124,77,255,0.08)",
+        line=dict(color=NEON_PURPLE, width=1.5),
+        fill="tozeroy", fillcolor="rgba(213,0,249,0.08)",
         hovertemplate="%{x|%b %d, %Y}<br>Score: %{y:.4f}<extra></extra>",
     ))
     if "fourier_anomaly" in df.columns:
@@ -204,17 +216,17 @@ def method_fourier_chart(df_ticker: pd.DataFrame, ticker: str) -> str:
             fig.add_trace(go.Scatter(
                 x=anom["Date"].tolist(), y=anom["fourier_score"].tolist(),
                 mode="markers", name="Flagged",
-                marker=dict(color=RED, size=7, line=dict(width=1, color="white")),
+                marker=dict(color=NEON_RED, size=7, line=dict(width=1, color=DARK_BG)),
                 hovertemplate="<b>Flagged</b><br>%{x|%b %d, %Y}<br>Score: %{y:.4f}<extra></extra>",
             ))
     fig.update_layout(
         height=250, margin=dict(l=50, r=20, t=30, b=30),
         yaxis_title="Spectral Divergence",
-        title=dict(text="Has the rhythm changed?", font_size=13),
+        title=dict(text="Has the rhythm changed?", font_size=12, font_color=TEXT_PRIMARY),
         showlegend=False, **LAYOUT_DEFAULTS,
     )
-    fig.update_xaxes(gridcolor=LIGHT_GRAY)
-    fig.update_yaxes(gridcolor=LIGHT_GRAY)
+    fig.update_xaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
+    fig.update_yaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
     return _fig_to_json(fig)
 
 
@@ -223,14 +235,13 @@ def method_mp_chart(df_ticker: pd.DataFrame, ticker: str) -> str:
     df = df_ticker.sort_values("Date").copy()
     if "mp_score" not in df.columns:
         return "{}"
-    display = ticker_display(ticker)
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=df["Date"].tolist(), y=df["mp_score"].tolist(),
         mode="lines", name="Matrix Profile Score",
-        line=dict(color=TEAL, width=1.5),
-        fill="tozeroy", fillcolor="rgba(0,137,123,0.08)",
+        line=dict(color=NEON_TEAL, width=1.5),
+        fill="tozeroy", fillcolor="rgba(29,233,182,0.08)",
         hovertemplate="%{x|%b %d, %Y}<br>Score: %{y:.4f}<extra></extra>",
     ))
     if "mp_anomaly" in df.columns:
@@ -239,17 +250,17 @@ def method_mp_chart(df_ticker: pd.DataFrame, ticker: str) -> str:
             fig.add_trace(go.Scatter(
                 x=anom["Date"].tolist(), y=anom["mp_score"].tolist(),
                 mode="markers", name="Flagged",
-                marker=dict(color=RED, size=7, line=dict(width=1, color="white")),
+                marker=dict(color=NEON_RED, size=7, line=dict(width=1, color=DARK_BG)),
                 hovertemplate="<b>Flagged</b><br>%{x|%b %d, %Y}<br>Score: %{y:.4f}<extra></extra>",
             ))
     fig.update_layout(
         height=250, margin=dict(l=50, r=20, t=30, b=30),
         yaxis_title="Nearest-Neighbor Distance",
-        title=dict(text="Never-before-seen pattern?", font_size=13),
+        title=dict(text="Never-before-seen pattern?", font_size=12, font_color=TEXT_PRIMARY),
         showlegend=False, **LAYOUT_DEFAULTS,
     )
-    fig.update_xaxes(gridcolor=LIGHT_GRAY)
-    fig.update_yaxes(gridcolor=LIGHT_GRAY)
+    fig.update_xaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
+    fig.update_yaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
     return _fig_to_json(fig)
 
 
@@ -261,9 +272,9 @@ def method_ensemble_chart(df_ticker: pd.DataFrame, ticker: str) -> str:
 
     fig = go.Figure()
     for col, name, color in [
-        ("zscore_component", "Z-Score", "#EF5350"),
-        ("seasonal_component", "Seasonal", "#FFA726"),
-        ("iforest_component", "Isolation Forest", "#42A5F5"),
+        ("zscore_component", "Z-Score", NEON_RED),
+        ("seasonal_component", "Seasonal", NEON_ORANGE),
+        ("iforest_component", "Isolation Forest", NEON_BLUE),
     ]:
         if col in df.columns:
             fig.add_trace(go.Scatter(
@@ -279,24 +290,24 @@ def method_ensemble_chart(df_ticker: pd.DataFrame, ticker: str) -> str:
             fig.add_trace(go.Scatter(
                 x=anom["Date"].tolist(), y=anom["ensemble_score"].tolist(),
                 mode="markers", name="Flagged",
-                marker=dict(color=RED, size=7, symbol="circle",
-                            line=dict(width=1, color="white")),
+                marker=dict(color=NEON_RED, size=7, symbol="circle",
+                            line=dict(width=1, color=DARK_BG)),
                 hovertemplate="<b>Flagged</b><br>%{x|%b %d, %Y}<br>Score: %{y:.4f}<extra></extra>",
             ))
     fig.update_layout(
         height=250, margin=dict(l=50, r=20, t=30, b=30),
         yaxis_title="Component Score",
-        title=dict(text="Do independent tests agree?", font_size=13),
+        title=dict(text="Do independent tests agree?", font_size=12, font_color=TEXT_PRIMARY),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font_size=10),
         **LAYOUT_DEFAULTS,
     )
-    fig.update_xaxes(gridcolor=LIGHT_GRAY)
-    fig.update_yaxes(gridcolor=LIGHT_GRAY)
+    fig.update_xaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
+    fig.update_yaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
     return _fig_to_json(fig)
 
 
 def method_ewma_chart(df_ticker: pd.DataFrame, ticker: str) -> str:
-    """EWMA deviation chart showing price vs. trend and deviation %."""
+    """EWMA deviation chart."""
     df = df_ticker.sort_values("Date").copy()
     if "deviation_pct" not in df.columns:
         return "{}"
@@ -306,18 +317,18 @@ def method_ewma_chart(df_ticker: pd.DataFrame, ticker: str) -> str:
 
     fig.add_trace(go.Scatter(
         x=df["Date"].tolist(), y=df["Close"].tolist(), mode="lines", name="Price",
-        line=dict(color=BLUE, width=1.5),
+        line=dict(color=NEON_GREEN, width=1.5),
         hovertemplate="$%{y:,.2f}<extra></extra>",
     ), row=1, col=1)
     if "ewma_value" in df.columns:
         fig.add_trace(go.Scatter(
             x=df["Date"].tolist(), y=df["ewma_value"].tolist(), mode="lines", name="EWMA",
-            line=dict(color=ORANGE, width=1.5, dash="dot"),
+            line=dict(color=NEON_BLUE, width=1.5, dash="dot"),
             hovertemplate="$%{y:,.2f}<extra></extra>",
         ), row=1, col=1)
 
     devs = df["deviation_pct"].tolist()
-    colors = [RED if d < -3 else ORANGE if d < 0 else TEAL if d > 3 else "#90CAF9"
+    colors = [NEON_RED if d < -3 else NEON_ORANGE if d < 0 else NEON_TEAL if d > 3 else DARK_BORDER
               for d in devs]
     fig.add_trace(go.Bar(
         x=df["Date"].tolist(), y=devs, name="Deviation %",
@@ -331,17 +342,17 @@ def method_ewma_chart(df_ticker: pd.DataFrame, ticker: str) -> str:
             fig.add_trace(go.Scatter(
                 x=anom["Date"].tolist(), y=anom["Close"].tolist(),
                 mode="markers", name="Flagged",
-                marker=dict(color=RED, size=7, line=dict(width=1, color="white")),
+                marker=dict(color=NEON_RED, size=7, line=dict(width=1, color=DARK_BG)),
             ), row=1, col=1)
 
     fig.update_layout(
         height=300, margin=dict(l=50, r=20, t=30, b=30),
-        title=dict(text="Is momentum abnormal?", font_size=13),
+        title=dict(text="Is momentum abnormal?", font_size=12, font_color=TEXT_PRIMARY),
         showlegend=False, **LAYOUT_DEFAULTS,
     )
-    fig.update_yaxes(title_text="Price ($)", gridcolor=LIGHT_GRAY, row=1, col=1)
-    fig.update_yaxes(title_text="Deviation %", gridcolor=LIGHT_GRAY, row=2, col=1)
-    fig.update_xaxes(gridcolor=LIGHT_GRAY)
+    fig.update_yaxes(title_text="Price ($)", gridcolor=DARK_GRID, linecolor=DARK_BORDER, row=1, col=1)
+    fig.update_yaxes(title_text="Deviation %", gridcolor=DARK_GRID, linecolor=DARK_BORDER, row=2, col=1)
+    fig.update_xaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
     return _fig_to_json(fig)
 
 
@@ -356,16 +367,13 @@ def scoreboard_chart(results: pd.DataFrame) -> str:
     scores = avg_recent.values.tolist()
 
     colors = [
-        RED if s > 0.5 else ORANGE if s > 0.35 else AMBER if s > 0.2 else "#90CAF9"
+        NEON_RED if s > 0.5 else NEON_ORANGE if s > 0.35 else NEON_AMBER if s > 0.2 else DARK_BORDER
         for s in scores
     ]
 
     fig = go.Figure(
         go.Bar(
-            x=scores,
-            y=labels,
-            orientation="h",
-            marker_color=colors,
+            x=scores, y=labels, orientation="h", marker_color=colors,
             hovertemplate="<b>%{y}</b><br>Score: %{x:.3f}<extra></extra>",
         )
     )
@@ -375,30 +383,88 @@ def scoreboard_chart(results: pd.DataFrame) -> str:
         margin=dict(l=140, r=20, t=20, b=40),
         **LAYOUT_DEFAULTS,
     )
-    fig.update_xaxes(gridcolor=LIGHT_GRAY, range=[0, max(max(scores) * 1.1, 0.1)])
+    fig.update_xaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER, range=[0, max(max(scores) * 1.1, 0.1)])
     return _fig_to_json(fig)
 
 
-# ---- Attention Queue data (rendered as HTML table in template) ----
+# ---- Attention Queue heatmap ----
+
+def attention_heatmap_chart(results: pd.DataFrame) -> str:
+    """Create a heatmap: tickers (y) x last 14 trading days (x), colored by consensus score."""
+    if results.empty or "consensus_score" not in results.columns:
+        return "{}"
+
+    # Get last 14 unique dates
+    all_dates = sorted(results["Date"].unique())
+    last_14 = all_dates[-14:] if len(all_dates) >= 14 else all_dates
+    tickers = sorted(results["Ticker"].unique())
+
+    # Build the matrix
+    z_data = []
+    hover_text = []
+    for ticker in tickers:
+        grp = results[results["Ticker"] == ticker].set_index("Date")
+        row = []
+        hrow = []
+        for d in last_14:
+            if d in grp.index:
+                score = float(grp.loc[d, "consensus_score"]) if not isinstance(grp.loc[d], pd.DataFrame) else float(grp.loc[d, "consensus_score"].iloc[0])
+                row.append(score)
+                d_str = d.strftime("%b %d") if hasattr(d, "strftime") else str(d)[:10]
+                hrow.append(f"{ticker_display(ticker)}<br>{d_str}<br>Score: {score:.3f}")
+            else:
+                row.append(0)
+                hrow.append(f"{ticker_display(ticker)}<br>No data")
+        z_data.append(row)
+        hover_text.append(hrow)
+
+    date_labels = [d.strftime("%b %d") if hasattr(d, "strftime") else str(d)[:10] for d in last_14]
+    ticker_labels = [ticker_display(t) for t in tickers]
+
+    fig = go.Figure(go.Heatmap(
+        z=z_data,
+        x=date_labels,
+        y=ticker_labels,
+        colorscale=[
+            [0, DARK_SURFACE],
+            [0.2, "#1a2332"],
+            [0.4, "#1a3a2e"],
+            [0.6, "#3a2a1a"],
+            [0.8, "#4a1a1a"],
+            [1.0, NEON_RED],
+        ],
+        hovertext=hover_text,
+        hovertemplate="%{hovertext}<extra></extra>",
+        showscale=True,
+        colorbar=dict(
+            title="Score", titlefont=dict(size=10, color=MUTED),
+            tickfont=dict(size=9, color=MUTED), len=0.6,
+        ),
+    ))
+
+    fig.update_layout(
+        height=max(400, len(tickers) * 28 + 100),
+        margin=dict(l=180, r=40, t=20, b=40),
+        xaxis=dict(side="top", tickfont=dict(size=9)),
+        yaxis=dict(autorange="reversed", tickfont=dict(size=10)),
+        **LAYOUT_DEFAULTS,
+    )
+    fig.update_xaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
+    fig.update_yaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
+
+    return _fig_to_json(fig)
+
+
+# ---- Attention Queue data (for table) ----
 
 def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[dict]:
-    """Compute an attention-ranked list of tickers for the Attention Queue.
-
-    Attention Score = weighted function of:
-      - recency: days since last anomaly (lower = higher attention)
-      - severity: max consensus_score in recent window
-      - persistence: streak of consecutive anomaly days
-      - signal strength: actionable signal > watch > none
-
-    Returns a list of dicts sorted by attention_score descending.
-    """
+    """Compute attention-ranked list of tickers."""
     if results.empty:
         return []
 
     today = results["Date"].max()
     queue = []
 
-    # Build signal lookup
     sig_lookup = {}
     for a in alerts:
         key = a["ticker"]
@@ -409,7 +475,6 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
         g = grp.sort_values("Date")
         anomalies = g[g.get("consensus_anomaly", False) == True]
 
-        # Recency: days since last anomaly
         if not anomalies.empty:
             last_anomaly_date = anomalies["Date"].max()
             days_since = (today - last_anomaly_date).days
@@ -417,11 +482,9 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
             last_anomaly_date = None
             days_since = 999
 
-        # Severity: max score in last 14 days
         recent = g[g["Date"] >= today - pd.Timedelta(days=14)]
         max_severity = float(recent["consensus_score"].max()) if not recent.empty else 0
 
-        # Persistence: count consecutive anomaly days at end of series
         streak = 0
         if "consensus_anomaly" in g.columns:
             for val in reversed(g["consensus_anomaly"].tolist()):
@@ -430,7 +493,6 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
                 else:
                     break
 
-        # Signal strength
         sig = sig_lookup.get(ticker)
         signal_type = sig["signal"] if sig else None
         signal_weight = 0
@@ -441,22 +503,18 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
         elif signal_type in ("WATCH",):
             signal_weight = 0.3
 
-        # Composite attention score (0-100 scale)
-        recency_score = max(0, 1 - days_since / 30) * 30  # 0-30 pts
-        severity_score_pts = min(max_severity * 40, 40)     # 0-40 pts
-        persistence_score = min(streak * 5, 15)             # 0-15 pts
-        signal_score = signal_weight * 15                   # 0-15 pts
+        recency_score = max(0, 1 - days_since / 30) * 30
+        severity_score_pts = min(max_severity * 40, 40)
+        persistence_score = min(streak * 5, 15)
+        signal_score = signal_weight * 15
         attention_score = recency_score + severity_score_pts + persistence_score + signal_score
 
-        # Sparkline data: last 30 days of consensus_score
         last_30 = g.tail(30)
         sparkline = last_30["consensus_score"].tolist() if "consensus_score" in g.columns else []
 
-        # Category
         reg = TICKER_REGISTRY.get(ticker, {})
         category = reg.get("category", "")
 
-        # Change vs prior day
         if len(g) >= 2 and "consensus_score" in g.columns:
             latest_score = float(g["consensus_score"].iloc[-1])
             prev_score = float(g["consensus_score"].iloc[-2])
@@ -466,7 +524,7 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
             change = 0
 
         queue.append({
-            "rank": 0,  # filled below
+            "rank": 0,
             "ticker": ticker,
             "display": ticker_display(ticker),
             "category": category,
@@ -482,7 +540,6 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
             "sparkline": sparkline,
         })
 
-    # Sort by attention score descending
     queue.sort(key=lambda x: x["attention_score"], reverse=True)
     for i, item in enumerate(queue):
         item["rank"] = i + 1
@@ -490,40 +547,32 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
     return queue
 
 
-# ---- Backtest: 3-month signal-following performance ----
+# ---- Backtest: full lookback signal-following performance ----
 
 def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
-    """Compute a simple 3-month backtest of following the dashboard's signals.
+    """Compute a backtest of following the dashboard's signals over the full dataset.
 
-    Strategy assumptions:
-      - Buy at close on day of BUY/LONG signal
-      - Sell at close on day of SELL/SHORT signal
+    Strategy:
+      - Buy at close on BUY/LONG signal day
+      - Sell at close on SELL/SHORT signal day
       - Hold otherwise
-      - Start with $10,000 per ticker, equal-weight portfolio
-
-    Returns:
-      {
-        "per_ticker": [{ticker, pct_return, n_trades, equity_curve, ...}],
-        "portfolio": {pct_return, equity_curve, max_drawdown, win_rate, n_trades},
-        "start_date": ..., "end_date": ...
-      }
+      - $10,000 per ticker, equal-weight portfolio
     """
     if results.empty or not alerts:
-        return {"per_ticker": [], "portfolio": {}, "start_date": None, "end_date": None}
+        return {"per_ticker": [], "portfolio": {}, "start_date": None, "end_date": None, "all_trades": []}
 
     today = results["Date"].max()
-    start = today - pd.Timedelta(days=90)
+    # Use entire dataset range (full year or whatever lookback was used)
+    start = results["Date"].min()
 
-    # Filter alerts to last 3 months
     start_str = start.strftime("%Y-%m-%d") if hasattr(start, "strftime") else str(start)[:10]
     recent_alerts = [a for a in alerts if a["date"] >= start_str]
 
     if not recent_alerts:
-        return {"per_ticker": [], "portfolio": {}, "start_date": str(start)[:10], "end_date": str(today)[:10]}
+        return {"per_ticker": [], "portfolio": {}, "start_date": str(start)[:10], "end_date": str(today)[:10], "all_trades": []}
 
-    # Build per-ticker signal timeline
     tickers_with_signals = set()
-    sig_timeline = {}  # {ticker: {date_str: signal}}
+    sig_timeline = {}
     for a in recent_alerts:
         t = a["ticker"]
         tickers_with_signals.add(t)
@@ -531,6 +580,7 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
 
     per_ticker = []
     all_equity_curves = {}
+    all_trades = []  # Flat list of every trade for the collapsible log
     initial_capital = 10000
 
     for ticker in tickers_with_signals:
@@ -543,12 +593,11 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
         closes = grp["Close"].tolist()
         signals = sig_timeline.get(ticker, {})
 
-        # Simulate
         cash = initial_capital
         shares = 0
         equity_curve = []
         trades = []
-        position = "out"  # out or long
+        position = "out"
 
         for i, (d, c) in enumerate(zip(dates, closes)):
             d_str = d.strftime("%Y-%m-%d") if hasattr(d, "strftime") else str(d)
@@ -558,29 +607,41 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
                 shares = cash / c
                 cash = 0
                 position = "long"
-                trades.append({"date": d_str, "action": "buy", "price": c})
+                trade_entry = {
+                    "date": d_str, "ticker": ticker, "display": ticker_display(ticker),
+                    "action": "BUY", "price": round(c, 2), "shares": round(shares, 4),
+                    "value": round(shares * c, 2), "pnl": None, "pnl_pct": None,
+                }
+                trades.append(trade_entry)
+                all_trades.append(trade_entry)
             elif sig in ("SELL", "SHORT") and position == "long":
-                cash = shares * c
+                sell_value = shares * c
+                buy_value = trades[-1]["value"] if trades else initial_capital
+                pnl = sell_value - buy_value
+                pnl_pct = (pnl / buy_value * 100) if buy_value > 0 else 0
+                trade_entry = {
+                    "date": d_str, "ticker": ticker, "display": ticker_display(ticker),
+                    "action": "SELL", "price": round(c, 2), "shares": round(shares, 4),
+                    "value": round(sell_value, 2), "pnl": round(pnl, 2), "pnl_pct": round(pnl_pct, 2),
+                }
+                trades.append(trade_entry)
+                all_trades.append(trade_entry)
+                cash = sell_value
                 shares = 0
                 position = "out"
-                trades.append({"date": d_str, "action": "sell", "price": c})
 
             portfolio_value = cash + shares * c
             equity_curve.append({"date": d_str, "value": round(portfolio_value, 2)})
 
-        # Final value
         final_value = cash + shares * closes[-1]
         pct_return = (final_value - initial_capital) / initial_capital * 100
 
-        # Win rate from completed trades
         wins = 0
         total_round_trips = 0
         for j in range(0, len(trades) - 1, 2):
             if j + 1 < len(trades):
-                buy_price = trades[j]["price"]
-                sell_price = trades[j + 1]["price"]
                 total_round_trips += 1
-                if sell_price > buy_price:
+                if trades[j + 1].get("pnl", 0) and trades[j + 1]["pnl"] > 0:
                     wins += 1
 
         per_ticker.append({
@@ -595,6 +656,7 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
         all_equity_curves[ticker] = {e["date"]: e["value"] for e in equity_curve}
 
     # Portfolio equity curve (equal-weight average)
+    portfolio_stats = {}
     if per_ticker:
         all_dates = sorted(set(d for curves in all_equity_curves.values() for d in curves))
         portfolio_curve = []
@@ -603,13 +665,11 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
             if values:
                 portfolio_curve.append({"date": d, "value": round(sum(values) / len(values), 2)})
 
-        # Portfolio stats
         if portfolio_curve:
             start_val = portfolio_curve[0]["value"]
             end_val = portfolio_curve[-1]["value"]
             pct_return = (end_val - start_val) / start_val * 100
 
-            # Max drawdown
             peak = portfolio_curve[0]["value"]
             max_dd = 0
             for p in portfolio_curve:
@@ -629,51 +689,66 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
                 "win_rate": round(wins_total / len(per_ticker) * 100, 1) if per_ticker else 0,
                 "equity_curve": portfolio_curve,
             }
-        else:
-            portfolio_stats = {}
-    else:
-        portfolio_stats = {}
+
+    # Sort all trades by date descending
+    all_trades.sort(key=lambda x: x["date"], reverse=True)
 
     return {
         "per_ticker": sorted(per_ticker, key=lambda x: x["pct_return"], reverse=True),
         "portfolio": portfolio_stats,
         "start_date": str(start)[:10],
         "end_date": str(today)[:10],
+        "all_trades": all_trades,
     }
 
 
 def backtest_equity_chart(backtest: dict) -> str:
-    """Generate a portfolio equity curve chart from backtest results."""
+    """Portfolio equity curve chart with per-ticker lines."""
     portfolio = backtest.get("portfolio", {})
     curve = portfolio.get("equity_curve", [])
+    per_ticker = backtest.get("per_ticker", [])
+
     if not curve:
         return "{}"
 
+    fig = go.Figure()
+
+    # Per-ticker equity curves (faded)
+    for t in per_ticker[:10]:  # Limit to top 10 for readability
+        tc = t.get("equity_curve", [])
+        if tc:
+            fig.add_trace(go.Scatter(
+                x=[p["date"] for p in tc], y=[p["value"] for p in tc],
+                mode="lines", name=t["ticker"],
+                line=dict(width=1, color=MUTED),
+                opacity=0.3,
+                hovertemplate=f"{t['ticker']}<br>%{{x|%b %d}}<br>${{%{{y:,.2f}}}}<extra></extra>",
+            ))
+
+    # Portfolio line (bold)
     dates = [p["date"] for p in curve]
     values = [p["value"] for p in curve]
-
-    fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=dates, y=values,
-        mode="lines", name="Portfolio Value",
-        line=dict(color=BLUE, width=2),
-        fill="tozeroy", fillcolor="rgba(41,98,255,0.08)",
+        mode="lines", name="Portfolio Avg",
+        line=dict(color=NEON_GREEN, width=2.5),
+        fill="tozeroy", fillcolor="rgba(0,230,118,0.05)",
         hovertemplate="%{x|%b %d, %Y}<br><b>$%{y:,.2f}</b><extra></extra>",
     ))
 
-    # Add a reference line at starting value
     if values:
-        fig.add_hline(y=values[0], line_dash="dot", line_color=GRAY,
-                      annotation_text=f"Start: ${values[0]:,.0f}")
+        fig.add_hline(y=values[0], line_dash="dot", line_color=MUTED,
+                      annotation_text=f"Start: ${values[0]:,.0f}",
+                      annotation_font_color=MUTED)
 
     fig.update_layout(
-        height=300,
+        height=350,
         margin=dict(l=60, r=20, t=30, b=30),
-        yaxis_title="Portfolio Value ($)",
-        title=dict(text="Equal-Weight Signal Portfolio (3 months)", font_size=13),
+        yaxis_title="Value ($)",
+        title=dict(text="Signal Portfolio — Full Period", font_size=13, font_color=TEXT_PRIMARY),
         showlegend=False,
         **LAYOUT_DEFAULTS,
     )
-    fig.update_xaxes(gridcolor=LIGHT_GRAY)
-    fig.update_yaxes(gridcolor=LIGHT_GRAY)
+    fig.update_xaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
+    fig.update_yaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)
     return _fig_to_json(fig)
