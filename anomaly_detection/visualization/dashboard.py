@@ -10,6 +10,7 @@ from jinja2 import Environment, FileSystemLoader
 
 from ..config import (
     CATEGORY_LABELS,
+    CATEGORY_ORDER,
     DOCS_DIR,
     TICKER_NAMES,
     TICKER_REGISTRY,
@@ -35,20 +36,34 @@ logger = logging.getLogger(__name__)
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates")
 
 
-def _estimate_market_caps(tickers: list[str]) -> dict[str, float | None]:
-    """Try to get market cap for each ticker (best-effort, cached)."""
-    caps = {}
-    try:
-        import yfinance as yf
-        for t in tickers:
-            try:
-                info = yf.Ticker(t).info
-                caps[t] = info.get("marketCap")
-            except Exception:
-                caps[t] = None
-    except ImportError:
-        pass
-    return caps
+def _static_ticker_order(tickers: list[str]) -> tuple[list[str], list[str]]:
+    """Order tickers by category priority (no API calls).
+
+    Returns (top12, remaining) where top12 are the first 12 non-fund
+    tickers ordered by category (Engines first, then Choke Points, etc.),
+    and remaining is everything else.
+    """
+    # Build ordered list: non-funds first by category, then funds
+    ordered = []
+    cat_groups = tickers_by_category()
+    for cat in CATEGORY_ORDER:
+        for t in cat_groups.get(cat, []):
+            if t in tickers:
+                ordered.append(t)
+
+    # Any tickers not in registry go at the end
+    for t in tickers:
+        if t not in ordered:
+            ordered.append(t)
+
+    # Top 12 = first 12 non-fund tickers
+    non_funds = [t for t in ordered if not TICKER_REGISTRY.get(t, {}).get("is_fund", False)]
+    funds = [t for t in ordered if TICKER_REGISTRY.get(t, {}).get("is_fund", False)]
+
+    top12 = non_funds[:12]
+    remaining = non_funds[12:] + funds
+
+    return top12, remaining
 
 
 def generate_dashboard(
@@ -92,14 +107,8 @@ def generate_dashboard(
     backtest = compute_backtest(results, alerts)
     backtest_chart_json = backtest_equity_chart(backtest)
 
-    # Market caps for ticker ordering
-    market_caps = _estimate_market_caps(tickers)
-
-    # Top 12 by market cap (for button display)
-    tickers_with_cap = [(t, market_caps.get(t) or 0) for t in tickers]
-    tickers_with_cap.sort(key=lambda x: x[1], reverse=True)
-    top12_tickers = [t for t, _ in tickers_with_cap[:12]]
-    remaining_tickers = [t for t, _ in tickers_with_cap[12:]]
+    # Static ticker ordering (no yfinance API calls)
+    top12_tickers, remaining_tickers = _static_ticker_order(tickers)
 
     # Stats
     n_anomalies = int(results["consensus_anomaly"].sum()) if "consensus_anomaly" in results.columns else 0
@@ -115,7 +124,6 @@ def generate_dashboard(
             "name": TICKER_NAMES.get(t, t),
             "sector": TICKER_SECTORS.get(t, ""),
             "has_signal": t in signal_tickers,
-            "market_cap": market_caps.get(t),
             "is_fund": TICKER_REGISTRY.get(t, {}).get("is_fund", False),
             "category": TICKER_REGISTRY.get(t, {}).get("category", ""),
         })

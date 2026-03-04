@@ -120,18 +120,22 @@ def run(
         "validation_failures": validation_failures,
     }
 
-    # Stage 5: Dashboard
+    # Stage 5: Dashboard (non-fatal — detection results are already saved)
     logger.info("=" * 60)
     logger.info("STAGE 5: Building dashboard")
     logger.info("=" * 60)
-    dashboard_path = generate_dashboard(
-        results, alerts,
-        sensitivity=sensitivity,
-        lookback_days=lookback_days,
-        validation_failures=validation_failures,
-    )
-
-    summary["dashboard_path"] = dashboard_path
+    try:
+        dashboard_path = generate_dashboard(
+            results, alerts,
+            sensitivity=sensitivity,
+            lookback_days=lookback_days,
+            validation_failures=validation_failures,
+        )
+        summary["dashboard_path"] = dashboard_path
+    except Exception as exc:
+        logger.exception("Dashboard generation failed (non-fatal): %s", exc)
+        summary["dashboard_path"] = None
+        summary["dashboard_error"] = str(exc)
 
     logger.info("=" * 60)
     logger.info("DONE  |  %d tickers  |  %d anomalies  |  %d signals  |  %s",
