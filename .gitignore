@@ -24,3 +24,11 @@ Thumbs.db
 # Large transient CSVs (regenerated each run)
 data/stock_data.csv
 data/detection_results.csv
+
+# SQLite database (regenerated, can be large)
+data/anomaly_store.db
+data/anomaly_store.db-wal
+data/anomaly_store.db-shm
+
+# Pytest cache
+.pytest_cache/
