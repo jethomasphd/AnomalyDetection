@@ -389,10 +389,28 @@ def scoreboard_chart(results: pd.DataFrame) -> str:
 
 # ---- Attention Queue heatmap ----
 
-def attention_heatmap_chart(results: pd.DataFrame) -> str:
-    """Create a heatmap: tickers (y) x last 14 trading days (x), colored by consensus score."""
+def attention_heatmap_chart(results: pd.DataFrame, alerts: list[dict] | None = None) -> str:
+    """Create a heatmap: tickers (y) x last 14 trading days (x), colored by consensus score.
+
+    Hover shows anomaly methods that fired and any trading signal for that cell.
+    """
     if results.empty or "consensus_score" not in results.columns:
         return "{}"
+
+    # Build signal lookup: (ticker, date_str) -> signal info
+    sig_lookup: dict[tuple[str, str], dict] = {}
+    if alerts:
+        for a in alerts:
+            key = (a["ticker"], a["date"])
+            sig_lookup[key] = a
+
+    # Method columns for hover detail
+    method_cols = [
+        ("fourier_anomaly", "Fourier"),
+        ("mp_anomaly", "Matrix Profile"),
+        ("ensemble_anomaly", "Ensemble"),
+        ("ewma_anomaly", "EWMA"),
+    ]
 
     # Get last 14 unique dates
     all_dates = sorted(results["Date"].unique())
@@ -408,10 +426,31 @@ def attention_heatmap_chart(results: pd.DataFrame) -> str:
         hrow = []
         for d in last_14:
             if d in grp.index:
-                score = float(grp.loc[d, "consensus_score"]) if not isinstance(grp.loc[d], pd.DataFrame) else float(grp.loc[d, "consensus_score"].iloc[0])
+                rec = grp.loc[d] if not isinstance(grp.loc[d], pd.DataFrame) else grp.loc[d].iloc[0]
+                score = float(rec["consensus_score"])
                 row.append(score)
                 d_str = d.strftime("%b %d") if hasattr(d, "strftime") else str(d)[:10]
-                hrow.append(f"{ticker_display(ticker)}<br>{d_str}<br>Score: {score:.3f}")
+                d_iso = d.strftime("%Y-%m-%d") if hasattr(d, "strftime") else str(d)[:10]
+
+                # Which methods flagged?
+                fired = []
+                for col, label in method_cols:
+                    if col in results.columns:
+                        val = rec[col] if not isinstance(rec, pd.DataFrame) else rec[col].iloc[0]
+                        if val:
+                            fired.append(label)
+                methods_str = ", ".join(fired) if fired else "None"
+
+                # Signal for this cell?
+                sig = sig_lookup.get((ticker, d_iso))
+                sig_str = f"<br><b>Signal: {sig['signal_label']}</b>" if sig else ""
+
+                hover_line = (
+                    f"<b>{ticker_display(ticker)}</b><br>"
+                    f"{d_str} | Score: {score:.3f}<br>"
+                    f"Methods: {methods_str}{sig_str}"
+                )
+                hrow.append(hover_line)
             else:
                 row.append(0)
                 hrow.append(f"{ticker_display(ticker)}<br>No data")
@@ -607,31 +646,58 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
                 shares = cash / c
                 cash = 0
                 position = "long"
+                entry_price = c
                 trade_entry = {
                     "date": d_str, "ticker": ticker, "display": ticker_display(ticker),
                     "action": "BUY", "price": round(c, 2), "shares": round(shares, 4),
                     "value": round(shares * c, 2), "pnl": None, "pnl_pct": None,
+                    "entry_price": round(c, 2), "current_price": None, "status": "OPEN",
                 }
                 trades.append(trade_entry)
                 all_trades.append(trade_entry)
             elif sig in ("SELL", "SHORT") and position == "long":
                 sell_value = shares * c
-                buy_value = trades[-1]["value"] if trades else initial_capital
+                # Find matching buy entry
+                buy_entry = None
+                for t_e in reversed(trades):
+                    if t_e["action"] == "BUY":
+                        buy_entry = t_e
+                        break
+                buy_value = buy_entry["value"] if buy_entry else initial_capital
+                buy_price = buy_entry["price"] if buy_entry else c
                 pnl = sell_value - buy_value
                 pnl_pct = (pnl / buy_value * 100) if buy_value > 0 else 0
                 trade_entry = {
                     "date": d_str, "ticker": ticker, "display": ticker_display(ticker),
                     "action": "SELL", "price": round(c, 2), "shares": round(shares, 4),
                     "value": round(sell_value, 2), "pnl": round(pnl, 2), "pnl_pct": round(pnl_pct, 2),
+                    "entry_price": round(buy_price, 2), "current_price": round(c, 2), "status": "CLOSED",
                 }
                 trades.append(trade_entry)
                 all_trades.append(trade_entry)
+                # Mark the buy entry as closed too
+                if buy_entry:
+                    buy_entry["status"] = "CLOSED"
+                    buy_entry["current_price"] = round(c, 2)
+                    buy_entry["pnl"] = round(pnl, 2)
+                    buy_entry["pnl_pct"] = round(pnl_pct, 2)
                 cash = sell_value
                 shares = 0
                 position = "out"
 
             portfolio_value = cash + shares * c
             equity_curve.append({"date": d_str, "value": round(portfolio_value, 2)})
+
+        # Mark open positions with current price
+        current_price = closes[-1]
+        if position == "long" and trades:
+            for t_e in reversed(trades):
+                if t_e["action"] == "BUY" and t_e["status"] == "OPEN":
+                    t_e["current_price"] = round(current_price, 2)
+                    unrealized = shares * current_price - t_e["value"]
+                    t_e["pnl"] = round(unrealized, 2)
+                    t_e["pnl_pct"] = round(unrealized / t_e["value"] * 100, 2) if t_e["value"] > 0 else 0
+                    break
 
         final_value = cash + shares * closes[-1]
         pct_return = (final_value - initial_capital) / initial_capital * 100
