@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-04T18:33:50.080007Z",
+  "generated_at": "2026-03-04T20:46:28.550278Z",
   "total_signals": 81,
   "new_signals": 35,
   "signals": [
@@ -14,7 +14,7 @@
       "signal_color": "#42A5F5",
       "confidence": "Developing",
       "methods_flagged": 0,
-      "consensus_score": 0.5058,
+      "consensus_score": 0.5037,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-03-04",
       "is_new": true,
@@ -22,7 +22,7 @@
       "details": {
         "fourier_score": 0.0009,
         "mp_score": 0.7545,
-        "ensemble_score": 0.4726,
+        "ensemble_score": 0.4656,
         "ewma_score": 0.7009,
         "trajectory": "normal",
         "deviation_pct": 0.14,
@@ -144,7 +144,7 @@
       "signal_color": "#42A5F5",
       "confidence": "Strong",
       "methods_flagged": 3,
-      "consensus_score": 0.5343,
+      "consensus_score": 0.5341,
       "description": "Kinder Morgan (KMI) is trading 6.3% above its 20-day moving average ($31.89). Detection methods flagged this because trading rhythm has shifted and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-03-04",
       "is_new": true,
@@ -152,7 +152,7 @@
       "details": {
         "fourier_score": 0.4102,
         "mp_score": 0.3832,
-        "ensemble_score": 0.5825,
+        "ensemble_score": 0.5818,
         "ewma_score": 0.7267,
         "trajectory": "normal",
         "deviation_pct": 6.28,
@@ -1600,7 +1600,7 @@
       "signal_color": "#42A5F5",
       "confidence": "Developing",
       "methods_flagged": 1,
-      "consensus_score": 0.5006,
+      "consensus_score": 0.5008,
       "description": "Lockheed Martin (LMT) is trading 11.9% above its 20-day moving average ($509.29). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-03-04",
       "is_new": true,
@@ -1608,7 +1608,7 @@
       "details": {
         "fourier_score": 0.3325,
         "mp_score": 0.3071,
-        "ensemble_score": 0.3578,
+        "ensemble_score": 0.3585,
         "ewma_score": 1.0,
         "trajectory": "normal",
         "deviation_pct": 11.86,
