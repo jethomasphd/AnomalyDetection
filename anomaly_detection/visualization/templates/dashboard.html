@@ -454,9 +454,12 @@
         <div class="tip-panel" id="tip-monitored">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Tickers Monitored</div>
-            Total stocks and funds tracked across 5 categories: Engines of the Republic (core infrastructure),
-            Critical Choke Points (essential gatekeepers), Reserve (treasury proxy), Broad Index (SPY), and UBS Funds.
-            These aren't random picks &mdash; they're the pillars and pressure points of the American economy.
+            Stocks and funds tracked across 5 strategic categories:<br>
+            <strong>Core Infrastructure</strong> &mdash; the companies that build, feed, and finance America (CAT, WMT, JPM, etc.)<br>
+            <strong>Critical Choke Points</strong> &mdash; gatekeepers of energy, payments, logistics, and tech (V, MSFT, UNP, etc.)<br>
+            <strong>Reserve &amp; Index</strong> &mdash; treasury proxy (BIL) and broad market benchmark (SPY)<br>
+            <strong>UBS Funds</strong> &mdash; managed fund positions for comparison<br>
+            These aren't random picks &mdash; they're the pillars and pressure points of the economy.
         </div>
         <div class="tip-panel" id="tip-anomalies">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -493,6 +496,16 @@
             <strong>Long/Short</strong> are momentum (breakout with accelerating force).
             <strong>Confidence</strong> = how many methods agree: Strong (3-4), Moderate (2), Developing (1).
             These signals are NOT financial advice &mdash; they're what the data is saying.
+        </div>
+        <div class="tip-panel" id="tip-backtest">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Signal Performance</div>
+            This section answers: <strong>"If I had followed THE SIGNAL's calls, what would have happened?"</strong>
+            Each BUY/LONG signal triggers a simulated $10k purchase at the closing price.
+            The position stays open until a SELL/SHORT signal closes it.
+            <strong>% Change</strong> = how much that position gained or lost.
+            <strong>OPEN</strong> = still holding, showing unrealized gain/loss at current price.
+            The equity chart shows how the portfolio would have grown over the full period.
         </div>
         <div class="tip-panel" id="tip-fourier">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -531,10 +544,14 @@
             <div class="card-body flush">
                 {% if attention_queue %}
                 <div style="padding: 0.75rem;">
-                    <div id="attention-heatmap" style="min-height: 200px;"></div>
-                    <p style="font-size: 0.68rem; color: var(--muted); font-family: var(--mono); margin-top: 0.5rem; padding: 0 0.25rem;">
-                        Click any cell to deep-dive into that ticker. Hover for detection method details and signal type.
+                    <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.6rem; line-height:1.6;">
+                        <strong style="color:var(--green)">Start here.</strong>
+                        This heatmap shows the last 14 trading days across all {{ n_tickers }} tickers.
+                        Each cell's color represents the anomaly score &mdash; darker means normal, <strong style="color:var(--red)">red means something moved</strong>.
+                        Hover over any cell to see <em>which</em> detection methods fired and whether a trading signal was generated.
+                        Click a ticker to deep-dive.
                     </p>
+                    <div id="attention-heatmap" style="min-height: 200px;"></div>
                 </div>
                 {% else %}
                 <div class="empty-msg">No attention data available.</div>
@@ -550,7 +567,14 @@
             </div>
             <div class="card-body flush" style="overflow-x: auto;">
                 {% if alerts %}
-                <div style="padding: 0.4rem 0.9rem 0;">
+                <div style="padding: 0.6rem 0.9rem 0;">
+                    <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.5rem; line-height:1.6;">
+                        When an anomaly is detected, THE SIGNAL translates it into a directional call.
+                        <strong style="color:var(--green)">Green = buy opportunity</strong> (price is below where the math says it should be).
+                        <strong style="color:var(--red)">Red = sell signal</strong> (price has overextended).
+                        <strong>Confidence</strong> tells you how many independent methods agree.
+                        Click any row to see the full chart.
+                    </p>
                     <div class="signal-legend">
                         <div class="signal-legend-item"><div class="signal-legend-dot" style="background:var(--green)"></div> Buy</div>
                         <div class="signal-legend-item"><div class="signal-legend-dot" style="background:var(--red)"></div> Sell</div>
@@ -643,6 +667,13 @@
             <div class="card-head">
                 <span class="head-icon">03</span> Ticker Deep Dive
             </div>
+            <div style="padding: 0.6rem 1.2rem 0;">
+                <p style="font-size:0.82rem; color:var(--text); line-height:1.6;">
+                    Select a ticker to see its full price chart with signal markers, trend line, and all four detection methods broken down individually.
+                    <strong style="color:var(--red)">Red dots on the chart = flagged anomaly days.</strong>
+                    The four panels below show exactly <em>why</em> each method did or didn't fire.
+                </p>
+            </div>
             <div class="ticker-nav" id="ticker-nav">
                 {% for t in pinned_tickers %}
                 <button class="tbtn {% if t in signal_tickers %}flagged{% endif %} {% if t == 'SPY' %}active{% endif %}"
@@ -695,31 +726,36 @@
             </div>
         </div>
 
-        <!-- ==================== BACKTEST ==================== -->
+        <!-- ==================== SIGNAL PERFORMANCE ==================== -->
         <div class="card" id="backtest">
             <div class="card-head">
                 <span class="head-icon">04</span> Signal Performance &mdash; Proof of Concept
+                <span class="tip-trigger" onclick="showTip(event, 'tip-backtest')">?</span>
             </div>
             <div class="card-body">
                 {% if backtest.portfolio and backtest.portfolio.equity_curve %}
-                <p style="font-size:0.78rem; color:var(--muted); margin-bottom:0.75rem; font-family:var(--mono);">
-                    Simulated: buy at close on BUY/LONG signal, sell at close on SELL/SHORT signal.
-                    $10k per ticker, equal weight. Period: {{ backtest.start_date }} to {{ backtest.end_date }}.
+                <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.75rem; line-height:1.6;">
+                    <strong style="color:var(--green)">How to read this:</strong>
+                    Every time THE SIGNAL generated a BUY or LONG call, we simulated buying $10k of that stock at the closing price.
+                    When a SELL or SHORT followed, we sold. The table below shows each position &mdash; what we paid, what it's worth now
+                    (or what we sold for), and the % change. The chart tracks how that $10k would have grown or shrunk over time.
                 </p>
+
+                <!-- Summary stats -->
                 <div class="bt-grid">
                     <div class="bt-stat">
                         <div class="bt-num" style="color:{% if backtest.portfolio.pct_return >= 0 %}var(--green){% else %}var(--red){% endif %}">
                             {{ "%+.1f"|format(backtest.portfolio.pct_return) }}%
                         </div>
-                        <div class="bt-lbl">Return</div>
+                        <div class="bt-lbl">Cumulative Return</div>
                     </div>
                     <div class="bt-stat">
                         <div class="bt-num" style="color:var(--red)">{{ "%.1f"|format(backtest.portfolio.max_drawdown) }}%</div>
-                        <div class="bt-lbl">Max Drawdown</div>
+                        <div class="bt-lbl">Worst Drawdown</div>
                     </div>
                     <div class="bt-stat">
                         <div class="bt-num" style="color:var(--blue)">{{ backtest.portfolio.n_trades }}</div>
-                        <div class="bt-lbl">Trades</div>
+                        <div class="bt-lbl">Round Trips</div>
                     </div>
                     <div class="bt-stat">
                         <div class="bt-num" style="color:var(--amber)">{{ "%.0f"|format(backtest.portfolio.win_rate) }}%</div>
@@ -727,11 +763,16 @@
                     </div>
                 </div>
 
+                <!-- Equity curve chart -->
                 <div id="backtest-chart" style="min-height: 300px;"></div>
 
+                <!-- Per-ticker growth summary -->
                 {% if backtest.per_ticker %}
+                <p style="font-size:0.72rem; color:var(--muted); margin: 0.75rem 0 0.4rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.04em;">
+                    Growth by Ticker ($10k each)
+                </p>
                 <table class="bt-ticker-tbl">
-                    <thead><tr><th>Ticker</th><th>Return</th><th>Trades</th><th>Win Rate</th><th>Final Value</th></tr></thead>
+                    <thead><tr><th>Ticker</th><th>Return</th><th>Trades</th><th>Win Rate</th><th>$10k &rarr;</th></tr></thead>
                     <tbody>
                         {% for t in backtest.per_ticker[:15] %}
                         <tr>
@@ -739,59 +780,52 @@
                             <td style="font-weight:700; color:{% if t.pct_return >= 0 %}var(--green){% else %}var(--red){% endif %}">{{ "%+.1f"|format(t.pct_return) }}%</td>
                             <td>{{ t.n_trades }}</td>
                             <td>{% if t.win_rate is not none %}{{ "%.0f"|format(t.win_rate) }}%{% else %}&mdash;{% endif %}</td>
-                            <td>${{ "{:,.2f}".format(t.final_value) }}</td>
+                            <td style="font-weight:600;">${{ "{:,.0f}".format(t.final_value) }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
                 {% endif %}
 
-                <!-- Collapsible trade log -->
-                {% if backtest.all_trades %}
-                <button class="toggle-more" onclick="toggleTradeLog(this)" style="margin-top:0.5rem;">
-                    [+] show all {{ backtest.all_trades|length }} trades
+                <!-- Signal Ledger (collapsible) -->
+                {% if backtest.signal_ledger %}
+                <button class="toggle-more" onclick="toggleTradeLog(this)" style="margin-top:0.75rem;">
+                    [+] show signal ledger ({{ backtest.signal_ledger|length }} positions)
                 </button>
                 <div class="trade-log" id="trade-log">
+                    <p style="font-size:0.72rem; color:var(--muted); margin-bottom:0.4rem; font-family:var(--mono);">
+                        Each row = one signal. Price at Action = close on signal day. Current/Exit = latest price (if open) or sell price (if closed).
+                    </p>
                     <table class="trade-log-tbl">
                         <thead><tr>
-                            <th>Date</th>
+                            <th>Signal Date</th>
                             <th>Ticker</th>
                             <th>Action</th>
-                            <th>Entry $</th>
-                            <th>Current/Exit $</th>
-                            <th>Shares</th>
-                            <th>Value</th>
-                            <th>P&amp;L</th>
+                            <th>Price at Action</th>
+                            <th>Current / Exit</th>
+                            <th>% Change</th>
                             <th>Status</th>
                         </tr></thead>
                         <tbody>
-                            {% for tr in backtest.all_trades %}
-                            <tr>
-                                <td>{{ tr.date }}</td>
-                                <td style="font-weight:600;">{{ tr.ticker }}</td>
-                                <td class="trade-{{ tr.action|lower }}">{{ tr.action }}</td>
-                                <td>${{ "%.2f"|format(tr.entry_price) }}</td>
+                            {% for s in backtest.signal_ledger %}
+                            <tr onclick="selectTicker('{{ s.ticker }}')">
+                                <td>{{ s.date }}</td>
+                                <td style="font-weight:600;">{{ s.ticker }}</td>
+                                <td class="trade-{{ s.action|lower }}">{{ s.action }}</td>
+                                <td>${{ "%.2f"|format(s.action_price) }}</td>
+                                <td>${{ "%.2f"|format(s.current_price) }}</td>
                                 <td>
-                                    {% if tr.current_price %}
-                                        ${{ "%.2f"|format(tr.current_price) }}
-                                    {% else %}
-                                        &mdash;
-                                    {% endif %}
-                                </td>
-                                <td>{{ "%.2f"|format(tr.shares) }}</td>
-                                <td>${{ "{:,.2f}".format(tr.value) }}</td>
-                                <td>
-                                    {% if tr.pnl is not none %}
-                                        <span style="color:{% if tr.pnl >= 0 %}var(--green){% else %}var(--red){% endif %}">
-                                            {{ "%+.2f"|format(tr.pnl) }} ({{ "%+.1f"|format(tr.pnl_pct) }}%)
-                                        </span>
-                                    {% else %}&mdash;{% endif %}
+                                    <span style="font-weight:700; color:{% if s.pct_change >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                                        {{ "%+.1f"|format(s.pct_change) }}%
+                                    </span>
                                 </td>
                                 <td>
-                                    {% if tr.status == 'OPEN' %}
+                                    {% if s.status == 'OPEN' %}
                                         <span class="trade-open">OPEN</span>
-                                    {% else %}
+                                    {% elif s.status == 'CLOSED' %}
                                         <span style="color:var(--dim);">CLOSED</span>
+                                    {% else %}
+                                        <span style="color:var(--muted);">{{ s.status }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -802,11 +836,11 @@
                 {% endif %}
 
                 <p style="margin-top: 0.75rem; font-size: 0.65rem; color: var(--dim); font-style: italic; font-family: var(--mono);">
-                    Simplified backtest for educational purposes only. No slippage, commissions, or market impact.
-                    Past performance does not predict future results. NOT financial advice.
+                    Simplified simulation for educational purposes only. No slippage, commissions, or market impact modeled.
+                    Past performance does not predict future results. This is NOT financial advice.
                 </p>
                 {% else %}
-                <div class="empty-msg">No signal data available for backtesting.</div>
+                <div class="empty-msg">No signal data available for backtesting yet. Signals will appear after the first anomaly detection run.</div>
                 {% endif %}
             </div>
         </div>

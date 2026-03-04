@@ -60,6 +60,11 @@ LAYOUT_DEFAULTS = dict(
     font=dict(family="'JetBrains Mono', 'SF Mono', 'Fira Code', monospace", size=11, color=TEXT_PRIMARY),
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(10,14,23,0.6)",
+    hoverlabel=dict(
+        bgcolor="#1E293B",
+        bordercolor="#334155",
+        font=dict(family="'JetBrains Mono', monospace", size=12, color=TEXT_PRIMARY),
+    ),
 )
 
 
@@ -589,38 +594,103 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
 # ---- Backtest: full lookback signal-following performance ----
 
 def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
-    """Compute a backtest of following the dashboard's signals over the full dataset.
+    """Compute a simple signal ledger showing what happened after each signal.
 
-    Strategy:
-      - Buy at close on BUY/LONG signal day
-      - Sell at close on SELL/SHORT signal day
-      - Hold otherwise
-      - $10,000 per ticker, equal-weight portfolio
+    For each signal:
+      - Record the action date and price at signal
+      - If a closing signal followed, record exit price and realized % change
+      - If still open, record current (latest) price and unrealized % change
+      - Track cumulative growth of a $10k equal-weight portfolio
     """
     if results.empty or not alerts:
-        return {"per_ticker": [], "portfolio": {}, "start_date": None, "end_date": None, "all_trades": []}
+        return {"per_ticker": [], "portfolio": {}, "start_date": None, "end_date": None, "all_trades": [], "signal_ledger": []}
 
     today = results["Date"].max()
-    # Use entire dataset range (full year or whatever lookback was used)
     start = results["Date"].min()
-
     start_str = start.strftime("%Y-%m-%d") if hasattr(start, "strftime") else str(start)[:10]
     recent_alerts = [a for a in alerts if a["date"] >= start_str]
 
     if not recent_alerts:
-        return {"per_ticker": [], "portfolio": {}, "start_date": str(start)[:10], "end_date": str(today)[:10], "all_trades": []}
+        return {"per_ticker": [], "portfolio": {}, "start_date": str(start)[:10], "end_date": str(today)[:10], "all_trades": [], "signal_ledger": []}
 
-    tickers_with_signals = set()
+    # Get latest price for each ticker
+    latest_prices = {}
+    for ticker in results["Ticker"].unique():
+        grp = results[results["Ticker"] == ticker].sort_values("Date")
+        if not grp.empty:
+            latest_prices[ticker] = float(grp["Close"].iloc[-1])
+
+    # Build signal timeline per ticker: ordered list of (date, signal, price)
     sig_timeline = {}
     for a in recent_alerts:
         t = a["ticker"]
-        tickers_with_signals.add(t)
-        sig_timeline.setdefault(t, {})[a["date"]] = a["signal"]
+        sig_timeline.setdefault(t, []).append(a)
 
-    per_ticker = []
-    all_equity_curves = {}
-    all_trades = []  # Flat list of every trade for the collapsible log
+    # Sort each ticker's signals by date
+    for t in sig_timeline:
+        sig_timeline[t].sort(key=lambda x: x["date"])
+
+    # Build signal ledger — pair BUY/LONG with SELL/SHORT
+    signal_ledger = []
+    per_ticker_returns = {}
     initial_capital = 10000
+
+    for ticker, ticker_alerts in sig_timeline.items():
+        current_price = latest_prices.get(ticker, 0)
+        pending_buy = None
+
+        for a in ticker_alerts:
+            sig = a["signal"]
+            action_price = a["close"]
+
+            if sig in ("BUY", "LONG"):
+                pending_buy = {
+                    "date": a["date"],
+                    "ticker": ticker,
+                    "display": ticker_display(ticker),
+                    "action": sig,
+                    "action_price": round(action_price, 2),
+                    "exit_date": None,
+                    "current_price": round(current_price, 2),
+                    "pct_change": round((current_price - action_price) / action_price * 100, 2) if action_price > 0 else 0,
+                    "status": "OPEN",
+                    "confidence": a.get("confidence", ""),
+                }
+            elif sig in ("SELL", "SHORT") and pending_buy:
+                # Close the position
+                pct = (action_price - pending_buy["action_price"]) / pending_buy["action_price"] * 100 if pending_buy["action_price"] > 0 else 0
+                pending_buy["exit_date"] = a["date"]
+                pending_buy["current_price"] = round(action_price, 2)
+                pending_buy["pct_change"] = round(pct, 2)
+                pending_buy["status"] = "CLOSED"
+                signal_ledger.append(pending_buy)
+                pending_buy = None
+            elif sig in ("SELL", "SHORT"):
+                # Standalone sell (no prior buy)
+                signal_ledger.append({
+                    "date": a["date"],
+                    "ticker": ticker,
+                    "display": ticker_display(ticker),
+                    "action": sig,
+                    "action_price": round(action_price, 2),
+                    "exit_date": None,
+                    "current_price": round(current_price, 2),
+                    "pct_change": round((current_price - action_price) / action_price * 100, 2) if action_price > 0 else 0,
+                    "status": "INFO",
+                    "confidence": a.get("confidence", ""),
+                })
+
+        # If there's an open buy, add it
+        if pending_buy:
+            signal_ledger.append(pending_buy)
+
+    # Sort ledger by date descending
+    signal_ledger.sort(key=lambda x: x["date"], reverse=True)
+
+    # Per-ticker summary
+    per_ticker = []
+    tickers_with_signals = set(a["ticker"] for a in recent_alerts)
+    all_equity_curves = {}
 
     for ticker in tickers_with_signals:
         grp = results[results["Ticker"] == ticker].sort_values("Date")
@@ -630,92 +700,43 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
 
         dates = grp["Date"].tolist()
         closes = grp["Close"].tolist()
-        signals = sig_timeline.get(ticker, {})
+        signals_map = {a["date"]: a["signal"] for a in sig_timeline.get(ticker, [])}
 
         cash = initial_capital
         shares = 0
         equity_curve = []
-        trades = []
         position = "out"
+        n_trades = 0
+        wins = 0
 
-        for i, (d, c) in enumerate(zip(dates, closes)):
+        for d, c in zip(dates, closes):
             d_str = d.strftime("%Y-%m-%d") if hasattr(d, "strftime") else str(d)
-            sig = signals.get(d_str)
+            sig = signals_map.get(d_str)
 
             if sig in ("BUY", "LONG") and position == "out" and c > 0:
                 shares = cash / c
+                buy_price = c
                 cash = 0
                 position = "long"
-                entry_price = c
-                trade_entry = {
-                    "date": d_str, "ticker": ticker, "display": ticker_display(ticker),
-                    "action": "BUY", "price": round(c, 2), "shares": round(shares, 4),
-                    "value": round(shares * c, 2), "pnl": None, "pnl_pct": None,
-                    "entry_price": round(c, 2), "current_price": None, "status": "OPEN",
-                }
-                trades.append(trade_entry)
-                all_trades.append(trade_entry)
             elif sig in ("SELL", "SHORT") and position == "long":
-                sell_value = shares * c
-                # Find matching buy entry
-                buy_entry = None
-                for t_e in reversed(trades):
-                    if t_e["action"] == "BUY":
-                        buy_entry = t_e
-                        break
-                buy_value = buy_entry["value"] if buy_entry else initial_capital
-                buy_price = buy_entry["price"] if buy_entry else c
-                pnl = sell_value - buy_value
-                pnl_pct = (pnl / buy_value * 100) if buy_value > 0 else 0
-                trade_entry = {
-                    "date": d_str, "ticker": ticker, "display": ticker_display(ticker),
-                    "action": "SELL", "price": round(c, 2), "shares": round(shares, 4),
-                    "value": round(sell_value, 2), "pnl": round(pnl, 2), "pnl_pct": round(pnl_pct, 2),
-                    "entry_price": round(buy_price, 2), "current_price": round(c, 2), "status": "CLOSED",
-                }
-                trades.append(trade_entry)
-                all_trades.append(trade_entry)
-                # Mark the buy entry as closed too
-                if buy_entry:
-                    buy_entry["status"] = "CLOSED"
-                    buy_entry["current_price"] = round(c, 2)
-                    buy_entry["pnl"] = round(pnl, 2)
-                    buy_entry["pnl_pct"] = round(pnl_pct, 2)
-                cash = sell_value
+                cash = shares * c
+                n_trades += 1
+                if c > buy_price:
+                    wins += 1
                 shares = 0
                 position = "out"
 
-            portfolio_value = cash + shares * c
-            equity_curve.append({"date": d_str, "value": round(portfolio_value, 2)})
-
-        # Mark open positions with current price
-        current_price = closes[-1]
-        if position == "long" and trades:
-            for t_e in reversed(trades):
-                if t_e["action"] == "BUY" and t_e["status"] == "OPEN":
-                    t_e["current_price"] = round(current_price, 2)
-                    unrealized = shares * current_price - t_e["value"]
-                    t_e["pnl"] = round(unrealized, 2)
-                    t_e["pnl_pct"] = round(unrealized / t_e["value"] * 100, 2) if t_e["value"] > 0 else 0
-                    break
+            equity_curve.append({"date": d_str, "value": round(cash + shares * c, 2)})
 
         final_value = cash + shares * closes[-1]
         pct_return = (final_value - initial_capital) / initial_capital * 100
-
-        wins = 0
-        total_round_trips = 0
-        for j in range(0, len(trades) - 1, 2):
-            if j + 1 < len(trades):
-                total_round_trips += 1
-                if trades[j + 1].get("pnl", 0) and trades[j + 1]["pnl"] > 0:
-                    wins += 1
 
         per_ticker.append({
             "ticker": ticker,
             "display": ticker_display(ticker),
             "pct_return": round(pct_return, 2),
-            "n_trades": len(trades),
-            "win_rate": round(wins / total_round_trips * 100, 1) if total_round_trips > 0 else None,
+            "n_trades": n_trades,
+            "win_rate": round(wins / n_trades * 100, 1) if n_trades > 0 else None,
             "equity_curve": equity_curve,
             "final_value": round(final_value, 2),
         })
@@ -724,9 +745,9 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
     # Portfolio equity curve (equal-weight average)
     portfolio_stats = {}
     if per_ticker:
-        all_dates = sorted(set(d for curves in all_equity_curves.values() for d in curves))
+        all_dates_set = sorted(set(d for curves in all_equity_curves.values() for d in curves))
         portfolio_curve = []
-        for d in all_dates:
+        for d in all_dates_set:
             values = [curves.get(d) for curves in all_equity_curves.values() if curves.get(d) is not None]
             if values:
                 portfolio_curve.append({"date": d, "value": round(sum(values) / len(values), 2)})
@@ -756,15 +777,13 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
                 "equity_curve": portfolio_curve,
             }
 
-    # Sort all trades by date descending
-    all_trades.sort(key=lambda x: x["date"], reverse=True)
-
     return {
         "per_ticker": sorted(per_ticker, key=lambda x: x["pct_return"], reverse=True),
         "portfolio": portfolio_stats,
         "start_date": str(start)[:10],
         "end_date": str(today)[:10],
-        "all_trades": all_trades,
+        "all_trades": [],  # Legacy compat
+        "signal_ledger": signal_ledger,
     }
 
 
