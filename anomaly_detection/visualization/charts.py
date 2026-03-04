@@ -437,7 +437,7 @@ def attention_heatmap_chart(results: pd.DataFrame) -> str:
         hovertemplate="%{hovertext}<extra></extra>",
         showscale=True,
         colorbar=dict(
-            title="Score", titlefont=dict(size=10, color=MUTED),
+            title=dict(text="Score", font=dict(size=10, color=MUTED)),
             tickfont=dict(size=9, color=MUTED), len=0.6,
         ),
     ))

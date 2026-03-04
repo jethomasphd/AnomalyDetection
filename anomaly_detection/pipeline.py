@@ -140,7 +140,7 @@ def run(
     logger.info("=" * 60)
     logger.info("DONE  |  %d tickers  |  %d anomalies  |  %d signals  |  %s",
                 summary["tickers_analyzed"], summary["anomalies_detected"],
-                summary["total_signals"], dashboard_path)
+                summary["total_signals"], summary.get("dashboard_path", "N/A"))
     logger.info("=" * 60)
 
     return summary
