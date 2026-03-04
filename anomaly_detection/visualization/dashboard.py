@@ -36,34 +36,22 @@ logger = logging.getLogger(__name__)
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates")
 
 
-def _static_ticker_order(tickers: list[str]) -> tuple[list[str], list[str]]:
-    """Order tickers by category priority (no API calls).
+# Pinned buttons for the deep-dive section (always visible)
+PINNED_DEEP_DIVE = [
+    "SPY", "GOOGL", "AMZN", "MSFT", "JPM", "UNH",
+    "WMT", "COST", "HD", "DVRUX", "QGRPX", "BNUEX",
+]
 
-    Returns (top12, remaining) where top12 are the first 12 non-fund
-    tickers ordered by category (Engines first, then Choke Points, etc.),
-    and remaining is everything else.
+
+def _deep_dive_buttons(tickers: list[str]) -> tuple[list[str], list[str]]:
+    """Return (pinned_buttons, dropdown_remaining) for the deep-dive section.
+
+    Pinned buttons are the PINNED_DEEP_DIVE tickers (in fixed order).
+    Dropdown contains all remaining tickers sorted alphabetically.
     """
-    # Build ordered list: non-funds first by category, then funds
-    ordered = []
-    cat_groups = tickers_by_category()
-    for cat in CATEGORY_ORDER:
-        for t in cat_groups.get(cat, []):
-            if t in tickers:
-                ordered.append(t)
-
-    # Any tickers not in registry go at the end
-    for t in tickers:
-        if t not in ordered:
-            ordered.append(t)
-
-    # Top 12 = first 12 non-fund tickers
-    non_funds = [t for t in ordered if not TICKER_REGISTRY.get(t, {}).get("is_fund", False)]
-    funds = [t for t in ordered if TICKER_REGISTRY.get(t, {}).get("is_fund", False)]
-
-    top12 = non_funds[:12]
-    remaining = non_funds[12:] + funds
-
-    return top12, remaining
+    pinned = [t for t in PINNED_DEEP_DIVE if t in tickers]
+    remaining = sorted([t for t in tickers if t not in pinned])
+    return pinned, remaining
 
 
 def generate_dashboard(
@@ -100,15 +88,15 @@ def generate_dashboard(
     # Attention Queue
     attention_queue = compute_attention_queue(results, alerts)
 
-    # Attention heatmap
-    heatmap_json = attention_heatmap_chart(results)
+    # Attention heatmap (with signal info on hover)
+    heatmap_json = attention_heatmap_chart(results, alerts=alerts)
 
     # Backtest (full period)
     backtest = compute_backtest(results, alerts)
     backtest_chart_json = backtest_equity_chart(backtest)
 
-    # Static ticker ordering (no yfinance API calls)
-    top12_tickers, remaining_tickers = _static_ticker_order(tickers)
+    # Deep-dive buttons: pinned set + alphabetical dropdown
+    pinned_tickers, remaining_tickers = _deep_dive_buttons(tickers)
 
     # Stats
     n_anomalies = int(results["consensus_anomaly"].sum()) if "consensus_anomaly" in results.columns else 0
@@ -153,7 +141,7 @@ def generate_dashboard(
         heatmap_json=heatmap_json,
         backtest=backtest,
         backtest_chart_json=backtest_chart_json,
-        top12_tickers=top12_tickers,
+        pinned_tickers=pinned_tickers,
         remaining_tickers=remaining_tickers,
         category_labels=CATEGORY_LABELS,
         category_groups=cat_groups,

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Anomaly Detection — Trading Signals</title>
+    <title>THE SIGNAL — Market Anomaly Intelligence</title>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -48,8 +48,9 @@
         }
         .header-inner { max-width: 1340px; margin: 0 auto; }
         .header h1 {
-            font-family: var(--mono); font-size: 1.4rem; font-weight: 700;
-            letter-spacing: -0.02em; color: var(--green);
+            font-family: var(--mono); font-size: 1.5rem; font-weight: 700;
+            letter-spacing: 0.08em; color: var(--green);
+            text-transform: uppercase;
         }
         .header .subtitle {
             font-family: var(--mono); color: var(--muted); font-size: 0.75rem;
@@ -164,40 +165,6 @@
         }
         .card-body { padding: 1rem 1.2rem; }
         .card-body.flush { padding: 0; }
-
-        /* === ATTENTION QUEUE — heatmap + table === */
-        .aq-wrapper {
-            display: grid; grid-template-columns: 1fr; gap: 0;
-        }
-        .aq-heatmap { padding: 0.75rem; border-bottom: 1px solid var(--border); }
-
-        .aq-tbl { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
-        .aq-tbl th {
-            text-align: left; padding: 0.5rem 0.7rem; background: var(--surface2);
-            font-weight: 600; font-size: 0.62rem; text-transform: uppercase;
-            letter-spacing: 0.06em; color: var(--muted); white-space: nowrap;
-            font-family: var(--mono);
-        }
-        .aq-tbl td {
-            padding: 0.45rem 0.7rem; border-top: 1px solid var(--border);
-            vertical-align: middle;
-        }
-        .aq-tbl tr { cursor: pointer; transition: background 0.1s; }
-        .aq-tbl tr:hover { background: rgba(0,176,255,0.06); }
-        .aq-tbl tr.selected { background: rgba(0,230,118,0.08); }
-        .aq-rank {
-            font-family: var(--mono); font-weight: 700; color: var(--dim);
-            font-size: 0.7rem; width: 2rem;
-        }
-        .aq-score-bar {
-            height: 4px; border-radius: 2px; background: var(--border);
-            width: 50px; display: inline-block; vertical-align: middle; margin-right: 0.35rem;
-        }
-        .aq-score-fill { height: 100%; border-radius: 2px; }
-        .aq-change { font-family: var(--mono); font-size: 0.68rem; font-weight: 600; }
-        .aq-change.up { color: var(--red); }
-        .aq-change.down { color: var(--green); }
-        .aq-sparkline { width: 70px; height: 20px; display: inline-block; vertical-align: middle; }
 
         /* === SIGNAL TABLE === */
         .tbl { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
@@ -348,6 +315,7 @@
         }
         .trade-buy { color: var(--green); }
         .trade-sell { color: var(--red); }
+        .trade-open { color: var(--amber); font-weight: 600; }
 
         /* === LEARN PANEL === */
         .learn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.6rem; }
@@ -388,6 +356,8 @@
             color: var(--dim); font-family: var(--mono);
             border-top: 1px solid var(--border);
         }
+        .footer a { color: var(--green); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
         .empty-msg { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
 
         /* Details/summary styled */
@@ -404,8 +374,9 @@
 <body>
     <div class="header">
         <div class="header-inner">
-            <h1>> stock_anomaly_detection</h1>
+            <h1>> THE_SIGNAL</h1>
             <div class="subtitle">
+                market anomaly intelligence <span>//</span>
                 {{ n_tickers }} tickers <span>|</span>
                 {{ sensitivity }} sensitivity <span>|</span>
                 {{ lookback_days }}d lookback <span>|</span>
@@ -417,22 +388,22 @@
     <!-- Hero summary -->
     <div class="hero">
         <div class="hero-text">
-            <strong>Dashboard Summary:</strong>
-            Monitoring <span class="stat-inline stat-blue">{{ n_tickers }}</span> tickers across 5 categories.
+            <strong>The institutions have their Bloomberg terminals. Their dark pools. Their millisecond advantages.</strong>
+            THE SIGNAL levels the field &mdash; four independent detection algorithms scanning
+            <span class="stat-inline stat-blue">{{ n_tickers }}</span> tickers daily,
+            surfacing anomalies the market hasn't priced in yet.
             {% if n_anomalies > 0 %}
-                Detected <span class="stat-inline stat-red">{{ n_anomalies }}</span> anomalies with
+                Right now: <span class="stat-inline stat-red">{{ n_anomalies }}</span> anomalies detected,
                 <span class="stat-inline stat-green">{{ n_actionable }}</span> actionable signals.
             {% else %}
-                All tickers are currently trading within normal statistical ranges — no anomalies detected.
+                All tickers are trading within normal statistical ranges &mdash; the silence itself is a signal.
             {% endif %}
             {% if n_new_signals > 0 %}
-                <span class="stat-inline" style="color:var(--orange)">{{ n_new_signals }}</span> new signal(s) since last run.
+                <span class="stat-inline" style="color:var(--orange)">{{ n_new_signals }}</span> new signal(s) since last scan.
             {% endif %}
             <br style="margin-top:0.4rem">
             <span style="color:var(--muted); font-size:0.82rem;">
-                Start with the <strong style="color:var(--cyan)">Attention Queue</strong> below to see which tickers need review,
-                then check <strong style="color:var(--cyan)">Trading Signals</strong> for actionable calls,
-                and <strong style="color:var(--cyan)">Deep Dive</strong> into individual tickers to confirm context.
+                The noise is what they sell you. <strong style="color:var(--green)">The signal is what we extract.</strong>
             </span>
         </div>
     </div>
@@ -485,6 +456,7 @@
             <div class="tip-title">Tickers Monitored</div>
             Total stocks and funds tracked across 5 categories: Engines of the Republic (core infrastructure),
             Critical Choke Points (essential gatekeepers), Reserve (treasury proxy), Broad Index (SPY), and UBS Funds.
+            These aren't random picks &mdash; they're the pillars and pressure points of the American economy.
         </div>
         <div class="tip-panel" id="tip-anomalies">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -492,6 +464,7 @@
             An anomaly is a trading day where <strong>2+ independent detection methods</strong> agree that price behavior
             is statistically unusual. The four methods are: Fourier Transform (rhythm shift), Matrix Profile (novel pattern),
             Statistical Ensemble (z-score + seasonal + isolation forest), and EWMA Trend (momentum deviation).
+            When the machines agree, pay attention.
         </div>
         <div class="tip-panel" id="tip-actionable">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -508,9 +481,10 @@
         </div>
         <div class="tip-panel" id="tip-attention">
             <button class="tip-close" onclick="hideTips()">&times;</button>
-            <div class="tip-title">Attention Score</div>
-            Composite ranking (0-100) combining: recency of anomaly (30pts), severity (40pts),
-            consecutive anomaly streak (15pts), and signal strength (15pts). Higher = look first.
+            <div class="tip-title">Attention Queue</div>
+            The heatmap shows the last <strong>14 trading days</strong> of anomaly intensity for every ticker.
+            Red = high anomaly score. Hover over any cell to see which detection methods fired and what signal was generated.
+            Composite ranking combines: recency (30pts), severity (40pts), streak (15pts), and signal strength (15pts).
         </div>
         <div class="tip-panel" id="tip-signals">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -518,7 +492,7 @@
             Derived from anomaly profiles: <strong>Buy/Sell</strong> are mean-reversion (price extended from trend, momentum fading).
             <strong>Long/Short</strong> are momentum (breakout with accelerating force).
             <strong>Confidence</strong> = how many methods agree: Strong (3-4), Moderate (2), Developing (1).
-            These signals are NOT financial advice.
+            These signals are NOT financial advice &mdash; they're what the data is saying.
         </div>
         <div class="tip-panel" id="tip-fourier">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -551,77 +525,16 @@
         <!-- ==================== ATTENTION QUEUE ==================== -->
         <div class="card" id="attention-queue">
             <div class="card-head">
-                <span class="head-icon">01</span> Attention Queue
+                <span class="head-icon">01</span> Attention Queue &mdash; 14-Day Anomaly Map
                 <span class="tip-trigger" onclick="showTip(event, 'tip-attention')">?</span>
             </div>
             <div class="card-body flush">
                 {% if attention_queue %}
-                <div class="aq-wrapper">
-                    <!-- Heatmap visualization -->
-                    <div class="aq-heatmap">
-                        <div id="attention-heatmap" style="min-height: 200px;"></div>
-                    </div>
-                    <!-- Ranked table below -->
-                    <div style="overflow-x: auto;">
-                        <table class="aq-tbl">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Ticker</th>
-                                    <th>Score
-                                        <span class="tip-trigger" onclick="event.stopPropagation(); showTip(event, 'tip-attention')">?</span>
-                                    </th>
-                                    <th>Severity
-                                        <span class="tip-trigger" onclick="event.stopPropagation(); showTip(event, 'tip-severity')">?</span>
-                                    </th>
-                                    <th>&Delta;</th>
-                                    <th>Streak</th>
-                                    <th>Signal</th>
-                                    <th>30d</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in attention_queue %}
-                                <tr onclick="selectTicker('{{ item.ticker }}')" title="Deep dive: {{ item.ticker }}">
-                                    <td class="aq-rank">{{ item.rank }}</td>
-                                    <td>
-                                        <div class="ticker-label">{{ item.ticker }}</div>
-                                        <div class="ticker-sub">{{ item.display }}</div>
-                                    </td>
-                                    <td>
-                                        <span class="aq-score-bar">
-                                            <span class="aq-score-fill" style="width:{{ [item.attention_score, 100]|min }}%; background:{% if item.attention_score > 60 %}var(--red){% elif item.attention_score > 35 %}var(--orange){% elif item.attention_score > 15 %}var(--amber){% else %}var(--border){% endif %};"></span>
-                                        </span>
-                                        <span style="font-family:var(--mono); font-size:0.7rem; font-weight:600;">{{ item.attention_score }}</span>
-                                    </td>
-                                    <td style="font-family:var(--mono); font-weight:600;">{{ item.latest_severity }}</td>
-                                    <td>
-                                        {% if item.change > 0.01 %}
-                                            <span class="aq-change up">+{{ item.change }}</span>
-                                        {% elif item.change < -0.01 %}
-                                            <span class="aq-change down">{{ item.change }}</span>
-                                        {% else %}
-                                            <span style="color:var(--dim); font-family:var(--mono); font-size:0.68rem;">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td style="font-family:var(--mono); font-weight:600;">
-                                        {% if item.streak > 0 %}
-                                            <span style="color:var(--red)">{{ item.streak }}d</span>
-                                        {% else %}—{% endif %}
-                                    </td>
-                                    <td>
-                                        {% if item.signal %}
-                                            <span class="signal-pill signal-{{ item.signal|lower }}">{{ item.signal_label }}</span>
-                                        {% else %}
-                                            <span style="color:var(--dim); font-size:0.68rem;">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td><canvas class="aq-sparkline" data-values="{{ item.sparkline|join(',') }}" width="70" height="20"></canvas></td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <div style="padding: 0.75rem;">
+                    <div id="attention-heatmap" style="min-height: 200px;"></div>
+                    <p style="font-size: 0.68rem; color: var(--muted); font-family: var(--mono); margin-top: 0.5rem; padding: 0 0.25rem;">
+                        Click any cell to deep-dive into that ticker. Hover for detection method details and signal type.
+                    </p>
                 </div>
                 {% else %}
                 <div class="empty-msg">No attention data available.</div>
@@ -720,7 +633,7 @@
                 </button>
                 {% endif %}
                 {% else %}
-                <div class="empty-msg">No anomalies detected — all tickers within normal ranges.</div>
+                <div class="empty-msg">No anomalies detected &mdash; all tickers within normal ranges. The silence itself is data.</div>
                 {% endif %}
             </div>
         </div>
@@ -731,8 +644,8 @@
                 <span class="head-icon">03</span> Ticker Deep Dive
             </div>
             <div class="ticker-nav" id="ticker-nav">
-                {% for t in top12_tickers %}
-                <button class="tbtn {% if t in signal_tickers %}flagged{% endif %} {% if loop.first %}active{% endif %}"
+                {% for t in pinned_tickers %}
+                <button class="tbtn {% if t in signal_tickers %}flagged{% endif %} {% if t == 'SPY' %}active{% endif %}"
                         onclick="showTicker('{{ t }}', this)"
                         id="tbtn-{{ t }}">
                     {{ t }}<span class="btn-name">{{ ticker_info|selectattr('ticker','equalto',t)|map(attribute='name')|first }}</span>
@@ -740,9 +653,9 @@
                 {% endfor %}
                 {% if remaining_tickers %}
                 <select class="ticker-dropdown" onchange="if(this.value) showTicker(this.value); this.selectedIndex=0;">
-                    <option value="">more...</option>
+                    <option value="">more tickers...</option>
                     {% for t in remaining_tickers %}
-                    <option value="{{ t }}">{{ t }} — {{ ticker_info|selectattr('ticker','equalto',t)|map(attribute='name')|first }}</option>
+                    <option value="{{ t }}">{{ t }} &mdash; {{ ticker_info|selectattr('ticker','equalto',t)|map(attribute='name')|first }}</option>
                     {% endfor %}
                 </select>
                 {% endif %}
@@ -752,28 +665,28 @@
                 <div class="method-grid">
                     <div class="method-panel">
                         <div class="method-panel-head">
-                            Fourier — Rhythm shift
+                            Fourier &mdash; Rhythm shift
                             <span class="tip-trigger" onclick="event.stopPropagation(); showTip(event, 'tip-fourier')">?</span>
                         </div>
                         <div class="method-panel-body"><div id="method-fourier"></div></div>
                     </div>
                     <div class="method-panel">
                         <div class="method-panel-head">
-                            Matrix Profile — Novel pattern
+                            Matrix Profile &mdash; Novel pattern
                             <span class="tip-trigger" onclick="event.stopPropagation(); showTip(event, 'tip-mp')">?</span>
                         </div>
                         <div class="method-panel-body"><div id="method-mp"></div></div>
                     </div>
                     <div class="method-panel">
                         <div class="method-panel-head">
-                            Ensemble — Statistical consensus
+                            Ensemble &mdash; Statistical consensus
                             <span class="tip-trigger" onclick="event.stopPropagation(); showTip(event, 'tip-ensemble')">?</span>
                         </div>
                         <div class="method-panel-body"><div id="method-ensemble"></div></div>
                     </div>
                     <div class="method-panel">
                         <div class="method-panel-head">
-                            EWMA — Momentum deviation
+                            EWMA &mdash; Momentum deviation
                             <span class="tip-trigger" onclick="event.stopPropagation(); showTip(event, 'tip-ewma')">?</span>
                         </div>
                         <div class="method-panel-body"><div id="method-ewma"></div></div>
@@ -785,12 +698,12 @@
         <!-- ==================== BACKTEST ==================== -->
         <div class="card" id="backtest">
             <div class="card-head">
-                <span class="head-icon">04</span> Signal Performance
+                <span class="head-icon">04</span> Signal Performance &mdash; Proof of Concept
             </div>
             <div class="card-body">
                 {% if backtest.portfolio and backtest.portfolio.equity_curve %}
                 <p style="font-size:0.78rem; color:var(--muted); margin-bottom:0.75rem; font-family:var(--mono);">
-                    Simulated: buy at close on BUY/LONG, sell at close on SELL/SHORT.
+                    Simulated: buy at close on BUY/LONG signal, sell at close on SELL/SHORT signal.
                     $10k per ticker, equal weight. Period: {{ backtest.start_date }} to {{ backtest.end_date }}.
                 </p>
                 <div class="bt-grid">
@@ -818,14 +731,14 @@
 
                 {% if backtest.per_ticker %}
                 <table class="bt-ticker-tbl">
-                    <thead><tr><th>Ticker</th><th>Return</th><th>Trades</th><th>Win Rate</th><th>Final</th></tr></thead>
+                    <thead><tr><th>Ticker</th><th>Return</th><th>Trades</th><th>Win Rate</th><th>Final Value</th></tr></thead>
                     <tbody>
                         {% for t in backtest.per_ticker[:15] %}
                         <tr>
                             <td style="font-weight:600; color:var(--text);">{{ t.display }}</td>
                             <td style="font-weight:700; color:{% if t.pct_return >= 0 %}var(--green){% else %}var(--red){% endif %}">{{ "%+.1f"|format(t.pct_return) }}%</td>
                             <td>{{ t.n_trades }}</td>
-                            <td>{% if t.win_rate is not none %}{{ "%.0f"|format(t.win_rate) }}%{% else %}—{% endif %}</td>
+                            <td>{% if t.win_rate is not none %}{{ "%.0f"|format(t.win_rate) }}%{% else %}&mdash;{% endif %}</td>
                             <td>${{ "{:,.2f}".format(t.final_value) }}</td>
                         </tr>
                         {% endfor %}
@@ -840,14 +753,31 @@
                 </button>
                 <div class="trade-log" id="trade-log">
                     <table class="trade-log-tbl">
-                        <thead><tr><th>Date</th><th>Ticker</th><th>Action</th><th>Price</th><th>Shares</th><th>Value</th><th>P&L</th></tr></thead>
+                        <thead><tr>
+                            <th>Date</th>
+                            <th>Ticker</th>
+                            <th>Action</th>
+                            <th>Entry $</th>
+                            <th>Current/Exit $</th>
+                            <th>Shares</th>
+                            <th>Value</th>
+                            <th>P&amp;L</th>
+                            <th>Status</th>
+                        </tr></thead>
                         <tbody>
                             {% for tr in backtest.all_trades %}
                             <tr>
                                 <td>{{ tr.date }}</td>
                                 <td style="font-weight:600;">{{ tr.ticker }}</td>
                                 <td class="trade-{{ tr.action|lower }}">{{ tr.action }}</td>
-                                <td>${{ "%.2f"|format(tr.price) }}</td>
+                                <td>${{ "%.2f"|format(tr.entry_price) }}</td>
+                                <td>
+                                    {% if tr.current_price %}
+                                        ${{ "%.2f"|format(tr.current_price) }}
+                                    {% else %}
+                                        &mdash;
+                                    {% endif %}
+                                </td>
                                 <td>{{ "%.2f"|format(tr.shares) }}</td>
                                 <td>${{ "{:,.2f}".format(tr.value) }}</td>
                                 <td>
@@ -855,7 +785,14 @@
                                         <span style="color:{% if tr.pnl >= 0 %}var(--green){% else %}var(--red){% endif %}">
                                             {{ "%+.2f"|format(tr.pnl) }} ({{ "%+.1f"|format(tr.pnl_pct) }}%)
                                         </span>
-                                    {% else %}—{% endif %}
+                                    {% else %}&mdash;{% endif %}
+                                </td>
+                                <td>
+                                    {% if tr.status == 'OPEN' %}
+                                        <span class="trade-open">OPEN</span>
+                                    {% else %}
+                                        <span style="color:var(--dim);">CLOSED</span>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}
@@ -881,13 +818,14 @@
                 <div class="tech-section">
                     <p style="margin-bottom:0.6rem;">
                         Four independent detection methods analyze each stock daily. When anomalies are detected,
-                        they're translated into <strong style="color:var(--green)">actionable signals</strong>:
+                        they're translated into <strong style="color:var(--green)">actionable signals</strong>.
+                        No single method controls the outcome &mdash; consensus is the signal.
                     </p>
                     <ul>
-                        <li><strong style="color:var(--green)">Buy / Sell</strong> — mean-reversion: price extended from trend, momentum fading</li>
-                        <li><strong style="color:var(--teal)">Long / Short</strong> — momentum: breakout with accelerating force</li>
-                        <li><strong style="color:var(--amber)">Reduce</strong> — regime change: both Fourier and Matrix Profile flag structural shift</li>
-                        <li><strong style="color:var(--cyan)">Watch</strong> — anomaly detected but awaiting directional confirmation</li>
+                        <li><strong style="color:var(--green)">Buy / Sell</strong> &mdash; mean-reversion: price extended from trend, momentum fading</li>
+                        <li><strong style="color:var(--teal)">Long / Short</strong> &mdash; momentum: breakout with accelerating force</li>
+                        <li><strong style="color:var(--amber)">Reduce</strong> &mdash; regime change: both Fourier and Matrix Profile flag structural shift</li>
+                        <li><strong style="color:var(--cyan)">Watch</strong> &mdash; anomaly detected but awaiting directional confirmation</li>
                     </ul>
                     <p><strong style="color:var(--text)">Confidence:</strong> Strong (3-4 methods agree), Moderate (2), Developing (1 with high score).</p>
                 </div>
@@ -899,17 +837,17 @@
             <summary class="card-head">Technical Details</summary>
             <div class="card-body">
                 <div class="tech-section">
-                    <h3>1. Fourier Transform — Frequency-Domain Structural Change</h3>
+                    <h3>1. Fourier Transform &mdash; Frequency-Domain Structural Change</h3>
                     <p>Decomposes price into frequency components. When energy distribution shifts from baseline:</p>
                     <div class="formula">D(local, baseline) = 0.5 * &Sigma; [ local * log(local/baseline) + baseline * log(baseline/local) ]</div>
 
-                    <h3>2. Matrix Profile — Subsequence Novelty Detection</h3>
-                    <p>For every 10-day window, finds the best historical match. If poor → genuinely novel pattern.</p>
+                    <h3>2. Matrix Profile &mdash; Subsequence Novelty Detection</h3>
+                    <p>For every 10-day window, finds the best historical match. If poor &rarr; genuinely novel pattern.</p>
 
                     <h3>3. Statistical Ensemble</h3>
                     <div class="formula">ensemble = 0.4 * zscore + 0.3 * seasonal_residual + 0.3 * isolation_forest</div>
 
-                    <h3>4. EWMA Trend — Momentum Deviation</h3>
+                    <h3>4. EWMA Trend &mdash; Momentum Deviation</h3>
                     <p>Classifies trajectory: breakout (&gt;80% range), accelerating (slope &gt;0.02), decelerating, normal.</p>
 
                     <h3>Consensus</h3>
@@ -924,16 +862,16 @@
             <summary class="card-head">Learn: Educational Resources</summary>
             <div class="card-body">
                 <p style="margin-bottom:0.6rem; color: var(--muted); font-size: 0.78rem;">
-                    Understand the methods powering this dashboard. Opens in new tab.
+                    Understand the methods powering THE SIGNAL. Knowledge is the real edge. Opens in new tab.
                 </p>
                 <div class="learn-grid">
                     <a class="learn-link" href="https://www.youtube.com/watch?v=spUNpyF58BY" target="_blank" rel="noopener">
-                        <div class="learn-title">Fourier Transform — Visual Introduction</div>
+                        <div class="learn-title">Fourier Transform &mdash; Visual Introduction</div>
                         <div class="learn-desc">3Blue1Brown's acclaimed visual explainer of frequency decomposition.</div>
                     </a>
-                    <a class="learn-link" href="https://towardsdatascience.com/time-series-anomaly-detection-with-isolation-forest-16e98e8a8b58" target="_blank" rel="noopener">
-                        <div class="learn-title">Anomaly Detection with Isolation Forest</div>
-                        <div class="learn-desc">How tree-based methods isolate outliers — the ML component of our ensemble.</div>
+                    <a class="learn-link" href="https://scikit-learn.org/stable/modules/outlier_detection.html#isolation-forest" target="_blank" rel="noopener">
+                        <div class="learn-title">Isolation Forest &mdash; Scikit-Learn Docs</div>
+                        <div class="learn-desc">Official documentation for the isolation forest outlier detection algorithm used in our ensemble.</div>
                     </a>
                     <a class="learn-link" href="https://stumpy.readthedocs.io/en/latest/Tutorial_The_Matrix_Profile.html" target="_blank" rel="noopener">
                         <div class="learn-title">Matrix Profile Tutorial (STUMPY)</div>
@@ -958,7 +896,9 @@
     </div>
 
     <div class="footer">
-        stock_anomaly_detection // Jacob E. Thomas, PhD // data: Yahoo Finance // auto-updated via GitHub Actions
+        THE_SIGNAL // Jacob E. Thomas, PhD // data: Yahoo Finance // auto-updated via GitHub Actions
+        <br>
+        <a href="mailto:JEThomasPhD@gmail.com">JEThomasPhD@gmail.com</a> &mdash; get in touch
     </div>
 
     <script>
@@ -968,7 +908,8 @@
         const backtestChartData = {{ backtest_chart_json }};
         const plotCfg = {responsive: true, displayModeBar: false};
 
-        let selectedTicker = Object.keys(tickerCharts)[0] || '';
+        // Default to SPY
+        let selectedTicker = tickerCharts['SPY'] ? 'SPY' : Object.keys(tickerCharts)[0] || '';
 
         // Render heatmap
         if (heatmapData && heatmapData.data) {
@@ -988,9 +929,8 @@
             Plotly.newPlot('backtest-chart', backtestChartData.data, backtestChartData.layout, plotCfg);
         }
 
-        // Initialize first ticker
-        const tList = Object.keys(tickerCharts);
-        if (tList.length > 0) showTicker(tList[0]);
+        // Initialize with default ticker (SPY)
+        if (selectedTicker) showTicker(selectedTicker);
 
         function showTicker(t, btn) {
             selectedTicker = t;
@@ -1042,11 +982,9 @@
             const panel = document.getElementById(id);
             if (!panel) return;
             panel.classList.add('visible');
-            // Position near the click
             const rect = event.target.getBoundingClientRect();
             let top = rect.bottom + 8;
             let left = rect.left - 100;
-            // Clamp to viewport
             if (left < 10) left = 10;
             if (left + 340 > window.innerWidth) left = window.innerWidth - 350;
             if (top + 200 > window.innerHeight) top = rect.top - 220;
@@ -1056,32 +994,10 @@
         function hideTips() {
             document.querySelectorAll('.tip-panel').forEach(p => p.classList.remove('visible'));
         }
-        // Close tips on click outside
         document.addEventListener('click', function(e) {
             if (!e.target.classList.contains('tip-trigger') && !e.target.closest('.tip-panel')) {
                 hideTips();
             }
-        });
-
-        // Draw sparklines
-        document.querySelectorAll('.aq-sparkline').forEach(canvas => {
-            const vals = canvas.dataset.values;
-            if (!vals) return;
-            const data = vals.split(',').map(Number).filter(n => !isNaN(n));
-            if (data.length < 2) return;
-            const ctx = canvas.getContext('2d');
-            const w = canvas.width, h = canvas.height;
-            const max = Math.max(...data), min = Math.min(...data);
-            const range = max - min || 1;
-            ctx.beginPath();
-            ctx.strokeStyle = '#00E676';
-            ctx.lineWidth = 1.5;
-            for (let i = 0; i < data.length; i++) {
-                const x = (i / (data.length - 1)) * w;
-                const y = h - ((data[i] - min) / range) * (h - 4) - 2;
-                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            }
-            ctx.stroke();
         });
     </script>
 </body>
