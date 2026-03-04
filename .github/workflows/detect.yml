@@ -48,6 +48,7 @@ jobs:
       - name: Run anomaly detection
         run: |
           python -m anomaly_detection.pipeline \
+            --skip-validation \
             --sensitivity "${{ github.event.inputs.sensitivity || 'medium' }}" \
             --lookback "${{ github.event.inputs.lookback_days || '365' }}" \
             ${{ github.event.inputs.tickers && format('--tickers "{0}"', github.event.inputs.tickers) || '' }}

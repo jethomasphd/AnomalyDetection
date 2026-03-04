@@ -8,8 +8,19 @@ from datetime import datetime
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
-from ..config import DOCS_DIR, TICKER_NAMES, TICKER_SECTORS, ticker_display
+from ..config import (
+    CATEGORY_LABELS,
+    DOCS_DIR,
+    TICKER_NAMES,
+    TICKER_REGISTRY,
+    TICKER_SECTORS,
+    ticker_display,
+    tickers_by_category,
+)
 from .charts import (
+    backtest_equity_chart,
+    compute_attention_queue,
+    compute_backtest,
     method_ensemble_chart,
     method_ewma_chart,
     method_fourier_chart,
@@ -23,12 +34,29 @@ logger = logging.getLogger(__name__)
 TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates")
 
 
+def _estimate_market_caps(tickers: list[str]) -> dict[str, float | None]:
+    """Try to get market cap for each ticker (best-effort, cached)."""
+    caps = {}
+    try:
+        import yfinance as yf
+        for t in tickers:
+            try:
+                info = yf.Ticker(t).info
+                caps[t] = info.get("marketCap")
+            except Exception:
+                caps[t] = None
+    except ImportError:
+        pass
+    return caps
+
+
 def generate_dashboard(
     results: pd.DataFrame,
     alerts: list[dict],
     sensitivity: str = "medium",
     lookback_days: int = 365,
     output_path: str | None = None,
+    validation_failures: list[dict] | None = None,
 ) -> str:
     """Generate the full HTML dashboard and write it to disk."""
     output_path = output_path or os.path.join(DOCS_DIR, "index.html")
@@ -37,7 +65,7 @@ def generate_dashboard(
     tickers = sorted(results["Ticker"].unique())
     signal_tickers = {a["ticker"] for a in alerts} if alerts else set()
 
-    # Per-ticker main charts (pass signals for color-coded markers) + method detail charts
+    # Per-ticker main charts + method detail charts
     ticker_charts = {}
     method_charts = {}
     for ticker in tickers:
@@ -53,12 +81,28 @@ def generate_dashboard(
     # Summary charts
     scoreboard_json = scoreboard_chart(results)
 
+    # Attention Queue
+    attention_queue = compute_attention_queue(results, alerts)
+
+    # Backtest
+    backtest = compute_backtest(results, alerts)
+    backtest_chart_json = backtest_equity_chart(backtest)
+
+    # Market caps for ticker ordering
+    market_caps = _estimate_market_caps(tickers)
+
+    # Top 12 by market cap (for button display)
+    tickers_with_cap = [(t, market_caps.get(t) or 0) for t in tickers]
+    tickers_with_cap.sort(key=lambda x: x[1], reverse=True)
+    top12_tickers = [t for t, _ in tickers_with_cap[:12]]
+    remaining_tickers = [t for t, _ in tickers_with_cap[12:]]
+
     # Stats
     n_anomalies = int(results["consensus_anomaly"].sum()) if "consensus_anomaly" in results.columns else 0
     n_actionable = sum(1 for a in alerts if a["signal"] not in ("WATCH", "REDUCE"))
     n_new_signals = sum(1 for a in alerts if a.get("is_new", False))
 
-    # Build ticker display info for template
+    # Build ticker display info
     ticker_info = []
     for t in tickers:
         ticker_info.append({
@@ -67,7 +111,13 @@ def generate_dashboard(
             "name": TICKER_NAMES.get(t, t),
             "sector": TICKER_SECTORS.get(t, ""),
             "has_signal": t in signal_tickers,
+            "market_cap": market_caps.get(t),
+            "is_fund": TICKER_REGISTRY.get(t, {}).get("is_fund", False),
+            "category": TICKER_REGISTRY.get(t, {}).get("category", ""),
         })
+
+    # Category grouping for display
+    cat_groups = tickers_by_category()
 
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=False)
     template = env.get_template("dashboard.html")
@@ -87,6 +137,15 @@ def generate_dashboard(
         ticker_charts_json=json.dumps(ticker_charts),
         method_charts_json=json.dumps(method_charts),
         scoreboard_json=scoreboard_json,
+        attention_queue=attention_queue,
+        attention_queue_json=json.dumps(attention_queue),
+        backtest=backtest,
+        backtest_chart_json=backtest_chart_json,
+        top12_tickers=top12_tickers,
+        remaining_tickers=remaining_tickers,
+        category_labels=CATEGORY_LABELS,
+        category_groups=cat_groups,
+        validation_failures=validation_failures or [],
     )
 
     with open(output_path, "w") as f:

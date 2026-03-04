@@ -42,6 +42,25 @@
 
         .container { max-width: 1300px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
 
+        /* Guided flow steps */
+        .guided-flow {
+            display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem;
+            padding: 0.75rem 1rem; background: var(--surface); border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .flow-step {
+            display: flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.7rem;
+            border-radius: 6px; font-size: 0.75rem; font-weight: 500; cursor: pointer;
+            border: 1px solid var(--border); background: var(--surface); transition: all 0.15s;
+            color: var(--muted);
+        }
+        .flow-step:hover { border-color: var(--blue); color: var(--blue); }
+        .flow-step .step-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 20px; height: 20px; border-radius: 50%; background: var(--blue);
+            color: white; font-size: 0.65rem; font-weight: 700; flex-shrink: 0;
+        }
+
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -53,12 +72,29 @@
             border-radius: var(--radius);
             padding: 1rem 1.2rem;
             border: 1px solid var(--border);
+            position: relative;
         }
         .stat .num { font-size: 1.8rem; font-weight: 700; line-height: 1.2; }
         .stat .lbl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.15rem; }
         .stat.red .num { color: var(--red); }
         .stat.green .num { color: var(--green); }
         .stat.blue .num { color: var(--blue); }
+
+        /* Tooltip */
+        .tip {
+            position: relative; display: inline-block; cursor: help;
+            margin-left: 0.3rem; width: 15px; height: 15px; border-radius: 50%;
+            background: var(--border); color: var(--muted); font-size: 0.6rem;
+            text-align: center; line-height: 15px; font-weight: 700; vertical-align: middle;
+        }
+        .tip .tip-text {
+            visibility: hidden; opacity: 0; width: 240px; background: #1A1A1A; color: white;
+            font-size: 0.72rem; font-weight: 400; line-height: 1.4; padding: 0.5rem 0.65rem;
+            border-radius: 6px; position: absolute; z-index: 100; bottom: 125%;
+            left: 50%; transform: translateX(-50%); transition: opacity 0.15s;
+            pointer-events: none;
+        }
+        .tip:hover .tip-text { visibility: visible; opacity: 1; }
 
         .card {
             background: var(--surface);
@@ -72,9 +108,37 @@
             border-bottom: 1px solid var(--border);
             font-weight: 600;
             font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         .card-body { padding: 1rem 1.25rem; }
         .card-body.flush { padding: 0; }
+
+        /* Attention Queue table */
+        .aq-tbl { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .aq-tbl th {
+            text-align: left; padding: 0.55rem 0.75rem; background: var(--bg);
+            font-weight: 600; font-size: 0.68rem; text-transform: uppercase;
+            letter-spacing: 0.05em; color: var(--muted); white-space: nowrap;
+        }
+        .aq-tbl td {
+            padding: 0.5rem 0.75rem; border-top: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        .aq-tbl tr { cursor: pointer; transition: background 0.1s; }
+        .aq-tbl tr:hover { background: #F0F7FF; }
+        .aq-tbl tr.aq-selected { background: #E3F2FD; }
+        .aq-rank { font-weight: 700; color: var(--muted); font-size: 0.75rem; width: 2.5rem; }
+        .aq-score-bar {
+            height: 6px; border-radius: 3px; background: var(--border); width: 60px;
+            display: inline-block; vertical-align: middle; margin-right: 0.4rem;
+        }
+        .aq-score-fill { height: 100%; border-radius: 3px; }
+        .aq-change { font-size: 0.72rem; font-weight: 600; }
+        .aq-change.up { color: var(--red); }
+        .aq-change.down { color: var(--green); }
+        .aq-sparkline { width: 80px; height: 24px; display: inline-block; vertical-align: middle; }
 
         /* Signal table */
         .tbl { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
@@ -84,7 +148,9 @@
             letter-spacing: 0.05em; color: var(--muted);
         }
         .tbl td { padding: 0.65rem 1rem; border-top: 1px solid var(--border); vertical-align: top; }
+        .tbl tr { cursor: pointer; transition: background 0.1s; }
         .tbl tr:hover { background: #F9FAFB; }
+        .tbl tr.sig-selected { background: #E3F2FD; }
 
         .signal-pill {
             display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px;
@@ -123,6 +189,15 @@
         .dot { width: 7px; height: 7px; border-radius: 50%; background: #E0E0E0; }
         .dot.on { background: var(--red); }
 
+        /* Collapsible more signals */
+        .more-signals { display: none; }
+        .more-signals.open { display: table-row-group; }
+        .toggle-more {
+            padding: 0.5rem 1rem; font-size: 0.78rem; color: var(--blue); cursor: pointer;
+            font-weight: 500; border: none; background: none; width: 100%; text-align: left;
+        }
+        .toggle-more:hover { text-decoration: underline; }
+
         /* Ticker nav */
         .ticker-nav {
             display: flex; flex-wrap: wrap; gap: 0.35rem;
@@ -139,6 +214,12 @@
         .tbtn.active { background: var(--blue); color: white; border-color: var(--blue); }
         .tbtn.active .btn-name { color: rgba(255,255,255,0.7); }
         .tbtn.flagged { border-left: 3px solid var(--red); }
+
+        .ticker-dropdown {
+            padding: 0.35rem 0.6rem; border: 1px solid var(--border); border-radius: 6px;
+            font-size: 0.78rem; font-family: inherit; background: var(--surface);
+            color: var(--text); cursor: pointer; margin-left: 0.25rem;
+        }
 
         /* Method detail charts in deep dive */
         .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
@@ -181,6 +262,30 @@
         .signal-legend-item { display: flex; align-items: center; gap: 0.35rem; }
         .signal-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
 
+        /* Backtest section */
+        .bt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+        .bt-stat { text-align: center; padding: 0.6rem; border: 1px solid var(--border); border-radius: 8px; }
+        .bt-stat .bt-num { font-size: 1.3rem; font-weight: 700; }
+        .bt-stat .bt-lbl { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; }
+        .bt-ticker-tbl { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 0.75rem; }
+        .bt-ticker-tbl th { text-align: left; padding: 0.4rem 0.6rem; font-size: 0.68rem; text-transform: uppercase; color: var(--muted); background: var(--bg); }
+        .bt-ticker-tbl td { padding: 0.4rem 0.6rem; border-top: 1px solid var(--border); }
+
+        /* Learn panel */
+        .learn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.75rem; }
+        .learn-link {
+            display: block; padding: 0.75rem 1rem; border: 1px solid var(--border);
+            border-radius: 8px; text-decoration: none; color: var(--text);
+            transition: all 0.15s; font-size: 0.82rem;
+        }
+        .learn-link:hover { border-color: var(--blue); background: #F0F7FF; }
+        .learn-link .learn-title { font-weight: 600; margin-bottom: 0.15rem; }
+        .learn-link .learn-desc { font-size: 0.72rem; color: var(--muted); }
+
+        /* Validation warnings */
+        .val-warn { padding: 0.6rem 1rem; background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px; margin-bottom: 1rem; font-size: 0.8rem; }
+        .val-warn strong { color: var(--orange); }
+
         .footer {
             text-align: center; padding: 1.5rem; font-size: 0.75rem; color: var(--muted);
         }
@@ -197,37 +302,143 @@
 
     <div class="container">
 
-        <!-- Stats -->
-        <div class="stats">
-            <div class="stat blue"><div class="num">{{ n_tickers }}</div><div class="lbl">Tickers Monitored</div></div>
-            <div class="stat red"><div class="num">{{ n_anomalies }}</div><div class="lbl">Anomalies Detected</div></div>
-            <div class="stat green"><div class="num">{{ n_actionable }}</div><div class="lbl">Actionable Signals</div></div>
-            <div class="stat" style="border-left: 3px solid var(--orange);"><div class="num">{{ n_new_signals }}</div><div class="lbl">New This Run</div></div>
-            <div class="stat"><div class="num">{{ lookback_days }}d</div><div class="lbl">Lookback Window</div></div>
+        <!-- Guided Flow -->
+        <div class="guided-flow">
+            <a class="flow-step" href="#attention-queue" style="text-decoration:none">
+                <span class="step-num">1</span> Start here: Attention Queue
+            </a>
+            <a class="flow-step" href="#trading-signals" style="text-decoration:none">
+                <span class="step-num">2</span> Check latest signals
+            </a>
+            <a class="flow-step" href="#deep-dive" style="text-decoration:none">
+                <span class="step-num">3</span> Deep dive: confirm context
+            </a>
+            <a class="flow-step" href="#backtest" style="text-decoration:none">
+                <span class="step-num">4</span> Review signal performance
+            </a>
         </div>
 
-        <!-- Scoreboard -->
-        <div class="card">
-            <div class="card-head">Which tickers need attention?</div>
-            <div class="card-body"><div id="scoreboard-chart"></div></div>
+        <!-- Validation warnings -->
+        {% if validation_failures %}
+        <div class="val-warn">
+            <strong>Ticker Validation:</strong> {{ validation_failures|length }} ticker(s) failed yfinance validation and were excluded:
+            {% for f in validation_failures %}
+                <strong>{{ f.ticker }}</strong> ({{ f.error }}){% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat blue">
+                <div class="num">{{ n_tickers }}</div>
+                <div class="lbl">Tickers Monitored <span class="tip">?<span class="tip-text">Total number of stocks and funds being tracked for anomalies across all categories.</span></span></div>
+            </div>
+            <div class="stat red">
+                <div class="num">{{ n_anomalies }}</div>
+                <div class="lbl">Anomalies Detected <span class="tip">?<span class="tip-text">An anomaly is a day where 2+ independent detection methods agree that price behavior is statistically unusual.</span></span></div>
+            </div>
+            <div class="stat green">
+                <div class="num">{{ n_actionable }}</div>
+                <div class="lbl">Actionable Signals <span class="tip">?<span class="tip-text">Signals with a clear directional call: Buy, Sell, Long, or Short. Excludes Watch and Reduce.</span></span></div>
+            </div>
+            <div class="stat" style="border-left: 3px solid var(--orange);">
+                <div class="num">{{ n_new_signals }}</div>
+                <div class="lbl">New This Run</div>
+            </div>
+            <div class="stat">
+                <div class="num">{{ lookback_days }}d</div>
+                <div class="lbl">Lookback Window</div>
+            </div>
+        </div>
+
+        <!-- Attention Queue -->
+        <div class="card" id="attention-queue">
+            <div class="card-head">
+                Attention Queue: What to look at first
+                <span class="tip">?<span class="tip-text">Tickers ranked by a composite Attention Score combining recency of anomalies, severity, persistence (streak), and signal strength. Higher = look first.</span></span>
+            </div>
+            <div class="card-body flush" style="overflow-x: auto;">
+                {% if attention_queue %}
+                <table class="aq-tbl">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Ticker</th>
+                            <th>Category</th>
+                            <th>Attention Score</th>
+                            <th>Severity <span class="tip">?<span class="tip-text">Max consensus anomaly score in the last 14 days. Scale: 0 (normal) to 1 (extreme).</span></span></th>
+                            <th>&Delta;</th>
+                            <th>Last Anomaly</th>
+                            <th>Streak</th>
+                            <th>Signal</th>
+                            <th>30d Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in attention_queue %}
+                        <tr onclick="selectTicker('{{ item.ticker }}')" title="Click to view {{ item.ticker }} deep dive">
+                            <td class="aq-rank">{{ item.rank }}</td>
+                            <td>
+                                <div class="ticker-label">{{ item.ticker }}</div>
+                                <div class="ticker-sub">{{ item.display }}</div>
+                            </td>
+                            <td style="font-size:0.72rem; color:var(--muted);">{{ item.category|replace("_", " ")|title }}</td>
+                            <td>
+                                <span class="aq-score-bar">
+                                    <span class="aq-score-fill" style="width:{{ [item.attention_score, 100]|min }}%; background:{% if item.attention_score > 60 %}var(--red){% elif item.attention_score > 35 %}var(--orange){% elif item.attention_score > 15 %}var(--amber){% else %}#90CAF9{% endif %};"></span>
+                                </span>
+                                <span style="font-size:0.75rem; font-weight:600;">{{ item.attention_score }}</span>
+                            </td>
+                            <td style="font-weight:600;">{{ item.latest_severity }}</td>
+                            <td>
+                                {% if item.change > 0.01 %}
+                                    <span class="aq-change up">&uarr; +{{ item.change }}</span>
+                                {% elif item.change < -0.01 %}
+                                    <span class="aq-change down">&darr; {{ item.change }}</span>
+                                {% else %}
+                                    <span style="color:var(--muted); font-size:0.72rem;">&mdash;</span>
+                                {% endif %}
+                            </td>
+                            <td style="font-size:0.78rem;">{{ item.last_anomaly_date or '&mdash;' }}</td>
+                            <td style="font-weight:600;">{% if item.streak > 0 %}{{ item.streak }}d{% else %}&mdash;{% endif %}</td>
+                            <td>
+                                {% if item.signal %}
+                                    <span class="signal-pill signal-{{ item.signal|lower }}">{{ item.signal_label }}</span>
+                                {% else %}
+                                    <span style="color:var(--muted); font-size:0.72rem;">None</span>
+                                {% endif %}
+                            </td>
+                            <td><canvas class="aq-sparkline" data-values="{{ item.sparkline|join(',') }}" width="80" height="24"></canvas></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="empty-msg">No attention data available.</div>
+                {% endif %}
+            </div>
         </div>
 
         <!-- Trading Signals table -->
-        <div class="card">
-            <div class="card-head">Trading Signals</div>
+        <div class="card" id="trading-signals">
+            <div class="card-head">
+                Trading Signals
+                <span class="tip">?<span class="tip-text">Actionable signals derived from anomaly detection. Buy/Sell are mean-reversion signals; Long/Short are momentum signals. Confidence reflects how many methods agree.</span></span>
+            </div>
             <div class="card-body flush" style="overflow-x: auto;">
                 {% if alerts %}
                 <div style="padding: 0.5rem 1rem 0;">
                     <div class="signal-legend">
-                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#00C853"></div> Buy &mdash; oversold, mean-reversion opportunity</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#00C853"></div> Buy &mdash; oversold, mean-reversion</div>
                         <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#D50000"></div> Sell &mdash; overbought, take profits</div>
-                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#00897B"></div> Long &mdash; accelerating upward momentum</div>
-                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#FF6D00"></div> Short &mdash; accelerating downward momentum</div>
-                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#F9A825"></div> Reduce &mdash; regime change, reduce exposure</div>
-                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#90CAF9"></div> Watch &mdash; anomaly detected, awaiting confirmation</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#00897B"></div> Long &mdash; upward momentum</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#FF6D00"></div> Short &mdash; downward momentum</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#F9A825"></div> Reduce &mdash; regime change</div>
+                        <div class="signal-legend-item"><div class="signal-legend-dot" style="background:#90CAF9"></div> Watch &mdash; awaiting confirmation</div>
                     </div>
                 </div>
-                <table class="tbl">
+                <table class="tbl" id="signals-table">
                     <thead>
                         <tr>
                             <th>Signal</th>
@@ -239,9 +450,10 @@
                             <th>What to do &amp; why</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for a in alerts %}
-                        <tr class="{% if not a.get('is_new', false) %}historical-row{% endif %}">
+                    <tbody id="signals-top">
+                        {% for a in alerts[:12] %}
+                        <tr class="{% if not a.get('is_new', false) %}historical-row{% endif %}"
+                            onclick="selectTicker('{{ a.ticker }}')" title="Click to view {{ a.ticker }} deep dive">
                             <td>
                                 <span class="signal-pill signal-{{ a.signal|lower }}">{{ a.signal_label }}</span>
                                 {% if a.get('is_new', false) %}<span class="new-badge">New</span>{% endif %}
@@ -264,50 +476,162 @@
                         </tr>
                         {% endfor %}
                     </tbody>
+                    {% if alerts|length > 12 %}
+                    <tbody id="signals-more" class="more-signals">
+                        {% for a in alerts[12:] %}
+                        <tr class="{% if not a.get('is_new', false) %}historical-row{% endif %}"
+                            onclick="selectTicker('{{ a.ticker }}')" title="Click to view {{ a.ticker }} deep dive">
+                            <td>
+                                <span class="signal-pill signal-{{ a.signal|lower }}">{{ a.signal_label }}</span>
+                                {% if a.get('is_new', false) %}<span class="new-badge">New</span>{% endif %}
+                            </td>
+                            <td><span class="confidence conf-{{ a.confidence|lower }}">{{ a.confidence }}</span></td>
+                            <td>
+                                <div class="ticker-label">{{ a.ticker }}</div>
+                                <div class="ticker-sub">{{ a.ticker_name }}</div>
+                            </td>
+                            <td>{{ a.date }}</td>
+                            <td>${{ "%.2f"|format(a.close) }}</td>
+                            <td>
+                                <div class="dots">
+                                    {% for i in range(4) %}
+                                    <div class="dot {% if i < a.methods_flagged %}on{% endif %}"></div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td><span class="desc">{{ a.description }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% endif %}
                 </table>
+                {% if alerts|length > 12 %}
+                <button class="toggle-more" onclick="toggleMoreSignals(this)">
+                    Show {{ alerts|length - 12 }} more signals &darr;
+                </button>
+                {% endif %}
                 {% else %}
                 <div class="empty-msg">No anomalies detected — all tickers are trading within normal ranges.</div>
                 {% endif %}
             </div>
         </div>
 
-        <!-- Per-ticker deep dive with method charts -->
-        <div class="card">
-            <div class="card-head">Ticker Deep Dive</div>
+        <!-- Per-ticker deep dive -->
+        <div class="card" id="deep-dive">
+            <div class="card-head">
+                Ticker Deep Dive
+                <span class="tip">?<span class="tip-text">Detailed price chart with signal markers and four detection method breakdowns. Click a ticker button or use the dropdown to switch.</span></span>
+            </div>
+            <!-- Top 12 buttons + dropdown for rest -->
             <div class="ticker-nav" id="ticker-nav">
-                {% for ti in ticker_info %}
-                <button class="tbtn {% if ti.has_signal %}flagged{% endif %} {% if loop.first %}active{% endif %}"
-                        onclick="showTicker('{{ ti.ticker }}', this)">
-                    {{ ti.ticker }}<span class="btn-name">{{ ti.name }}</span>
+                {% for t in top12_tickers %}
+                <button class="tbtn {% if t in signal_tickers %}flagged{% endif %} {% if loop.first %}active{% endif %}"
+                        onclick="showTicker('{{ t }}', this)"
+                        id="tbtn-{{ t }}">
+                    {{ t }}<span class="btn-name">{{ ticker_info|selectattr('ticker','equalto',t)|map(attribute='name')|first }}</span>
                 </button>
                 {% endfor %}
+                {% if remaining_tickers %}
+                <select class="ticker-dropdown" onchange="if(this.value) showTicker(this.value); this.selectedIndex=0;">
+                    <option value="">More tickers...</option>
+                    {% for t in remaining_tickers %}
+                    <option value="{{ t }}">{{ t }} — {{ ticker_info|selectattr('ticker','equalto',t)|map(attribute='name')|first }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
             </div>
             <div class="card-body">
                 <div id="ticker-chart" style="min-height: 400px;"></div>
                 <div class="method-grid">
                     <div class="method-panel">
-                        <div class="method-panel-head">Fourier Transform &mdash; Has the rhythm changed?</div>
+                        <div class="method-panel-head">Fourier Transform &mdash; Has the rhythm changed?
+                            <span class="tip">?<span class="tip-text">Detects when a stock's cyclical pattern shifts from its historical baseline using frequency-domain analysis (FFT + KL divergence).</span></span>
+                        </div>
                         <div class="method-panel-body"><div id="method-fourier"></div></div>
                     </div>
                     <div class="method-panel">
-                        <div class="method-panel-head">Matrix Profile &mdash; Never-before-seen pattern?</div>
+                        <div class="method-panel-head">Matrix Profile &mdash; Never-before-seen pattern?
+                            <span class="tip">?<span class="tip-text">Finds price patterns with no close historical match. High scores mean the recent 10-day window is genuinely novel.</span></span>
+                        </div>
                         <div class="method-panel-body"><div id="method-mp"></div></div>
                     </div>
                     <div class="method-panel">
-                        <div class="method-panel-head">Statistical Ensemble &mdash; Do independent tests agree?</div>
+                        <div class="method-panel-head">Statistical Ensemble &mdash; Do independent tests agree?
+                            <span class="tip">?<span class="tip-text">Combines Z-score (40%), seasonal decomposition (30%), and Isolation Forest ML (30%) for robust outlier detection.</span></span>
+                        </div>
                         <div class="method-panel-body"><div id="method-ensemble"></div></div>
                     </div>
                     <div class="method-panel">
-                        <div class="method-panel-head">EWMA Trend &mdash; Is momentum abnormal?</div>
+                        <div class="method-panel-head">EWMA Trend &mdash; Is momentum abnormal?
+                            <span class="tip">?<span class="tip-text">Measures how far price deviates from its 20-day exponential moving average and classifies the trajectory (accelerating, decelerating, breakout).</span></span>
+                        </div>
                         <div class="method-panel-body"><div id="method-ewma"></div></div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- 3-Month Performance Backtest -->
+        <div class="card" id="backtest">
+            <div class="card-head">
+                Signal Performance (Last 3 Months)
+                <span class="tip">?<span class="tip-text">Simple backtest: buy at close on BUY/LONG signals, sell at close on SELL/SHORT signals. Equal-weight portfolio, $10k per ticker. NOT financial advice.</span></span>
+            </div>
+            <div class="card-body">
+                {% if backtest.portfolio and backtest.portfolio.equity_curve %}
+                <div class="bt-grid">
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:{% if backtest.portfolio.pct_return >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                            {{ "%+.1f"|format(backtest.portfolio.pct_return) }}%
+                        </div>
+                        <div class="bt-lbl">Portfolio Return</div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:var(--red);">{{ "%.1f"|format(backtest.portfolio.max_drawdown) }}%</div>
+                        <div class="bt-lbl">Max Drawdown</div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num">{{ backtest.portfolio.n_trades }}</div>
+                        <div class="bt-lbl">Total Trades</div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num">{{ "%.0f"|format(backtest.portfolio.win_rate) }}%</div>
+                        <div class="bt-lbl">Win Rate (by ticker)</div>
+                    </div>
+                </div>
+                <div id="backtest-chart" style="min-height: 280px;"></div>
+
+                {% if backtest.per_ticker %}
+                <table class="bt-ticker-tbl">
+                    <thead><tr><th>Ticker</th><th>Return</th><th>Trades</th><th>Win Rate</th><th>Final Value</th></tr></thead>
+                    <tbody>
+                        {% for t in backtest.per_ticker[:15] %}
+                        <tr>
+                            <td style="font-weight:600;">{{ t.display }}</td>
+                            <td style="font-weight:700; color:{% if t.pct_return >= 0 %}var(--green){% else %}var(--red){% endif %}">{{ "%+.1f"|format(t.pct_return) }}%</td>
+                            <td>{{ t.n_trades }}</td>
+                            <td>{{ "%.0f"|format(t.win_rate) if t.win_rate is not none else '&mdash;' }}{% if t.win_rate is not none %}%{% endif %}</td>
+                            <td>${{ "{:,.2f}".format(t.final_value) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+
+                <p style="margin-top: 0.75rem; font-size: 0.72rem; color: var(--muted); font-style: italic;">
+                    Disclaimer: This is a simplified backtest for educational purposes only. It does not account for slippage,
+                    commissions, market impact, or real execution constraints. Past signal performance does not predict future results.
+                    Period: {{ backtest.start_date }} to {{ backtest.end_date }}.
+                </p>
+                {% else %}
+                <div class="empty-msg">No signal data available for backtesting in the last 3 months.</div>
+                {% endif %}
+            </div>
+        </div>
+
         <!-- How signals are derived -->
         <div class="card">
-            <div class="card-head">How signals are derived</div>
+            <div class="card-head">How Signals Are Derived</div>
             <div class="card-body">
                 <p style="margin-bottom: 0.75rem; color: var(--muted); font-size: 0.85rem;">
                     Four independent detection methods analyze each stock every trading day. When anomalies are detected,
@@ -316,114 +640,92 @@
                 </p>
                 <p style="margin-bottom: 0.75rem; color: var(--muted); font-size: 0.85rem;">
                     <strong>Mean-reversion signals</strong> (Buy/Sell) fire when a stock is deeply extended from its moving average
-                    and the momentum driving that extension is fading. These are contrarian signals — the idea is that extreme
-                    moves tend to snap back toward the trend.
+                    and the momentum driving that extension is fading. These are contrarian signals.
                 </p>
                 <p style="margin-bottom: 0.75rem; color: var(--muted); font-size: 0.85rem;">
                     <strong>Momentum signals</strong> (Long/Short) fire when a stock is breaking away from its trend with
-                    <em>accelerating</em> force. These are trend-following signals — the idea is that strong moves with increasing
-                    momentum tend to continue.
+                    <em>accelerating</em> force. These are trend-following signals.
                 </p>
                 <p style="color: var(--muted); font-size: 0.85rem;">
                     <strong>Confidence</strong> reflects how many detection methods independently agree: Strong (3-4 methods),
                     Moderate (2 methods), or Developing (1 method with high score).
-                    Colored circles on the price chart mark flagged dates — colors match the signal type.
                 </p>
             </div>
         </div>
 
-        <!-- Technical deep dive -->
-        <div class="card">
-            <div class="card-head">Technical Details</div>
+        <!-- Learn panel -->
+        <div class="card" id="learn">
+            <div class="card-head">Learn: Educational Resources</div>
+            <div class="card-body">
+                <p style="margin-bottom: 0.75rem; color: var(--muted); font-size: 0.82rem;">
+                    Understand the methods powering this dashboard. Each link opens in a new tab.
+                </p>
+                <div class="learn-grid">
+                    <a class="learn-link" href="https://www.youtube.com/watch?v=spUNpyF58BY" target="_blank" rel="noopener">
+                        <div class="learn-title">Fourier Transform — Visual Introduction</div>
+                        <div class="learn-desc">3Blue1Brown's acclaimed visual explainer of how Fourier transforms decompose signals into frequencies.</div>
+                    </a>
+                    <a class="learn-link" href="https://towardsdatascience.com/time-series-anomaly-detection-with-isolation-forest-16e98e8a8b58" target="_blank" rel="noopener">
+                        <div class="learn-title">Anomaly Detection with Isolation Forest</div>
+                        <div class="learn-desc">How tree-based methods isolate outliers by random partitioning — the ML component of our ensemble.</div>
+                    </a>
+                    <a class="learn-link" href="https://stumpy.readthedocs.io/en/latest/Tutorial_The_Matrix_Profile.html" target="_blank" rel="noopener">
+                        <div class="learn-title">Matrix Profile Tutorial (STUMPY)</div>
+                        <div class="learn-desc">Official STUMPY tutorial explaining how Matrix Profile finds novel subsequences in time series.</div>
+                    </a>
+                    <a class="learn-link" href="https://en.wikipedia.org/wiki/Standard_score" target="_blank" rel="noopener">
+                        <div class="learn-title">Z-Scores Explained</div>
+                        <div class="learn-desc">Understand how z-scores measure how many standard deviations a value is from the mean.</div>
+                    </a>
+                    <a class="learn-link" href="https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.seasonal_decompose.html" target="_blank" rel="noopener">
+                        <div class="learn-title">Seasonal Decomposition (STL)</div>
+                        <div class="learn-desc">statsmodels documentation on decomposing time series into trend, seasonal, and residual components.</div>
+                    </a>
+                    <a class="learn-link" href="https://en.wikipedia.org/wiki/EWMA_chart" target="_blank" rel="noopener">
+                        <div class="learn-title">EWMA Control Charts</div>
+                        <div class="learn-desc">Exponentially Weighted Moving Average charts for detecting small shifts in process means.</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical details (collapsed) -->
+        <details class="card" style="cursor: pointer;">
+            <summary class="card-head" style="list-style: none;">Technical Details (click to expand)</summary>
             <div class="card-body">
                 <div class="tech-section">
 
                     <h3>1. Fourier Transform &mdash; Frequency-Domain Structural Change</h3>
                     <p>
-                        Every stock has a characteristic "rhythm" — how its price oscillates over time. The Fourier Transform
-                        decomposes a price series into its constituent frequency components, revealing whether the stock is
-                        cycling at 5-day, 20-day, or 60-day intervals. When the energy distribution across these frequencies
+                        Every stock has a characteristic "rhythm". The Fourier Transform
+                        decomposes a price series into frequency components. When the energy distribution
                         shifts significantly from the historical baseline, it signals a <span class="highlight">structural regime change</span>.
                     </p>
-                    <p><strong>How it works:</strong></p>
-                    <ul>
-                        <li>Compute the full-history frequency spectrum as a baseline (top-5 frequency components by energy)</li>
-                        <li>Slide a 60-day window across the series and compute the local spectrum at each point</li>
-                        <li>Measure the symmetric KL divergence between the local and baseline spectra</li>
-                        <li>Flag dates where divergence exceeds the sensitivity percentile threshold</li>
-                    </ul>
                     <div class="formula">D(local, baseline) = 0.5 &times; &Sigma; [ local &times; log(local/baseline) + baseline &times; log(baseline/local) ]</div>
-                    <p>
-                        <strong>What it catches:</strong> Transitions between mean-reverting and trending regimes, sudden changes
-                        in volatility structure, shifts from choppy trading to directional momentum.
-                    </p>
 
                     <h3>2. Matrix Profile &mdash; Subsequence Novelty Detection</h3>
                     <p>
-                        The Matrix Profile algorithm (powered by <span class="highlight">STUMPY</span>) answers a simple question:
-                        for every recent window of price action, what is the most similar historical window? If even the
-                        best historical match is poor, the current pattern is <span class="highlight">genuinely novel</span>.
-                    </p>
-                    <p><strong>How it works:</strong></p>
-                    <ul>
-                        <li>Define a subsequence length (10 trading days by default)</li>
-                        <li>For each 10-day window, compute its Euclidean distance to every other 10-day window in the series</li>
-                        <li>Record the minimum distance (nearest-neighbor distance) — this is the Matrix Profile value</li>
-                        <li>Normalize all distances to [0, 1] and flag values above the sensitivity threshold</li>
-                    </ul>
-                    <p>
-                        <strong>What it catches:</strong> Unprecedented price patterns, breakouts into entirely new territory,
-                        and earnings reactions that don't match any historical analog.
+                        For every recent window of price action, what is the most similar historical window?
+                        If even the best match is poor, the current pattern is <span class="highlight">genuinely novel</span>.
                     </p>
 
                     <h3>3. Statistical Ensemble &mdash; Three Independent Tests</h3>
-                    <p>
-                        Rather than relying on any single statistical test, the ensemble combines three approaches with
-                        complementary strengths:
-                    </p>
-                    <ul>
-                        <li><strong>Z-Score (40%):</strong> Rolling 60-day z-score of closing price. Measures how many standard
-                        deviations the current price is from its recent mean.</li>
-                        <li><strong>Seasonal Decomposition (30%):</strong> STL decomposition with a 5-day (weekly) period extracts
-                        trend, seasonal, and residual components. The magnitude of the residual indicates unexplained behavior.</li>
-                        <li><strong>Isolation Forest (30%):</strong> A tree-based ML model that isolates outliers by
-                        randomly partitioning feature space (price level, daily return, 20-day volatility).</li>
-                    </ul>
-                    <div class="formula">ensemble_score = 0.4 &times; zscore + 0.3 &times; seasonal_residual + 0.3 &times; isolation_forest</div>
+                    <div class="formula">ensemble = 0.4 &times; zscore + 0.3 &times; seasonal_residual + 0.3 &times; isolation_forest</div>
 
-                    <h3>4. EWMA Trend Analysis &mdash; Momentum Deviation</h3>
+                    <h3>4. EWMA Trend &mdash; Momentum Deviation</h3>
                     <p>
-                        The Exponentially Weighted Moving Average gives more weight to recent prices, creating a responsive
-                        trend line. The system measures how far price has deviated from this trend and classifies the
-                        <span class="highlight">trajectory</span>:
-                    </p>
-                    <ul>
-                        <li>Compute a 20-day EWMA as the trend baseline</li>
-                        <li>Calculate deviation percentage: (price &minus; EWMA) / EWMA</li>
-                        <li>Classify trajectory over a 5-day window:
-                            <strong>breakout</strong> (&gt; 80% of historical range),
-                            <strong>accelerating</strong> (slope &gt; 0.02),
-                            <strong>decelerating</strong> (slope &lt; -0.02),
-                            or <strong>normal</strong>
-                        </li>
-                    </ul>
-                    <p>
-                        <strong>Signal mapping:</strong> EWMA trajectory is the primary driver of signal direction.
-                        Decelerating momentum on extended stocks triggers mean-reversion signals (Buy/Sell).
-                        Accelerating momentum triggers trend-following signals (Long/Short).
+                        Trajectory classification: <strong>breakout</strong> (&gt; 80% range),
+                        <strong>accelerating</strong> (slope &gt; 0.02), <strong>decelerating</strong> (slope &lt; -0.02),
+                        or <strong>normal</strong>.
                     </p>
 
-                    <h3>Consensus Scoring &amp; Signal Derivation</h3>
-                    <p>
-                        The four method scores combine into a weighted <strong>consensus score</strong>.
-                        A day is flagged anomalous when two or more methods agree, or the consensus score exceeds
-                        the 97.5th percentile. The signal type is then determined by deviation magnitude and trajectory direction.
-                    </p>
+                    <h3>Consensus Scoring</h3>
                     <div class="formula">consensus = 0.20 &times; fourier + 0.25 &times; matrix_profile + 0.30 &times; ensemble + 0.25 &times; ewma</div>
+                    <p>A day is flagged anomalous when 2+ methods agree OR the consensus score exceeds the 97.5th percentile.</p>
 
                 </div>
             </div>
-        </div>
+        </details>
 
     </div>
 
@@ -435,16 +737,24 @@
         const tickerCharts = {{ ticker_charts_json }};
         const methodCharts = {{ method_charts_json }};
         const scoreboardData = {{ scoreboard_json }};
+        const backtestChartData = {{ backtest_chart_json }};
         const plotCfg = {responsive: true, displayModeBar: false};
 
-        if (scoreboardData && scoreboardData.data) {
-            Plotly.newPlot('scoreboard-chart', scoreboardData.data, scoreboardData.layout, plotCfg);
+        // Global selected ticker state
+        let selectedTicker = Object.keys(tickerCharts)[0] || '';
+
+        // Render backtest chart
+        if (backtestChartData && backtestChartData.data) {
+            Plotly.newPlot('backtest-chart', backtestChartData.data, backtestChartData.layout, plotCfg);
         }
 
+        // Initialize first ticker
         const tList = Object.keys(tickerCharts);
         if (tList.length > 0) showTicker(tList[0]);
 
         function showTicker(t, btn) {
+            selectedTicker = t;
+
             const d = tickerCharts[t];
             if (d) Plotly.newPlot('ticker-chart', d.data, d.layout, plotCfg);
 
@@ -456,10 +766,62 @@
                 if (m.ewma && m.ewma.data) Plotly.newPlot('method-ewma', m.ewma.data, m.ewma.layout, plotCfg);
             }
 
+            // Update button states
             document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
-            if (btn) { btn.classList.add('active'); }
-            else { document.querySelectorAll('.tbtn').forEach(b => { if (b.textContent.trim().startsWith(t)) b.classList.add('active'); }); }
+            const targetBtn = document.getElementById('tbtn-' + t);
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+            } else if (btn) {
+                btn.classList.add('active');
+            }
+
+            // Highlight in attention queue
+            document.querySelectorAll('.aq-tbl tr').forEach(r => r.classList.remove('aq-selected'));
+            document.querySelectorAll('.tbl tr').forEach(r => r.classList.remove('sig-selected'));
         }
+
+        function selectTicker(t) {
+            showTicker(t);
+            // Scroll to deep dive
+            document.getElementById('deep-dive').scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+
+        function toggleMoreSignals(btn) {
+            const more = document.getElementById('signals-more');
+            if (more.classList.contains('open')) {
+                more.classList.remove('open');
+                btn.textContent = 'Show {{ alerts|length - 12 }} more signals \u2193';
+            } else {
+                more.classList.add('open');
+                btn.textContent = 'Show fewer signals \u2191';
+            }
+        }
+
+        // Draw sparklines on canvas elements
+        document.querySelectorAll('.aq-sparkline').forEach(canvas => {
+            const vals = canvas.dataset.values;
+            if (!vals) return;
+            const data = vals.split(',').map(Number).filter(n => !isNaN(n));
+            if (data.length < 2) return;
+
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+            const max = Math.max(...data);
+            const min = Math.min(...data);
+            const range = max - min || 1;
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#2962FF';
+            ctx.lineWidth = 1.5;
+            for (let i = 0; i < data.length; i++) {
+                const x = (i / (data.length - 1)) * w;
+                const y = h - ((data[i] - min) / range) * (h - 4) - 2;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+        });
     </script>
 </body>
 </html>

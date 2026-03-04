@@ -14,9 +14,16 @@ from datetime import datetime
 import pandas as pd
 
 from .alerts import alerts_to_json, alerts_to_markdown, generate_alerts, load_previous_alerts, merge_alerts
-from .config import DATA_DIR, DEFAULT_LOOKBACK_DAYS, DEFAULT_SENSITIVITY, DEFAULT_TICKERS, DOCS_DIR
+from .config import DATA_DIR, DEFAULT_LOOKBACK_DAYS, DEFAULT_SENSITIVITY, DEFAULT_TICKERS, DOCS_DIR, MODEL_VERSION
 from .data_fetch import compute_features, fetch_multiple
 from .detection.engine import run_all
+from .storage import (
+    alerts_to_signal_rows,
+    count_rows,
+    results_to_anomaly_rows,
+    upsert_anomalies,
+    upsert_signals,
+)
 from .visualization.dashboard import generate_dashboard
 
 logging.basicConfig(
@@ -31,16 +38,35 @@ def run(
     tickers: list[str] | None = None,
     sensitivity: str = DEFAULT_SENSITIVITY,
     lookback_days: int = DEFAULT_LOOKBACK_DAYS,
+    skip_validation: bool = False,
 ) -> dict:
     """Execute the full anomaly detection pipeline."""
     os.makedirs(DATA_DIR, exist_ok=True)
     os.makedirs(DOCS_DIR, exist_ok=True)
 
+    # Stage 0: Ticker validation (optional, skipped in CI for speed)
+    effective_tickers = tickers
+    validation_failures = []
+    if not skip_validation and tickers is None:
+        logger.info("=" * 60)
+        logger.info("STAGE 0: Validating default tickers via yfinance")
+        logger.info("=" * 60)
+        from .ticker_validation import validate_all_tickers
+        vresult = validate_all_tickers()
+        effective_tickers = vresult["valid"] or DEFAULT_TICKERS
+        validation_failures = vresult["invalid"]
+        if validation_failures:
+            logger.warning("Excluding %d tickers that failed validation: %s",
+                           len(validation_failures),
+                           [f["ticker"] for f in validation_failures])
+    elif tickers is None:
+        effective_tickers = DEFAULT_TICKERS
+
     # Stage 1: Fetch
     logger.info("=" * 60)
     logger.info("STAGE 1: Fetching stock data")
     logger.info("=" * 60)
-    raw_df = fetch_multiple(tickers=tickers, lookback_days=lookback_days)
+    raw_df = fetch_multiple(tickers=effective_tickers, lookback_days=lookback_days)
 
     # Stage 2: Features
     logger.info("=" * 60)
@@ -56,6 +82,14 @@ def run(
     results = run_all(featured_df, sensitivity=sensitivity)
     results.to_csv(os.path.join(DATA_DIR, "detection_results.csv"), index=False)
 
+    # Stage 3b: Persist anomalies to durable store (idempotent upsert)
+    logger.info("Persisting anomalies to SQLite store ...")
+    anomaly_rows = results_to_anomaly_rows(results)
+    upsert_anomalies(anomaly_rows)
+    store_counts = count_rows()
+    logger.info("Store now has %d anomaly rows, %d signal rows",
+                store_counts["anomalies"], store_counts["signals"])
+
     # Stage 4: Signals (incremental — merge with previous run)
     logger.info("=" * 60)
     logger.info("STAGE 4: Generating trading signals (incremental)")
@@ -65,6 +99,11 @@ def run(
     new_alerts = generate_alerts(results)
     alerts = merge_alerts(new_alerts, previous_alerts)
     alerts_to_json(alerts, alerts_path)
+
+    # Persist signals to durable store
+    signal_rows = alerts_to_signal_rows(alerts)
+    upsert_signals(signal_rows)
+
     print("\n" + alerts_to_markdown(alerts))
 
     # Build summary
@@ -77,6 +116,8 @@ def run(
         "total_signals": len(alerts),
         "sensitivity": sensitivity,
         "lookback_days": lookback_days,
+        "model_version": MODEL_VERSION,
+        "validation_failures": validation_failures,
     }
 
     # Stage 5: Dashboard
@@ -87,6 +128,7 @@ def run(
         results, alerts,
         sensitivity=sensitivity,
         lookback_days=lookback_days,
+        validation_failures=validation_failures,
     )
 
     summary["dashboard_path"] = dashboard_path
@@ -117,12 +159,15 @@ Examples:
                         default=DEFAULT_SENSITIVITY)
     parser.add_argument("--lookback", type=int, default=DEFAULT_LOOKBACK_DAYS,
                         help="Days of historical data (default: 365)")
+    parser.add_argument("--skip-validation", action="store_true",
+                        help="Skip ticker validation (faster, for CI)")
     args = parser.parse_args()
 
     tickers = [t.strip().upper() for t in args.tickers.split(",") if t.strip()] or None
 
     try:
-        summary = run(tickers=tickers, sensitivity=args.sensitivity, lookback_days=args.lookback)
+        summary = run(tickers=tickers, sensitivity=args.sensitivity,
+                      lookback_days=args.lookback, skip_validation=args.skip_validation)
         print(json.dumps(summary, indent=2))
     except Exception as exc:
         logger.exception("Pipeline failed: %s", exc)
