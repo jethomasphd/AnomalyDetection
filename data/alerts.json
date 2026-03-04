@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-03-04T20:46:28.550278Z",
-  "total_signals": 81,
+  "generated_at": "2026-03-04T21:43:57.162033Z",
+  "total_signals": 83,
   "new_signals": 35,
   "signals": [
     {
@@ -14,15 +14,15 @@
       "signal_color": "#42A5F5",
       "confidence": "Developing",
       "methods_flagged": 0,
-      "consensus_score": 0.5037,
+      "consensus_score": 0.5107,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-03-04",
       "is_new": true,
       "first_detected": "2026-03-04",
       "details": {
         "fourier_score": 0.0009,
-        "mp_score": 0.7545,
-        "ensemble_score": 0.4656,
+        "mp_score": 0.7551,
+        "ensemble_score": 0.4882,
         "ewma_score": 0.7009,
         "trajectory": "normal",
         "deviation_pct": 0.14,
@@ -381,7 +381,7 @@
       "consensus_score": 0.5006,
       "description": "Visa (V) is trading 4.6% below its 20-day moving average ($322.10). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-03-04",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-03-04",
       "details": {
         "fourier_score": 0.2554,
@@ -391,6 +391,32 @@
         "trajectory": "normal",
         "deviation_pct": -4.62,
         "ewma_value": 322.1
+      }
+    },
+    {
+      "ticker": "V",
+      "ticker_name": "Visa",
+      "display": "Visa (V)",
+      "date": "2026-02-23",
+      "close": 306.52,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.5644,
+      "description": "Visa (V) is trading 5.3% below its 20-day moving average ($323.67). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-03-04",
+      "is_new": true,
+      "first_detected": "2026-03-04",
+      "details": {
+        "fourier_score": 0.2572,
+        "mp_score": 0.598,
+        "ensemble_score": 0.6648,
+        "ewma_score": 0.6561,
+        "trajectory": "normal",
+        "deviation_pct": -5.3,
+        "ewma_value": 323.67
       }
     },
     {
@@ -1603,7 +1629,7 @@
       "consensus_score": 0.5008,
       "description": "Lockheed Martin (LMT) is trading 11.9% above its 20-day moving average ($509.29). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-03-04",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-03-04",
       "details": {
         "fourier_score": 0.3325,
@@ -1613,6 +1639,32 @@
         "trajectory": "normal",
         "deviation_pct": 11.86,
         "ewma_value": 509.29
+      }
+    },
+    {
+      "ticker": "LMT",
+      "ticker_name": "Lockheed Martin",
+      "display": "Lockheed Martin (LMT)",
+      "date": "2026-01-09",
+      "close": 540.07,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.5243,
+      "description": "Lockheed Martin (LMT) is trading 9.8% above its 20-day moving average ($492.04). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-03-04",
+      "is_new": true,
+      "first_detected": "2026-03-04",
+      "details": {
+        "fourier_score": 0.4271,
+        "mp_score": 0.368,
+        "ensemble_score": 0.4704,
+        "ewma_score": 0.8229,
+        "trajectory": "normal",
+        "deviation_pct": 9.76,
+        "ewma_value": 492.04
       }
     },
     {
