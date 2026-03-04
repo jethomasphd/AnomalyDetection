@@ -10,21 +10,21 @@ import os
 
 TICKER_REGISTRY = {
     # --- ENGINES OF THE REPUBLIC ---
-    "CAT":   {"name": "Caterpillar",               "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Industrials"},
-    "DE":    {"name": "Deere & Company",            "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Industrials"},
-    "HON":   {"name": "Honeywell",                  "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Industrials"},
-    "LMT":   {"name": "Lockheed Martin",            "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Defense"},
-    "GE":    {"name": "GE Aerospace",               "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Industrials"},
-    "WMT":   {"name": "Walmart",                    "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
-    "COST":  {"name": "Costco",                     "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
-    "HD":    {"name": "Home Depot",                  "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
-    "JNJ":   {"name": "Johnson & Johnson",          "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Healthcare"},
-    "PFE":   {"name": "Pfizer",                     "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Healthcare"},
-    "ADM":   {"name": "Archer-Daniels-Midland",     "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
-    "BG":    {"name": "Bunge Global",               "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
-    "TSN":   {"name": "Tyson Foods",                "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
-    "SCHW":  {"name": "Charles Schwab",             "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Financials"},
-    "BRK-B": {"name": "Berkshire Hathaway B",       "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Financials"},
+    "CAT":   {"name": "Caterpillar",               "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Industrials"},
+    "DE":    {"name": "Deere & Company",            "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Industrials"},
+    "HON":   {"name": "Honeywell",                  "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Industrials"},
+    "LMT":   {"name": "Lockheed Martin",            "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Defense"},
+    "GE":    {"name": "GE Aerospace",               "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Industrials"},
+    "WMT":   {"name": "Walmart",                    "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
+    "COST":  {"name": "Costco",                     "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
+    "HD":    {"name": "Home Depot",                  "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
+    "JNJ":   {"name": "Johnson & Johnson",          "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Healthcare"},
+    "PFE":   {"name": "Pfizer",                     "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Healthcare"},
+    "ADM":   {"name": "Archer-Daniels-Midland",     "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
+    "BG":    {"name": "Bunge Global",               "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
+    "TSN":   {"name": "Tyson Foods",                "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
+    "SCHW":  {"name": "Charles Schwab",             "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Financials"},
+    "BRK-B": {"name": "Berkshire Hathaway B",       "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Financials"},
 
     # --- CRITICAL CHOKE POINTS ---
     "NEE":   {"name": "NextEra Energy",             "category": "CRITICAL_CHOKE_POINTS", "is_fund": False, "sector": "Utilities"},
@@ -56,7 +56,7 @@ TICKER_REGISTRY = {
 
 # Category display names & ordering
 CATEGORY_LABELS = {
-    "ENGINES_OF_THE_REPUBLIC": "Engines of the Republic",
+    "CORE_INFRASTRUCTURE": "Core Infrastructure",
     "CRITICAL_CHOKE_POINTS": "Critical Choke Points",
     "RESERVE": "Reserve",
     "BROAD_INDEX": "Broad Index",

@@ -58,8 +58,8 @@ def test_ticker_display():
 
 def test_tickers_by_category():
     groups = tickers_by_category()
-    assert "ENGINES_OF_THE_REPUBLIC" in groups
-    assert "CAT" in groups["ENGINES_OF_THE_REPUBLIC"]
+    assert "CORE_INFRASTRUCTURE" in groups
+    assert "CAT" in groups["CORE_INFRASTRUCTURE"]
     assert "UBS_FUNDS" in groups
     assert "DVRUX" in groups["UBS_FUNDS"]
 
