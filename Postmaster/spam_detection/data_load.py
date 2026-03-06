@@ -7,12 +7,13 @@ Just Postmaster.csv -> filtered, feature-engineered DataFrame.
 """
 
 import logging
+import os
 from typing import Optional
 
 import numpy as np
 import pandas as pd
 
-from .config import DEFAULT_DATA_PATH, MIN_DATA_POINTS, VALID_REPUTATIONS
+from .config import DEFAULT_DATA_CSV_PATH, DEFAULT_DATA_PATH, MIN_DATA_POINTS, VALID_REPUTATIONS
 
 logger = logging.getLogger(__name__)
 
@@ -160,4 +161,65 @@ def compute_features(df: pd.DataFrame) -> pd.DataFrame:
         out.append(g)
 
     result = pd.concat(out, ignore_index=True)
+    return result
+
+
+# --- Country categories for pie charts ---
+HIGHLIGHT_COUNTRIES = {"US", "GB", "IN", "ZA"}
+
+
+def load_country_distribution(
+    postmaster_domains: list[str],
+    data_csv_path: str = DEFAULT_DATA_CSV_PATH,
+) -> dict[str, int]:
+    """Load data.csv and compute total Sent by country for the given Postmaster domains.
+
+    Matches domains using exact match first, then subdomain matching
+    (data.csv domain ends with '.<postmaster_domain>').
+
+    Returns dict mapping country -> total sent, with minor countries bucketed as 'Other'.
+    """
+    if not os.path.exists(data_csv_path):
+        logger.warning("data.csv not found at %s — skipping country distribution", data_csv_path)
+        return {}
+
+    df = pd.read_csv(data_csv_path)
+    df = df.dropna(subset=["Sending Domain", "List Country"])
+    df["Sent"] = pd.to_numeric(df["Sent"], errors="coerce").fillna(0).astype(int)
+
+    pm_set = set(postmaster_domains)
+
+    # Build a mapping: data.csv domain -> True if it matches a postmaster domain
+    dc_domains = df["Sending Domain"].unique()
+    matched = set()
+    for d in dc_domains:
+        if d in pm_set:
+            matched.add(d)
+        else:
+            # Check subdomain: e.g. "rg.expertjobmatch.com" matches "expertjobmatch.com"
+            parts = d.split(".")
+            if len(parts) > 2:
+                base = ".".join(parts[1:])
+                if base in pm_set:
+                    matched.add(d)
+
+    df_matched = df[df["Sending Domain"].isin(matched)]
+
+    if df_matched.empty:
+        logger.warning("No matching domains found in data.csv for country distribution")
+        return {}
+
+    # Aggregate by country, bucketing minor countries as "Other"
+    country_totals = df_matched.groupby("List Country")["Sent"].sum()
+    result = {}
+    for country, total in country_totals.items():
+        if country in HIGHLIGHT_COUNTRIES:
+            result[country] = int(total)
+        else:
+            result["Other"] = result.get("Other", 0) + int(total)
+
+    logger.info(
+        "Country distribution: %d domains matched, %d total sent across %d countries",
+        len(matched), sum(result.values()), len(result),
+    )
     return result

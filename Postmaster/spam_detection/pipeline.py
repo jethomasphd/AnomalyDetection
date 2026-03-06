@@ -23,7 +23,7 @@ from datetime import datetime
 import pandas as pd
 
 from .alerts import alerts_to_json, alerts_to_markdown, generate_alerts, load_previous_alerts, merge_alerts
-from .config import DATA_DIR, DEFAULT_DATA_PATH, DEFAULT_SENSITIVITY, DOCS_DIR
+from .config import DATA_DIR, DEFAULT_DATA_CSV_PATH, DEFAULT_DATA_PATH, DEFAULT_SENSITIVITY, DOCS_DIR
 from .data_load import compute_features, load_data
 from .detection.engine import run_all
 from .visualization.dashboard import generate_dashboard
@@ -38,6 +38,7 @@ logger = logging.getLogger(__name__)
 
 def run(
     data_path: str = DEFAULT_DATA_PATH,
+    data_csv_path: str = DEFAULT_DATA_CSV_PATH,
     domains: list[str] | None = None,
     sensitivity: str = DEFAULT_SENSITIVITY,
 ) -> dict:
@@ -107,6 +108,7 @@ def run(
     dashboard_path = generate_dashboard(
         results, alerts,
         sensitivity=sensitivity,
+        data_csv_path=data_csv_path,
     )
 
     summary["dashboard_path"] = dashboard_path
@@ -144,6 +146,10 @@ Examples:
         help="Path to Postmaster CSV data file (default: Postmaster.csv)",
     )
     parser.add_argument(
+        "--data-csv", type=str, default=DEFAULT_DATA_CSV_PATH,
+        help="Path to data.csv for country distribution (default: data.csv)",
+    )
+    parser.add_argument(
         "--domains", type=str, default="",
         help="Comma-separated domains to analyze (default: auto-discover from data)",
     )
@@ -157,7 +163,7 @@ Examples:
     domains = [d.strip() for d in args.domains.split(",") if d.strip()] or None
 
     try:
-        summary = run(data_path=args.data, domains=domains, sensitivity=args.sensitivity)
+        summary = run(data_path=args.data, data_csv_path=args.data_csv, domains=domains, sensitivity=args.sensitivity)
         print(json.dumps(summary, indent=2))
     except Exception as exc:
         logger.exception("Pipeline failed: %s", exc)
