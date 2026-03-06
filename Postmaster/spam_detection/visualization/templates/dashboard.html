@@ -389,7 +389,11 @@
         .domain-dd:focus { outline: none; border-color: var(--green); }
 
         .method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-top: 0.85rem; }
-        @media (max-width: 900px) { .method-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) {
+            .method-grid { grid-template-columns: 1fr; }
+            .offperf-grid { grid-template-columns: 1fr !important; }
+            .country-grid { grid-template-columns: 1fr !important; }
+        }
         .method-panel {
             border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
         }
@@ -526,6 +530,76 @@
             </div>
             <div class="overall-chart-wrap">
                 <div id="overall-chart"></div>
+            </div>
+        </div>
+
+        <!-- OFFENDERS & PERFORMERS -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+            <!-- Significant Offenders (Top 12 highest spam rate) -->
+            <div class="card" style="margin-bottom:0;">
+                <div class="card-h" style="background:#FEE2E2;border-bottom-color:#FECACA;">
+                    <svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    <span style="color:var(--red);font-weight:800;">Significant Offenders</span>
+                    <span class="badge badge-red">Top 12 Highest Spam Rate</span>
+                </div>
+                <div class="card-b flush">
+                    <ul class="ranking-list">
+                        {% for d in offenders %}
+                        <li class="ranking-item {% if d.has_signal %}flagged{% endif %}" onclick="showDomainByName('{{ d.domain }}')">
+                            <span class="ranking-rank" style="background:#FEE2E2;color:var(--red);">{{ loop.index }}</span>
+                            <span class="ranking-domain">{{ d.display }}</span>
+                            <span class="ranking-rate" style="color:var(--red);">{{ d.spam_rate_pct }}</span>
+                            <span class="ranking-bar-wrap">
+                                <span class="ranking-bar" style="width:{{ [d.spam_rate * 10000, 100]|min }}%;background:var(--red);"></span>
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Best Performers (Bottom 12 lowest spam rate) -->
+            <div class="card" style="margin-bottom:0;">
+                <div class="card-h" style="background:#DCFCE7;border-bottom-color:#BBF7D0;">
+                    <svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <span style="color:#166534;font-weight:800;">Best Performers</span>
+                    <span class="badge badge-green">Top 12 Lowest Spam Rate</span>
+                </div>
+                <div class="card-b flush">
+                    <ul class="ranking-list">
+                        {% for d in performers %}
+                        <li class="ranking-item" onclick="showDomainByName('{{ d.domain }}')">
+                            <span class="ranking-rank" style="background:#DCFCE7;color:#166534;">{{ loop.index }}</span>
+                            <span class="ranking-domain">{{ d.display }}</span>
+                            <span class="ranking-rate" style="color:var(--green);">{{ d.spam_rate_pct }}</span>
+                            <span class="ranking-bar-wrap">
+                                <span class="ranking-bar" style="width:{{ [d.spam_rate * 10000, 100]|min }}%;background:var(--green);"></span>
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- COUNTRY DISTRIBUTION -->
+        <div class="card">
+            <div class="card-h">
+                <svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                Country Distribution &mdash; How has the balance of sends across countries been affecting spam rate?
+            </div>
+            <div class="card-b">
+                <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:0.75rem;">
+                    Higher Spam Rate domains have more US and Other, whereas lower Spam Rate domains have more GB, IN, and ZA.
+                </p>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div style="border:3px solid var(--red);border-radius:var(--radius);padding:0.5rem;">
+                        <div id="offender-pie"></div>
+                    </div>
+                    <div style="border:3px solid var(--green);border-radius:var(--radius);padding:0.5rem;">
+                        <div id="performer-pie"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -768,11 +842,21 @@ Above 1.00%   Deliverability at risk</div>
         var domainCharts = {{ domain_charts_json }};
         var methodCharts = {{ method_charts_json }};
         var overallData = {{ overall_chart_json }};
+        var offenderPieData = {{ offender_pie_json }};
+        var performerPieData = {{ performer_pie_json }};
         var plotCfg = {responsive: true, displayModeBar: false};
 
         // Render overall chart
         if (overallData && overallData.data) {
             Plotly.newPlot('overall-chart', overallData.data, overallData.layout, plotCfg);
+        }
+
+        // Render country distribution pie charts
+        if (offenderPieData && offenderPieData.data) {
+            Plotly.newPlot('offender-pie', offenderPieData.data, offenderPieData.layout, plotCfg);
+        }
+        if (performerPieData && performerPieData.data) {
+            Plotly.newPlot('performer-pie', performerPieData.data, performerPieData.layout, plotCfg);
         }
 
         // Show first domain

@@ -13,6 +13,7 @@ import os
 
 # --- Data Settings ---
 DEFAULT_DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "Postmaster.csv")
+DEFAULT_DATA_CSV_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data.csv")
 MIN_DATA_POINTS = 30  # Minimum days of data to include a domain
 VALID_REPUTATIONS = ("MEDIUM", "HIGH")  # Only analyze domains with these reputations
 

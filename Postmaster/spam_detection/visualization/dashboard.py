@@ -8,8 +8,10 @@ from datetime import datetime
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
-from ..config import DOCS_DIR, GOOGLE_THRESHOLDS
+from ..config import DEFAULT_DATA_CSV_PATH, DOCS_DIR, GOOGLE_THRESHOLDS
+from ..data_load import load_country_distribution
 from .charts import (
+    country_pie_chart,
     domain_chart,
     method_ensemble_chart,
     method_ewma_chart,
@@ -31,6 +33,7 @@ def generate_dashboard(
     alerts: list[dict],
     sensitivity: str = "medium",
     output_path: str | None = None,
+    data_csv_path: str = DEFAULT_DATA_CSV_PATH,
 ) -> str:
     """Generate the full Cool Runnings HTML dashboard and write it to disk."""
     output_path = output_path or os.path.join(DOCS_DIR, "index.html")
@@ -101,6 +104,28 @@ def generate_dashboard(
     rest_domains = sorted(domain_ranking[10:], key=lambda x: x["domain"])
     domain_info = top_domains + rest_domains
 
+    # --- Top 12 Offenders (highest spam rate) and Bottom 12 Performers (lowest spam rate) ---
+    offenders = domain_ranking[:12]  # already sorted highest first
+    performers = domain_ranking[-12:][::-1]  # lowest spam rate, reversed so lowest first
+
+    # --- Country distribution pie charts ---
+    offender_domains = [d["domain"] for d in offenders]
+    performer_domains = [d["domain"] for d in performers]
+
+    offender_country_data = load_country_distribution(offender_domains, data_csv_path)
+    performer_country_data = load_country_distribution(performer_domains, data_csv_path)
+
+    offender_pie_json = country_pie_chart(
+        offender_country_data,
+        "Proportion of Total Sends by Country<br>Among Domains with Significantly Higher Google Spam Rate",
+        "#D50000",
+    )
+    performer_pie_json = country_pie_chart(
+        performer_country_data,
+        "Proportion of Total Sends by Country<br>Among Domains with Significantly Lower Google Spam Rate",
+        "#009B3A",
+    )
+
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=False)
     template = env.get_template("dashboard.html")
 
@@ -129,6 +154,11 @@ def generate_dashboard(
         n_compliant=n_compliant,
         pct_compliant=f"{pct_compliant:.0f}",
         compliance_threshold_pct=f"{COMPLIANCE_THRESHOLD * 100:.1f}",
+        # Offenders / Performers
+        offenders=offenders,
+        performers=performers,
+        offender_pie_json=offender_pie_json,
+        performer_pie_json=performer_pie_json,
     )
 
     with open(output_path, "w") as f:

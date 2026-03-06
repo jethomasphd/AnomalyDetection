@@ -427,3 +427,45 @@ def overall_spam_rate_chart(results: pd.DataFrame) -> str:
     fig.update_xaxes(gridcolor=LIGHT_GRAY)
     fig.update_yaxes(title_text="Spam Rate (%)", gridcolor=LIGHT_GRAY)
     return _fig_to_json(fig)
+
+
+# ---- Country distribution pie charts ----
+
+# Consistent colors per country
+COUNTRY_COLORS = {
+    "US": "#FF8A80",   # Salmon/pink (like the image)
+    "GB": "#FFB74D",   # Orange
+    "IN": "#CE93D8",   # Purple
+    "ZA": "#90CAF9",   # Blue
+    "Other": "#A5D6A7", # Green
+}
+
+
+def country_pie_chart(country_data: dict[str, int], title: str, border_color: str) -> str:
+    """Single pie chart showing proportion of total sends by country."""
+    if not country_data:
+        return "{}"
+
+    countries = list(country_data.keys())
+    values = list(country_data.values())
+    colors = [COUNTRY_COLORS.get(c, GRAY) for c in countries]
+
+    fig = go.Figure(data=[go.Pie(
+        labels=countries,
+        values=values,
+        marker=dict(colors=colors, line=dict(color="white", width=2)),
+        textinfo="label+percent",
+        textposition="auto",
+        textfont=dict(size=11),
+        hovertemplate="<b>%{label}</b><br>Sent: %{value:,.0f}<br>%{percent}<extra></extra>",
+        sort=False,
+    )])
+
+    fig.update_layout(
+        title=dict(text=title, font_size=13, x=0.5, xanchor="center"),
+        height=350,
+        margin=dict(l=20, r=20, t=50, b=20),
+        showlegend=False,
+        **LAYOUT_DEFAULTS,
+    )
+    return _fig_to_json(fig)
