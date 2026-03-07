@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-07T13:27:01.115862Z",
+  "generated_at": "2026-03-07T19:01:44.770124Z",
   "total_signals": 148,
   "new_signals": 50,
   "signals": [
@@ -411,7 +411,7 @@
       "first_detected": "2026-03-07",
       "details": {
         "fourier_score": 0.315,
-        "mp_score": 0.6767,
+        "mp_score": 0.6766,
         "ensemble_score": 0.5307,
         "ewma_score": 0.3154,
         "trajectory": "normal",
@@ -2536,7 +2536,7 @@
       "signal_color": "#42A5F5",
       "confidence": "Developing",
       "methods_flagged": 1,
-      "consensus_score": 0.5087,
+      "consensus_score": 0.5093,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because price pattern is unprecedented, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-03-07",
       "is_new": true,
@@ -2544,8 +2544,8 @@
       "details": {
         "fourier_score": 0.0022,
         "mp_score": 0.9399,
-        "ensemble_score": 0.4083,
-        "ewma_score": 0.6032,
+        "ensemble_score": 0.4102,
+        "ewma_score": 0.6031,
         "trajectory": "normal",
         "deviation_pct": -0.12,
         "ewma_value": 91.25
