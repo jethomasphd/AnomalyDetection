@@ -15,11 +15,27 @@ from anomaly_detection.config import (
 def test_registry_has_required_tickers():
     """All specified default tickers must be in the registry."""
     required = [
+        # Core Infrastructure
         "CAT", "DE", "HON", "LMT", "GE", "WMT", "COST", "HD", "JNJ", "PFE",
         "ADM", "BG", "TSN", "SCHW", "BRK-B",
+        # Critical Choke Points
         "NEE", "D", "KMI", "WMB", "V", "MA", "JPM", "MSFT", "AMZN", "GOOGL",
         "UNP", "NSC", "MCK", "UNH",
-        "BIL", "SPY",
+        # Big Tech
+        "AAPL", "NVDA", "META", "TSLA", "NFLX", "CRM", "AMD", "ORCL",
+        # Consumer Leaders
+        "PG", "KO", "PEP", "MCD", "NKE", "SBUX", "TGT", "LOW",
+        # Financial Titans
+        "GS", "MS", "BAC", "C", "WFC", "BLK",
+        # Healthcare & Pharma
+        "LLY", "ABBV", "MRK", "AMGN", "BMY",
+        # Energy & Commodities
+        "XOM", "CVX", "COP",
+        # Wall Street's Darlings
+        "SPY", "QQQ", "DIA", "IWM", "VTI", "VOO", "ARKK", "VGT", "XLF", "XLE",
+        # Reserve
+        "BIL",
+        # UBS Funds
         "DVRUX", "QGRPX", "BNUEX",
     ]
     for t in required:
@@ -60,6 +76,10 @@ def test_tickers_by_category():
     groups = tickers_by_category()
     assert "CORE_INFRASTRUCTURE" in groups
     assert "CAT" in groups["CORE_INFRASTRUCTURE"]
+    assert "BIG_TECH" in groups
+    assert "AAPL" in groups["BIG_TECH"]
+    assert "WALL_STREET_DARLINGS" in groups
+    assert "SPY" in groups["WALL_STREET_DARLINGS"]
     assert "UBS_FUNDS" in groups
     assert "DVRUX" in groups["UBS_FUNDS"]
 

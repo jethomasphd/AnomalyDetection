@@ -594,16 +594,27 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
 # ---- Backtest: full lookback signal-following performance ----
 
 def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
-    """Compute a simple signal ledger showing what happened after each signal.
+    """Compute signal performance — each signal = one $10k position.
 
-    For each signal:
-      - Record the action date and price at signal
-      - If a closing signal followed, record exit price and realized % change
-      - If still open, record current (latest) price and unrealized % change
-      - Track cumulative growth of a $10k equal-weight portfolio
+    Model:
+      - BUY/LONG: buy $10k at action price. Gain if price rose since.
+      - SELL/SHORT before any buy: assume portfolio held $10k of that stock,
+        sold at action price. Gain if price dropped since (good call).
+      - Paired BUY→SELL: realized gain = (sell_price - buy_price) / buy_price.
+      - Every position is a flat $10k unit.
     """
+    empty = {
+        "signal_ledger": [],
+        "total_gain": 0,
+        "total_pct": 0,
+        "n_positions": 0,
+        "n_winning": 0,
+        "n_open": 0,
+        "start_date": None,
+        "end_date": None,
+    }
     if results.empty or not alerts:
-        return {"per_ticker": [], "portfolio": {}, "start_date": None, "end_date": None, "all_trades": [], "signal_ledger": []}
+        return empty
 
     today = results["Date"].max()
     start = results["Date"].min()
@@ -611,29 +622,26 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
     recent_alerts = [a for a in alerts if a["date"] >= start_str]
 
     if not recent_alerts:
-        return {"per_ticker": [], "portfolio": {}, "start_date": str(start)[:10], "end_date": str(today)[:10], "all_trades": [], "signal_ledger": []}
+        empty["start_date"] = str(start)[:10]
+        empty["end_date"] = str(today)[:10]
+        return empty
 
-    # Get latest price for each ticker
+    # Latest price for each ticker
     latest_prices = {}
     for ticker in results["Ticker"].unique():
         grp = results[results["Ticker"] == ticker].sort_values("Date")
         if not grp.empty:
             latest_prices[ticker] = float(grp["Close"].iloc[-1])
 
-    # Build signal timeline per ticker: ordered list of (date, signal, price)
-    sig_timeline = {}
+    # Group by ticker, sort by date
+    sig_timeline: dict[str, list] = {}
     for a in recent_alerts:
-        t = a["ticker"]
-        sig_timeline.setdefault(t, []).append(a)
-
-    # Sort each ticker's signals by date
+        sig_timeline.setdefault(a["ticker"], []).append(a)
     for t in sig_timeline:
         sig_timeline[t].sort(key=lambda x: x["date"])
 
-    # Build signal ledger — pair BUY/LONG with SELL/SHORT
+    UNIT = 10_000
     signal_ledger = []
-    per_ticker_returns = {}
-    initial_capital = 10000
 
     for ticker, ticker_alerts in sig_timeline.items():
         current_price = latest_prices.get(ticker, 0)
@@ -641,197 +649,133 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
 
         for a in ticker_alerts:
             sig = a["signal"]
-            action_price = a["close"]
+            price = a["close"]
+            if price <= 0:
+                continue
 
             if sig in ("BUY", "LONG"):
+                if pending_buy:
+                    # Close any existing open buy first (shouldn't happen often)
+                    signal_ledger.append(pending_buy)
+                # Open a $10k long position
+                pct = (current_price - price) / price * 100 if current_price > 0 else 0
+                gain = UNIT * pct / 100
                 pending_buy = {
                     "date": a["date"],
                     "ticker": ticker,
                     "display": ticker_display(ticker),
                     "action": sig,
-                    "action_price": round(action_price, 2),
-                    "exit_date": None,
+                    "action_price": round(price, 2),
                     "current_price": round(current_price, 2),
-                    "pct_change": round((current_price - action_price) / action_price * 100, 2) if action_price > 0 else 0,
+                    "pct_change": round(pct, 2),
+                    "dollar_gain": round(gain, 2),
                     "status": "OPEN",
-                    "confidence": a.get("confidence", ""),
                 }
-            elif sig in ("SELL", "SHORT") and pending_buy:
-                # Close the position
-                pct = (action_price - pending_buy["action_price"]) / pending_buy["action_price"] * 100 if pending_buy["action_price"] > 0 else 0
-                pending_buy["exit_date"] = a["date"]
-                pending_buy["current_price"] = round(action_price, 2)
-                pending_buy["pct_change"] = round(pct, 2)
-                pending_buy["status"] = "CLOSED"
-                signal_ledger.append(pending_buy)
-                pending_buy = None
-            elif sig in ("SELL", "SHORT"):
-                # Standalone sell (no prior buy)
-                signal_ledger.append({
-                    "date": a["date"],
-                    "ticker": ticker,
-                    "display": ticker_display(ticker),
-                    "action": sig,
-                    "action_price": round(action_price, 2),
-                    "exit_date": None,
-                    "current_price": round(current_price, 2),
-                    "pct_change": round((current_price - action_price) / action_price * 100, 2) if action_price > 0 else 0,
-                    "status": "INFO",
-                    "confidence": a.get("confidence", ""),
-                })
 
-        # If there's an open buy, add it
+            elif sig in ("SELL", "SHORT"):
+                if pending_buy:
+                    # Close the open buy → realized
+                    pct = (price - pending_buy["action_price"]) / pending_buy["action_price"] * 100
+                    gain = UNIT * pct / 100
+                    pending_buy["current_price"] = round(price, 2)
+                    pending_buy["pct_change"] = round(pct, 2)
+                    pending_buy["dollar_gain"] = round(gain, 2)
+                    pending_buy["status"] = "CLOSED"
+                    signal_ledger.append(pending_buy)
+                    pending_buy = None
+                else:
+                    # Standalone sell — assume held $10k, sold at this price.
+                    # Good call if price dropped after selling.
+                    pct = (price - current_price) / price * 100 if current_price > 0 else 0
+                    gain = UNIT * pct / 100
+                    signal_ledger.append({
+                        "date": a["date"],
+                        "ticker": ticker,
+                        "display": ticker_display(ticker),
+                        "action": sig,
+                        "action_price": round(price, 2),
+                        "current_price": round(current_price, 2),
+                        "pct_change": round(pct, 2),
+                        "dollar_gain": round(gain, 2),
+                        "status": "OPEN",
+                    })
+
+            # Skip WATCH, REDUCE — not actionable positions
+
         if pending_buy:
             signal_ledger.append(pending_buy)
 
-    # Sort ledger by date descending
+    # Sort by date descending
     signal_ledger.sort(key=lambda x: x["date"], reverse=True)
 
-    # Per-ticker summary
-    per_ticker = []
-    tickers_with_signals = set(a["ticker"] for a in recent_alerts)
-    all_equity_curves = {}
-
-    for ticker in tickers_with_signals:
-        grp = results[results["Ticker"] == ticker].sort_values("Date")
-        grp = grp[grp["Date"] >= start].copy()
-        if grp.empty or len(grp) < 2:
-            continue
-
-        dates = grp["Date"].tolist()
-        closes = grp["Close"].tolist()
-        signals_map = {a["date"]: a["signal"] for a in sig_timeline.get(ticker, [])}
-
-        cash = initial_capital
-        shares = 0
-        equity_curve = []
-        position = "out"
-        n_trades = 0
-        wins = 0
-
-        for d, c in zip(dates, closes):
-            d_str = d.strftime("%Y-%m-%d") if hasattr(d, "strftime") else str(d)
-            sig = signals_map.get(d_str)
-
-            if sig in ("BUY", "LONG") and position == "out" and c > 0:
-                shares = cash / c
-                buy_price = c
-                cash = 0
-                position = "long"
-            elif sig in ("SELL", "SHORT") and position == "long":
-                cash = shares * c
-                n_trades += 1
-                if c > buy_price:
-                    wins += 1
-                shares = 0
-                position = "out"
-
-            equity_curve.append({"date": d_str, "value": round(cash + shares * c, 2)})
-
-        final_value = cash + shares * closes[-1]
-        pct_return = (final_value - initial_capital) / initial_capital * 100
-
-        per_ticker.append({
-            "ticker": ticker,
-            "display": ticker_display(ticker),
-            "pct_return": round(pct_return, 2),
-            "n_trades": n_trades,
-            "win_rate": round(wins / n_trades * 100, 1) if n_trades > 0 else None,
-            "equity_curve": equity_curve,
-            "final_value": round(final_value, 2),
-        })
-        all_equity_curves[ticker] = {e["date"]: e["value"] for e in equity_curve}
-
-    # Portfolio equity curve (equal-weight average)
-    portfolio_stats = {}
-    if per_ticker:
-        all_dates_set = sorted(set(d for curves in all_equity_curves.values() for d in curves))
-        portfolio_curve = []
-        for d in all_dates_set:
-            values = [curves.get(d) for curves in all_equity_curves.values() if curves.get(d) is not None]
-            if values:
-                portfolio_curve.append({"date": d, "value": round(sum(values) / len(values), 2)})
-
-        if portfolio_curve:
-            start_val = portfolio_curve[0]["value"]
-            end_val = portfolio_curve[-1]["value"]
-            pct_return = (end_val - start_val) / start_val * 100
-
-            peak = portfolio_curve[0]["value"]
-            max_dd = 0
-            for p in portfolio_curve:
-                if p["value"] > peak:
-                    peak = p["value"]
-                dd = (peak - p["value"]) / peak * 100
-                if dd > max_dd:
-                    max_dd = dd
-
-            total_trades = sum(t["n_trades"] for t in per_ticker)
-            wins_total = sum(1 for t in per_ticker if t["pct_return"] > 0)
-
-            portfolio_stats = {
-                "pct_return": round(pct_return, 2),
-                "max_drawdown": round(max_dd, 2),
-                "n_trades": total_trades,
-                "win_rate": round(wins_total / len(per_ticker) * 100, 1) if per_ticker else 0,
-                "equity_curve": portfolio_curve,
-            }
+    # Summary stats
+    total_gain = sum(s["dollar_gain"] for s in signal_ledger)
+    n_positions = len(signal_ledger)
+    n_winning = sum(1 for s in signal_ledger if s["dollar_gain"] > 0)
+    n_open = sum(1 for s in signal_ledger if s["status"] == "OPEN")
+    total_invested = n_positions * UNIT
+    total_pct = (total_gain / total_invested * 100) if total_invested > 0 else 0
 
     return {
-        "per_ticker": sorted(per_ticker, key=lambda x: x["pct_return"], reverse=True),
-        "portfolio": portfolio_stats,
+        "signal_ledger": signal_ledger,
+        "total_gain": round(total_gain, 2),
+        "total_pct": round(total_pct, 2),
+        "n_positions": n_positions,
+        "n_winning": n_winning,
+        "n_open": n_open,
         "start_date": str(start)[:10],
         "end_date": str(today)[:10],
-        "all_trades": [],  # Legacy compat
-        "signal_ledger": signal_ledger,
     }
 
 
 def backtest_equity_chart(backtest: dict) -> str:
-    """Portfolio equity curve chart with per-ticker lines."""
-    portfolio = backtest.get("portfolio", {})
-    curve = portfolio.get("equity_curve", [])
-    per_ticker = backtest.get("per_ticker", [])
-
-    if not curve:
+    """Bar chart showing $ gain/loss per position ($10k each)."""
+    ledger = backtest.get("signal_ledger", [])
+    if not ledger:
         return "{}"
 
+    # Sort by date ascending for the chart
+    entries = sorted(ledger, key=lambda x: x["date"])
+
+    labels = [f"{e['ticker']} {e['action']}<br>{e['date']}" for e in entries]
+    gains = [e["dollar_gain"] for e in entries]
+    colors = [NEON_GREEN if g >= 0 else NEON_RED for g in gains]
+
     fig = go.Figure()
-
-    # Per-ticker equity curves (faded)
-    for t in per_ticker[:10]:  # Limit to top 10 for readability
-        tc = t.get("equity_curve", [])
-        if tc:
-            fig.add_trace(go.Scatter(
-                x=[p["date"] for p in tc], y=[p["value"] for p in tc],
-                mode="lines", name=t["ticker"],
-                line=dict(width=1, color=MUTED),
-                opacity=0.3,
-                hovertemplate=f"{t['ticker']}<br>%{{x|%b %d}}<br>${{%{{y:,.2f}}}}<extra></extra>",
-            ))
-
-    # Portfolio line (bold)
-    dates = [p["date"] for p in curve]
-    values = [p["value"] for p in curve]
-    fig.add_trace(go.Scatter(
-        x=dates, y=values,
-        mode="lines", name="Portfolio Avg",
-        line=dict(color=NEON_GREEN, width=2.5),
-        fill="tozeroy", fillcolor="rgba(0,230,118,0.05)",
-        hovertemplate="%{x|%b %d, %Y}<br><b>$%{y:,.2f}</b><extra></extra>",
+    fig.add_trace(go.Bar(
+        x=list(range(len(entries))),
+        y=gains,
+        marker_color=colors,
+        hovertext=[
+            f"{e['ticker']} — {e['action']}<br>"
+            f"Date: {e['date']}<br>"
+            f"Entry: ${e['action_price']:,.2f}<br>"
+            f"Current: ${e['current_price']:,.2f}<br>"
+            f"Gain: ${e['dollar_gain']:+,.2f} ({e['pct_change']:+.1f}%)<br>"
+            f"Status: {e['status']}"
+            for e in entries
+        ],
+        hoverinfo="text",
+        text=[f"${g:+,.0f}" for g in gains],
+        textposition="outside",
+        textfont=dict(size=9, color=TEXT_PRIMARY),
     ))
 
-    if values:
-        fig.add_hline(y=values[0], line_dash="dot", line_color=MUTED,
-                      annotation_text=f"Start: ${values[0]:,.0f}",
-                      annotation_font_color=MUTED)
+    fig.add_hline(y=0, line_color=MUTED, line_width=1)
 
     fig.update_layout(
-        height=350,
-        margin=dict(l=60, r=20, t=30, b=30),
-        yaxis_title="Value ($)",
-        title=dict(text="Signal Portfolio — Full Period", font_size=13, font_color=TEXT_PRIMARY),
+        height=300,
+        margin=dict(l=60, r=20, t=35, b=60),
+        yaxis_title="$ Gain / Loss per $10k Position",
+        title=dict(text="Position Performance — $10k per Signal", font_size=13, font_color=TEXT_PRIMARY),
         showlegend=False,
+        xaxis=dict(
+            tickmode="array",
+            tickvals=list(range(len(entries))),
+            ticktext=[f"{e['ticker']}" for e in entries],
+            tickangle=-45,
+            tickfont=dict(size=9),
+        ),
         **LAYOUT_DEFAULTS,
     )
     fig.update_xaxes(gridcolor=DARK_GRID, linecolor=DARK_BORDER)

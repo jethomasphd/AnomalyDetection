@@ -360,6 +360,64 @@
         .footer a:hover { text-decoration: underline; }
         .empty-msg { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
 
+        /* === CINEMATIC INTRO === */
+        .intro-overlay {
+            position: fixed; inset: 0; z-index: 99999;
+            background: var(--bg);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 2rem;
+            transition: opacity 0.6s ease;
+        }
+        .intro-overlay.fade-out { opacity: 0; pointer-events: none; }
+        .intro-text {
+            max-width: 680px; text-align: center;
+            font-size: 1rem; line-height: 2; color: var(--text);
+            font-family: var(--mono);
+        }
+        .intro-text .typed { display: inline; }
+        .intro-text .cursor {
+            display: inline-block; width: 2px; height: 1.1em;
+            background: var(--green); margin-left: 2px;
+            animation: blink-cursor 0.8s step-end infinite;
+            vertical-align: text-bottom;
+        }
+        @keyframes blink-cursor { 50% { opacity: 0; } }
+        .intro-enter {
+            margin-top: 2rem; padding: 0.7rem 2.5rem;
+            background: var(--green); color: var(--bg);
+            border: none; border-radius: 6px;
+            font-family: var(--mono); font-size: 0.9rem; font-weight: 700;
+            letter-spacing: 0.06em; text-transform: uppercase;
+            cursor: pointer; opacity: 0;
+            transition: opacity 0.5s, box-shadow 0.2s;
+        }
+        .intro-enter.visible { opacity: 1; }
+        .intro-enter:hover { box-shadow: 0 0 30px rgba(0,230,118,0.4); }
+        .intro-skip {
+            position: absolute; top: 1.5rem; right: 2rem;
+            background: none; border: none; color: var(--dim);
+            font-family: var(--mono); font-size: 0.72rem;
+            cursor: pointer; letter-spacing: 0.04em;
+        }
+        .intro-skip:hover { color: var(--muted); }
+
+        /* Bottom-line banner */
+        .bottom-line-banner {
+            text-align: center; padding: 1.2rem;
+            border: 2px solid var(--green); border-radius: var(--radius);
+            background: rgba(0,230,118,0.05); margin-top: 1rem;
+        }
+        .bottom-line-banner .bl-headline {
+            font-family: var(--mono); font-size: 1.1rem; font-weight: 700;
+            color: var(--green); margin-bottom: 0.3rem;
+        }
+        .bottom-line-banner .bl-sub {
+            font-size: 0.78rem; color: var(--muted);
+        }
+        .bottom-line-banner.loss { border-color: var(--red); background: rgba(255,23,68,0.05); }
+        .bottom-line-banner.loss .bl-headline { color: var(--red); }
+
         /* Details/summary styled */
         details.card { cursor: default; }
         details.card > summary.card-head {
@@ -372,6 +430,15 @@
     </style>
 </head>
 <body>
+    <!-- ==================== CINEMATIC INTRO ==================== -->
+    <div class="intro-overlay" id="intro-overlay">
+        <button class="intro-skip" onclick="dismissIntro()">skip &rarr;</button>
+        <div class="intro-text" id="intro-text">
+            <span class="typed" id="intro-typed"></span><span class="cursor" id="intro-cursor"></span>
+        </div>
+        <button class="intro-enter" id="intro-enter" onclick="dismissIntro()">Enter THE SIGNAL</button>
+    </div>
+
     <div class="header">
         <div class="header-inner">
             <h1>> THE_SIGNAL</h1>
@@ -388,10 +455,11 @@
     <!-- Hero summary -->
     <div class="hero">
         <div class="hero-text">
-            <strong>The institutions have their Bloomberg terminals. Their dark pools. Their millisecond advantages.</strong>
-            THE SIGNAL levels the field &mdash; four independent detection algorithms scanning
-            <span class="stat-inline stat-blue">{{ n_tickers }}</span> tickers daily,
-            surfacing anomalies the market hasn't priced in yet.
+            <strong>Wall Street spends billions on the tools you're about to use for free.</strong>
+            THE SIGNAL runs PhD-level anomaly detection &mdash; Fourier transforms, matrix profiles, statistical ensembles,
+            and EWMA trend analysis &mdash; across
+            <span class="stat-inline stat-blue">{{ n_tickers }}</span> tickers every single day.
+            The same math that powers institutional trading desks, democratized and delivered to your browser.
             {% if n_anomalies > 0 %}
                 Right now: <span class="stat-inline stat-red">{{ n_anomalies }}</span> anomalies detected,
                 <span class="stat-inline stat-green">{{ n_actionable }}</span> actionable signals.
@@ -454,11 +522,15 @@
         <div class="tip-panel" id="tip-monitored">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Tickers Monitored</div>
-            Stocks and funds tracked across 5 strategic categories:<br>
-            <strong>Core Infrastructure</strong> &mdash; the companies that build, feed, and finance America (CAT, WMT, JPM, etc.)<br>
-            <strong>Critical Choke Points</strong> &mdash; gatekeepers of energy, payments, logistics, and tech (V, MSFT, UNP, etc.)<br>
-            <strong>Reserve &amp; Index</strong> &mdash; treasury proxy (BIL) and broad market benchmark (SPY)<br>
-            <strong>UBS Funds</strong> &mdash; managed fund positions for comparison<br>
+            {{ n_tickers }} stocks and funds tracked across 10 strategic categories:<br>
+            <strong><a href="https://the-companion-dossier.com/The_Watchtower" target="_blank" style="color:var(--green);">Core Infrastructure</a></strong> &mdash; the companies that build, feed, and finance America<br>
+            <strong><a href="https://the-companion-dossier.com/The_Watchtower" target="_blank" style="color:var(--green);">Critical Choke Points</a></strong> &mdash; gatekeepers of energy, payments, logistics, and tech<br>
+            <strong>Big Tech</strong> &mdash; highest signal density, highest retail interest<br>
+            <strong>Consumer Leaders</strong> &mdash; defensive plays with massive brand moats<br>
+            <strong>Financial Titans</strong> &mdash; the banks and asset managers that move money<br>
+            <strong>Healthcare &amp; Pharma</strong> &mdash; the companies keeping people alive<br>
+            <strong>Energy &amp; Commodities</strong> &mdash; when geopolitics moves, these move first<br>
+            <strong>Wall Street's Darlings</strong> &mdash; the ETFs and index funds they want you to buy<br>
             These aren't random picks &mdash; they're the pillars and pressure points of the economy.
         </div>
         <div class="tip-panel" id="tip-anomalies">
@@ -501,11 +573,12 @@
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Signal Performance</div>
             This section answers: <strong>"If I had followed THE SIGNAL's calls, what would have happened?"</strong>
-            Each BUY/LONG signal triggers a simulated $10k purchase at the closing price.
-            The position stays open until a SELL/SHORT signal closes it.
-            <strong>% Change</strong> = how much that position gained or lost.
-            <strong>OPEN</strong> = still holding, showing unrealized gain/loss at current price.
-            The equity chart shows how the portfolio would have grown over the full period.
+            Every signal = one $10k position. BUY/LONG: bought $10k at signal price.
+            SELL/SHORT before buy: assumed you held $10k, sold at signal price &mdash; gain if price dropped after (good call).
+            <strong>$ Gain</strong> = profit or loss on that $10k unit.
+            <strong>OPEN</strong> = position still active at current market price.
+            <strong>CLOSED</strong> = a later signal closed the position.
+            The bottom line shows total return across all positions.
         </div>
         <div class="tip-panel" id="tip-fourier">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -733,114 +806,110 @@
                 <span class="tip-trigger" onclick="showTip(event, 'tip-backtest')">?</span>
             </div>
             <div class="card-body">
-                {% if backtest.portfolio and backtest.portfolio.equity_curve %}
+                {% if backtest.signal_ledger %}
                 <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.75rem; line-height:1.6;">
-                    <strong style="color:var(--green)">How to read this:</strong>
-                    Every time THE SIGNAL generated a BUY or LONG call, we simulated buying $10k of that stock at the closing price.
-                    When a SELL or SHORT followed, we sold. The table below shows each position &mdash; what we paid, what it's worth now
-                    (or what we sold for), and the % change. The chart tracks how that $10k would have grown or shrunk over time.
+                    <strong style="color:var(--green)">The question everyone asks:</strong>
+                    "Does this actually work?" Every signal below represents a $10,000 position.
+                    BUY = we bought $10k at that price. SELL = we assumed we held $10k and sold.
+                    The table shows what each position is worth today. No tricks. No cherry-picking. Every signal, every outcome.
                 </p>
 
+                <!-- Bottom-line banner -->
+                <div class="bottom-line-banner {% if backtest.total_gain < 0 %}loss{% endif %}">
+                    <div class="bl-headline">
+                        Following THE SIGNAL over {{ backtest.start_date }} &mdash; {{ backtest.end_date }}:
+                        {{ "%+.1f"|format(backtest.total_pct) }}% return &mdash; ${{ "{:+,.2f}".format(backtest.total_gain) }} across {{ backtest.n_positions }} positions
+                    </div>
+                    <div class="bl-sub">
+                        {{ backtest.n_positions }} positions &times; $10,000 each &bull;
+                        {{ backtest.n_winning }} winning &bull;
+                        {{ backtest.n_open }} still open
+                    </div>
+                </div>
+
                 <!-- Summary stats -->
-                <div class="bt-grid">
+                <div class="bt-grid" style="margin-top:1rem;">
                     <div class="bt-stat">
-                        <div class="bt-num" style="color:{% if backtest.portfolio.pct_return >= 0 %}var(--green){% else %}var(--red){% endif %}">
-                            {{ "%+.1f"|format(backtest.portfolio.pct_return) }}%
+                        <div class="bt-num" style="color:{% if backtest.total_pct >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                            {{ "%+.1f"|format(backtest.total_pct) }}%
                         </div>
-                        <div class="bt-lbl">Cumulative Return</div>
+                        <div class="bt-lbl">Overall Return</div>
                     </div>
                     <div class="bt-stat">
-                        <div class="bt-num" style="color:var(--red)">{{ "%.1f"|format(backtest.portfolio.max_drawdown) }}%</div>
-                        <div class="bt-lbl">Worst Drawdown</div>
+                        <div class="bt-num" style="color:{% if backtest.total_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                            ${{ "{:+,.0f}".format(backtest.total_gain) }}
+                        </div>
+                        <div class="bt-lbl">Total $ Gain</div>
                     </div>
                     <div class="bt-stat">
-                        <div class="bt-num" style="color:var(--blue)">{{ backtest.portfolio.n_trades }}</div>
-                        <div class="bt-lbl">Round Trips</div>
+                        <div class="bt-num" style="color:var(--blue)">{{ backtest.n_positions }}</div>
+                        <div class="bt-lbl">Positions</div>
                     </div>
                     <div class="bt-stat">
-                        <div class="bt-num" style="color:var(--amber)">{{ "%.0f"|format(backtest.portfolio.win_rate) }}%</div>
+                        <div class="bt-num" style="color:var(--amber)">
+                            {% if backtest.n_positions > 0 %}{{ "%.0f"|format(backtest.n_winning / backtest.n_positions * 100) }}%{% else %}0%{% endif %}
+                        </div>
                         <div class="bt-lbl">Win Rate</div>
                     </div>
                 </div>
 
-                <!-- Equity curve chart -->
+                <!-- Gain/loss chart -->
                 <div id="backtest-chart" style="min-height: 300px;"></div>
 
-                <!-- Per-ticker growth summary -->
-                {% if backtest.per_ticker %}
+                <!-- Signal Ledger table — always visible -->
                 <p style="font-size:0.72rem; color:var(--muted); margin: 0.75rem 0 0.4rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.04em;">
-                    Growth by Ticker ($10k each)
+                    All Positions &mdash; $10k each
                 </p>
-                <table class="bt-ticker-tbl">
-                    <thead><tr><th>Ticker</th><th>Return</th><th>Trades</th><th>Win Rate</th><th>$10k &rarr;</th></tr></thead>
+                <div style="overflow-x:auto;">
+                <table class="trade-log-tbl">
+                    <thead><tr>
+                        <th>Date</th>
+                        <th>Ticker</th>
+                        <th>Action</th>
+                        <th>Price at Signal</th>
+                        <th>Current / Exit</th>
+                        <th>$ Gain on $10k</th>
+                        <th>% Change</th>
+                        <th>Status</th>
+                    </tr></thead>
                     <tbody>
-                        {% for t in backtest.per_ticker[:15] %}
-                        <tr>
-                            <td style="font-weight:600; color:var(--text);">{{ t.display }}</td>
-                            <td style="font-weight:700; color:{% if t.pct_return >= 0 %}var(--green){% else %}var(--red){% endif %}">{{ "%+.1f"|format(t.pct_return) }}%</td>
-                            <td>{{ t.n_trades }}</td>
-                            <td>{% if t.win_rate is not none %}{{ "%.0f"|format(t.win_rate) }}%{% else %}&mdash;{% endif %}</td>
-                            <td style="font-weight:600;">${{ "{:,.0f}".format(t.final_value) }}</td>
+                        {% for s in backtest.signal_ledger %}
+                        <tr onclick="selectTicker('{{ s.ticker }}')" style="cursor:pointer;">
+                            <td>{{ s.date }}</td>
+                            <td style="font-weight:600;">{{ s.display }}</td>
+                            <td class="trade-{{ s.action|lower }}">{{ s.action }}</td>
+                            <td>${{ "%.2f"|format(s.action_price) }}</td>
+                            <td>${{ "%.2f"|format(s.current_price) }}</td>
+                            <td>
+                                <span style="font-weight:700; color:{% if s.dollar_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                                    ${{ "{:+,.2f}".format(s.dollar_gain) }}
+                                </span>
+                            </td>
+                            <td>
+                                <span style="font-weight:700; color:{% if s.pct_change >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                                    {{ "%+.1f"|format(s.pct_change) }}%
+                                </span>
+                            </td>
+                            <td>
+                                {% if s.status == 'OPEN' %}
+                                    <span class="trade-open">OPEN</span>
+                                {% else %}
+                                    <span style="color:var(--dim);">CLOSED</span>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-                {% endif %}
-
-                <!-- Signal Ledger (collapsible) -->
-                {% if backtest.signal_ledger %}
-                <button class="toggle-more" onclick="toggleTradeLog(this)" style="margin-top:0.75rem;">
-                    [+] show signal ledger ({{ backtest.signal_ledger|length }} positions)
-                </button>
-                <div class="trade-log" id="trade-log">
-                    <p style="font-size:0.72rem; color:var(--muted); margin-bottom:0.4rem; font-family:var(--mono);">
-                        Each row = one signal. Price at Action = close on signal day. Current/Exit = latest price (if open) or sell price (if closed).
-                    </p>
-                    <table class="trade-log-tbl">
-                        <thead><tr>
-                            <th>Signal Date</th>
-                            <th>Ticker</th>
-                            <th>Action</th>
-                            <th>Price at Action</th>
-                            <th>Current / Exit</th>
-                            <th>% Change</th>
-                            <th>Status</th>
-                        </tr></thead>
-                        <tbody>
-                            {% for s in backtest.signal_ledger %}
-                            <tr onclick="selectTicker('{{ s.ticker }}')">
-                                <td>{{ s.date }}</td>
-                                <td style="font-weight:600;">{{ s.ticker }}</td>
-                                <td class="trade-{{ s.action|lower }}">{{ s.action }}</td>
-                                <td>${{ "%.2f"|format(s.action_price) }}</td>
-                                <td>${{ "%.2f"|format(s.current_price) }}</td>
-                                <td>
-                                    <span style="font-weight:700; color:{% if s.pct_change >= 0 %}var(--green){% else %}var(--red){% endif %}">
-                                        {{ "%+.1f"|format(s.pct_change) }}%
-                                    </span>
-                                </td>
-                                <td>
-                                    {% if s.status == 'OPEN' %}
-                                        <span class="trade-open">OPEN</span>
-                                    {% elif s.status == 'CLOSED' %}
-                                        <span style="color:var(--dim);">CLOSED</span>
-                                    {% else %}
-                                        <span style="color:var(--muted);">{{ s.status }}</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
                 </div>
-                {% endif %}
 
                 <p style="margin-top: 0.75rem; font-size: 0.65rem; color: var(--dim); font-style: italic; font-family: var(--mono);">
-                    Simplified simulation for educational purposes only. No slippage, commissions, or market impact modeled.
+                    Simplified simulation for educational purposes only. Each signal = flat $10k position.
+                    No slippage, commissions, or market impact modeled.
                     Past performance does not predict future results. This is NOT financial advice.
                 </p>
                 {% else %}
-                <div class="empty-msg">No signal data available for backtesting yet. Signals will appear after the first anomaly detection run.</div>
+                <div class="empty-msg">No signal data available for performance tracking yet. Signals will appear after the first anomaly detection run.</div>
                 {% endif %}
             </div>
         </div>
@@ -936,6 +1005,64 @@
     </div>
 
     <script>
+        // === CINEMATIC INTRO ===
+        (function() {
+            const INTRO_KEY = 'the_signal_intro_seen';
+            const overlay = document.getElementById('intro-overlay');
+            if (localStorage.getItem(INTRO_KEY)) {
+                overlay.remove();
+                return;
+            }
+            const lines = [
+                "Every day, Wall Street's algorithms scan the market",
+                "looking for the patterns that move money.",
+                "",
+                "They spend millions on the tools.",
+                "They spend billions on the advantage.",
+                "They never intended for you to have access.",
+                "",
+                "THE SIGNAL changes that.",
+                "",
+                "Four independent detection algorithms.",
+                "PhD-level anomaly detection.",
+                "Updated daily. Free. Forever.",
+                "",
+                "This is what they don't want you to see."
+            ];
+            const typed = document.getElementById('intro-typed');
+            const enterBtn = document.getElementById('intro-enter');
+            let lineIdx = 0, charIdx = 0;
+            function typeNext() {
+                if (lineIdx >= lines.length) {
+                    enterBtn.classList.add('visible');
+                    return;
+                }
+                const line = lines[lineIdx];
+                if (line === '') {
+                    typed.innerHTML += '<br>';
+                    lineIdx++; charIdx = 0;
+                    setTimeout(typeNext, 400);
+                    return;
+                }
+                if (charIdx === 0 && lineIdx > 0) typed.innerHTML += '<br>';
+                typed.innerHTML += line[charIdx] || '';
+                charIdx++;
+                if (charIdx >= line.length) {
+                    lineIdx++; charIdx = 0;
+                    setTimeout(typeNext, 600);
+                } else {
+                    setTimeout(typeNext, 35);
+                }
+            }
+            setTimeout(typeNext, 800);
+            window.dismissIntro = function() {
+                localStorage.setItem(INTRO_KEY, '1');
+                overlay.classList.add('fade-out');
+                setTimeout(() => overlay.remove(), 700);
+            };
+        })();
+
+        // === DASHBOARD ===
         const tickerCharts = {{ ticker_charts_json }};
         const methodCharts = {{ method_charts_json }};
         const heatmapData = {{ heatmap_json }};
@@ -951,7 +1078,6 @@
             document.getElementById('attention-heatmap').on('plotly_click', function(data) {
                 if (data.points && data.points[0]) {
                     const yLabel = data.points[0].y;
-                    // Extract ticker from "Name (TICKER)" format
                     const match = yLabel.match(/\(([^)]+)\)$/);
                     if (match) selectTicker(match[1]);
                 }
@@ -995,17 +1121,6 @@
             } else {
                 more.classList.add('open');
                 btn.textContent = '[-] show fewer signals';
-            }
-        }
-
-        function toggleTradeLog(btn) {
-            const log = document.getElementById('trade-log');
-            if (log.classList.contains('open')) {
-                log.classList.remove('open');
-                btn.textContent = '[+] show all {{ backtest.all_trades|length }} trades';
-            } else {
-                log.classList.add('open');
-                btn.textContent = '[-] hide trade log';
             }
         }
 

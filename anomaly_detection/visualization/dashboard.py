@@ -38,8 +38,10 @@ TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates")
 
 # Pinned buttons for the deep-dive section (always visible)
 PINNED_DEEP_DIVE = [
-    "SPY", "GOOGL", "AMZN", "MSFT", "JPM", "UNH",
-    "WMT", "COST", "HD", "DVRUX", "QGRPX", "BNUEX",
+    "SPY", "QQQ", "VOO",
+    "AAPL", "NVDA", "GOOGL", "AMZN", "MSFT", "TSLA", "META",
+    "JPM", "UNH", "WMT", "COST", "HD",
+    "DVRUX", "QGRPX", "BNUEX",
 ]
 
 
