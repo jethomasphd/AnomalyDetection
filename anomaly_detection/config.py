@@ -10,26 +10,26 @@ import os
 
 TICKER_REGISTRY = {
     # =========================================================================
-    # CORE INFRASTRUCTURE — The companies that build, feed, and defend America.
+    # ENGINES OF THE REPUBLIC — The companies that build, feed, and defend America.
     # Selected for their irreplaceable role in physical infrastructure, food
     # supply chains, healthcare delivery, and financial plumbing.
     # See: the-companion-dossier.com/The_Watchtower
     # =========================================================================
-    "CAT":   {"name": "Caterpillar",               "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Industrials"},
-    "DE":    {"name": "Deere & Company",            "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Industrials"},
-    "HON":   {"name": "Honeywell",                  "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Industrials"},
-    "LMT":   {"name": "Lockheed Martin",            "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Defense"},
-    "GE":    {"name": "GE Aerospace",               "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Industrials"},
-    "WMT":   {"name": "Walmart",                    "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
-    "COST":  {"name": "Costco",                     "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
-    "HD":    {"name": "Home Depot",                  "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
-    "JNJ":   {"name": "Johnson & Johnson",          "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Healthcare"},
-    "PFE":   {"name": "Pfizer",                     "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Healthcare"},
-    "ADM":   {"name": "Archer-Daniels-Midland",     "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
-    "BG":    {"name": "Bunge Global",               "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
-    "TSN":   {"name": "Tyson Foods",                "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Consumer Staples"},
-    "SCHW":  {"name": "Charles Schwab",             "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Financials"},
-    "BRK-B": {"name": "Berkshire Hathaway B",       "category": "CORE_INFRASTRUCTURE", "is_fund": False, "sector": "Financials"},
+    "CAT":   {"name": "Caterpillar",               "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Industrials"},
+    "DE":    {"name": "Deere & Company",            "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Industrials"},
+    "HON":   {"name": "Honeywell",                  "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Industrials"},
+    "LMT":   {"name": "Lockheed Martin",            "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Defense"},
+    "GE":    {"name": "GE Aerospace",               "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Industrials"},
+    "WMT":   {"name": "Walmart",                    "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
+    "COST":  {"name": "Costco",                     "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
+    "HD":    {"name": "Home Depot",                  "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
+    "JNJ":   {"name": "Johnson & Johnson",          "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Healthcare"},
+    "PFE":   {"name": "Pfizer",                     "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Healthcare"},
+    "ADM":   {"name": "Archer-Daniels-Midland",     "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
+    "BG":    {"name": "Bunge Global",               "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
+    "TSN":   {"name": "Tyson Foods",                "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Consumer Staples"},
+    "SCHW":  {"name": "Charles Schwab",             "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Financials"},
+    "BRK-B": {"name": "Berkshire Hathaway B",       "category": "ENGINES_OF_THE_REPUBLIC", "is_fund": False, "sector": "Financials"},
 
     # =========================================================================
     # CRITICAL CHOKE POINTS — Gatekeepers of energy, payments, logistics, tech,
@@ -137,7 +137,7 @@ TICKER_REGISTRY = {
 
 # Category display names & ordering
 CATEGORY_LABELS = {
-    "CORE_INFRASTRUCTURE": "Core Infrastructure",
+    "ENGINES_OF_THE_REPUBLIC": "Engines of the Republic",
     "CRITICAL_CHOKE_POINTS": "Critical Choke Points",
     "BIG_TECH": "Big Tech",
     "CONSUMER_LEADERS": "Consumer Leaders",
