@@ -594,24 +594,26 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
 # ---- Backtest: full lookback signal-following performance ----
 
 def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
-    """Simulate signal performance starting with $10k in each monitored stock.
+    """Simulate signal performance — every signal is a $10k trade.
 
     Model:
-      You hold $10k of every stock at the start of the observation window.
-      Signals execute orders against those positions:
-        SELL  — sell (close) the long position, realize gain/loss.
-        BUY   — buy back in (re-open at this price).
-        SHORT — sell the position and go short (close long, open short).
-        LONG  — close any short and go long (re-open long).
-      Each trade records the realized or unrealized P&L on a $10k basis.
-      WATCH and REDUCE are informational — no order executed.
+      We start the observation window holding $10k of every monitored stock.
+      Each signal THE SIGNAL fires becomes a trade:
+        BUY  — open a new $10k long at this price.
+        SELL — open a new $10k short (or close a long) at this price.
+        LONG — open a new $10k long at this price.
+        SHORT— open a new $10k short at this price.
+      If we're already long and get a BUY, we add another $10k (double down).
+      Every trade stands on its own. Mark-to-market at window close.
+      WATCH and REDUCE are logged but not traded.
     """
     UNIT = 10_000
     empty = {
         "signal_ledger": [],
         "total_gain": 0,
         "total_pct": 0,
-        "n_positions": 0,
+        "total_invested": 0,
+        "n_trades": 0,
         "n_winning": 0,
         "n_open": 0,
         "start_date": None,
@@ -623,168 +625,97 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
     today = results["Date"].max()
     start = results["Date"].min()
     start_str = start.strftime("%Y-%m-%d") if hasattr(start, "strftime") else str(start)[:10]
+    today_str = str(today)[:10]
     recent_alerts = [a for a in alerts if a["date"] >= start_str]
 
     if not recent_alerts:
-        empty["start_date"] = str(start)[:10]
-        empty["end_date"] = str(today)[:10]
+        empty["start_date"] = start_str
+        empty["end_date"] = today_str
         return empty
 
-    # First and latest price for each ticker
-    first_prices = {}
+    # Latest price per ticker for mark-to-market
     latest_prices = {}
     for ticker in results["Ticker"].unique():
         grp = results[results["Ticker"] == ticker].sort_values("Date")
         if not grp.empty:
-            first_prices[ticker] = float(grp["Close"].iloc[0])
             latest_prices[ticker] = float(grp["Close"].iloc[-1])
-
-    # Group alerts by ticker, sort chronologically
-    sig_timeline: dict[str, list] = {}
-    for a in recent_alerts:
-        sig_timeline.setdefault(a["ticker"], []).append(a)
-    for t in sig_timeline:
-        sig_timeline[t].sort(key=lambda x: x["date"])
 
     signal_ledger: list[dict] = []
 
-    for ticker, ticker_alerts in sig_timeline.items():
-        entry_price = first_prices.get(ticker, 0)
-        current_price = latest_prices.get(ticker, 0)
-        if entry_price <= 0:
+    for a in recent_alerts:
+        sig = a["signal"]
+        if sig in ("WATCH", "REDUCE"):
+            continue  # informational only
+
+        ticker = a["ticker"]
+        price = a["close"]
+        current = latest_prices.get(ticker, 0)
+        if price <= 0 or current <= 0:
             continue
 
-        # State: direction ("long" or "short") and the price we entered at
-        direction = "long"           # start long — we hold $10k
-        basis = entry_price          # price we entered the current position
+        # Determine direction and P&L
+        if sig in ("BUY", "LONG"):
+            # Long $10k at signal price → mark to current
+            pct = (current - price) / price * 100
+        elif sig in ("SELL", "SHORT"):
+            # Short $10k at signal price → gain if price dropped
+            pct = (price - current) / price * 100
+        else:
+            continue
 
-        for a in ticker_alerts:
-            sig = a["signal"]
-            price = a["close"]
-            if price <= 0:
-                continue
+        # Which detection methods fired
+        methods = _methods_list(a)
 
-            if sig == "SELL":
-                if direction != "long":
-                    continue  # nothing to sell
-                # Close the long — realize gain/loss
-                pct = (price - basis) / basis * 100
-                signal_ledger.append(_ledger_row(
-                    a, ticker, "SELL", basis, price,
-                    pct, UNIT, status="CLOSED",
-                ))
-                direction = "flat"
-                basis = price
+        signal_ledger.append({
+            "date": a["date"],
+            "ticker": ticker,
+            "display": ticker_display(ticker),
+            "action": sig,
+            "action_price": round(price, 2),
+            "current_price": round(current, 2),
+            "pct_change": round(pct, 2),
+            "dollar_gain": round(UNIT * pct / 100, 2),
+            "methods": methods,
+            "confidence": a.get("confidence", ""),
+            "status": "OPEN",
+        })
 
-            elif sig == "BUY":
-                if direction == "long":
-                    continue  # already long
-                if direction == "short":
-                    # Close the short first
-                    pct = (basis - price) / basis * 100
-                    signal_ledger.append(_ledger_row(
-                        a, ticker, "BUY (cover)", basis, price,
-                        pct, UNIT, status="CLOSED",
-                    ))
-                # Open a new long at this price
-                direction = "long"
-                basis = price
-
-            elif sig == "SHORT":
-                if direction == "long":
-                    # Close the long first
-                    pct = (price - basis) / basis * 100
-                    signal_ledger.append(_ledger_row(
-                        a, ticker, "SHORT (sell)", basis, price,
-                        pct, UNIT, status="CLOSED",
-                    ))
-                elif direction == "short":
-                    continue  # already short
-                # Open a short at this price
-                direction = "short"
-                basis = price
-
-            elif sig == "LONG":
-                if direction == "short":
-                    # Close the short
-                    pct = (basis - price) / basis * 100
-                    signal_ledger.append(_ledger_row(
-                        a, ticker, "LONG (cover)", basis, price,
-                        pct, UNIT, status="CLOSED",
-                    ))
-                elif direction == "long":
-                    continue  # already long
-                # Open a long at this price
-                direction = "long"
-                basis = price
-
-            # WATCH, REDUCE — no order
-
-        # Record any open position at current market price
-        if direction == "long" and current_price > 0:
-            pct = (current_price - basis) / basis * 100
-            signal_ledger.append({
-                "date": str(today)[:10],
-                "ticker": ticker,
-                "display": ticker_display(ticker),
-                "action": "HOLD (long)",
-                "action_price": round(basis, 2),
-                "current_price": round(current_price, 2),
-                "pct_change": round(pct, 2),
-                "dollar_gain": round(UNIT * pct / 100, 2),
-                "status": "OPEN",
-            })
-        elif direction == "short" and current_price > 0:
-            pct = (basis - current_price) / basis * 100
-            signal_ledger.append({
-                "date": str(today)[:10],
-                "ticker": ticker,
-                "display": ticker_display(ticker),
-                "action": "HOLD (short)",
-                "action_price": round(basis, 2),
-                "current_price": round(current_price, 2),
-                "pct_change": round(pct, 2),
-                "dollar_gain": round(UNIT * pct / 100, 2),
-                "status": "OPEN",
-            })
-
-    # Sort by date descending
+    # Sort by date descending (most recent first)
     signal_ledger.sort(key=lambda x: x["date"], reverse=True)
 
     # Summary
     total_gain = sum(s["dollar_gain"] for s in signal_ledger)
-    n_positions = len(signal_ledger)
+    n_trades = len(signal_ledger)
     n_winning = sum(1 for s in signal_ledger if s["dollar_gain"] > 0)
-    n_open = sum(1 for s in signal_ledger if s["status"] == "OPEN")
-    total_invested = len(first_prices) * UNIT  # $10k per stock at start
+    total_invested = n_trades * UNIT
     total_pct = (total_gain / total_invested * 100) if total_invested > 0 else 0
 
     return {
         "signal_ledger": signal_ledger,
         "total_gain": round(total_gain, 2),
         "total_pct": round(total_pct, 2),
-        "n_positions": n_positions,
+        "total_invested": total_invested,
+        "n_trades": n_trades,
         "n_winning": n_winning,
-        "n_open": n_open,
-        "start_date": str(start)[:10],
-        "end_date": str(today)[:10],
+        "n_open": n_trades,  # all positions are open until window closes
+        "start_date": start_str,
+        "end_date": today_str,
     }
 
 
-def _ledger_row(alert, ticker, action, entry_price, exit_price, pct, unit,
-                status="CLOSED"):
-    """Build one signal-ledger row."""
-    return {
-        "date": alert["date"],
-        "ticker": ticker,
-        "display": ticker_display(ticker),
-        "action": action,
-        "action_price": round(entry_price, 2),
-        "current_price": round(exit_price, 2),
-        "pct_change": round(pct, 2),
-        "dollar_gain": round(unit * pct / 100, 2),
-        "status": status,
-    }
+def _methods_list(alert: dict) -> str:
+    """Return a compact string of which detection methods flagged this alert."""
+    details = alert.get("details", {})
+    methods = []
+    if details.get("fourier_score", 0) > 0:
+        methods.append("Fourier")
+    if details.get("mp_score", 0) > 0:
+        methods.append("MatrixProfile")
+    if details.get("ensemble_score", 0) > 0:
+        methods.append("Ensemble")
+    if details.get("ewma_score", 0) > 0:
+        methods.append("EWMA")
+    return ", ".join(methods) if methods else f"{alert.get('methods_flagged', '?')} methods"
 
 
 def backtest_equity_chart(backtest: dict) -> str:
@@ -809,9 +740,9 @@ def backtest_equity_chart(backtest: dict) -> str:
             f"{e['ticker']} — {e['action']}<br>"
             f"Date: {e['date']}<br>"
             f"Entry: ${e['action_price']:,.2f}<br>"
-            f"Exit/Current: ${e['current_price']:,.2f}<br>"
-            f"Gain: ${e['dollar_gain']:+,.2f} ({e['pct_change']:+.1f}%)<br>"
-            f"Status: {e['status']}"
+            f"Current: ${e['current_price']:,.2f}<br>"
+            f"P&L: ${e['dollar_gain']:+,.2f} ({e['pct_change']:+.1f}%)<br>"
+            f"Methods: {e.get('methods', '')}"
             for e in entries
         ],
         hoverinfo="text",
@@ -825,8 +756,8 @@ def backtest_equity_chart(backtest: dict) -> str:
     fig.update_layout(
         height=300,
         margin=dict(l=60, r=20, t=35, b=60),
-        yaxis_title="$ P&L per Trade",
-        title=dict(text="Trade Performance — $10k Starting Positions", font_size=13, font_color=TEXT_PRIMARY),
+        yaxis_title="$ P&L per $10k Trade",
+        title=dict(text="Every Trade — $10k Each", font_size=13, font_color=TEXT_PRIMARY),
         showlegend=False,
         xaxis=dict(
             tickmode="array",
