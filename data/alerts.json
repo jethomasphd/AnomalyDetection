@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-09T18:38:23.318024Z",
+  "generated_at": "2026-03-09T18:43:06.550091Z",
   "total_signals": 151,
   "new_signals": 50,
   "signals": [
@@ -612,7 +612,7 @@
       "signal_color": "#42A5F5",
       "confidence": "Developing",
       "methods_flagged": 0,
-      "consensus_score": 0.4769,
+      "consensus_score": 0.4768,
       "description": "Johnson & Johnson (JNJ) is trading 4.0% above its 20-day moving average ($238.91). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-03-09",
       "is_new": true,
@@ -2588,7 +2588,7 @@
       "signal_color": "#42A5F5",
       "confidence": "Developing",
       "methods_flagged": 1,
-      "consensus_score": 0.5129,
+      "consensus_score": 0.5139,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because price pattern is unprecedented, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-03-09",
       "is_new": true,
@@ -2596,8 +2596,8 @@
       "details": {
         "fourier_score": 0.0023,
         "mp_score": 0.9399,
-        "ensemble_score": 0.4222,
-        "ewma_score": 0.6031,
+        "ensemble_score": 0.4256,
+        "ewma_score": 0.6032,
         "trajectory": "normal",
         "deviation_pct": -0.12,
         "ewma_value": 91.25
