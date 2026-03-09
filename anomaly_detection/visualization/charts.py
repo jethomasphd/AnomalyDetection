@@ -594,18 +594,16 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
 # ---- Backtest: full lookback signal-following performance ----
 
 def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
-    """Simulate signal performance — every signal is a $10k trade.
+    """Simulate signal performance — $10k in every ticker at start, signals trade on top.
 
     Model:
-      We start the observation window holding $10k of every monitored stock.
-      Each signal THE SIGNAL fires becomes a trade:
-        BUY  — open a new $10k long at this price.
-        SELL — open a new $10k short (or close a long) at this price.
-        LONG — open a new $10k long at this price.
-        SHORT— open a new $10k short at this price.
-      If we're already long and get a BUY, we add another $10k (double down).
-      Every trade stands on its own. Mark-to-market at window close.
-      WATCH and REDUCE are logged but not traded.
+      Day 1: we buy $10k of every monitored ticker (long).
+      When a signal fires, it's a new $10k trade on top of the baseline:
+        BUY/LONG  — another $10k long at signal price.
+        SELL/SHORT — $10k short at signal price.
+      Already holding from baseline? BUY adds another $10k (double down).
+      Everything is marked to current price at window close.
+      WATCH and REDUCE are informational — not traded.
     """
     UNIT = 10_000
     empty = {
@@ -619,33 +617,53 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
         "start_date": None,
         "end_date": None,
     }
-    if results.empty or not alerts:
+    if results.empty:
         return empty
 
     today = results["Date"].max()
     start = results["Date"].min()
     start_str = start.strftime("%Y-%m-%d") if hasattr(start, "strftime") else str(start)[:10]
     today_str = str(today)[:10]
-    recent_alerts = [a for a in alerts if a["date"] >= start_str]
 
-    if not recent_alerts:
-        empty["start_date"] = start_str
-        empty["end_date"] = today_str
-        return empty
-
-    # Latest price per ticker for mark-to-market
+    # First and latest price per ticker
+    first_prices = {}
     latest_prices = {}
     for ticker in results["Ticker"].unique():
         grp = results[results["Ticker"] == ticker].sort_values("Date")
         if not grp.empty:
+            first_prices[ticker] = float(grp["Close"].iloc[0])
             latest_prices[ticker] = float(grp["Close"].iloc[-1])
 
     signal_ledger: list[dict] = []
 
+    # --- Baseline: $10k long in every ticker from day 1 ---
+    for ticker in sorted(first_prices):
+        entry = first_prices[ticker]
+        current = latest_prices.get(ticker, 0)
+        if entry <= 0 or current <= 0:
+            continue
+        pct = (current - entry) / entry * 100
+        signal_ledger.append({
+            "date": start_str,
+            "ticker": ticker,
+            "display": ticker_display(ticker),
+            "action": "BASELINE",
+            "action_price": round(entry, 2),
+            "current_price": round(current, 2),
+            "pct_change": round(pct, 2),
+            "dollar_gain": round(UNIT * pct / 100, 2),
+            "methods": "—",
+            "confidence": "",
+            "status": "OPEN",
+        })
+
+    # --- Signal trades: each signal = another $10k trade ---
+    recent_alerts = [a for a in alerts if a["date"] >= start_str] if alerts else []
+
     for a in recent_alerts:
         sig = a["signal"]
         if sig in ("WATCH", "REDUCE"):
-            continue  # informational only
+            continue
 
         ticker = a["ticker"]
         price = a["close"]
@@ -653,17 +671,13 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
         if price <= 0 or current <= 0:
             continue
 
-        # Determine direction and P&L
         if sig in ("BUY", "LONG"):
-            # Long $10k at signal price → mark to current
             pct = (current - price) / price * 100
         elif sig in ("SELL", "SHORT"):
-            # Short $10k at signal price → gain if price dropped
             pct = (price - current) / price * 100
         else:
             continue
 
-        # Which detection methods fired
         methods = _methods_list(a)
 
         signal_ledger.append({
@@ -680,8 +694,16 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
             "status": "OPEN",
         })
 
-    # Sort by date descending (most recent first)
-    signal_ledger.sort(key=lambda x: x["date"], reverse=True)
+    # Sort: signals first (by date desc), then baseline at the bottom
+    signal_ledger.sort(
+        key=lambda x: (x["action"] == "BASELINE", x["date"]),
+        reverse=False,
+    )
+    # Reverse non-baseline so newest signal is first
+    baseline = [s for s in signal_ledger if s["action"] == "BASELINE"]
+    signals = [s for s in signal_ledger if s["action"] != "BASELINE"]
+    signals.sort(key=lambda x: x["date"], reverse=True)
+    signal_ledger = signals + baseline
 
     # Summary
     total_gain = sum(s["dollar_gain"] for s in signal_ledger)
@@ -697,7 +719,7 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
         "total_invested": total_invested,
         "n_trades": n_trades,
         "n_winning": n_winning,
-        "n_open": n_trades,  # all positions are open until window closes
+        "n_open": n_trades,
         "start_date": start_str,
         "end_date": today_str,
     }

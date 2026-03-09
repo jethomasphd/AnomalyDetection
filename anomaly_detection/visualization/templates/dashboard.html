@@ -318,6 +318,7 @@
         .trade-long { color: var(--green); }
         .trade-short { color: var(--red); }
         .trade-hold { color: var(--amber); }
+        .trade-baseline { color: var(--blue); }
         .trade-open { color: var(--amber); font-weight: 600; }
 
         /* === LEARN PANEL === */
@@ -575,11 +576,11 @@
         <div class="tip-panel" id="tip-backtest">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Signal Performance</div>
-            Every signal = one $10k trade. <strong>BUY/LONG</strong> = $10k long position.
-            <strong>SELL/SHORT</strong> = $10k short position.
-            If a signal fires on a stock you already hold, another $10k goes in (double down).
-            All positions are marked to current market price.
-            <strong>Methods</strong> shows which detection algorithms triggered the signal (Fourier, MatrixProfile, Ensemble, EWMA).
+            <strong>BASELINE</strong> = $10k long in every ticker from day one of the observation window.
+            When a signal fires, it adds another $10k trade on top:
+            <strong>BUY/LONG</strong> = $10k long. <strong>SELL/SHORT</strong> = $10k short.
+            All positions marked to current price.
+            <strong>Methods</strong> = which detection algorithms triggered the signal (Fourier, MatrixProfile, Ensemble, EWMA).
         </div>
         <div class="tip-panel" id="tip-fourier">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -810,9 +811,10 @@
                 {% if backtest.signal_ledger %}
                 <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.75rem; line-height:1.6;">
                     <strong style="color:var(--green)">"Does this actually work?"</strong>
-                    Every signal THE SIGNAL fires = one $10k trade.
-                    BUY/LONG = $10k long. SELL/SHORT = $10k short. Already holding? Another $10k goes in.
-                    Every trade, every outcome. No cherry-picking.
+                    We start with $10k in every ticker on day one (<span class="trade-baseline">BASELINE</span>).
+                    When THE SIGNAL fires, it's another $10k trade on top:
+                    BUY/LONG = $10k long, SELL/SHORT = $10k short.
+                    Every position, every outcome. No cherry-picking.
                 </p>
 
                 <!-- Bottom-line banner -->
