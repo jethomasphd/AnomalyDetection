@@ -575,11 +575,11 @@
         <div class="tip-panel" id="tip-backtest">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Signal Performance</div>
-            <strong>Model:</strong> $10k in every stock at the start of the observation window.
-            Signals execute orders against those positions:
-            <strong>SELL</strong> closes a long. <strong>BUY</strong> re-opens it. <strong>SHORT</strong> sells and flips short. <strong>LONG</strong> covers a short and goes long.
-            <strong>CLOSED</strong> = realized P&amp;L. <strong>OPEN</strong> = still held, marked to current price.
-            Total return is measured against the starting portfolio ($10k &times; number of stocks).
+            Every signal = one $10k trade. <strong>BUY/LONG</strong> = $10k long position.
+            <strong>SELL/SHORT</strong> = $10k short position.
+            If a signal fires on a stock you already hold, another $10k goes in (double down).
+            All positions are marked to current market price.
+            <strong>Methods</strong> shows which detection algorithms triggered the signal (Fourier, MatrixProfile, Ensemble, EWMA).
         </div>
         <div class="tip-panel" id="tip-fourier">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -810,21 +810,21 @@
                 {% if backtest.signal_ledger %}
                 <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.75rem; line-height:1.6;">
                     <strong style="color:var(--green)">"Does this actually work?"</strong>
-                    We start with $10k in every stock at the beginning of the observation window.
-                    When THE SIGNAL fires, we execute: SELL closes the position, BUY opens it back up, SHORT flips short, LONG flips long.
-                    Every trade below is real math on real prices. No cherry-picking.
+                    Every signal THE SIGNAL fires = one $10k trade.
+                    BUY/LONG = $10k long. SELL/SHORT = $10k short. Already holding? Another $10k goes in.
+                    Every trade, every outcome. No cherry-picking.
                 </p>
 
                 <!-- Bottom-line banner -->
                 <div class="bottom-line-banner {% if backtest.total_gain < 0 %}loss{% endif %}">
                     <div class="bl-headline">
                         Following THE SIGNAL over {{ backtest.start_date }} &mdash; {{ backtest.end_date }}:
-                        {{ "%+.1f"|format(backtest.total_pct) }}% return &mdash; ${{ "{:+,.2f}".format(backtest.total_gain) }} across {{ backtest.n_positions }} positions
+                        {{ "%+.1f"|format(backtest.total_pct) }}% return &mdash; ${{ "{:+,.2f}".format(backtest.total_gain) }} across {{ backtest.n_trades }} trades
                     </div>
                     <div class="bl-sub">
-                        {{ backtest.n_positions }} trades &bull;
+                        {{ backtest.n_trades }} trades &times; $10k each &bull;
                         {{ backtest.n_winning }} winning &bull;
-                        {{ backtest.n_open }} still open
+                        ${{ "{:,}".format(backtest.total_invested) }} deployed
                     </div>
                 </div>
 
@@ -843,12 +843,12 @@
                         <div class="bt-lbl">Total $ Gain</div>
                     </div>
                     <div class="bt-stat">
-                        <div class="bt-num" style="color:var(--blue)">{{ backtest.n_positions }}</div>
-                        <div class="bt-lbl">Positions</div>
+                        <div class="bt-num" style="color:var(--blue)">{{ backtest.n_trades }}</div>
+                        <div class="bt-lbl">Trades</div>
                     </div>
                     <div class="bt-stat">
                         <div class="bt-num" style="color:var(--amber)">
-                            {% if backtest.n_positions > 0 %}{{ "%.0f"|format(backtest.n_winning / backtest.n_positions * 100) }}%{% else %}0%{% endif %}
+                            {% if backtest.n_trades > 0 %}{{ "%.0f"|format(backtest.n_winning / backtest.n_trades * 100) }}%{% else %}0%{% endif %}
                         </div>
                         <div class="bt-lbl">Win Rate</div>
                     </div>
@@ -867,18 +867,18 @@
                         <th>Date</th>
                         <th>Ticker</th>
                         <th>Action</th>
-                        <th>Entry Price</th>
-                        <th>Exit / Current</th>
-                        <th>$ P&amp;L on $10k</th>
-                        <th>% Change</th>
-                        <th>Status</th>
+                        <th>Signal Price</th>
+                        <th>Current</th>
+                        <th>$ P&amp;L</th>
+                        <th>%</th>
+                        <th>Methods</th>
                     </tr></thead>
                     <tbody>
                         {% for s in backtest.signal_ledger %}
                         <tr onclick="selectTicker('{{ s.ticker }}')" style="cursor:pointer;">
                             <td>{{ s.date }}</td>
                             <td style="font-weight:600;">{{ s.display }}</td>
-                            <td class="trade-{{ s.action.split()[0]|lower }}">{{ s.action }}</td>
+                            <td class="trade-{{ s.action|lower }}">{{ s.action }}</td>
                             <td>${{ "%.2f"|format(s.action_price) }}</td>
                             <td>${{ "%.2f"|format(s.current_price) }}</td>
                             <td>
@@ -891,13 +891,7 @@
                                     {{ "%+.1f"|format(s.pct_change) }}%
                                 </span>
                             </td>
-                            <td>
-                                {% if s.status == 'OPEN' %}
-                                    <span class="trade-open">OPEN</span>
-                                {% else %}
-                                    <span style="color:var(--dim);">CLOSED</span>
-                                {% endif %}
-                            </td>
+                            <td style="font-size:0.7rem; color:var(--muted);">{{ s.methods }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -905,8 +899,8 @@
                 </div>
 
                 <p style="margin-top: 0.75rem; font-size: 0.65rem; color: var(--dim); font-style: italic; font-family: var(--mono);">
-                    Simplified simulation for educational purposes only. Each signal = flat $10k position.
-                    No slippage, commissions, or market impact modeled.
+                    Simplified simulation for educational purposes only. Each signal = $10k trade.
+                    No slippage, commissions, or market impact modeled. Not financial advice.
                     Past performance does not predict future results. This is NOT financial advice.
                 </p>
                 {% else %}
