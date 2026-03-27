@@ -435,6 +435,130 @@
         .tech .hl { color: var(--green-dark); font-weight: 600; }
 
         /* ================================================================
+           DOMAIN HEALTH CLASSIFICATION
+           ================================================================ */
+        .class-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.85rem;
+        }
+        @media (max-width: 900px) {
+            .class-grid { grid-template-columns: 1fr; }
+        }
+        .class-tier {
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .class-tier-head {
+            padding: 0.7rem 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .class-tier-icon {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .class-tier-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+        }
+        .class-tier-count {
+            font-size: 0.62rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            opacity: 0.7;
+        }
+        .class-tier-desc {
+            padding: 0 0.85rem 0.6rem;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            line-height: 1.55;
+        }
+
+        /* Chronic — deep red */
+        .chronic-head {
+            background: linear-gradient(135deg, #FEE2E2, #FECACA);
+            border-bottom: 2px solid var(--red);
+        }
+        .chronic-head .class-tier-icon { background: var(--red); color: white; }
+        .chronic-head .class-tier-title { color: var(--dark-red); }
+        .chronic-head .class-tier-count { color: var(--red); }
+        .chronic-rate { color: var(--red) !important; }
+
+        /* Acute — amber/orange */
+        .acute-head {
+            background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+            border-bottom: 2px solid var(--orange);
+        }
+        .acute-head .class-tier-icon { background: var(--orange); color: white; }
+        .acute-head .class-tier-title { color: #92400E; }
+        .acute-head .class-tier-count { color: var(--orange); }
+        .acute-rate { color: var(--orange) !important; }
+
+        /* Prophylactic — teal/blue */
+        .prophylactic-head {
+            background: linear-gradient(135deg, #E0F2FE, #BAE6FD);
+            border-bottom: 2px solid #0284C7;
+        }
+        .prophylactic-head .class-tier-icon { background: #0284C7; color: white; }
+        .prophylactic-head .class-tier-title { color: #0C4A6E; }
+        .prophylactic-head .class-tier-count { color: #0284C7; }
+        .prophylactic-rate { color: #0284C7 !important; }
+
+        .class-tier-body {
+            flex: 1;
+            padding: 0;
+        }
+        .class-domain-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .class-domain-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.4rem 0.85rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.73rem;
+            cursor: pointer;
+            transition: background 0.08s;
+        }
+        .class-domain-item:hover { background: var(--ice-blue); }
+        .class-domain-name {
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            margin-right: 0.5rem;
+        }
+        .class-domain-rate {
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            font-size: 0.73rem;
+            flex-shrink: 0;
+        }
+        .class-domain-list-compact {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .class-empty {
+            padding: 1rem 0.85rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        /* ================================================================
            FOOTER
            ================================================================ */
         .footer {
@@ -578,6 +702,113 @@
                         </li>
                         {% endfor %}
                     </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- DOMAIN HEALTH CLASSIFICATION -->
+        <div class="card">
+            <div class="card-h">
+                <svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                Domain Health Classification
+                <span class="badge" style="background:#EDE9FE;color:#5B21B6;margin-left:0.5rem;">Updated Monthly</span>
+            </div>
+            <div class="card-b">
+                <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:0.85rem;line-height:1.65;">
+                    Domains above <strong>0.3% spam rate</strong> with <strong>HIGH</strong> or <strong>MEDIUM</strong> reputation are classified into three tiers based on severity and duration.
+                    Different states of spam "disease" require different triage and treatment strategies.
+                    Classifications are reviewed and updated at the end of each month.
+                </p>
+                <div class="class-grid">
+                    <!-- CHRONIC -->
+                    <div class="class-tier class-chronic">
+                        <div class="class-tier-head chronic-head">
+                            <div class="class-tier-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <div>
+                                <div class="class-tier-title">Chronic</div>
+                                <div class="class-tier-count">{{ classifications.chronic|length }} domain{{ 's' if classifications.chronic|length != 1 }}</div>
+                            </div>
+                        </div>
+                        <div class="class-tier-desc">
+                            Remained among the <strong>12 worst spam rate offenders</strong> for <strong>two consecutive months</strong>. Persistent issue requiring sustained remediation.
+                        </div>
+                        <div class="class-tier-body">
+                            {% if classifications.chronic %}
+                            <ul class="class-domain-list">
+                                {% for d in classifications.chronic %}
+                                <li class="class-domain-item" onclick="showDomainByName('{{ d.domain }}')">
+                                    <span class="class-domain-name">{{ d.display }}</span>
+                                    <span class="class-domain-rate chronic-rate">{{ d.spam_rate_pct }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <div class="class-empty">No domains in this tier</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- ACUTE -->
+                    <div class="class-tier class-acute">
+                        <div class="class-tier-head acute-head">
+                            <div class="class-tier-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            </div>
+                            <div>
+                                <div class="class-tier-title">Acute</div>
+                                <div class="class-tier-count">{{ classifications.acute|length }} domain{{ 's' if classifications.acute|length != 1 }}</div>
+                            </div>
+                        </div>
+                        <div class="class-tier-desc">
+                            <strong>Newly emerged</strong> into the 12 worst spam rate offenders. Rapid intervention may prevent escalation to Chronic.
+                        </div>
+                        <div class="class-tier-body">
+                            {% if classifications.acute %}
+                            <ul class="class-domain-list">
+                                {% for d in classifications.acute %}
+                                <li class="class-domain-item" onclick="showDomainByName('{{ d.domain }}')">
+                                    <span class="class-domain-name">{{ d.display }}</span>
+                                    <span class="class-domain-rate acute-rate">{{ d.spam_rate_pct }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <div class="class-empty">No domains in this tier</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- PROPHYLACTIC -->
+                    <div class="class-tier class-prophylactic">
+                        <div class="class-tier-head prophylactic-head">
+                            <div class="class-tier-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                            <div>
+                                <div class="class-tier-title">Prophylactic</div>
+                                <div class="class-tier-count">{{ classifications.prophylactic|length }} domain{{ 's' if classifications.prophylactic|length != 1 }}</div>
+                            </div>
+                        </div>
+                        <div class="class-tier-desc">
+                            Above <strong>0.3% spam rate</strong> but not among the 12 worst offenders. Preventive monitoring to catch early warning signs.
+                        </div>
+                        <div class="class-tier-body">
+                            {% if classifications.prophylactic %}
+                            <ul class="class-domain-list class-domain-list-compact">
+                                {% for d in classifications.prophylactic %}
+                                <li class="class-domain-item" onclick="showDomainByName('{{ d.domain }}')">
+                                    <span class="class-domain-name">{{ d.display }}</span>
+                                    <span class="class-domain-rate prophylactic-rate">{{ d.spam_rate_pct }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <div class="class-empty">No domains in this tier</div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

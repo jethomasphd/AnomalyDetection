@@ -8,7 +8,7 @@ from datetime import datetime
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
-from ..config import DEFAULT_DATA_CSV_PATH, DOCS_DIR, GOOGLE_THRESHOLDS
+from ..config import DEFAULT_DATA_CSV_PATH, DEFAULT_DOMAIN_CLASS_PATH, DOCS_DIR, GOOGLE_THRESHOLDS
 from ..data_load import load_country_distribution
 from .charts import (
     country_pie_chart,
@@ -26,6 +26,38 @@ TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates")
 
 # Google's compliance threshold (0.3%)
 COMPLIANCE_THRESHOLD = GOOGLE_THRESHOLDS["monitor"]
+
+
+def _load_domain_classifications(
+    class_path: str,
+    latest_spam: dict[str, float],
+) -> dict:
+    """Load Domain_Class.csv and build classification data for the dashboard."""
+    try:
+        df = pd.read_csv(class_path)
+    except FileNotFoundError:
+        logger.warning("Domain_Class.csv not found at %s", class_path)
+        return {"chronic": [], "acute": [], "prophylactic": []}
+
+    result = {"chronic": [], "acute": [], "prophylactic": []}
+    for _, row in df.iterrows():
+        domain = row["Domain"]
+        classification = row["Classification"].strip().lower()
+        spam_rate = latest_spam.get(domain, None)
+        entry = {
+            "domain": domain,
+            "display": domain if len(domain) <= 30 else domain[:27] + "...",
+            "spam_rate_pct": f"{spam_rate * 100:.2f}%" if spam_rate is not None else "N/A",
+            "spam_rate": spam_rate if spam_rate is not None else 0,
+        }
+        if classification in result:
+            result[classification].append(entry)
+
+    # Sort each tier by spam rate descending
+    for tier in result:
+        result[tier].sort(key=lambda x: x["spam_rate"], reverse=True)
+
+    return result
 
 
 def generate_dashboard(
@@ -126,6 +158,11 @@ def generate_dashboard(
         "#009B3A",
     )
 
+    # --- Domain Health Classifications (Chronic / Acute / Prophylactic) ---
+    domain_classifications = _load_domain_classifications(
+        DEFAULT_DOMAIN_CLASS_PATH, latest_spam
+    )
+
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR), autoescape=False)
     template = env.get_template("dashboard.html")
 
@@ -159,6 +196,8 @@ def generate_dashboard(
         performers=performers,
         offender_pie_json=offender_pie_json,
         performer_pie_json=performer_pie_json,
+        # Domain health classifications
+        classifications=domain_classifications,
     )
 
     with open(output_path, "w") as f:
