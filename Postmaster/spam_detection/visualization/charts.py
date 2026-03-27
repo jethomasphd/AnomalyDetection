@@ -454,18 +454,27 @@ def country_pie_chart(country_data: dict[str, int], title: str, border_color: st
         labels=countries,
         values=values,
         marker=dict(colors=colors, line=dict(color="white", width=2)),
-        textinfo="label+percent",
-        textposition="auto",
-        textfont=dict(size=11),
+        textinfo="percent",
+        textposition="inside",
+        textfont=dict(size=11, color="white"),
         hovertemplate="<b>%{label}</b><br>Sent: %{value:,.0f}<br>%{percent}<extra></extra>",
         sort=False,
+        hole=0.03,
     )])
 
     fig.update_layout(
-        title=dict(text=title, font_size=13, x=0.5, xanchor="center"),
+        title=dict(text=title, font_size=12, x=0.5, xanchor="center"),
         height=350,
-        margin=dict(l=20, r=20, t=50, b=20),
-        showlegend=False,
+        margin=dict(l=20, r=20, t=60, b=20),
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.05,
+            xanchor="center",
+            x=0.5,
+            font_size=11,
+        ),
         **LAYOUT_DEFAULTS,
     )
     return _fig_to_json(fig)
