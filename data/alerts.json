@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-20T18:07:00.043498Z",
+  "generated_at": "2026-04-20T18:51:12.824155Z",
   "total_signals": 50,
-  "new_signals": 50,
+  "new_signals": 0,
   "signals": [
     {
       "ticker": "STM",
@@ -17,7 +17,7 @@
       "consensus_score": 0.5548,
       "description": "STMicroelectronics (STM) is trading 17.7% above its 20-day moving average ($37.57). The stock appears overbought at 2 standard deviations from normal. A pullback toward $37.57 is likely. Consider taking profits or tightening stops. Fair value near $37.57.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -44,7 +44,7 @@
       "consensus_score": 0.5078,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -71,7 +71,7 @@
       "consensus_score": 0.4934,
       "description": "Target (TGT) is trading 5.8% above its 20-day moving average ($120.82). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -98,7 +98,7 @@
       "consensus_score": 0.4944,
       "description": "McDonald's (MCD) is trading 1.9% below its 20-day moving average ($311.55). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -125,7 +125,7 @@
       "consensus_score": 0.5161,
       "description": "Home Depot (HD) is trading 4.5% below its 20-day moving average ($333.73). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -152,7 +152,7 @@
       "consensus_score": 0.5011,
       "description": "Lowe's (LOW) is trading 2.9% below its 20-day moving average ($238.48). Detection methods flagged this because price pattern is unprecedented, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -179,7 +179,7 @@
       "consensus_score": 0.4924,
       "description": "Nike (NKE) is trading 16.2% below its 20-day moving average ($52.73). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $52.73 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -206,7 +206,7 @@
       "consensus_score": 0.5044,
       "description": "NVIDIA (NVDA) is trading 6.8% below its 20-day moving average ($177.27). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -233,7 +233,7 @@
       "consensus_score": 0.5585,
       "description": "Visa (V) is trading 4.0% below its 20-day moving average ($307.75). Detection methods flagged this because price pattern is unprecedented and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -260,7 +260,7 @@
       "consensus_score": 0.5168,
       "description": "Meta Platforms (META) is trading 13.6% below its 20-day moving average ($608.37). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $608.37 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -287,7 +287,7 @@
       "consensus_score": 0.4957,
       "description": "Mastercard (MA) is trading 4.0% below its 20-day moving average ($503.34). Detection methods flagged this because trading rhythm has shifted and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -314,7 +314,7 @@
       "consensus_score": 0.5241,
       "description": "Williams Companies (WMB) is trading 1.9% above its 20-day moving average ($73.07). Detection methods flagged this because price pattern is unprecedented, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -341,7 +341,7 @@
       "consensus_score": 0.4923,
       "description": "Kinder Morgan (KMI) is trading 2.6% above its 20-day moving average ($33.06). Detection methods flagged this because trading rhythm has shifted, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -368,7 +368,7 @@
       "consensus_score": 0.5519,
       "description": "Berkshire Hathaway B (BRK-B) is trading 3.1% below its 20-day moving average ($495.62). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -395,7 +395,7 @@
       "consensus_score": 0.5224,
       "description": "Wells Fargo (WFC) is trading 7.0% below its 20-day moving average ($87.63). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -422,7 +422,7 @@
       "consensus_score": 0.5139,
       "description": "Netflix (NFLX) is trading 16.8% above its 20-day moving average ($82.38). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -449,7 +449,7 @@
       "consensus_score": 0.5079,
       "description": "Merck (MRK) is trading 3.8% above its 20-day moving average ($118.41). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -476,7 +476,7 @@
       "consensus_score": 0.5014,
       "description": "Bank of America (BAC) is trading 5.3% below its 20-day moving average ($52.34). Detection methods flagged this because trading rhythm has shifted and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -503,7 +503,7 @@
       "consensus_score": 0.4877,
       "description": "Costco (COST) is trading 2.5% above its 20-day moving average ($986.18). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -530,7 +530,7 @@
       "consensus_score": 0.514,
       "description": "Salesforce (CRM) is trading 5.9% below its 20-day moving average ($196.50). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -557,7 +557,7 @@
       "consensus_score": 0.5046,
       "description": "NextEra Energy (NEE) is trading 5.8% above its 20-day moving average ($89.86). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -584,7 +584,7 @@
       "consensus_score": 0.562,
       "description": "Deere & Company (DE) is trading 13.8% above its 20-day moving average ($580.22). The stock appears overbought at 2 standard deviations from normal. A pullback toward $580.22 is likely. Consider taking profits or tightening stops. Fair value near $580.22.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -611,7 +611,7 @@
       "consensus_score": 0.5628,
       "description": "Walmart (WMT) is trading 7.2% above its 20-day moving average ($124.69). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -638,7 +638,7 @@
       "consensus_score": 0.5376,
       "description": "Dominion Energy (D) is trading 6.8% above its 20-day moving average ($61.61). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -665,7 +665,7 @@
       "consensus_score": 0.4905,
       "description": "Invesco QQQ (Nasdaq 100) (QQQ) is trading 2.3% below its 20-day moving average ($614.27). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -692,7 +692,7 @@
       "consensus_score": 0.5539,
       "description": "Caterpillar (CAT) is trading 13.5% above its 20-day moving average ($682.96). The stock appears overbought at 2 standard deviations from normal. A pullback toward $682.96 is likely. Consider taking profits or tightening stops. Fair value near $682.96.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -719,7 +719,7 @@
       "consensus_score": 0.5342,
       "description": "Norfolk Southern (NSC) is trading 6.4% above its 20-day moving average ($298.28). Detection methods flagged this because trading rhythm has shifted and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -746,7 +746,7 @@
       "consensus_score": 0.5421,
       "description": "Microsoft (MSFT) is trading 9.2% below its 20-day moving average ($440.54). The stock appears oversold at 2 standard deviations from normal. Mean-reversion toward $440.54 is likely. Consider entering a long position targeting the $440.54 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -773,7 +773,7 @@
       "consensus_score": 0.5412,
       "description": "Bristol-Myers Squibb (BMY) is trading 10.3% above its 20-day moving average ($55.61). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -800,7 +800,7 @@
       "consensus_score": 0.7016,
       "description": "Microsoft (MSFT) is trading 11.7% below its 20-day moving average ($444.78). The stock appears oversold at 3 standard deviations from normal. Mean-reversion toward $444.78 is likely. Consider entering a long position targeting the $444.78 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -827,7 +827,7 @@
       "consensus_score": 0.6645,
       "description": "ARK Innovation ETF (ARKK) is trading 13.6% below its 20-day moving average ($76.76). The stock appears oversold at 2 standard deviations from normal. Mean-reversion toward $76.76 is likely. Consider entering a long position targeting the $76.76 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -854,7 +854,7 @@
       "consensus_score": 0.5393,
       "description": "UnitedHealth Group (UNH) is trading 15.8% below its 20-day moving average ($333.34). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -881,7 +881,7 @@
       "consensus_score": 0.522,
       "description": "Bunge Global (BG) is trading 12.2% above its 20-day moving average ($96.41). The stock appears overbought at 2 standard deviations from normal. A pullback toward $96.41 is likely. Consider taking profits or tightening stops. Fair value near $96.41.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -908,7 +908,7 @@
       "consensus_score": 0.5071,
       "description": "Chevron (CVX) is trading 7.6% above its 20-day moving average ($150.75). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -935,7 +935,7 @@
       "consensus_score": 0.4979,
       "description": "Charles Schwab (SCHW) is trading 4.8% above its 20-day moving average ($98.66). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -962,7 +962,7 @@
       "consensus_score": 0.4895,
       "description": "JPMorgan Chase (JPM) is trading 4.2% above its 20-day moving average ($317.67). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -989,7 +989,7 @@
       "consensus_score": 0.4969,
       "description": "SPDR Dow Jones ETF (DIA) is trading 2.6% above its 20-day moving average ($472.45). Detection methods flagged this because trading rhythm has shifted, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1016,7 +1016,7 @@
       "consensus_score": 0.4913,
       "description": "Alphabet (GOOGL) is trading 4.3% above its 20-day moving average ($306.68). Detection methods flagged this because price pattern is unprecedented, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1043,7 +1043,7 @@
       "consensus_score": 0.6005,
       "description": "AMD (AMD) is trading 28.0% above its 20-day moving average ($181.97). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1070,7 +1070,7 @@
       "consensus_score": 0.5955,
       "description": "iShares Russell 2000 (IWM) is trading 4.3% above its 20-day moving average ($223.36). Detection methods flagged this because price pattern is unprecedented and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1097,7 +1097,7 @@
       "consensus_score": 0.4919,
       "description": "Starbucks (SBUX) is trading 6.5% below its 20-day moving average ($83.28). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1124,7 +1124,7 @@
       "consensus_score": 0.6412,
       "description": "Vanguard Total Stock Market (VTI) is trading 9.7% below its 20-day moving average ($266.69). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $266.69 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1151,7 +1151,7 @@
       "consensus_score": 0.6378,
       "description": "Vanguard S&P 500 (VOO) is trading 9.4% below its 20-day moving average ($498.27). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $498.27 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1178,7 +1178,7 @@
       "consensus_score": 0.6269,
       "description": "SPDR S&P 500 ETF (SPY) is trading 9.5% below its 20-day moving average ($542.19). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $542.19 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1205,7 +1205,7 @@
       "consensus_score": 0.5654,
       "description": "Financial Select SPDR (XLF) is trading 8.7% below its 20-day moving average ($47.35). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $47.35 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1232,7 +1232,7 @@
       "consensus_score": 0.5279,
       "description": "Goldman Sachs (GS) is trading 13.7% below its 20-day moving average ($524.72). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $524.72 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1259,7 +1259,7 @@
       "consensus_score": 0.6873,
       "description": "Amazon (AMZN) is trading 12.3% below its 20-day moving average ($194.94). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $194.94 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1286,7 +1286,7 @@
       "consensus_score": 0.6466,
       "description": "Salesforce (CRM) is trading 12.5% below its 20-day moving average ($272.79). The stock appears oversold at 3 standard deviations from normal. Mean-reversion toward $272.79 is likely. Consider entering a long position targeting the $272.79 moving average.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1313,7 +1313,7 @@
       "consensus_score": 0.5544,
       "description": "Vanguard Total Stock Market (VTI) is trading 5.1% below its 20-day moving average ($285.93). Detection methods flagged this because trading rhythm has shifted and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
@@ -1340,7 +1340,7 @@
       "consensus_score": 0.6125,
       "description": "Berkshire Hathaway B (BRK-B) is trading 4.7% above its 20-day moving average ($476.19). Detection methods flagged this because trading rhythm has shifted and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-20",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-20",
       "detected_at": "2026-04-20",
       "details": {
