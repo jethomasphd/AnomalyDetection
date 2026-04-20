@@ -217,47 +217,57 @@ def load_previous_alerts(path: str) -> list[dict]:
         return []
 
 
-def merge_alerts(new_alerts: list[dict], previous_alerts: list[dict], max_alerts: int = 200) -> list[dict]:
-    """Merge new alerts with previous alerts for incremental processing.
+def append_new_alerts(new_alerts: list[dict], previous_alerts: list[dict], max_alerts: int = 200) -> list[dict]:
+    """Combine edge-detected new alerts with the frozen history.
 
-    - New alerts take precedence for the same (ticker, date) pair.
-    - Previous alerts that don't overlap are preserved with is_new=False.
-    - Final list is sorted by date descending (newest first).
-    - Capped at max_alerts to prevent unbounded growth.
+    Edge-only detection guarantees new_alerts and previous_alerts have
+    disjoint (ticker, date) keys by construction — there's no conflict to
+    resolve. Previous alerts are marked is_new=False; the concatenated list
+    is sorted newest-first and capped at max_alerts.
+
+    If a conflicting (ticker, date) is somehow present (legacy data), the
+    previous alert wins: the log is frozen, so the original verdict is
+    preserved rather than overwritten.
     """
     run_date = datetime.utcnow().strftime("%Y-%m-%d")
+    previous_keys = {(a.get("ticker"), a.get("date")) for a in previous_alerts}
 
-    # Index new alerts by (ticker, date) for fast lookup
-    new_keys = {(a["ticker"], a["date"]) for a in new_alerts}
+    # Drop any new alert that collides with a frozen historical record
+    kept_new = []
+    dropped = 0
+    for a in new_alerts:
+        if (a["ticker"], a["date"]) in previous_keys:
+            dropped += 1
+            continue
+        kept_new.append(a)
+    if dropped:
+        logger.warning(
+            "Dropped %d new alerts that collided with frozen history (edge-only "
+            "invariant violated — historical verdict preserved)", dropped,
+        )
 
-    # Mark all previous alerts as not-new, preserve first_detected
-    merged = list(new_alerts)  # new alerts already have is_new=True
+    combined = list(kept_new)
     for prev in previous_alerts:
-        key = (prev.get("ticker"), prev.get("date"))
-        if key not in new_keys:
-            prev["is_new"] = False
-            prev["run_date"] = prev.get("run_date", run_date)
-            prev["first_detected"] = prev.get("first_detected", prev.get("date", run_date))
-            prev["detected_at"] = prev.get("detected_at") or prev["first_detected"]
-            merged.append(prev)
-        else:
-            # New alert takes precedence — but preserve first_detected from previous
-            for new_a in new_alerts:
-                if (new_a["ticker"], new_a["date"]) == key:
-                    new_a["first_detected"] = prev.get("first_detected", prev.get("date", run_date))
-                    new_a["detected_at"] = new_a["first_detected"]
-                    break
+        prev["is_new"] = False
+        prev["run_date"] = prev.get("run_date", run_date)
+        prev["first_detected"] = prev.get("first_detected", prev.get("date", run_date))
+        prev["detected_at"] = prev.get("detected_at") or prev["first_detected"]
+        combined.append(prev)
 
-    # Sort: newest date first, then by consensus score descending
-    merged.sort(key=lambda a: (a["date"], a.get("consensus_score", 0)), reverse=True)
+    combined.sort(key=lambda a: (a["date"], a.get("consensus_score", 0)), reverse=True)
+    if len(combined) > max_alerts:
+        combined = combined[:max_alerts]
 
-    if len(merged) > max_alerts:
-        merged = merged[:max_alerts]
+    n_new = sum(1 for a in combined if a.get("is_new"))
+    logger.info("Alerts: %d new-this-run + %d frozen-history = %d total",
+                n_new, len(combined) - n_new, len(combined))
+    return combined
 
-    n_new = sum(1 for a in merged if a.get("is_new"))
-    n_prev = len(merged) - n_new
-    logger.info("Merged alerts: %d new + %d historical = %d total", n_new, n_prev, len(merged))
-    return merged
+
+# Back-compat alias (soft-deprecated): the name is kept so external callers
+# don't break, but the new semantics are append-only. Remove after downstream
+# updates land.
+merge_alerts = append_new_alerts
 
 
 def alerts_to_json(alerts: list[dict], path: str) -> None:

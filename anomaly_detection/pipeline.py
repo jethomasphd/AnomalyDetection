@@ -13,7 +13,13 @@ from datetime import datetime
 
 import pandas as pd
 
-from .alerts import alerts_to_json, alerts_to_markdown, generate_alerts, load_previous_alerts, merge_alerts
+from .alerts import (
+    alerts_to_json,
+    alerts_to_markdown,
+    append_new_alerts,
+    generate_alerts,
+    load_previous_alerts,
+)
 from .config import DATA_DIR, DEFAULT_LOOKBACK_DAYS, DEFAULT_SENSITIVITY, DEFAULT_TICKERS, DOCS_DIR, MODEL_VERSION
 from .data_fetch import compute_features, fetch_multiple
 from .detection.engine import run_all
@@ -139,7 +145,7 @@ def run(
     alerts_path = os.path.join(DATA_DIR, "alerts.json")
     previous_alerts = load_previous_alerts(alerts_path)
     new_alerts = generate_alerts(new_bars) if not new_bars.empty else []
-    alerts = merge_alerts(new_alerts, previous_alerts)
+    alerts = append_new_alerts(new_alerts, previous_alerts)
     alerts_to_json(alerts, alerts_path)
 
     # Persist signals to durable store (append-only)
