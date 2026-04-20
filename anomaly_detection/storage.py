@@ -1,11 +1,14 @@
 """Durable append-only storage for anomalies and signals.
 
-Uses SQLite for simplicity and portability. All writes are idempotent
-(upsert on unique keys) so re-running the same day produces identical results.
+Uses SQLite for simplicity and portability. Writes are append-only
+(INSERT OR IGNORE on unique keys): once a bar has been scored and written,
+its verdict is frozen so the backtest is reproducible and the anomaly log is
+an immutable audit trail.
 
 Schema:
-  anomalies: (date, ticker, anomaly_type, model_version) is unique
-  signals:   (date, ticker, model_version) is unique
+  anomalies:       (date, ticker, anomaly_type, model_version) is unique
+  signals:         (date, ticker, model_version) is unique
+  bar_watermarks:  ticker -> last_date scored (edge-only detection cursor)
 """
 
 import json
@@ -64,6 +67,12 @@ def _init_schema(conn: sqlite3.Connection) -> None:
             ON signals(ticker, date);
         CREATE INDEX IF NOT EXISTS idx_signals_date
             ON signals(date DESC);
+
+        CREATE TABLE IF NOT EXISTS bar_watermarks (
+            ticker     TEXT PRIMARY KEY,
+            last_date  TEXT NOT NULL,
+            updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
     """)
     conn.commit()
 
@@ -73,7 +82,8 @@ def _init_schema(conn: sqlite3.Connection) -> None:
 # ---------------------------------------------------------------------------
 
 def upsert_anomalies(rows: list[dict], db_path: str | None = None) -> int:
-    """Insert or replace anomaly rows. Returns count of rows upserted.
+    """Append anomaly rows (INSERT OR IGNORE — never overwrites an existing
+    (date, ticker, anomaly_type, model_version)). Returns rows newly inserted.
 
     Each row must have: date, ticker, anomaly_type, severity_score.
     Optional: direction, features_snapshot, model_version, threshold_params.
@@ -82,7 +92,7 @@ def upsert_anomalies(rows: list[dict], db_path: str | None = None) -> int:
         return 0
     conn = _get_conn(db_path)
     sql = """
-        INSERT OR REPLACE INTO anomalies
+        INSERT OR IGNORE INTO anomalies
             (date, ticker, anomaly_type, severity_score, direction,
              features_snapshot, model_version, threshold_params, created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -99,21 +109,21 @@ def upsert_anomalies(rows: list[dict], db_path: str | None = None) -> int:
             json.dumps(r["threshold_params"]) if r.get("threshold_params") else None,
             now,
         ))
-    conn.executemany(sql, params)
+    cur = conn.executemany(sql, params)
     conn.commit()
-    count = len(params)
+    inserted = cur.rowcount if cur.rowcount is not None and cur.rowcount >= 0 else len(params)
     conn.close()
-    logger.info("Upserted %d anomaly rows", count)
-    return count
+    logger.info("Appended %d anomaly rows (%d attempted)", inserted, len(params))
+    return inserted
 
 
 def upsert_signals(rows: list[dict], db_path: str | None = None) -> int:
-    """Insert or replace signal rows. Returns count of rows upserted."""
+    """Append signal rows (INSERT OR IGNORE — frozen once written)."""
     if not rows:
         return 0
     conn = _get_conn(db_path)
     sql = """
-        INSERT OR REPLACE INTO signals
+        INSERT OR IGNORE INTO signals
             (date, ticker, signal, confidence, rationale,
              model_version, created_at)
         VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -128,12 +138,49 @@ def upsert_signals(rows: list[dict], db_path: str | None = None) -> int:
             r.get("model_version", MODEL_VERSION),
             now,
         ))
+    cur = conn.executemany(sql, params)
+    conn.commit()
+    inserted = cur.rowcount if cur.rowcount is not None and cur.rowcount >= 0 else len(params)
+    conn.close()
+    logger.info("Appended %d signal rows (%d attempted)", inserted, len(params))
+    return inserted
+
+
+# ---------------------------------------------------------------------------
+# Bar watermarks — edge-only detection cursor
+# ---------------------------------------------------------------------------
+
+def get_bar_watermarks(db_path: str | None = None) -> dict[str, str]:
+    """Return {ticker: last_date_scored} for every ticker that has been seen.
+
+    Used by the pipeline to detect anomalies only on bars strictly newer than
+    the watermark, so historical verdicts are never recomputed.
+    """
+    conn = _get_conn(db_path)
+    rows = conn.execute("SELECT ticker, last_date FROM bar_watermarks").fetchall()
+    conn.close()
+    return {t: d for t, d in rows}
+
+
+def update_bar_watermarks(watermarks: dict[str, str], db_path: str | None = None) -> int:
+    """Advance watermarks to the given {ticker: date}. Never moves backwards."""
+    if not watermarks:
+        return 0
+    conn = _get_conn(db_path)
+    now = datetime.utcnow().isoformat() + "Z"
+    sql = """
+        INSERT INTO bar_watermarks (ticker, last_date, updated_at)
+        VALUES (?, ?, ?)
+        ON CONFLICT(ticker) DO UPDATE SET
+            last_date = excluded.last_date,
+            updated_at = excluded.updated_at
+        WHERE excluded.last_date > bar_watermarks.last_date
+    """
+    params = [(t, d, now) for t, d in watermarks.items()]
     conn.executemany(sql, params)
     conn.commit()
-    count = len(params)
     conn.close()
-    logger.info("Upserted %d signal rows", count)
-    return count
+    return len(params)
 
 
 # ---------------------------------------------------------------------------

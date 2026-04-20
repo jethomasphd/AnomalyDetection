@@ -20,7 +20,9 @@ from .detection.engine import run_all
 from .storage import (
     alerts_to_signal_rows,
     count_rows,
+    get_bar_watermarks,
     results_to_anomaly_rows,
+    update_bar_watermarks,
     upsert_anomalies,
     upsert_signals,
 )
@@ -32,6 +34,32 @@ logging.basicConfig(
     datefmt="%H:%M:%S",
 )
 logger = logging.getLogger(__name__)
+
+
+def _filter_to_new_bars(results: pd.DataFrame, watermarks: dict[str, str]) -> pd.DataFrame:
+    """Keep only rows whose (ticker, date) is strictly after the ticker's watermark.
+
+    Tickers without a watermark (first-ever run) are kept in full.
+    """
+    if results.empty:
+        return results
+    dates = pd.to_datetime(results["Date"]).dt.strftime("%Y-%m-%d")
+    tickers = results["Ticker"].astype(str)
+    wm = tickers.map(lambda t: watermarks.get(t))
+    keep = wm.isna() | (dates > wm)
+    return results.loc[keep].copy()
+
+
+def _compute_watermarks(results: pd.DataFrame) -> dict[str, str]:
+    """Return {ticker: max_date_str} from a detection-results frame."""
+    if results.empty:
+        return {}
+    dates = pd.to_datetime(results["Date"]).dt.strftime("%Y-%m-%d")
+    return (
+        pd.DataFrame({"ticker": results["Ticker"].astype(str), "date": dates})
+        .groupby("ticker")["date"].max()
+        .to_dict()
+    )
 
 
 def run(
@@ -76,33 +104,50 @@ def run(
     featured_df.to_csv(os.path.join(DATA_DIR, "stock_data.csv"), index=False)
 
     # Stage 3: Detection
+    # Detectors score the full 365-day window (they need it to fit baselines
+    # and thresholds), but we only PERSIST verdicts for bars strictly newer
+    # than the per-ticker watermark. Once a bar is written, its verdict is
+    # frozen — the log is an immutable audit trail, and the backtest is
+    # reproducible across runs.
     logger.info("=" * 60)
     logger.info("STAGE 3: Running anomaly detection (4 methods)")
     logger.info("=" * 60)
     results = run_all(featured_df, sensitivity=sensitivity)
     results.to_csv(os.path.join(DATA_DIR, "detection_results.csv"), index=False)
 
-    # Stage 3b: Persist anomalies to durable store (idempotent upsert)
-    logger.info("Persisting anomalies to SQLite store ...")
-    anomaly_rows = results_to_anomaly_rows(results)
+    watermarks = get_bar_watermarks()
+    new_bars = _filter_to_new_bars(results, watermarks)
+    logger.info(
+        "Edge-only persist: %d of %d scored bars are strictly newer than watermark",
+        len(new_bars), len(results),
+    )
+
+    # Stage 3b: Persist new-bar anomalies to durable store (append-only)
+    logger.info("Persisting new-bar anomalies to SQLite store ...")
+    anomaly_rows = results_to_anomaly_rows(new_bars)
     upsert_anomalies(anomaly_rows)
     store_counts = count_rows()
     logger.info("Store now has %d anomaly rows, %d signal rows",
                 store_counts["anomalies"], store_counts["signals"])
 
-    # Stage 4: Signals (incremental — merge with previous run)
+    # Stage 4: Signals — generated only from new-bar anomalies, then merged
+    # with the durable signal history loaded from the (frozen) alerts file.
     logger.info("=" * 60)
-    logger.info("STAGE 4: Generating trading signals (incremental)")
+    logger.info("STAGE 4: Generating trading signals (edge-only)")
     logger.info("=" * 60)
     alerts_path = os.path.join(DATA_DIR, "alerts.json")
     previous_alerts = load_previous_alerts(alerts_path)
-    new_alerts = generate_alerts(results)
+    new_alerts = generate_alerts(new_bars) if not new_bars.empty else []
     alerts = merge_alerts(new_alerts, previous_alerts)
     alerts_to_json(alerts, alerts_path)
 
-    # Persist signals to durable store
+    # Persist signals to durable store (append-only)
     signal_rows = alerts_to_signal_rows(alerts)
     upsert_signals(signal_rows)
+
+    # Advance the per-ticker watermark to the max date we just scored
+    new_watermarks = _compute_watermarks(results)
+    update_bar_watermarks(new_watermarks)
 
     print("\n" + alerts_to_markdown(alerts))
 
