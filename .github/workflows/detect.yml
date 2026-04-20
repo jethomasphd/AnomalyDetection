@@ -19,10 +19,18 @@ on:
           - low
           - medium
           - high
-      lookback_days:
-        description: 'Days of historical data'
+      start_date:
+        description: 'Anchor date (YYYY-MM-DD) — backtest and detection run from here forward'
         required: false
-        default: '365'
+        default: '2024-11-01'
+      reset:
+        description: 'Wipe the durable store before running (use after detection-regime changes)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
 
 permissions:
   contents: write
@@ -51,7 +59,8 @@ jobs:
           python -m anomaly_detection.pipeline \
             --skip-validation \
             --sensitivity "${{ github.event.inputs.sensitivity || 'medium' }}" \
-            --lookback "${{ github.event.inputs.lookback_days || '365' }}" \
+            --start-date "${{ github.event.inputs.start_date || '2024-11-01' }}" \
+            ${{ github.event.inputs.reset == 'true' && '--reset' || '' }} \
             ${{ github.event.inputs.tickers && format('--tickers "{0}"', github.event.inputs.tickers) || '' }}
 
       - name: Commit results
