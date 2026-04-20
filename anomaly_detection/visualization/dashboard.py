@@ -86,7 +86,7 @@ def generate_dashboard(
     results: pd.DataFrame,
     alerts: list[dict],
     sensitivity: str = "medium",
-    lookback_days: int = 365,
+    start_date: str = "2024-11-01",
     output_path: str | None = None,
     validation_failures: list[dict] | None = None,
 ) -> str:
@@ -157,7 +157,7 @@ def generate_dashboard(
         n_anomalies=n_anomalies,
         n_actionable=n_actionable,
         n_new_signals=n_new_signals,
-        lookback_days=lookback_days,
+        start_date=start_date,
         sensitivity=sensitivity.capitalize(),
         generated_at=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
         model_version=MODEL_VERSION,

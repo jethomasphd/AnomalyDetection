@@ -191,7 +191,12 @@ def ticker_display(ticker: str) -> str:
 
 
 # --- Data Settings ---
-DEFAULT_LOOKBACK_DAYS = 365
+# THE SIGNAL anchors all detection and backtesting to a fixed historical
+# start date rather than a sliding lookback window. This is what keeps the
+# baseline stable: detectors fit against the same dataset every run, so
+# verdicts on historical bars don't drift as time passes.
+SIGNAL_START_DATE = "2024-11-01"
+DEFAULT_LOOKBACK_DAYS = 365  # kept for API compatibility; superseded by SIGNAL_START_DATE
 MIN_DATA_POINTS = 30
 
 # --- Sensitivity Presets ---

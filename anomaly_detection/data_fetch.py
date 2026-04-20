@@ -7,29 +7,30 @@ from typing import Optional
 import pandas as pd
 import yfinance as yf
 
-from .config import DEFAULT_LOOKBACK_DAYS, DEFAULT_TICKERS, MIN_DATA_POINTS
+from .config import DEFAULT_TICKERS, MIN_DATA_POINTS, SIGNAL_START_DATE
 
 logger = logging.getLogger(__name__)
 
 
 def fetch_ticker(
     ticker: str,
-    lookback_days: int = DEFAULT_LOOKBACK_DAYS,
+    start_date: str = SIGNAL_START_DATE,
     end_date: Optional[datetime] = None,
+    lookback_days: Optional[int] = None,  # legacy, ignored when start_date set
 ) -> Optional[pd.DataFrame]:
-    """Fetch OHLCV data for a single ticker.
+    """Fetch OHLCV data for a single ticker from the anchored start date.
 
     Returns a DataFrame with columns:
         Date, Open, High, Low, Close, Volume, Ticker
     or None if the fetch fails / insufficient data.
     """
     end = end_date or datetime.today()
-    start = end - timedelta(days=lookback_days)
+    start_str = start_date
 
     try:
         df = yf.download(
             ticker,
-            start=start.strftime("%Y-%m-%d"),
+            start=start_str,
             end=end.strftime("%Y-%m-%d"),
             progress=False,
             auto_adjust=True,
@@ -67,7 +68,8 @@ def fetch_ticker(
 
 def fetch_multiple(
     tickers: Optional[list[str]] = None,
-    lookback_days: int = DEFAULT_LOOKBACK_DAYS,
+    start_date: str = SIGNAL_START_DATE,
+    lookback_days: Optional[int] = None,  # legacy, ignored
 ) -> pd.DataFrame:
     """Fetch data for multiple tickers and combine into one DataFrame."""
     tickers = tickers or DEFAULT_TICKERS
@@ -75,7 +77,7 @@ def fetch_multiple(
 
     for ticker in tickers:
         logger.info("Fetching %s ...", ticker)
-        df = fetch_ticker(ticker, lookback_days=lookback_days)
+        df = fetch_ticker(ticker, start_date=start_date)
         if df is not None:
             frames.append(df)
 

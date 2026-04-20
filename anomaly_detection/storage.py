@@ -277,6 +277,32 @@ def count_rows(db_path: str | None = None) -> dict:
     return {"anomalies": a_count, "signals": s_count}
 
 
+def reset_storage(db_path: str | None = None) -> dict:
+    """Wipe anomalies, signals, and watermarks. Used when the detection
+    regime changes (e.g. switching from a sliding window to a fixed anchor)
+    so old drifted verdicts don't contaminate the frozen log going forward.
+
+    Returns counts of rows deleted for audit.
+    """
+    conn = _get_conn(db_path)
+    a_count = conn.execute("SELECT COUNT(*) FROM anomalies").fetchone()[0]
+    s_count = conn.execute("SELECT COUNT(*) FROM signals").fetchone()[0]
+    w_count = conn.execute("SELECT COUNT(*) FROM bar_watermarks").fetchone()[0]
+    conn.executescript("""
+        DELETE FROM anomalies;
+        DELETE FROM signals;
+        DELETE FROM bar_watermarks;
+    """)
+    conn.commit()
+    conn.close()
+    logger.warning(
+        "Storage wiped: %d anomalies, %d signals, %d watermarks deleted",
+        a_count, s_count, w_count,
+    )
+    return {"anomalies_deleted": a_count, "signals_deleted": s_count,
+            "watermarks_deleted": w_count}
+
+
 # ---------------------------------------------------------------------------
 # Conversion helpers: pipeline results -> storage rows
 # ---------------------------------------------------------------------------

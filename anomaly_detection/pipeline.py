@@ -20,13 +20,21 @@ from .alerts import (
     generate_alerts,
     load_previous_alerts,
 )
-from .config import DATA_DIR, DEFAULT_LOOKBACK_DAYS, DEFAULT_SENSITIVITY, DEFAULT_TICKERS, DOCS_DIR, MODEL_VERSION
+from .config import (
+    DATA_DIR,
+    DEFAULT_SENSITIVITY,
+    DEFAULT_TICKERS,
+    DOCS_DIR,
+    MODEL_VERSION,
+    SIGNAL_START_DATE,
+)
 from .data_fetch import compute_features, fetch_multiple
 from .detection.engine import run_all
 from .storage import (
     alerts_to_signal_rows,
     count_rows,
     get_bar_watermarks,
+    reset_storage,
     results_to_anomaly_rows,
     update_bar_watermarks,
     upsert_anomalies,
@@ -71,12 +79,29 @@ def _compute_watermarks(results: pd.DataFrame) -> dict[str, str]:
 def run(
     tickers: list[str] | None = None,
     sensitivity: str = DEFAULT_SENSITIVITY,
-    lookback_days: int = DEFAULT_LOOKBACK_DAYS,
+    start_date: str = SIGNAL_START_DATE,
     skip_validation: bool = False,
+    reset: bool = False,
 ) -> dict:
-    """Execute the full anomaly detection pipeline."""
+    """Execute the full anomaly detection pipeline.
+
+    THE SIGNAL anchors on `start_date` (default 2024-11-01). The first run
+    detects all historical anomalies from that date to today in a single
+    batch; subsequent runs only touch new bars at the edge (watermark-gated).
+
+    `reset=True` wipes the durable store and alerts.json first, so you can
+    rebuild the frozen log from scratch (use when switching detection
+    regimes, e.g. the sliding→anchored transition).
+    """
     os.makedirs(DATA_DIR, exist_ok=True)
     os.makedirs(DOCS_DIR, exist_ok=True)
+
+    if reset:
+        logger.warning("Reset requested — wiping durable store and alerts.json")
+        reset_storage()
+        alerts_json = os.path.join(DATA_DIR, "alerts.json")
+        if os.path.exists(alerts_json):
+            os.remove(alerts_json)
 
     # Stage 0: Ticker validation (optional, skipped in CI for speed)
     effective_tickers = tickers
@@ -98,9 +123,9 @@ def run(
 
     # Stage 1: Fetch
     logger.info("=" * 60)
-    logger.info("STAGE 1: Fetching stock data")
+    logger.info("STAGE 1: Fetching stock data from %s", start_date)
     logger.info("=" * 60)
-    raw_df = fetch_multiple(tickers=effective_tickers, lookback_days=lookback_days)
+    raw_df = fetch_multiple(tickers=effective_tickers, start_date=start_date)
 
     # Stage 2: Features
     logger.info("=" * 60)
@@ -167,7 +192,7 @@ def run(
         "actionable_signals": sum(1 for a in alerts if a["signal"] not in ("WATCH", "REDUCE")),
         "total_signals": len(alerts),
         "sensitivity": sensitivity,
-        "lookback_days": lookback_days,
+        "start_date": start_date,
         "model_version": MODEL_VERSION,
         "validation_failures": validation_failures,
     }
@@ -180,7 +205,7 @@ def run(
         dashboard_path = generate_dashboard(
             results, alerts,
             sensitivity=sensitivity,
-            lookback_days=lookback_days,
+            start_date=start_date,
             validation_failures=validation_failures,
         )
         summary["dashboard_path"] = dashboard_path
@@ -213,17 +238,21 @@ Examples:
                         help="Comma-separated tickers (default: built-in watchlist)")
     parser.add_argument("--sensitivity", type=str, choices=["low", "medium", "high"],
                         default=DEFAULT_SENSITIVITY)
-    parser.add_argument("--lookback", type=int, default=DEFAULT_LOOKBACK_DAYS,
-                        help="Days of historical data (default: 365)")
+    parser.add_argument("--start-date", type=str, default=SIGNAL_START_DATE,
+                        help=f"Anchor date for history (default: {SIGNAL_START_DATE})")
     parser.add_argument("--skip-validation", action="store_true",
                         help="Skip ticker validation (faster, for CI)")
+    parser.add_argument("--reset", action="store_true",
+                        help="Wipe durable store and alerts.json before running "
+                             "(use when switching detection regimes)")
     args = parser.parse_args()
 
     tickers = [t.strip().upper() for t in args.tickers.split(",") if t.strip()] or None
 
     try:
         summary = run(tickers=tickers, sensitivity=args.sensitivity,
-                      lookback_days=args.lookback, skip_validation=args.skip_validation)
+                      start_date=args.start_date, skip_validation=args.skip_validation,
+                      reset=args.reset)
         print(json.dumps(summary, indent=2))
     except Exception as exc:
         logger.exception("Pipeline failed: %s", exc)
