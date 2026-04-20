@@ -9,6 +9,13 @@ Schema:
   anomalies:       (date, ticker, anomaly_type, model_version) is unique
   signals:         (date, ticker, model_version) is unique
   bar_watermarks:  ticker -> last_date scored (edge-only detection cursor)
+
+Two timestamps on each row serve distinct purposes:
+  - detected_at: the run date on which the verdict was produced. This is the
+    date a portfolio manager would have actually seen the signal — the
+    correct anchor for backtest trade entries (no peeking at the future).
+  - created_at: SQL insertion time. Infrastructure timestamp, not a
+    business-meaningful event.
 """
 
 import json
@@ -35,7 +42,7 @@ def _get_conn(db_path: str | None = None) -> sqlite3.Connection:
 
 
 def _init_schema(conn: sqlite3.Connection) -> None:
-    """Create tables if they don't exist."""
+    """Create tables if they don't exist, and add detected_at if missing."""
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS anomalies (
             date            TEXT NOT NULL,
@@ -46,6 +53,7 @@ def _init_schema(conn: sqlite3.Connection) -> None:
             features_snapshot TEXT,  -- JSON blob
             model_version   TEXT NOT NULL,
             threshold_params TEXT,   -- JSON blob
+            detected_at     TEXT,    -- run date (YYYY-MM-DD) the verdict was produced
             created_at      TEXT NOT NULL DEFAULT (datetime('now')),
             PRIMARY KEY (date, ticker, anomaly_type, model_version)
         );
@@ -57,6 +65,7 @@ def _init_schema(conn: sqlite3.Connection) -> None:
             confidence      TEXT,
             rationale       TEXT,    -- JSON blob
             model_version   TEXT NOT NULL,
+            detected_at     TEXT,    -- run date (YYYY-MM-DD) the signal fired
             created_at      TEXT NOT NULL DEFAULT (datetime('now')),
             PRIMARY KEY (date, ticker, model_version)
         );
@@ -67,6 +76,8 @@ def _init_schema(conn: sqlite3.Connection) -> None:
             ON signals(ticker, date);
         CREATE INDEX IF NOT EXISTS idx_signals_date
             ON signals(date DESC);
+        CREATE INDEX IF NOT EXISTS idx_signals_detected_at
+            ON signals(detected_at);
 
         CREATE TABLE IF NOT EXISTS bar_watermarks (
             ticker     TEXT PRIMARY KEY,
@@ -74,6 +85,11 @@ def _init_schema(conn: sqlite3.Connection) -> None:
             updated_at TEXT NOT NULL DEFAULT (datetime('now'))
         );
     """)
+    # Lightweight migration for databases created before detected_at existed.
+    for table in ("anomalies", "signals"):
+        cols = {r[1] for r in conn.execute(f"PRAGMA table_info({table})").fetchall()}
+        if "detected_at" not in cols:
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN detected_at TEXT")
     conn.commit()
 
 
@@ -94,10 +110,12 @@ def upsert_anomalies(rows: list[dict], db_path: str | None = None) -> int:
     sql = """
         INSERT OR IGNORE INTO anomalies
             (date, ticker, anomaly_type, severity_score, direction,
-             features_snapshot, model_version, threshold_params, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+             features_snapshot, model_version, threshold_params,
+             detected_at, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
     now = datetime.utcnow().isoformat() + "Z"
+    today = datetime.utcnow().strftime("%Y-%m-%d")
     params = []
     for r in rows:
         params.append((
@@ -107,6 +125,7 @@ def upsert_anomalies(rows: list[dict], db_path: str | None = None) -> int:
             json.dumps(r["features_snapshot"]) if r.get("features_snapshot") else None,
             r.get("model_version", MODEL_VERSION),
             json.dumps(r["threshold_params"]) if r.get("threshold_params") else None,
+            r.get("detected_at", today),
             now,
         ))
     cur = conn.executemany(sql, params)
@@ -125,10 +144,11 @@ def upsert_signals(rows: list[dict], db_path: str | None = None) -> int:
     sql = """
         INSERT OR IGNORE INTO signals
             (date, ticker, signal, confidence, rationale,
-             model_version, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+             model_version, detected_at, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """
     now = datetime.utcnow().isoformat() + "Z"
+    today = datetime.utcnow().strftime("%Y-%m-%d")
     params = []
     for r in rows:
         params.append((
@@ -136,6 +156,7 @@ def upsert_signals(rows: list[dict], db_path: str | None = None) -> int:
             r.get("confidence"),
             json.dumps(r["rationale"]) if r.get("rationale") else None,
             r.get("model_version", MODEL_VERSION),
+            r.get("detected_at", today),
             now,
         ))
     cur = conn.executemany(sql, params)
@@ -260,15 +281,19 @@ def count_rows(db_path: str | None = None) -> dict:
 # Conversion helpers: pipeline results -> storage rows
 # ---------------------------------------------------------------------------
 
-def results_to_anomaly_rows(results: pd.DataFrame) -> list[dict]:
+def results_to_anomaly_rows(results: pd.DataFrame, detected_at: str | None = None) -> list[dict]:
     """Convert detection results DataFrame to anomaly storage rows.
 
     Only includes rows where consensus_anomaly is True.
     Creates one row per (date, ticker, method) that flagged.
+    `detected_at` defaults to today (UTC) and marks the run-date on which the
+    verdict was produced — distinct from the bar's `date`.
     """
     anomalies = results[results.get("consensus_anomaly", False) == True].copy()
     if anomalies.empty:
         return []
+
+    detected_at = detected_at or datetime.utcnow().strftime("%Y-%m-%d")
 
     rows = []
     method_cols = {
@@ -304,6 +329,7 @@ def results_to_anomaly_rows(results: pd.DataFrame) -> list[dict]:
                     "direction": direction,
                     "features_snapshot": features,
                     "model_version": MODEL_VERSION,
+                    "detected_at": detected_at,
                 })
 
         # Also store the consensus anomaly itself
@@ -315,6 +341,7 @@ def results_to_anomaly_rows(results: pd.DataFrame) -> list[dict]:
             "direction": direction,
             "features_snapshot": features,
             "model_version": MODEL_VERSION,
+            "detected_at": detected_at,
         })
 
     return rows
@@ -336,5 +363,8 @@ def alerts_to_signal_rows(alerts: list[dict]) -> list[dict]:
                 "details": a.get("details", {}),
             },
             "model_version": MODEL_VERSION,
+            # first_detected is the alert's run-date of first appearance; fall
+            # back to the bar date for legacy alerts that lack it.
+            "detected_at": a.get("first_detected") or a.get("run_date") or a.get("date"),
         })
     return rows

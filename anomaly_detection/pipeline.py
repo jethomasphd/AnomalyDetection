@@ -124,7 +124,8 @@ def run(
 
     # Stage 3b: Persist new-bar anomalies to durable store (append-only)
     logger.info("Persisting new-bar anomalies to SQLite store ...")
-    anomaly_rows = results_to_anomaly_rows(new_bars)
+    run_date = datetime.utcnow().strftime("%Y-%m-%d")
+    anomaly_rows = results_to_anomaly_rows(new_bars, detected_at=run_date)
     upsert_anomalies(anomaly_rows)
     store_counts = count_rows()
     logger.info("Store now has %d anomaly rows, %d signal rows",

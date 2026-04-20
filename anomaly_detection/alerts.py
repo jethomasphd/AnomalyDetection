@@ -177,6 +177,7 @@ def generate_alerts(results: pd.DataFrame, top_n: int = 50) -> list[dict]:
             "run_date": run_date,
             "is_new": True,
             "first_detected": run_date,
+            "detected_at": run_date,
             "details": {
                 "fourier_score": round(float(row.get("fourier_score", 0)), 4),
                 "mp_score": round(float(row.get("mp_score", 0)), 4),
@@ -237,12 +238,14 @@ def merge_alerts(new_alerts: list[dict], previous_alerts: list[dict], max_alerts
             prev["is_new"] = False
             prev["run_date"] = prev.get("run_date", run_date)
             prev["first_detected"] = prev.get("first_detected", prev.get("date", run_date))
+            prev["detected_at"] = prev.get("detected_at") or prev["first_detected"]
             merged.append(prev)
         else:
             # New alert takes precedence — but preserve first_detected from previous
             for new_a in new_alerts:
                 if (new_a["ticker"], new_a["date"]) == key:
                     new_a["first_detected"] = prev.get("first_detected", prev.get("date", run_date))
+                    new_a["detected_at"] = new_a["first_detected"]
                     break
 
     # Sort: newest date first, then by consensus score descending

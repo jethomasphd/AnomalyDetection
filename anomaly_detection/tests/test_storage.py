@@ -195,6 +195,27 @@ def test_watermark_roundtrip(tmp_db):
     assert wm == {"AAPL": "2026-02-01", "MSFT": "2026-02-02"}
 
 
+def test_detected_at_is_persisted(tmp_db):
+    """detected_at should round-trip through the anomalies and signals tables."""
+    upsert_anomalies([{
+        "date": "2026-02-01", "ticker": "NVDA", "anomaly_type": "consensus",
+        "severity_score": 0.8, "model_version": MODEL_VERSION,
+        "detected_at": "2026-02-02",
+    }], db_path=tmp_db)
+    upsert_signals([{
+        "date": "2026-02-01", "ticker": "NVDA", "signal": "BUY",
+        "confidence": "Strong", "model_version": MODEL_VERSION,
+        "detected_at": "2026-02-02",
+    }], db_path=tmp_db)
+
+    anoms = get_all_anomalies(db_path=tmp_db)
+    sigs = get_all_signals(db_path=tmp_db)
+    assert anoms[0]["detected_at"] == "2026-02-02"
+    assert sigs[0]["detected_at"] == "2026-02-02"
+    # Bar date is preserved as the distinct event anchor
+    assert anoms[0]["date"] == "2026-02-01"
+
+
 def test_watermark_never_moves_backwards(tmp_db):
     update_bar_watermarks({"AAPL": "2026-02-05"}, db_path=tmp_db)
     update_bar_watermarks({"AAPL": "2026-01-01"}, db_path=tmp_db)  # older, should be ignored
