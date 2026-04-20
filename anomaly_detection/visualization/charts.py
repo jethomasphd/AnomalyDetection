@@ -753,6 +753,8 @@ def compute_backtest(
     baseline_invested = len(baseline) * unit
     baseline_pct = (baseline_gain / baseline_invested * 100) if baseline_invested > 0 else 0
 
+    stats = _compute_trade_stats(closed, unit=unit)
+
     return {
         "signal_ledger": signal_ledger,
         "total_gain": round(total_gain, 2),
@@ -769,6 +771,96 @@ def compute_backtest(
         "start_date": start_str,
         "end_date": today_str,
         "holding_days": holding_days,
+        "stats": stats,
+    }
+
+
+def _compute_trade_stats(closed_trades: list[dict], unit: float = 10_000) -> dict:
+    """Risk / quality stats computed on the CLOSED signal trades only.
+
+    Open trades are excluded — their P&L is unrealised and can still move,
+    so including them would pollute the measured edge.
+
+    Returned fields:
+      - sharpe:        trade-Sharpe ratio, annualised to 252 trading days.
+      - max_drawdown:  worst peak-to-trough drop in cumulative $ P&L.
+      - max_drawdown_pct:  same, as a percent of max deployed capital.
+      - win_rate:      fraction of closed trades with positive P&L.
+      - avg_hold_days: mean holding period in trading bars.
+      - avg_win, avg_loss, profit_factor: |Σ wins| / |Σ losses|.
+      - hit_rate_by_signal: per-signal win rate — so callers can see if, e.g.,
+        BUYs are great but SHORTs drag the book.
+    """
+    empty = {
+        "sharpe": None, "max_drawdown": 0.0, "max_drawdown_pct": 0.0,
+        "win_rate": 0.0, "avg_hold_days": 0.0,
+        "avg_win": 0.0, "avg_loss": 0.0, "profit_factor": None,
+        "hit_rate_by_signal": {}, "n_closed": 0,
+    }
+    if not closed_trades:
+        return empty
+
+    trades_sorted = sorted(closed_trades, key=lambda s: s.get("exit_date") or "")
+    pnl = np.array([float(t["dollar_gain"]) for t in trades_sorted], dtype=float)
+    pct = np.array([float(t["pct_change"]) for t in trades_sorted], dtype=float) / 100.0
+    holds = np.array([int(t.get("holding_days") or 0) for t in trades_sorted], dtype=float)
+
+    n = len(pnl)
+    wins = pnl[pnl > 0]
+    losses = pnl[pnl < 0]
+    win_rate = len(wins) / n if n else 0.0
+
+    # Sharpe: treat each trade as a per-trade return; annualise by the number
+    # of trade cycles per year (≈252 / avg_hold_days).
+    avg_hold = float(np.mean(holds)) if holds.size else 0.0
+    mean_r = float(pct.mean())
+    std_r = float(pct.std(ddof=1)) if n > 1 else 0.0
+    if std_r > 0 and avg_hold > 0:
+        trades_per_year = 252.0 / max(avg_hold, 1.0)
+        sharpe = (mean_r / std_r) * np.sqrt(trades_per_year)
+    else:
+        sharpe = None
+
+    # Drawdown on the cumulative $ P&L curve
+    equity = np.cumsum(pnl)
+    running_max = np.maximum.accumulate(equity)
+    dd = running_max - equity
+    max_dd = float(dd.max()) if dd.size else 0.0
+    capital = n * unit  # max capital that was ever at risk, in dollars
+    max_dd_pct = (max_dd / capital * 100.0) if capital > 0 else 0.0
+
+    profit_factor = None
+    if losses.size:
+        loss_sum = float(abs(losses.sum()))
+        if loss_sum > 0:
+            profit_factor = float(wins.sum()) / loss_sum
+
+    hit_rate_by_signal: dict[str, dict] = {}
+    by_sig: dict[str, list[float]] = {}
+    for t in trades_sorted:
+        by_sig.setdefault(t["action"], []).append(float(t["dollar_gain"]))
+    for sig, vals in by_sig.items():
+        arr = np.array(vals)
+        n_sig = len(arr)
+        n_win = int((arr > 0).sum())
+        hit_rate_by_signal[sig] = {
+            "n": n_sig,
+            "n_win": n_win,
+            "win_rate": (n_win / n_sig) if n_sig else 0.0,
+            "avg_pnl": float(arr.mean()) if n_sig else 0.0,
+        }
+
+    return {
+        "sharpe": round(sharpe, 2) if sharpe is not None else None,
+        "max_drawdown": round(max_dd, 2),
+        "max_drawdown_pct": round(max_dd_pct, 2),
+        "win_rate": round(win_rate * 100, 1),
+        "avg_hold_days": round(avg_hold, 1),
+        "avg_win": round(float(wins.mean()), 2) if wins.size else 0.0,
+        "avg_loss": round(float(losses.mean()), 2) if losses.size else 0.0,
+        "profit_factor": round(profit_factor, 2) if profit_factor is not None else None,
+        "hit_rate_by_signal": hit_rate_by_signal,
+        "n_closed": n,
     }
 
 

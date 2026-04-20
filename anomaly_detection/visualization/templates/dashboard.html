@@ -594,6 +594,55 @@
             They're summarised separately so the numbers aren't conflated.<br>
             <strong>Methods</strong> = which detection algorithms triggered the signal (Fourier, MatrixProfile, Ensemble, EWMA).
         </div>
+        <div class="tip-panel" id="tip-sharpe">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Sharpe Ratio</div>
+            <strong>Think of it as:</strong> return per unit of risk.
+            Two strategies making 10% a year aren't equal &mdash; the one with less volatility has a higher Sharpe.<br>
+            <strong>Rule of thumb:</strong> &lt; 0 = losing on average, 0&ndash;1 = mediocre,
+            1&ndash;2 = good, 2+ = excellent (rare).<br>
+            Computed on closed trades only, annualised assuming
+            {{ backtest.holding_days }}-day holds roll {{ "%.0f"|format(252.0 / backtest.holding_days) }} times a year.
+            Shown as &mdash; when there are fewer than 2 closed trades.
+        </div>
+        <div class="tip-panel" id="tip-drawdown">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Max Drawdown</div>
+            <strong>Think of it as:</strong> the worst losing streak you'd have lived through.
+            It's the biggest peak-to-trough drop in cumulative P&amp;L as trades close in order.<br>
+            If the Signal's equity curve hit +$5,000 and then fell to +$2,000 before recovering,
+            max drawdown = $3,000 &mdash; even though the strategy ended up positive.<br>
+            <strong>Smaller is better.</strong> The percent figure expresses it as a fraction of
+            the capital deployed (trades &times; $10k).
+        </div>
+        <div class="tip-panel" id="tip-avghold">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Average Holding Period</div>
+            Mean number of trading bars between entry and exit, for closed trades only.<br>
+            Today every trade uses the same fixed exit ({{ backtest.holding_days }} days), so this
+            will mostly match. It becomes useful once stops or target exits are added:
+            short holds usually mean stops hitting; long holds usually mean the trade is working
+            all the way to the time exit.
+        </div>
+        <div class="tip-panel" id="tip-profitfactor">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Profit Factor</div>
+            <strong>Total $ from winners &divide; total $ from losers.</strong><br>
+            1.0 = break-even (wins exactly cover losses).
+            Above 1.0 = profitable; a 1.5 means every $1 lost is offset by $1.50 won.
+            Below 1.0 = losing money in aggregate.<br>
+            More robust than raw win rate: a 30% win rate can still be highly profitable
+            if wins are much bigger than losses.
+        </div>
+        <div class="tip-panel" id="tip-hitrate">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Hit Rate by Signal</div>
+            Win rate broken out by signal type (BUY, SELL, LONG, SHORT).<br>
+            <strong>Why it matters:</strong> the overall win rate can hide the fact that one signal type
+            is carrying the strategy while another is bleeding. If BUY is 70% and SHORT is 30%,
+            you'd want to know that before trusting the headline number.<br>
+            Computed on closed trades only.
+        </div>
         <div class="tip-panel" id="tip-fourier">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Fourier Transform</div>
@@ -857,7 +906,7 @@
                         <div class="bt-num" style="color:{% if backtest.open_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
                             ${{ "{:+,.0f}".format(backtest.open_gain) }}
                         </div>
-                        <div class="bt-lbl">Open P&amp;L ({{ backtest.n_open - (backtest.baseline_gain and 1 or 0) }})</div>
+                        <div class="bt-lbl">Open P&amp;L</div>
                     </div>
                     <div class="bt-stat">
                         <div class="bt-num" style="color:var(--blue)">
@@ -869,9 +918,83 @@
                         <div class="bt-num" style="color:var(--amber)">
                             {% if backtest.n_trades > 0 %}{{ "%.0f"|format(backtest.n_winning / backtest.n_trades * 100) }}%{% else %}0%{% endif %}
                         </div>
-                        <div class="bt-lbl">Win Rate</div>
+                        <div class="bt-lbl">Win Rate (all)</div>
                     </div>
                 </div>
+
+                <!-- Risk / quality stats — closed trades only -->
+                <p style="font-size:0.72rem; color:var(--muted); margin: 1rem 0 0.4rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.04em;">
+                    Risk &amp; Quality &mdash; Closed Trades Only ({{ backtest.stats.n_closed }})
+                </p>
+                <div class="bt-grid">
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:{% if backtest.stats.sharpe is not none and backtest.stats.sharpe >= 0 %}var(--green){% elif backtest.stats.sharpe is none %}var(--muted){% else %}var(--red){% endif %}">
+                            {% if backtest.stats.sharpe is not none %}{{ "%.2f"|format(backtest.stats.sharpe) }}{% else %}&mdash;{% endif %}
+                        </div>
+                        <div class="bt-lbl">
+                            Sharpe
+                            <span class="tip-trigger" onclick="showTip(event, 'tip-sharpe')">?</span>
+                        </div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:var(--red)">
+                            -${{ "{:,.0f}".format(backtest.stats.max_drawdown) }}
+                        </div>
+                        <div class="bt-lbl">
+                            Max Drawdown ({{ "%.1f"|format(backtest.stats.max_drawdown_pct) }}%)
+                            <span class="tip-trigger" onclick="showTip(event, 'tip-drawdown')">?</span>
+                        </div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:var(--blue)">
+                            {{ "%.0f"|format(backtest.stats.avg_hold_days) }}d
+                        </div>
+                        <div class="bt-lbl">
+                            Avg Hold
+                            <span class="tip-trigger" onclick="showTip(event, 'tip-avghold')">?</span>
+                        </div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:{% if backtest.stats.profit_factor is not none and backtest.stats.profit_factor >= 1.0 %}var(--green){% elif backtest.stats.profit_factor is none %}var(--muted){% else %}var(--red){% endif %}">
+                            {% if backtest.stats.profit_factor is not none %}{{ "%.2f"|format(backtest.stats.profit_factor) }}{% else %}&mdash;{% endif %}
+                        </div>
+                        <div class="bt-lbl">
+                            Profit Factor
+                            <span class="tip-trigger" onclick="showTip(event, 'tip-profitfactor')">?</span>
+                        </div>
+                    </div>
+                </div>
+
+                {% if backtest.stats.hit_rate_by_signal %}
+                <p style="font-size:0.72rem; color:var(--muted); margin: 1rem 0 0.4rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.04em;">
+                    Hit Rate by Signal
+                    <span class="tip-trigger" onclick="showTip(event, 'tip-hitrate')">?</span>
+                </p>
+                <div style="overflow-x:auto;">
+                <table class="trade-log-tbl">
+                    <thead><tr>
+                        <th>Signal</th>
+                        <th>Closed</th>
+                        <th>Wins</th>
+                        <th>Win Rate</th>
+                        <th>Avg P&amp;L</th>
+                    </tr></thead>
+                    <tbody>
+                        {% for sig, info in backtest.stats.hit_rate_by_signal.items() %}
+                        <tr>
+                            <td class="trade-{{ sig|lower }}" style="font-weight:700;">{{ sig }}</td>
+                            <td>{{ info.n }}</td>
+                            <td>{{ info.n_win }}</td>
+                            <td>{{ "%.0f"|format(info.win_rate * 100) }}%</td>
+                            <td style="color:{% if info.avg_pnl >= 0 %}var(--green){% else %}var(--red){% endif %}; font-weight:700;">
+                                ${{ "{:+,.2f}".format(info.avg_pnl) }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+                {% endif %}
 
                 <!-- Gain/loss chart -->
                 <div id="backtest-chart" style="min-height: 300px;"></div>
