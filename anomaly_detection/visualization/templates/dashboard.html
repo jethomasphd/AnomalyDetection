@@ -328,6 +328,52 @@
         .trade-status-open { color: var(--amber); background: rgba(255,214,0,0.12); border: 1px solid rgba(255,214,0,0.25); }
         .trade-status-closed { color: var(--green); background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.22); }
 
+        /* Signal row metadata: detected_at lock, staleness, consensus */
+        .locked-badge {
+            display: inline-block; margin-left: 0.35rem;
+            font-family: var(--mono); font-size: 0.58rem;
+            color: var(--muted); letter-spacing: 0.03em;
+        }
+        .locked-badge::before { content: "\01F512  "; font-size: 0.6rem; }
+        .stale-pill {
+            display: inline-block; padding: 0.08rem 0.38rem; border-radius: 3px;
+            font-size: 0.56rem; font-weight: 700; letter-spacing: 0.04em;
+            text-transform: uppercase; font-family: var(--mono);
+            color: var(--amber); background: rgba(255,214,0,0.1);
+            border: 1px solid rgba(255,214,0,0.25);
+            margin-left: 0.35rem;
+        }
+        .fresh-pill {
+            display: inline-block; padding: 0.08rem 0.38rem; border-radius: 3px;
+            font-size: 0.56rem; font-weight: 700; letter-spacing: 0.04em;
+            text-transform: uppercase; font-family: var(--mono);
+            color: var(--green); background: rgba(0,230,118,0.1);
+            border: 1px solid rgba(0,230,118,0.25);
+            margin-left: 0.35rem;
+        }
+        .consensus-chip {
+            display: inline-block; padding: 0.08rem 0.4rem; border-radius: 3px;
+            font-size: 0.58rem; font-family: var(--mono); color: var(--muted);
+            background: var(--surface2); border: 1px solid var(--border);
+            margin-left: 0.25rem;
+        }
+        .new-this-run-panel {
+            border: 1px solid rgba(0,230,118,0.3);
+            background: rgba(0,230,118,0.05);
+            border-radius: 6px; padding: 0.6rem 0.9rem; margin: 0.6rem 0.9rem 0.4rem;
+        }
+        .new-this-run-panel.empty {
+            border-color: var(--border); background: var(--surface2);
+        }
+        .new-this-run-head {
+            font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.04em;
+            text-transform: uppercase; color: var(--green); margin-bottom: 0.35rem;
+        }
+        .new-this-run-panel.empty .new-this-run-head { color: var(--muted); }
+        .new-this-run-list {
+            font-size: 0.78rem; color: var(--text); line-height: 1.5;
+        }
+
         /* === LEARN PANEL === */
         .learn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.6rem; }
         .learn-link {
@@ -703,6 +749,27 @@
             </div>
             <div class="card-body flush" style="overflow-x: auto;">
                 {% if alerts %}
+                {% if new_alerts %}
+                <div class="new-this-run-panel">
+                    <div class="new-this-run-head">
+                        New This Run &mdash; {{ new_alerts|length }} signal{{ '' if new_alerts|length == 1 else 's' }} fired on {{ run_date }}
+                    </div>
+                    <div class="new-this-run-list">
+                        {% for a in new_alerts %}
+                            <a href="#" onclick="selectTicker('{{ a.ticker }}'); return false;" style="color: {{ a.signal_color }}; font-weight:600;">{{ a.signal_label }}</a>
+                            {{ a.ticker }}
+                            <span class="consensus-chip">cs {{ "%.2f"|format(a.consensus_score) }}</span>{% if not loop.last %} &middot; {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="new-this-run-panel empty">
+                    <div class="new-this-run-head">New This Run</div>
+                    <div class="new-this-run-list" style="color:var(--muted);">
+                        No new signals on {{ run_date }}. All rows below are frozen history &mdash; their verdicts cannot change as the 365-day window slides.
+                    </div>
+                </div>
+                {% endif %}
                 <div style="padding: 0.6rem 0.9rem 0;">
                     <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.5rem; line-height:1.6;">
                         When an anomaly is detected, THE SIGNAL translates it into a directional call.
@@ -739,13 +806,21 @@
                             <td>
                                 <span class="signal-pill signal-{{ a.signal|lower }}">{{ a.signal_label }}</span>
                                 {% if a.get('is_new', false) %}<span class="new-badge">NEW</span>{% endif %}
+                                {% if a.get('is_stale', false) %}<span class="stale-pill" title="Signal is {{ a.days_old }} days old — may be acted upon or may have already run its course.">{{ a.days_old }}d old</span>{% elif a.get('days_old', None) is not none and a.days_old <= 3 %}<span class="fresh-pill">fresh</span>{% endif %}
                             </td>
                             <td><span class="confidence conf-{{ a.confidence|lower }}">{{ a.confidence }}</span></td>
                             <td>
                                 <div class="ticker-label">{{ a.ticker }}</div>
                                 <div class="ticker-sub">{{ a.ticker_name }}</div>
                             </td>
-                            <td style="font-family:var(--mono); font-size:0.75rem;">{{ a.date }}</td>
+                            <td style="font-family:var(--mono); font-size:0.75rem;">
+                                {{ a.date }}
+                                {% if a.get('detected_at') and a.detected_at != a.date %}
+                                <div class="locked-badge" title="Verdict produced on {{ a.detected_at }} — frozen for audit.">locked {{ a.detected_at }}</div>
+                                {% elif a.get('detected_at') %}
+                                <div class="locked-badge" title="Verdict produced on {{ a.detected_at }} — frozen for audit.">locked</div>
+                                {% endif %}
+                            </td>
                             <td style="font-family:var(--mono);">${{ "%.2f"|format(a.close) }}</td>
                             <td>
                                 <div class="dots">
@@ -753,6 +828,7 @@
                                     <div class="dot {% if i < a.methods_flagged %}on{% endif %}"></div>
                                     {% endfor %}
                                 </div>
+                                <span class="consensus-chip" title="Consensus score — weighted blend of all four detection methods (0 = normal, 1 = extreme).">cs {{ "%.2f"|format(a.consensus_score) }}</span>
                             </td>
                             <td><span class="desc">{{ a.description }}</span></td>
                         </tr>
@@ -766,13 +842,21 @@
                             <td>
                                 <span class="signal-pill signal-{{ a.signal|lower }}">{{ a.signal_label }}</span>
                                 {% if a.get('is_new', false) %}<span class="new-badge">NEW</span>{% endif %}
+                                {% if a.get('is_stale', false) %}<span class="stale-pill" title="Signal is {{ a.days_old }} days old — may be acted upon or may have already run its course.">{{ a.days_old }}d old</span>{% elif a.get('days_old', None) is not none and a.days_old <= 3 %}<span class="fresh-pill">fresh</span>{% endif %}
                             </td>
                             <td><span class="confidence conf-{{ a.confidence|lower }}">{{ a.confidence }}</span></td>
                             <td>
                                 <div class="ticker-label">{{ a.ticker }}</div>
                                 <div class="ticker-sub">{{ a.ticker_name }}</div>
                             </td>
-                            <td style="font-family:var(--mono); font-size:0.75rem;">{{ a.date }}</td>
+                            <td style="font-family:var(--mono); font-size:0.75rem;">
+                                {{ a.date }}
+                                {% if a.get('detected_at') and a.detected_at != a.date %}
+                                <div class="locked-badge" title="Verdict produced on {{ a.detected_at }} — frozen for audit.">locked {{ a.detected_at }}</div>
+                                {% elif a.get('detected_at') %}
+                                <div class="locked-badge" title="Verdict produced on {{ a.detected_at }} — frozen for audit.">locked</div>
+                                {% endif %}
+                            </td>
                             <td style="font-family:var(--mono);">${{ "%.2f"|format(a.close) }}</td>
                             <td>
                                 <div class="dots">
@@ -780,6 +864,7 @@
                                     <div class="dot {% if i < a.methods_flagged %}on{% endif %}"></div>
                                     {% endfor %}
                                 </div>
+                                <span class="consensus-chip" title="Consensus score — weighted blend of all four detection methods (0 = normal, 1 = extreme).">cs {{ "%.2f"|format(a.consensus_score) }}</span>
                             </td>
                             <td><span class="desc">{{ a.description }}</span></td>
                         </tr>

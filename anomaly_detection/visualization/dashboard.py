@@ -3,7 +3,7 @@
 import json
 import logging
 import os
-from datetime import datetime
+from datetime import date, datetime
 
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
@@ -12,6 +12,7 @@ from ..config import (
     CATEGORY_LABELS,
     CATEGORY_ORDER,
     DOCS_DIR,
+    MODEL_VERSION,
     TICKER_NAMES,
     TICKER_REGISTRY,
     TICKER_SECTORS,
@@ -45,6 +46,31 @@ PINNED_DEEP_DIVE = [
 ]
 
 
+def _annotate_signal_staleness(alerts: list[dict], stale_after_days: int = 14) -> None:
+    """Add `days_old` and `is_stale` to each alert, in-place.
+
+    Staleness is measured from the signal's bar `date` to today. The
+    detected_at is shown on the card as the audit anchor, but staleness is
+    about how long the trading call has been sitting on the board — an open
+    BUY from 40 days ago deserves a visual warning.
+    """
+    today = date.today()
+    for a in alerts or []:
+        raw = a.get("date")
+        if not raw:
+            a["days_old"] = None
+            a["is_stale"] = False
+            continue
+        try:
+            d = datetime.strptime(str(raw)[:10], "%Y-%m-%d").date()
+        except ValueError:
+            a["days_old"] = None
+            a["is_stale"] = False
+            continue
+        a["days_old"] = (today - d).days
+        a["is_stale"] = a["days_old"] > stale_after_days
+
+
 def _deep_dive_buttons(tickers: list[str]) -> tuple[list[str], list[str]]:
     """Return (pinned_buttons, dropdown_remaining) for the deep-dive section.
 
@@ -70,6 +96,8 @@ def generate_dashboard(
 
     tickers = sorted(results["Ticker"].unique())
     signal_tickers = {a["ticker"] for a in alerts} if alerts else set()
+
+    _annotate_signal_staleness(alerts, stale_after_days=14)
 
     # Per-ticker main charts + method detail charts
     ticker_charts = {}
@@ -104,6 +132,7 @@ def generate_dashboard(
     n_anomalies = int(results["consensus_anomaly"].sum()) if "consensus_anomaly" in results.columns else 0
     n_actionable = sum(1 for a in alerts if a["signal"] not in ("WATCH", "REDUCE"))
     n_new_signals = sum(1 for a in alerts if a.get("is_new", False))
+    new_alerts = [a for a in alerts if a.get("is_new", False)]
 
     # Build ticker display info
     ticker_info = []
@@ -131,7 +160,10 @@ def generate_dashboard(
         lookback_days=lookback_days,
         sensitivity=sensitivity.capitalize(),
         generated_at=datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
+        model_version=MODEL_VERSION,
+        run_date=date.today().strftime("%Y-%m-%d"),
         alerts=alerts,
+        new_alerts=new_alerts,
         tickers=tickers,
         ticker_info=ticker_info,
         signal_tickers=signal_tickers,
