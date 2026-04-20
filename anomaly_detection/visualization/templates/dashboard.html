@@ -503,7 +503,7 @@
                 market anomaly intelligence <span>//</span>
                 {{ n_tickers }} tickers <span>|</span>
                 {{ sensitivity }} sensitivity <span>|</span>
-                {{ lookback_days }}d lookback <span>|</span>
+                since {{ start_date }} <span>|</span>
                 updated {{ generated_at }}
             </div>
         </div>
@@ -570,8 +570,8 @@
                 <div class="lbl">New This Run</div>
             </div>
             <div class="stat">
-                <div class="num" style="color:var(--muted)">{{ lookback_days }}d</div>
-                <div class="lbl">Lookback</div>
+                <div class="num" style="color:var(--muted); font-size: 1.2rem;">{{ start_date }}</div>
+                <div class="lbl">Anchor Date</div>
             </div>
         </div>
 
@@ -630,15 +630,29 @@
         <div class="tip-panel" id="tip-backtest">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Signal Performance</div>
-            <strong>BASELINE</strong> = $10k buy-and-hold per ticker from day one. Always open.<br>
-            <strong>Signal trades</strong> fire a new $10k trade each time BUY/LONG/SELL/SHORT triggers.<br>
-            <strong>Entry</strong> is the close on the day the signal was <em>detected</em>
-            (not the anomaly's bar date) so the backtest can't peek at the future.<br>
-            <strong>Exit</strong> is the close {{ backtest.holding_days }} trading days later.
-            If that exit date hasn't arrived yet, the trade stays OPEN and is marked to current price.<br>
-            <strong>CLOSED</strong> trades have a realised P&amp;L; <strong>OPEN</strong> trades are unrealised.
-            They're summarised separately so the numbers aren't conflated.<br>
-            <strong>Methods</strong> = which detection algorithms triggered the signal (Fourier, MatrixProfile, Ensemble, EWMA).
+            <strong>Trade rules:</strong><br>
+            &bull; Every BUY or LONG opens a $10k long at that day's close.<br>
+            &bull; Every SELL or SHORT opens a $10k short at that day's close.<br>
+            &bull; Two signals in the same direction on one ticker stack into two independent positions.<br>
+            &bull; An opposite-direction signal closes <em>every</em> open position of the other side on that ticker
+                (realising their P&amp;L) and opens its own new trade.<br>
+            &bull; WATCH and REDUCE are informational only &mdash; no trade.<br>
+            <strong>No baseline, no fixed holding window.</strong> Trades end when the opposite signal fires.
+            Everything still open at today's close stays marked-to-current.<br>
+            The curve below is the daily mark-to-market of the combined book.
+        </div>
+        <div class="tip-panel" id="tip-realized">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Realised P&amp;L</div>
+            The dollar total from trades that have actually closed (an opposite signal arrived and locked the price in).
+            This is money the strategy has "banked" &mdash; it cannot change if the market moves tomorrow.
+        </div>
+        <div class="tip-panel" id="tip-unrealized">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Unrealised P&amp;L</div>
+            The mark-to-market of positions still open today. It <em>will</em> move with tomorrow's prices
+            until an opposite signal closes the trade. Shown separately from realised so the numbers
+            aren't conflated &mdash; an open winner can still turn into a loser.
         </div>
         <div class="tip-panel" id="tip-sharpe">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -647,28 +661,27 @@
             Two strategies making 10% a year aren't equal &mdash; the one with less volatility has a higher Sharpe.<br>
             <strong>Rule of thumb:</strong> &lt; 0 = losing on average, 0&ndash;1 = mediocre,
             1&ndash;2 = good, 2+ = excellent (rare).<br>
-            Computed on closed trades only, annualised assuming
-            {{ backtest.holding_days }}-day holds roll {{ "%.0f"|format(252.0 / backtest.holding_days) }} times a year.
-            Shown as &mdash; when there are fewer than 2 closed trades.
+            Computed from the <em>daily</em> mark-to-market equity curve (realised + unrealised),
+            annualised by &radic;252. This is the honest time-series definition &mdash; it measures what
+            the whole book was actually doing day by day, not just closed trades.
         </div>
         <div class="tip-panel" id="tip-drawdown">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Max Drawdown</div>
-            <strong>Think of it as:</strong> the worst losing streak you'd have lived through.
-            It's the biggest peak-to-trough drop in cumulative P&amp;L as trades close in order.<br>
-            If the Signal's equity curve hit +$5,000 and then fell to +$2,000 before recovering,
+            <strong>Think of it as:</strong> the worst peak-to-trough slide you'd have lived through.
+            If the equity curve hit +$5,000 and then sagged to +$2,000 before recovering,
             max drawdown = $3,000 &mdash; even though the strategy ended up positive.<br>
-            <strong>Smaller is better.</strong> The percent figure expresses it as a fraction of
-            the capital deployed (trades &times; $10k).
+            <strong>Smaller is better.</strong> The percent figure is drawdown / total capital deployed
+            (trades &times; $10k), so "2%" means the book was 2 cents of every dollar committed
+            underwater at its worst moment.
         </div>
         <div class="tip-panel" id="tip-avghold">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Average Holding Period</div>
-            Mean number of trading bars between entry and exit, for closed trades only.<br>
-            Today every trade uses the same fixed exit ({{ backtest.holding_days }} days), so this
-            will mostly match. It becomes useful once stops or target exits are added:
-            short holds usually mean stops hitting; long holds usually mean the trade is working
-            all the way to the time exit.
+            Mean number of trading bars between entry and the opposite signal that closed the trade.<br>
+            A very short average holding period means signals are flipping fast on the same tickers
+            (choppy regime). A long average holding period means the Signal's calls tend to ride
+            until the next clear reversal.
         </div>
         <div class="tip-panel" id="tip-profitfactor">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -957,20 +970,18 @@
                 {% if backtest.signal_ledger %}
                 <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.75rem; line-height:1.6;">
                     <strong style="color:var(--green)">"Does this actually work?"</strong>
-                    Every signal is a $10k trade with an explicit lifecycle:
-                    entry at the close on the day the signal was <em>detected</em>
-                    (not the anomaly bar &mdash; no peeking),
-                    exit {{ backtest.holding_days }} trading days later.
-                    Trades still inside that window are <strong>OPEN</strong> and marked to current;
-                    the rest are <strong>CLOSED</strong> with realised P&amp;L.
-                    A <span class="trade-baseline">BASELINE</span> of $10k buy-and-hold per ticker is shown for reference.
+                    The book holds only what the Signal fired.
+                    Every BUY/LONG opens a $10k long at that day's close; every SELL/SHORT opens a $10k short.
+                    An opposite-direction signal closes every open position on that ticker and opens its own &mdash; so trades end when the math says the other side is taking over, not on a clock.
+                    Two BUYs on one ticker = two independent long positions.
+                    The curve below is the daily mark-to-market of the whole book.
                 </p>
 
                 <!-- Bottom-line banner -->
                 <div class="bottom-line-banner {% if backtest.total_gain < 0 %}loss{% endif %}">
                     <div class="bl-headline">
-                        Following THE SIGNAL over {{ backtest.start_date }} &mdash; {{ backtest.end_date }}:
-                        {{ "%+.1f"|format(backtest.total_pct) }}% return &mdash; ${{ "{:+,.2f}".format(backtest.total_gain) }} across {{ backtest.n_trades }} trades
+                        Following THE SIGNAL from {{ backtest.start_date }} &mdash; {{ backtest.end_date }}:
+                        ${{ "{:+,.2f}".format(backtest.total_gain) }} ({{ "%+.1f"|format(backtest.total_pct) }}% of capital deployed) across {{ backtest.n_trades }} trades
                     </div>
                     <div class="bl-sub">
                         {{ backtest.n_closed }} closed &bull; {{ backtest.n_open }} open &bull;
@@ -979,31 +990,37 @@
                     </div>
                 </div>
 
-                <!-- Summary stats -->
+                <!-- Summary stats: realized vs unrealized + overall -->
                 <div class="bt-grid" style="margin-top:1rem;">
                     <div class="bt-stat">
-                        <div class="bt-num" style="color:{% if backtest.closed_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
-                            ${{ "{:+,.0f}".format(backtest.closed_gain) }}
+                        <div class="bt-num" style="color:{% if backtest.realized_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                            ${{ "{:+,.0f}".format(backtest.realized_gain) }}
                         </div>
-                        <div class="bt-lbl">Closed P&amp;L ({{ backtest.n_closed }})</div>
+                        <div class="bt-lbl">
+                            Realised ({{ backtest.n_closed }} closed)
+                            <span class="tip-trigger" onclick="showTip(event, 'tip-realized')">?</span>
+                        </div>
                     </div>
                     <div class="bt-stat">
-                        <div class="bt-num" style="color:{% if backtest.open_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
-                            ${{ "{:+,.0f}".format(backtest.open_gain) }}
+                        <div class="bt-num" style="color:{% if backtest.unrealized_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                            ${{ "{:+,.0f}".format(backtest.unrealized_gain) }}
                         </div>
-                        <div class="bt-lbl">Open P&amp;L</div>
+                        <div class="bt-lbl">
+                            Unrealised ({{ backtest.n_open }} open)
+                            <span class="tip-trigger" onclick="showTip(event, 'tip-unrealized')">?</span>
+                        </div>
                     </div>
                     <div class="bt-stat">
-                        <div class="bt-num" style="color:var(--blue)">
-                            ${{ "{:+,.0f}".format(backtest.baseline_gain) }}
+                        <div class="bt-num" style="color:{% if backtest.total_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                            ${{ "{:+,.0f}".format(backtest.total_gain) }}
                         </div>
-                        <div class="bt-lbl">Baseline ({{ "%+.1f"|format(backtest.baseline_pct) }}%)</div>
+                        <div class="bt-lbl">Total P&amp;L (book)</div>
                     </div>
                     <div class="bt-stat">
                         <div class="bt-num" style="color:var(--amber)">
                             {% if backtest.n_trades > 0 %}{{ "%.0f"|format(backtest.n_winning / backtest.n_trades * 100) }}%{% else %}0%{% endif %}
                         </div>
-                        <div class="bt-lbl">Win Rate (all)</div>
+                        <div class="bt-lbl">Win Rate (all trades)</div>
                     </div>
                 </div>
 
@@ -1097,23 +1114,24 @@
                         <th>Ticker</th>
                         <th>Action</th>
                         <th>Entry Px</th>
-                        <th>Exit Px</th>
+                        <th>Mark / Exit Px</th>
                         <th>$ P&amp;L</th>
                         <th>%</th>
+                        <th>Exit Reason</th>
                         <th>Methods</th>
                     </tr></thead>
                     <tbody>
                         {% for s in backtest.signal_ledger %}
                         <tr onclick="selectTicker('{{ s.ticker }}')" style="cursor:pointer;">
                             <td>{{ s.entry_date or s.date }}</td>
-                            <td>{% if s.exit_date %}{{ s.exit_date }}{% else %}&mdash;{% endif %}</td>
+                            <td>{% if s.status == 'OPEN' %}&mdash;{% else %}{{ s.exit_date }}{% endif %}</td>
                             <td>
                                 <span class="trade-status trade-status-{{ s.status|lower }}">{{ s.status }}</span>
                             </td>
                             <td style="font-weight:600;">{{ s.display }}</td>
                             <td class="trade-{{ s.action|lower }}">{{ s.action }}</td>
-                            <td>${{ "%.2f"|format(s.action_price) }}</td>
-                            <td>${{ "%.2f"|format(s.exit_price if s.exit_price is defined and s.exit_price is not none else s.current_price) }}</td>
+                            <td>${{ "%.2f"|format(s.entry_price if s.entry_price is defined else s.action_price) }}</td>
+                            <td>${{ "%.2f"|format(s.exit_price) }}</td>
                             <td>
                                 <span style="font-weight:700; color:{% if s.dollar_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
                                     ${{ "{:+,.2f}".format(s.dollar_gain) }}
@@ -1124,6 +1142,11 @@
                                     {{ "%+.1f"|format(s.pct_change) }}%
                                 </span>
                             </td>
+                            <td style="font-size:0.68rem; color:var(--muted);">
+                                {% if s.exit_reason == 'opposite_signal' %}opposite signal
+                                {% elif s.exit_reason == 'open' %}<em>still open</em>
+                                {% else %}{{ s.exit_reason }}{% endif %}
+                            </td>
                             <td style="font-size:0.7rem; color:var(--muted);">{{ s.methods }}</td>
                         </tr>
                         {% endfor %}
@@ -1132,9 +1155,9 @@
                 </div>
 
                 <p style="margin-top: 0.75rem; font-size: 0.65rem; color: var(--dim); font-style: italic; font-family: var(--mono);">
-                    Simplified simulation for educational purposes only. Each signal = $10k trade.
-                    No slippage, commissions, or market impact modeled. Not financial advice.
-                    Past performance does not predict future results. This is NOT financial advice.
+                    Simulation for educational purposes only. Each signal = $10k trade.
+                    No slippage, commissions, borrow costs, or market impact modelled. Shorts assume
+                    frictionless borrow. This is NOT financial advice &mdash; past performance does not predict future results.
                 </p>
                 {% else %}
                 <div class="empty-msg">No signal data available for performance tracking yet. Signals will appear after the first anomaly detection run.</div>
