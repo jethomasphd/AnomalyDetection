@@ -320,6 +320,59 @@
         .trade-hold { color: var(--amber); }
         .trade-baseline { color: var(--blue); }
         .trade-open { color: var(--amber); font-weight: 600; }
+        .trade-status {
+            display: inline-block; padding: 0.1rem 0.45rem; border-radius: 3px;
+            font-size: 0.6rem; font-weight: 700; letter-spacing: 0.04em;
+            text-transform: uppercase; font-family: var(--mono);
+        }
+        .trade-status-open { color: var(--amber); background: rgba(255,214,0,0.12); border: 1px solid rgba(255,214,0,0.25); }
+        .trade-status-closed { color: var(--green); background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.22); }
+
+        /* Signal row metadata: detected_at lock, staleness, consensus */
+        .locked-badge {
+            display: inline-block; margin-left: 0.35rem;
+            font-family: var(--mono); font-size: 0.58rem;
+            color: var(--muted); letter-spacing: 0.03em;
+        }
+        .locked-badge::before { content: "\01F512  "; font-size: 0.6rem; }
+        .stale-pill {
+            display: inline-block; padding: 0.08rem 0.38rem; border-radius: 3px;
+            font-size: 0.56rem; font-weight: 700; letter-spacing: 0.04em;
+            text-transform: uppercase; font-family: var(--mono);
+            color: var(--amber); background: rgba(255,214,0,0.1);
+            border: 1px solid rgba(255,214,0,0.25);
+            margin-left: 0.35rem;
+        }
+        .fresh-pill {
+            display: inline-block; padding: 0.08rem 0.38rem; border-radius: 3px;
+            font-size: 0.56rem; font-weight: 700; letter-spacing: 0.04em;
+            text-transform: uppercase; font-family: var(--mono);
+            color: var(--green); background: rgba(0,230,118,0.1);
+            border: 1px solid rgba(0,230,118,0.25);
+            margin-left: 0.35rem;
+        }
+        .consensus-chip {
+            display: inline-block; padding: 0.08rem 0.4rem; border-radius: 3px;
+            font-size: 0.58rem; font-family: var(--mono); color: var(--muted);
+            background: var(--surface2); border: 1px solid var(--border);
+            margin-left: 0.25rem;
+        }
+        .new-this-run-panel {
+            border: 1px solid rgba(0,230,118,0.3);
+            background: rgba(0,230,118,0.05);
+            border-radius: 6px; padding: 0.6rem 0.9rem; margin: 0.6rem 0.9rem 0.4rem;
+        }
+        .new-this-run-panel.empty {
+            border-color: var(--border); background: var(--surface2);
+        }
+        .new-this-run-head {
+            font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.04em;
+            text-transform: uppercase; color: var(--green); margin-bottom: 0.35rem;
+        }
+        .new-this-run-panel.empty .new-this-run-head { color: var(--muted); }
+        .new-this-run-list {
+            font-size: 0.78rem; color: var(--text); line-height: 1.5;
+        }
 
         /* === LEARN PANEL === */
         .learn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.6rem; }
@@ -526,7 +579,7 @@
         <div class="tip-panel" id="tip-monitored">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Tickers Monitored</div>
-            {{ n_tickers }} stocks and funds tracked across 10 strategic categories:<br>
+            {{ n_tickers }} stocks and funds tracked across 11 strategic categories:<br>
             <strong><a href="https://the-companion-dossier.com/The_Watchtower" target="_blank" style="color:var(--green);">Engines of the Republic</a></strong> &mdash; the companies that build, feed, and finance America<br>
             <strong><a href="https://the-companion-dossier.com/The_Watchtower" target="_blank" style="color:var(--green);">Critical Choke Points</a></strong> &mdash; gatekeepers of energy, payments, logistics, and tech<br>
             <strong>Big Tech</strong> &mdash; highest signal density, highest retail interest<br>
@@ -535,6 +588,7 @@
             <strong>Healthcare &amp; Pharma</strong> &mdash; the companies keeping people alive<br>
             <strong>Energy &amp; Commodities</strong> &mdash; when geopolitics moves, these move first<br>
             <strong>Wall Street's Darlings</strong> &mdash; the ETFs and index funds they want you to buy<br>
+            <strong>The Clergy House</strong> &mdash; a Priest's bespoke collection<br>
             These aren't random picks &mdash; they're the pillars and pressure points of the economy.
         </div>
         <div class="tip-panel" id="tip-anomalies">
@@ -576,11 +630,64 @@
         <div class="tip-panel" id="tip-backtest">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Signal Performance</div>
-            <strong>BASELINE</strong> = $10k long in every ticker from day one of the observation window.
-            When a signal fires, it adds another $10k trade on top:
-            <strong>BUY/LONG</strong> = $10k long. <strong>SELL/SHORT</strong> = $10k short.
-            All positions marked to current price.
+            <strong>BASELINE</strong> = $10k buy-and-hold per ticker from day one. Always open.<br>
+            <strong>Signal trades</strong> fire a new $10k trade each time BUY/LONG/SELL/SHORT triggers.<br>
+            <strong>Entry</strong> is the close on the day the signal was <em>detected</em>
+            (not the anomaly's bar date) so the backtest can't peek at the future.<br>
+            <strong>Exit</strong> is the close {{ backtest.holding_days }} trading days later.
+            If that exit date hasn't arrived yet, the trade stays OPEN and is marked to current price.<br>
+            <strong>CLOSED</strong> trades have a realised P&amp;L; <strong>OPEN</strong> trades are unrealised.
+            They're summarised separately so the numbers aren't conflated.<br>
             <strong>Methods</strong> = which detection algorithms triggered the signal (Fourier, MatrixProfile, Ensemble, EWMA).
+        </div>
+        <div class="tip-panel" id="tip-sharpe">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Sharpe Ratio</div>
+            <strong>Think of it as:</strong> return per unit of risk.
+            Two strategies making 10% a year aren't equal &mdash; the one with less volatility has a higher Sharpe.<br>
+            <strong>Rule of thumb:</strong> &lt; 0 = losing on average, 0&ndash;1 = mediocre,
+            1&ndash;2 = good, 2+ = excellent (rare).<br>
+            Computed on closed trades only, annualised assuming
+            {{ backtest.holding_days }}-day holds roll {{ "%.0f"|format(252.0 / backtest.holding_days) }} times a year.
+            Shown as &mdash; when there are fewer than 2 closed trades.
+        </div>
+        <div class="tip-panel" id="tip-drawdown">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Max Drawdown</div>
+            <strong>Think of it as:</strong> the worst losing streak you'd have lived through.
+            It's the biggest peak-to-trough drop in cumulative P&amp;L as trades close in order.<br>
+            If the Signal's equity curve hit +$5,000 and then fell to +$2,000 before recovering,
+            max drawdown = $3,000 &mdash; even though the strategy ended up positive.<br>
+            <strong>Smaller is better.</strong> The percent figure expresses it as a fraction of
+            the capital deployed (trades &times; $10k).
+        </div>
+        <div class="tip-panel" id="tip-avghold">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Average Holding Period</div>
+            Mean number of trading bars between entry and exit, for closed trades only.<br>
+            Today every trade uses the same fixed exit ({{ backtest.holding_days }} days), so this
+            will mostly match. It becomes useful once stops or target exits are added:
+            short holds usually mean stops hitting; long holds usually mean the trade is working
+            all the way to the time exit.
+        </div>
+        <div class="tip-panel" id="tip-profitfactor">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Profit Factor</div>
+            <strong>Total $ from winners &divide; total $ from losers.</strong><br>
+            1.0 = break-even (wins exactly cover losses).
+            Above 1.0 = profitable; a 1.5 means every $1 lost is offset by $1.50 won.
+            Below 1.0 = losing money in aggregate.<br>
+            More robust than raw win rate: a 30% win rate can still be highly profitable
+            if wins are much bigger than losses.
+        </div>
+        <div class="tip-panel" id="tip-hitrate">
+            <button class="tip-close" onclick="hideTips()">&times;</button>
+            <div class="tip-title">Hit Rate by Signal</div>
+            Win rate broken out by signal type (BUY, SELL, LONG, SHORT).<br>
+            <strong>Why it matters:</strong> the overall win rate can hide the fact that one signal type
+            is carrying the strategy while another is bleeding. If BUY is 70% and SHORT is 30%,
+            you'd want to know that before trusting the headline number.<br>
+            Computed on closed trades only.
         </div>
         <div class="tip-panel" id="tip-fourier">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -642,6 +749,27 @@
             </div>
             <div class="card-body flush" style="overflow-x: auto;">
                 {% if alerts %}
+                {% if new_alerts %}
+                <div class="new-this-run-panel">
+                    <div class="new-this-run-head">
+                        New This Run &mdash; {{ new_alerts|length }} signal{{ '' if new_alerts|length == 1 else 's' }} fired on {{ run_date }}
+                    </div>
+                    <div class="new-this-run-list">
+                        {% for a in new_alerts %}
+                            <a href="#" onclick="selectTicker('{{ a.ticker }}'); return false;" style="color: {{ a.signal_color }}; font-weight:600;">{{ a.signal_label }}</a>
+                            {{ a.ticker }}
+                            <span class="consensus-chip">cs {{ "%.2f"|format(a.consensus_score) }}</span>{% if not loop.last %} &middot; {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="new-this-run-panel empty">
+                    <div class="new-this-run-head">New This Run</div>
+                    <div class="new-this-run-list" style="color:var(--muted);">
+                        No new signals on {{ run_date }}. All rows below are frozen history &mdash; their verdicts cannot change as the 365-day window slides.
+                    </div>
+                </div>
+                {% endif %}
                 <div style="padding: 0.6rem 0.9rem 0;">
                     <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.5rem; line-height:1.6;">
                         When an anomaly is detected, THE SIGNAL translates it into a directional call.
@@ -678,13 +806,21 @@
                             <td>
                                 <span class="signal-pill signal-{{ a.signal|lower }}">{{ a.signal_label }}</span>
                                 {% if a.get('is_new', false) %}<span class="new-badge">NEW</span>{% endif %}
+                                {% if a.get('is_stale', false) %}<span class="stale-pill" title="Signal is {{ a.days_old }} days old — may be acted upon or may have already run its course.">{{ a.days_old }}d old</span>{% elif a.get('days_old', None) is not none and a.days_old <= 3 %}<span class="fresh-pill">fresh</span>{% endif %}
                             </td>
                             <td><span class="confidence conf-{{ a.confidence|lower }}">{{ a.confidence }}</span></td>
                             <td>
                                 <div class="ticker-label">{{ a.ticker }}</div>
                                 <div class="ticker-sub">{{ a.ticker_name }}</div>
                             </td>
-                            <td style="font-family:var(--mono); font-size:0.75rem;">{{ a.date }}</td>
+                            <td style="font-family:var(--mono); font-size:0.75rem;">
+                                {{ a.date }}
+                                {% if a.get('detected_at') and a.detected_at != a.date %}
+                                <div class="locked-badge" title="Verdict produced on {{ a.detected_at }} — frozen for audit.">locked {{ a.detected_at }}</div>
+                                {% elif a.get('detected_at') %}
+                                <div class="locked-badge" title="Verdict produced on {{ a.detected_at }} — frozen for audit.">locked</div>
+                                {% endif %}
+                            </td>
                             <td style="font-family:var(--mono);">${{ "%.2f"|format(a.close) }}</td>
                             <td>
                                 <div class="dots">
@@ -692,6 +828,7 @@
                                     <div class="dot {% if i < a.methods_flagged %}on{% endif %}"></div>
                                     {% endfor %}
                                 </div>
+                                <span class="consensus-chip" title="Consensus score — weighted blend of all four detection methods (0 = normal, 1 = extreme).">cs {{ "%.2f"|format(a.consensus_score) }}</span>
                             </td>
                             <td><span class="desc">{{ a.description }}</span></td>
                         </tr>
@@ -705,13 +842,21 @@
                             <td>
                                 <span class="signal-pill signal-{{ a.signal|lower }}">{{ a.signal_label }}</span>
                                 {% if a.get('is_new', false) %}<span class="new-badge">NEW</span>{% endif %}
+                                {% if a.get('is_stale', false) %}<span class="stale-pill" title="Signal is {{ a.days_old }} days old — may be acted upon or may have already run its course.">{{ a.days_old }}d old</span>{% elif a.get('days_old', None) is not none and a.days_old <= 3 %}<span class="fresh-pill">fresh</span>{% endif %}
                             </td>
                             <td><span class="confidence conf-{{ a.confidence|lower }}">{{ a.confidence }}</span></td>
                             <td>
                                 <div class="ticker-label">{{ a.ticker }}</div>
                                 <div class="ticker-sub">{{ a.ticker_name }}</div>
                             </td>
-                            <td style="font-family:var(--mono); font-size:0.75rem;">{{ a.date }}</td>
+                            <td style="font-family:var(--mono); font-size:0.75rem;">
+                                {{ a.date }}
+                                {% if a.get('detected_at') and a.detected_at != a.date %}
+                                <div class="locked-badge" title="Verdict produced on {{ a.detected_at }} — frozen for audit.">locked {{ a.detected_at }}</div>
+                                {% elif a.get('detected_at') %}
+                                <div class="locked-badge" title="Verdict produced on {{ a.detected_at }} — frozen for audit.">locked</div>
+                                {% endif %}
+                            </td>
                             <td style="font-family:var(--mono);">${{ "%.2f"|format(a.close) }}</td>
                             <td>
                                 <div class="dots">
@@ -719,6 +864,7 @@
                                     <div class="dot {% if i < a.methods_flagged %}on{% endif %}"></div>
                                     {% endfor %}
                                 </div>
+                                <span class="consensus-chip" title="Consensus score — weighted blend of all four detection methods (0 = normal, 1 = extreme).">cs {{ "%.2f"|format(a.consensus_score) }}</span>
                             </td>
                             <td><span class="desc">{{ a.description }}</span></td>
                         </tr>
@@ -811,10 +957,13 @@
                 {% if backtest.signal_ledger %}
                 <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.75rem; line-height:1.6;">
                     <strong style="color:var(--green)">"Does this actually work?"</strong>
-                    We start with $10k in every ticker on day one (<span class="trade-baseline">BASELINE</span>).
-                    When THE SIGNAL fires, it's another $10k trade on top:
-                    BUY/LONG = $10k long, SELL/SHORT = $10k short.
-                    Every position, every outcome. No cherry-picking.
+                    Every signal is a $10k trade with an explicit lifecycle:
+                    entry at the close on the day the signal was <em>detected</em>
+                    (not the anomaly bar &mdash; no peeking),
+                    exit {{ backtest.holding_days }} trading days later.
+                    Trades still inside that window are <strong>OPEN</strong> and marked to current;
+                    the rest are <strong>CLOSED</strong> with realised P&amp;L.
+                    A <span class="trade-baseline">BASELINE</span> of $10k buy-and-hold per ticker is shown for reference.
                 </p>
 
                 <!-- Bottom-line banner -->
@@ -824,7 +973,7 @@
                         {{ "%+.1f"|format(backtest.total_pct) }}% return &mdash; ${{ "{:+,.2f}".format(backtest.total_gain) }} across {{ backtest.n_trades }} trades
                     </div>
                     <div class="bl-sub">
-                        {{ backtest.n_trades }} trades &times; $10k each &bull;
+                        {{ backtest.n_closed }} closed &bull; {{ backtest.n_open }} open &bull;
                         {{ backtest.n_winning }} winning &bull;
                         ${{ "{:,}".format(backtest.total_invested) }} deployed
                     </div>
@@ -833,28 +982,104 @@
                 <!-- Summary stats -->
                 <div class="bt-grid" style="margin-top:1rem;">
                     <div class="bt-stat">
-                        <div class="bt-num" style="color:{% if backtest.total_pct >= 0 %}var(--green){% else %}var(--red){% endif %}">
-                            {{ "%+.1f"|format(backtest.total_pct) }}%
+                        <div class="bt-num" style="color:{% if backtest.closed_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                            ${{ "{:+,.0f}".format(backtest.closed_gain) }}
                         </div>
-                        <div class="bt-lbl">Overall Return</div>
+                        <div class="bt-lbl">Closed P&amp;L ({{ backtest.n_closed }})</div>
                     </div>
                     <div class="bt-stat">
-                        <div class="bt-num" style="color:{% if backtest.total_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
-                            ${{ "{:+,.0f}".format(backtest.total_gain) }}
+                        <div class="bt-num" style="color:{% if backtest.open_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                            ${{ "{:+,.0f}".format(backtest.open_gain) }}
                         </div>
-                        <div class="bt-lbl">Total $ Gain</div>
+                        <div class="bt-lbl">Open P&amp;L</div>
                     </div>
                     <div class="bt-stat">
-                        <div class="bt-num" style="color:var(--blue)">{{ backtest.n_trades }}</div>
-                        <div class="bt-lbl">Trades</div>
+                        <div class="bt-num" style="color:var(--blue)">
+                            ${{ "{:+,.0f}".format(backtest.baseline_gain) }}
+                        </div>
+                        <div class="bt-lbl">Baseline ({{ "%+.1f"|format(backtest.baseline_pct) }}%)</div>
                     </div>
                     <div class="bt-stat">
                         <div class="bt-num" style="color:var(--amber)">
                             {% if backtest.n_trades > 0 %}{{ "%.0f"|format(backtest.n_winning / backtest.n_trades * 100) }}%{% else %}0%{% endif %}
                         </div>
-                        <div class="bt-lbl">Win Rate</div>
+                        <div class="bt-lbl">Win Rate (all)</div>
                     </div>
                 </div>
+
+                <!-- Risk / quality stats — closed trades only -->
+                <p style="font-size:0.72rem; color:var(--muted); margin: 1rem 0 0.4rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.04em;">
+                    Risk &amp; Quality &mdash; Closed Trades Only ({{ backtest.stats.n_closed }})
+                </p>
+                <div class="bt-grid">
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:{% if backtest.stats.sharpe is not none and backtest.stats.sharpe >= 0 %}var(--green){% elif backtest.stats.sharpe is none %}var(--muted){% else %}var(--red){% endif %}">
+                            {% if backtest.stats.sharpe is not none %}{{ "%.2f"|format(backtest.stats.sharpe) }}{% else %}&mdash;{% endif %}
+                        </div>
+                        <div class="bt-lbl">
+                            Sharpe
+                            <span class="tip-trigger" onclick="showTip(event, 'tip-sharpe')">?</span>
+                        </div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:var(--red)">
+                            -${{ "{:,.0f}".format(backtest.stats.max_drawdown) }}
+                        </div>
+                        <div class="bt-lbl">
+                            Max Drawdown ({{ "%.1f"|format(backtest.stats.max_drawdown_pct) }}%)
+                            <span class="tip-trigger" onclick="showTip(event, 'tip-drawdown')">?</span>
+                        </div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:var(--blue)">
+                            {{ "%.0f"|format(backtest.stats.avg_hold_days) }}d
+                        </div>
+                        <div class="bt-lbl">
+                            Avg Hold
+                            <span class="tip-trigger" onclick="showTip(event, 'tip-avghold')">?</span>
+                        </div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:{% if backtest.stats.profit_factor is not none and backtest.stats.profit_factor >= 1.0 %}var(--green){% elif backtest.stats.profit_factor is none %}var(--muted){% else %}var(--red){% endif %}">
+                            {% if backtest.stats.profit_factor is not none %}{{ "%.2f"|format(backtest.stats.profit_factor) }}{% else %}&mdash;{% endif %}
+                        </div>
+                        <div class="bt-lbl">
+                            Profit Factor
+                            <span class="tip-trigger" onclick="showTip(event, 'tip-profitfactor')">?</span>
+                        </div>
+                    </div>
+                </div>
+
+                {% if backtest.stats.hit_rate_by_signal %}
+                <p style="font-size:0.72rem; color:var(--muted); margin: 1rem 0 0.4rem; font-family:var(--mono); text-transform:uppercase; letter-spacing:0.04em;">
+                    Hit Rate by Signal
+                    <span class="tip-trigger" onclick="showTip(event, 'tip-hitrate')">?</span>
+                </p>
+                <div style="overflow-x:auto;">
+                <table class="trade-log-tbl">
+                    <thead><tr>
+                        <th>Signal</th>
+                        <th>Closed</th>
+                        <th>Wins</th>
+                        <th>Win Rate</th>
+                        <th>Avg P&amp;L</th>
+                    </tr></thead>
+                    <tbody>
+                        {% for sig, info in backtest.stats.hit_rate_by_signal.items() %}
+                        <tr>
+                            <td class="trade-{{ sig|lower }}" style="font-weight:700;">{{ sig }}</td>
+                            <td>{{ info.n }}</td>
+                            <td>{{ info.n_win }}</td>
+                            <td>{{ "%.0f"|format(info.win_rate * 100) }}%</td>
+                            <td style="color:{% if info.avg_pnl >= 0 %}var(--green){% else %}var(--red){% endif %}; font-weight:700;">
+                                ${{ "{:+,.2f}".format(info.avg_pnl) }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+                {% endif %}
 
                 <!-- Gain/loss chart -->
                 <div id="backtest-chart" style="min-height: 300px;"></div>
@@ -866,11 +1091,13 @@
                 <div style="overflow-x:auto;">
                 <table class="trade-log-tbl">
                     <thead><tr>
-                        <th>Date</th>
+                        <th>Entry</th>
+                        <th>Exit</th>
+                        <th>Status</th>
                         <th>Ticker</th>
                         <th>Action</th>
-                        <th>Signal Price</th>
-                        <th>Current</th>
+                        <th>Entry Px</th>
+                        <th>Exit Px</th>
                         <th>$ P&amp;L</th>
                         <th>%</th>
                         <th>Methods</th>
@@ -878,11 +1105,15 @@
                     <tbody>
                         {% for s in backtest.signal_ledger %}
                         <tr onclick="selectTicker('{{ s.ticker }}')" style="cursor:pointer;">
-                            <td>{{ s.date }}</td>
+                            <td>{{ s.entry_date or s.date }}</td>
+                            <td>{% if s.exit_date %}{{ s.exit_date }}{% else %}&mdash;{% endif %}</td>
+                            <td>
+                                <span class="trade-status trade-status-{{ s.status|lower }}">{{ s.status }}</span>
+                            </td>
                             <td style="font-weight:600;">{{ s.display }}</td>
                             <td class="trade-{{ s.action|lower }}">{{ s.action }}</td>
                             <td>${{ "%.2f"|format(s.action_price) }}</td>
-                            <td>${{ "%.2f"|format(s.current_price) }}</td>
+                            <td>${{ "%.2f"|format(s.exit_price if s.exit_price is defined and s.exit_price is not none else s.current_price) }}</td>
                             <td>
                                 <span style="font-weight:700; color:{% if s.dollar_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
                                     ${{ "{:+,.2f}".format(s.dollar_gain) }}

@@ -84,6 +84,18 @@ def test_tickers_by_category():
     assert "DVRUX" in groups["UBS_FUNDS"]
 
 
+def test_clergy_house_category():
+    """The Clergy House is the Priest's bespoke collection."""
+    assert CATEGORY_LABELS.get("CLERGY_HOUSE") == "The Clergy House"
+    groups = tickers_by_category()
+    assert "CLERGY_HOUSE" in groups
+    assert set(groups["CLERGY_HOUSE"]) == {"ASTS", "STM"}
+    # Both must be real non-fund entries
+    for t in ("ASTS", "STM"):
+        assert TICKER_REGISTRY[t]["category"] == "CLERGY_HOUSE"
+        assert TICKER_REGISTRY[t]["is_fund"] is False
+
+
 def test_no_midcap_in_defaults():
     """UBS Midcap must NOT be in default tickers unless validated."""
     for t in DEFAULT_TICKERS:

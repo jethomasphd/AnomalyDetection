@@ -12,6 +12,8 @@ from anomaly_detection.storage import (
     get_all_signals,
     get_all_anomalies,
     get_existing_dates,
+    get_bar_watermarks,
+    update_bar_watermarks,
 )
 from anomaly_detection.config import MODEL_VERSION
 
@@ -138,3 +140,87 @@ def test_empty_upsert(tmp_db):
     """Upserting empty list should be a no-op."""
     assert upsert_anomalies([], db_path=tmp_db) == 0
     assert upsert_signals([], db_path=tmp_db) == 0
+
+
+def test_anomaly_rows_are_frozen(tmp_db):
+    """Existing (date, ticker, anomaly_type, model_version) must not be overwritten."""
+    original = [{
+        "date": "2026-02-01", "ticker": "AAPL", "anomaly_type": "consensus",
+        "severity_score": 0.91, "direction": "above",
+        "model_version": MODEL_VERSION,
+    }]
+    upsert_anomalies(original, db_path=tmp_db)
+
+    # Attempt to overwrite with a different severity / direction
+    overwrite = [{
+        "date": "2026-02-01", "ticker": "AAPL", "anomaly_type": "consensus",
+        "severity_score": 0.01, "direction": "below",
+        "model_version": MODEL_VERSION,
+    }]
+    inserted = upsert_anomalies(overwrite, db_path=tmp_db)
+    assert inserted == 0, "append-only store must ignore a conflicting insert"
+
+    stored = [a for a in get_all_anomalies(db_path=tmp_db)
+              if a["ticker"] == "AAPL" and a["date"] == "2026-02-01"]
+    assert len(stored) == 1
+    assert stored[0]["severity_score"] == 0.91
+    assert stored[0]["direction"] == "above"
+
+
+def test_signal_rows_are_frozen(tmp_db):
+    """An original signal must survive a re-insert with different fields."""
+    original = [{
+        "date": "2026-02-01", "ticker": "AAPL", "signal": "BUY",
+        "confidence": "Strong", "model_version": MODEL_VERSION,
+    }]
+    upsert_signals(original, db_path=tmp_db)
+
+    overwrite = [{
+        "date": "2026-02-01", "ticker": "AAPL", "signal": "SELL",
+        "confidence": "Developing", "model_version": MODEL_VERSION,
+    }]
+    inserted = upsert_signals(overwrite, db_path=tmp_db)
+    assert inserted == 0
+
+    sigs = get_all_signals(db_path=tmp_db)
+    assert len(sigs) == 1
+    assert sigs[0]["signal"] == "BUY"
+    assert sigs[0]["confidence"] == "Strong"
+
+
+def test_watermark_roundtrip(tmp_db):
+    assert get_bar_watermarks(db_path=tmp_db) == {}
+    update_bar_watermarks({"AAPL": "2026-02-01", "MSFT": "2026-02-02"}, db_path=tmp_db)
+    wm = get_bar_watermarks(db_path=tmp_db)
+    assert wm == {"AAPL": "2026-02-01", "MSFT": "2026-02-02"}
+
+
+def test_detected_at_is_persisted(tmp_db):
+    """detected_at should round-trip through the anomalies and signals tables."""
+    upsert_anomalies([{
+        "date": "2026-02-01", "ticker": "NVDA", "anomaly_type": "consensus",
+        "severity_score": 0.8, "model_version": MODEL_VERSION,
+        "detected_at": "2026-02-02",
+    }], db_path=tmp_db)
+    upsert_signals([{
+        "date": "2026-02-01", "ticker": "NVDA", "signal": "BUY",
+        "confidence": "Strong", "model_version": MODEL_VERSION,
+        "detected_at": "2026-02-02",
+    }], db_path=tmp_db)
+
+    anoms = get_all_anomalies(db_path=tmp_db)
+    sigs = get_all_signals(db_path=tmp_db)
+    assert anoms[0]["detected_at"] == "2026-02-02"
+    assert sigs[0]["detected_at"] == "2026-02-02"
+    # Bar date is preserved as the distinct event anchor
+    assert anoms[0]["date"] == "2026-02-01"
+
+
+def test_watermark_never_moves_backwards(tmp_db):
+    update_bar_watermarks({"AAPL": "2026-02-05"}, db_path=tmp_db)
+    update_bar_watermarks({"AAPL": "2026-01-01"}, db_path=tmp_db)  # older, should be ignored
+    assert get_bar_watermarks(db_path=tmp_db)["AAPL"] == "2026-02-05"
+
+    # Moving forward works
+    update_bar_watermarks({"AAPL": "2026-02-10"}, db_path=tmp_db)
+    assert get_bar_watermarks(db_path=tmp_db)["AAPL"] == "2026-02-10"

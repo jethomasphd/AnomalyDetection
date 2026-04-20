@@ -123,6 +123,13 @@ TICKER_REGISTRY = {
     "XLE":   {"name": "Energy Select SPDR",         "category": "WALL_STREET_DARLINGS", "is_fund": True, "sector": "Energy"},
 
     # =========================================================================
+    # THE CLERGY HOUSE — a Priest's bespoke collection. Curated picks outside
+    # the standard taxonomy that the Signal still tracks for the house.
+    # =========================================================================
+    "ASTS":  {"name": "AST SpaceMobile",            "category": "CLERGY_HOUSE", "is_fund": False, "sector": "Communication Services"},
+    "STM":   {"name": "STMicroelectronics",         "category": "CLERGY_HOUSE", "is_fund": False, "sector": "Technology"},
+
+    # =========================================================================
     # RESERVE — Treasury proxy for risk-off benchmarking.
     # =========================================================================
     "BIL":   {"name": "SPDR Bloomberg 1-3 Month T-Bill", "category": "RESERVE", "is_fund": True, "sector": "Fixed Income"},
@@ -145,8 +152,14 @@ CATEGORY_LABELS = {
     "HEALTHCARE_PHARMA": "Healthcare & Pharma",
     "ENERGY_COMMODITIES": "Energy & Commodities",
     "WALL_STREET_DARLINGS": "Wall Street's Darlings",
+    "CLERGY_HOUSE": "The Clergy House",
     "RESERVE": "Reserve",
     "UBS_FUNDS": "UBS Funds",
+}
+
+# Short tagline shown under each category heading on the dashboard.
+CATEGORY_TAGLINES = {
+    "CLERGY_HOUSE": "A Priest's bespoke collection.",
 }
 
 CATEGORY_ORDER = list(CATEGORY_LABELS.keys())

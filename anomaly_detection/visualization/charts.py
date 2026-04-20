@@ -593,19 +593,27 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
 
 # ---- Backtest: full lookback signal-following performance ----
 
-def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
-    """Simulate signal performance — $10k in every ticker at start, signals trade on top.
+def compute_backtest(
+    results: pd.DataFrame,
+    alerts: list[dict],
+    holding_days: int = 20,
+    unit: float = 10_000,
+) -> dict:
+    """Simulate signal performance with explicit trade lifecycles.
 
-    Model:
-      Day 1: we buy $10k of every monitored ticker (long).
-      When a signal fires, it's a new $10k trade on top of the baseline:
-        BUY/LONG  — another $10k long at signal price.
-        SELL/SHORT — $10k short at signal price.
-      Already holding from baseline? BUY adds another $10k (double down).
-      Everything is marked to current price at window close.
-      WATCH and REDUCE are informational — not traded.
+    Trade model:
+      - BASELINE: $10k buy-and-hold per ticker from the first bar in the
+        window. Always OPEN — this is the "do nothing" reference position.
+      - SIGNAL trades (BUY / LONG / SELL / SHORT): each fires a new $10k trade.
+          * entry_date  = the signal's detected_at (run-date it fired), NOT
+            the bar date — the backtest uses the close on the day the manager
+            would have actually acted on the signal, so it can't peek forward.
+          * exit_date   = entry_date + `holding_days` trading days.
+          * exit_price  = close on exit_date.
+          * status      = CLOSED if exit_date <= last bar, else OPEN
+            (mark-to-current).
+      - WATCH and REDUCE are informational only and never traded.
     """
-    UNIT = 10_000
     empty = {
         "signal_ledger": [],
         "total_gain": 0,
@@ -614,8 +622,14 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
         "n_trades": 0,
         "n_winning": 0,
         "n_open": 0,
+        "n_closed": 0,
+        "closed_gain": 0,
+        "open_gain": 0,
+        "baseline_gain": 0,
+        "baseline_pct": 0,
         "start_date": None,
         "end_date": None,
+        "holding_days": holding_days,
     }
     if results.empty:
         return empty
@@ -625,14 +639,18 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
     start_str = start.strftime("%Y-%m-%d") if hasattr(start, "strftime") else str(start)[:10]
     today_str = str(today)[:10]
 
-    # First and latest price per ticker
-    first_prices = {}
-    latest_prices = {}
+    # Build per-ticker sorted price series for O(1) lookups by date.
+    by_ticker: dict[str, pd.DataFrame] = {}
+    first_prices: dict[str, float] = {}
+    latest_prices: dict[str, float] = {}
     for ticker in results["Ticker"].unique():
-        grp = results[results["Ticker"] == ticker].sort_values("Date")
-        if not grp.empty:
-            first_prices[ticker] = float(grp["Close"].iloc[0])
-            latest_prices[ticker] = float(grp["Close"].iloc[-1])
+        grp = results[results["Ticker"] == ticker][["Date", "Close"]].sort_values("Date").reset_index(drop=True)
+        if grp.empty:
+            continue
+        grp["DateStr"] = pd.to_datetime(grp["Date"]).dt.strftime("%Y-%m-%d")
+        by_ticker[ticker] = grp
+        first_prices[ticker] = float(grp["Close"].iloc[0])
+        latest_prices[ticker] = float(grp["Close"].iloc[-1])
 
     signal_ledger: list[dict] = []
 
@@ -645,20 +663,24 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
         pct = (current - entry) / entry * 100
         signal_ledger.append({
             "date": start_str,
+            "entry_date": start_str,
+            "exit_date": today_str,
             "ticker": ticker,
             "display": ticker_display(ticker),
             "action": "BASELINE",
             "action_price": round(entry, 2),
             "current_price": round(current, 2),
+            "exit_price": round(current, 2),
             "pct_change": round(pct, 2),
-            "dollar_gain": round(UNIT * pct / 100, 2),
+            "dollar_gain": round(unit * pct / 100, 2),
             "methods": "—",
             "confidence": "",
             "status": "OPEN",
+            "holding_days": None,
         })
 
-    # --- Signal trades: each signal = another $10k trade ---
-    recent_alerts = [a for a in alerts if a["date"] >= start_str] if alerts else []
+    # --- Signal trades: each signal = one $10k trade with an explicit exit ---
+    recent_alerts = [a for a in alerts if a.get("date", "") >= start_str] if alerts else []
 
     for a in recent_alerts:
         sig = a["signal"]
@@ -666,51 +688,72 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
             continue
 
         ticker = a["ticker"]
-        price = a["close"]
-        current = latest_prices.get(ticker, 0)
-        if price <= 0 or current <= 0:
+        series = by_ticker.get(ticker)
+        if series is None or series.empty:
+            continue
+
+        # Entry is anchored on detected_at so the backtest mirrors what a
+        # manager watching the dashboard would actually have done.
+        entry_date = a.get("detected_at") or a.get("first_detected") or a["date"]
+        entry_price, entry_date_resolved = _price_on_or_after(series, entry_date)
+        if entry_price is None:
+            continue
+
+        exit_price, exit_date_resolved, status = _price_n_bars_later(
+            series, entry_date_resolved, holding_days,
+        )
+        if exit_price is None or exit_price <= 0 or entry_price <= 0:
             continue
 
         if sig in ("BUY", "LONG"):
-            pct = (current - price) / price * 100
+            pct = (exit_price - entry_price) / entry_price * 100
         elif sig in ("SELL", "SHORT"):
-            pct = (price - current) / price * 100
+            pct = (entry_price - exit_price) / entry_price * 100
         else:
             continue
 
         methods = _methods_list(a)
+        held = _bars_between(series, entry_date_resolved, exit_date_resolved)
 
         signal_ledger.append({
+            # `date` stays as the bar the anomaly was detected on for display
+            # parity with the rest of the dashboard.
             "date": a["date"],
+            "entry_date": entry_date_resolved,
+            "exit_date": exit_date_resolved,
             "ticker": ticker,
             "display": ticker_display(ticker),
             "action": sig,
-            "action_price": round(price, 2),
-            "current_price": round(current, 2),
+            "action_price": round(entry_price, 2),
+            "current_price": round(latest_prices.get(ticker, exit_price), 2),
+            "exit_price": round(exit_price, 2),
             "pct_change": round(pct, 2),
-            "dollar_gain": round(UNIT * pct / 100, 2),
+            "dollar_gain": round(unit * pct / 100, 2),
             "methods": methods,
             "confidence": a.get("confidence", ""),
-            "status": "OPEN",
+            "status": status,
+            "holding_days": held,
         })
 
-    # Sort: signals first (by date desc), then baseline at the bottom
-    signal_ledger.sort(
-        key=lambda x: (x["action"] == "BASELINE", x["date"]),
-        reverse=False,
-    )
-    # Reverse non-baseline so newest signal is first
+    # Sort: signals newest first, baseline at the bottom
     baseline = [s for s in signal_ledger if s["action"] == "BASELINE"]
     signals = [s for s in signal_ledger if s["action"] != "BASELINE"]
-    signals.sort(key=lambda x: x["date"], reverse=True)
+    signals.sort(key=lambda x: (x["entry_date"], x["action_price"]), reverse=True)
     signal_ledger = signals + baseline
 
-    # Summary
+    # Summary — split open vs closed so the numbers aren't conflated
+    closed = [s for s in signals if s["status"] == "CLOSED"]
+    open_ = [s for s in signals if s["status"] == "OPEN"]
     total_gain = sum(s["dollar_gain"] for s in signal_ledger)
     n_trades = len(signal_ledger)
     n_winning = sum(1 for s in signal_ledger if s["dollar_gain"] > 0)
-    total_invested = n_trades * UNIT
+    total_invested = n_trades * unit
     total_pct = (total_gain / total_invested * 100) if total_invested > 0 else 0
+    baseline_gain = sum(s["dollar_gain"] for s in baseline)
+    baseline_invested = len(baseline) * unit
+    baseline_pct = (baseline_gain / baseline_invested * 100) if baseline_invested > 0 else 0
+
+    stats = _compute_trade_stats(closed, unit=unit)
 
     return {
         "signal_ledger": signal_ledger,
@@ -719,10 +762,146 @@ def compute_backtest(results: pd.DataFrame, alerts: list[dict]) -> dict:
         "total_invested": total_invested,
         "n_trades": n_trades,
         "n_winning": n_winning,
-        "n_open": n_trades,
+        "n_open": len(open_) + len(baseline),
+        "n_closed": len(closed),
+        "closed_gain": round(sum(s["dollar_gain"] for s in closed), 2),
+        "open_gain": round(sum(s["dollar_gain"] for s in open_), 2),
+        "baseline_gain": round(baseline_gain, 2),
+        "baseline_pct": round(baseline_pct, 2),
         "start_date": start_str,
         "end_date": today_str,
+        "holding_days": holding_days,
+        "stats": stats,
     }
+
+
+def _compute_trade_stats(closed_trades: list[dict], unit: float = 10_000) -> dict:
+    """Risk / quality stats computed on the CLOSED signal trades only.
+
+    Open trades are excluded — their P&L is unrealised and can still move,
+    so including them would pollute the measured edge.
+
+    Returned fields:
+      - sharpe:        trade-Sharpe ratio, annualised to 252 trading days.
+      - max_drawdown:  worst peak-to-trough drop in cumulative $ P&L.
+      - max_drawdown_pct:  same, as a percent of max deployed capital.
+      - win_rate:      fraction of closed trades with positive P&L.
+      - avg_hold_days: mean holding period in trading bars.
+      - avg_win, avg_loss, profit_factor: |Σ wins| / |Σ losses|.
+      - hit_rate_by_signal: per-signal win rate — so callers can see if, e.g.,
+        BUYs are great but SHORTs drag the book.
+    """
+    empty = {
+        "sharpe": None, "max_drawdown": 0.0, "max_drawdown_pct": 0.0,
+        "win_rate": 0.0, "avg_hold_days": 0.0,
+        "avg_win": 0.0, "avg_loss": 0.0, "profit_factor": None,
+        "hit_rate_by_signal": {}, "n_closed": 0,
+    }
+    if not closed_trades:
+        return empty
+
+    trades_sorted = sorted(closed_trades, key=lambda s: s.get("exit_date") or "")
+    pnl = np.array([float(t["dollar_gain"]) for t in trades_sorted], dtype=float)
+    pct = np.array([float(t["pct_change"]) for t in trades_sorted], dtype=float) / 100.0
+    holds = np.array([int(t.get("holding_days") or 0) for t in trades_sorted], dtype=float)
+
+    n = len(pnl)
+    wins = pnl[pnl > 0]
+    losses = pnl[pnl < 0]
+    win_rate = len(wins) / n if n else 0.0
+
+    # Sharpe: treat each trade as a per-trade return; annualise by the number
+    # of trade cycles per year (≈252 / avg_hold_days).
+    avg_hold = float(np.mean(holds)) if holds.size else 0.0
+    mean_r = float(pct.mean())
+    std_r = float(pct.std(ddof=1)) if n > 1 else 0.0
+    if std_r > 0 and avg_hold > 0:
+        trades_per_year = 252.0 / max(avg_hold, 1.0)
+        sharpe = (mean_r / std_r) * np.sqrt(trades_per_year)
+    else:
+        sharpe = None
+
+    # Drawdown on the cumulative $ P&L curve
+    equity = np.cumsum(pnl)
+    running_max = np.maximum.accumulate(equity)
+    dd = running_max - equity
+    max_dd = float(dd.max()) if dd.size else 0.0
+    capital = n * unit  # max capital that was ever at risk, in dollars
+    max_dd_pct = (max_dd / capital * 100.0) if capital > 0 else 0.0
+
+    profit_factor = None
+    if losses.size:
+        loss_sum = float(abs(losses.sum()))
+        if loss_sum > 0:
+            profit_factor = float(wins.sum()) / loss_sum
+
+    hit_rate_by_signal: dict[str, dict] = {}
+    by_sig: dict[str, list[float]] = {}
+    for t in trades_sorted:
+        by_sig.setdefault(t["action"], []).append(float(t["dollar_gain"]))
+    for sig, vals in by_sig.items():
+        arr = np.array(vals)
+        n_sig = len(arr)
+        n_win = int((arr > 0).sum())
+        hit_rate_by_signal[sig] = {
+            "n": n_sig,
+            "n_win": n_win,
+            "win_rate": (n_win / n_sig) if n_sig else 0.0,
+            "avg_pnl": float(arr.mean()) if n_sig else 0.0,
+        }
+
+    return {
+        "sharpe": round(sharpe, 2) if sharpe is not None else None,
+        "max_drawdown": round(max_dd, 2),
+        "max_drawdown_pct": round(max_dd_pct, 2),
+        "win_rate": round(win_rate * 100, 1),
+        "avg_hold_days": round(avg_hold, 1),
+        "avg_win": round(float(wins.mean()), 2) if wins.size else 0.0,
+        "avg_loss": round(float(losses.mean()), 2) if losses.size else 0.0,
+        "profit_factor": round(profit_factor, 2) if profit_factor is not None else None,
+        "hit_rate_by_signal": hit_rate_by_signal,
+        "n_closed": n,
+    }
+
+
+def _price_on_or_after(series: pd.DataFrame, date_str: str) -> tuple[float | None, str | None]:
+    """Return (close, actual_date) for the first bar at or after date_str.
+
+    `series` must have columns Close and DateStr (YYYY-MM-DD), sorted asc.
+    """
+    mask = series["DateStr"] >= date_str
+    if not mask.any():
+        return None, None
+    row = series.loc[mask].iloc[0]
+    return float(row["Close"]), str(row["DateStr"])
+
+
+def _price_n_bars_later(
+    series: pd.DataFrame, entry_date_str: str, n_bars: int,
+) -> tuple[float | None, str | None, str]:
+    """Return (close, exit_date, status) n trading bars after entry_date_str.
+
+    If fewer than n bars are available, returns the last bar and status=OPEN
+    (the position is marked-to-current). Otherwise status=CLOSED.
+    """
+    idx = series.index[series["DateStr"] == entry_date_str]
+    if len(idx) == 0:
+        return None, None, "OPEN"
+    entry_i = int(idx[0])
+    target_i = entry_i + n_bars
+    if target_i < len(series):
+        row = series.iloc[target_i]
+        return float(row["Close"]), str(row["DateStr"]), "CLOSED"
+    row = series.iloc[-1]
+    return float(row["Close"]), str(row["DateStr"]), "OPEN"
+
+
+def _bars_between(series: pd.DataFrame, start_str: str, end_str: str) -> int:
+    """Count trading bars in series between start_str and end_str (inclusive end)."""
+    if start_str is None or end_str is None:
+        return 0
+    mask = (series["DateStr"] >= start_str) & (series["DateStr"] <= end_str)
+    return int(mask.sum()) - 1 if mask.any() else 0
 
 
 def _methods_list(alert: dict) -> str:
