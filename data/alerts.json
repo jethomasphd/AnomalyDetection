@@ -1,8 +1,62 @@
 {
-  "generated_at": "2026-04-20T18:51:12.824155Z",
-  "total_signals": 50,
-  "new_signals": 0,
+  "generated_at": "2026-04-21T18:56:36.422972Z",
+  "total_signals": 58,
+  "new_signals": 8,
   "signals": [
+    {
+      "ticker": "STM",
+      "ticker_name": "STMicroelectronics",
+      "display": "STMicroelectronics (STM)",
+      "date": "2026-04-20",
+      "close": 44.46,
+      "signal": "SELL",
+      "signal_label": "Sell",
+      "signal_color": "#D50000",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.5017,
+      "description": "STMicroelectronics (STM) is trading 16.3% above its 20-day moving average ($38.23). The stock appears overbought at 2 standard deviations from normal. A pullback toward $38.23 is likely. Consider taking profits or tightening stops. Fair value near $38.23.",
+      "run_date": "2026-04-21",
+      "is_new": true,
+      "first_detected": "2026-04-21",
+      "detected_at": "2026-04-21",
+      "details": {
+        "fourier_score": 0.0126,
+        "mp_score": 0.3369,
+        "ensemble_score": 0.6685,
+        "ewma_score": 0.8577,
+        "trajectory": "normal",
+        "deviation_pct": 16.3,
+        "ewma_value": 38.23
+      }
+    },
+    {
+      "ticker": "TGT",
+      "ticker_name": "Target",
+      "display": "Target (TGT)",
+      "date": "2026-04-20",
+      "close": 130.18,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.4932,
+      "description": "Target (TGT) is trading 7.0% above its 20-day moving average ($121.71). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-21",
+      "is_new": true,
+      "first_detected": "2026-04-21",
+      "detected_at": "2026-04-21",
+      "details": {
+        "fourier_score": 0.4298,
+        "mp_score": 0.5594,
+        "ensemble_score": 0.5711,
+        "ewma_score": 0.3842,
+        "trajectory": "normal",
+        "deviation_pct": 6.96,
+        "ewma_value": 121.71
+      }
+    },
     {
       "ticker": "STM",
       "ticker_name": "STMicroelectronics",
@@ -85,6 +139,33 @@
       }
     },
     {
+      "ticker": "AMZN",
+      "ticker_name": "Amazon",
+      "display": "Amazon (AMZN)",
+      "date": "2026-04-14",
+      "close": 249.02,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.4969,
+      "description": "Amazon (AMZN) is trading 12.8% above its 20-day moving average ($220.76). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-21",
+      "is_new": true,
+      "first_detected": "2026-04-21",
+      "detected_at": "2026-04-21",
+      "details": {
+        "fourier_score": 0.1881,
+        "mp_score": 0.296,
+        "ensemble_score": 0.4509,
+        "ewma_score": 1.0,
+        "trajectory": "normal",
+        "deviation_pct": 12.8,
+        "ewma_value": 220.76
+      }
+    },
+    {
       "ticker": "MCD",
       "ticker_name": "McDonald's",
       "display": "McDonald's (MCD)",
@@ -163,6 +244,33 @@
         "trajectory": "normal",
         "deviation_pct": -2.88,
         "ewma_value": 238.48
+      }
+    },
+    {
+      "ticker": "GE",
+      "ticker_name": "GE Aerospace",
+      "display": "GE Aerospace (GE)",
+      "date": "2026-04-02",
+      "close": 281.16,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 0,
+      "consensus_score": 0.5066,
+      "description": "GE Aerospace (GE) is trading 5.2% below its 20-day moving average ($296.70). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-21",
+      "is_new": true,
+      "first_detected": "2026-04-21",
+      "detected_at": "2026-04-21",
+      "details": {
+        "fourier_score": 0.322,
+        "mp_score": 0.809,
+        "ensemble_score": 0.5195,
+        "ewma_score": 0.3362,
+        "trajectory": "normal",
+        "deviation_pct": -5.24,
+        "ewma_value": 296.7
       }
     },
     {
@@ -298,6 +406,33 @@
         "trajectory": "normal",
         "deviation_pct": -3.96,
         "ewma_value": 503.34
+      }
+    },
+    {
+      "ticker": "XOM",
+      "ticker_name": "ExxonMobil",
+      "display": "ExxonMobil (XOM)",
+      "date": "2026-03-27",
+      "close": 170.99,
+      "signal": "SELL",
+      "signal_label": "Sell",
+      "signal_color": "#D50000",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.4925,
+      "description": "ExxonMobil (XOM) is trading 8.1% above its 20-day moving average ($158.14). The stock appears overbought at 2 standard deviations from normal. A pullback toward $158.14 is likely. Consider taking profits or tightening stops. Fair value near $158.14.",
+      "run_date": "2026-04-21",
+      "is_new": true,
+      "first_detected": "2026-04-21",
+      "detected_at": "2026-04-21",
+      "details": {
+        "fourier_score": 0.0184,
+        "mp_score": 0.3666,
+        "ensemble_score": 0.6651,
+        "ewma_score": 0.7906,
+        "trajectory": "normal",
+        "deviation_pct": 8.13,
+        "ewma_value": 158.14
       }
     },
     {
@@ -733,6 +868,33 @@
       }
     },
     {
+      "ticker": "AMGN",
+      "ticker_name": "Amgen",
+      "display": "Amgen (AMGN)",
+      "date": "2026-02-06",
+      "close": 381.68,
+      "signal": "LONG",
+      "signal_label": "Long",
+      "signal_color": "#00897B",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.6431,
+      "description": "Amgen (AMGN) is trading 10.6% above its 20-day moving average ($345.15). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
+      "run_date": "2026-04-21",
+      "is_new": true,
+      "first_detected": "2026-04-21",
+      "detected_at": "2026-04-21",
+      "details": {
+        "fourier_score": 0.0645,
+        "mp_score": 0.4178,
+        "ensemble_score": 0.9222,
+        "ewma_score": 0.9962,
+        "trajectory": "accelerating",
+        "deviation_pct": 10.58,
+        "ewma_value": 345.15
+      }
+    },
+    {
       "ticker": "MSFT",
       "ticker_name": "Microsoft",
       "display": "Microsoft (MSFT)",
@@ -838,6 +1000,33 @@
         "trajectory": "normal",
         "deviation_pct": -13.58,
         "ewma_value": 76.76
+      }
+    },
+    {
+      "ticker": "VGT",
+      "ticker_name": "Vanguard Info Tech ETF",
+      "display": "Vanguard Info Tech ETF (VGT)",
+      "date": "2026-02-05",
+      "close": 707.79,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.5432,
+      "description": "Vanguard Info Tech ETF (VGT) is trading 5.3% below its 20-day moving average ($747.78). Detection methods flagged this because trading rhythm has shifted and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-21",
+      "is_new": true,
+      "first_detected": "2026-04-21",
+      "detected_at": "2026-04-21",
+      "details": {
+        "fourier_score": 0.8451,
+        "mp_score": 0.3922,
+        "ensemble_score": 0.5819,
+        "ewma_score": 0.4061,
+        "trajectory": "normal",
+        "deviation_pct": -5.35,
+        "ewma_value": 747.78
       }
     },
     {
@@ -1162,6 +1351,33 @@
         "trajectory": "decelerating",
         "deviation_pct": -9.42,
         "ewma_value": 498.27
+      }
+    },
+    {
+      "ticker": "HON",
+      "ticker_name": "Honeywell",
+      "display": "Honeywell (HON)",
+      "date": "2025-04-08",
+      "close": 168.73,
+      "signal": "BUY",
+      "signal_label": "Buy",
+      "signal_color": "#00C853",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.6314,
+      "description": "Honeywell (HON) is trading 10.8% below its 20-day moving average ($189.12). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $189.12 moving average.",
+      "run_date": "2026-04-21",
+      "is_new": true,
+      "first_detected": "2026-04-21",
+      "detected_at": "2026-04-21",
+      "details": {
+        "fourier_score": 0.1087,
+        "mp_score": 0.3553,
+        "ensemble_score": 0.9027,
+        "ewma_score": 1.0,
+        "trajectory": "decelerating",
+        "deviation_pct": -10.78,
+        "ewma_value": 189.12
       }
     },
     {
