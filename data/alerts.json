@@ -1,8 +1,89 @@
 {
-  "generated_at": "2026-04-22T18:57:47.809416Z",
-  "total_signals": 62,
+  "generated_at": "2026-04-23T18:54:46.432591Z",
+  "total_signals": 66,
   "new_signals": 4,
   "signals": [
+    {
+      "ticker": "MCD",
+      "ticker_name": "McDonald's",
+      "display": "McDonald's (MCD)",
+      "date": "2026-04-22",
+      "close": 300.07,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 0,
+      "consensus_score": 0.5642,
+      "description": "McDonald's (MCD) is trading 2.5% below its 20-day moving average ($307.88). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-23",
+      "is_new": true,
+      "first_detected": "2026-04-23",
+      "detected_at": "2026-04-23",
+      "details": {
+        "fourier_score": 0.7601,
+        "mp_score": 0.6325,
+        "ensemble_score": 0.4886,
+        "ewma_score": 0.4297,
+        "trajectory": "normal",
+        "deviation_pct": -2.54,
+        "ewma_value": 307.88
+      }
+    },
+    {
+      "ticker": "VGT",
+      "ticker_name": "Vanguard Info Tech ETF",
+      "display": "Vanguard Info Tech ETF (VGT)",
+      "date": "2026-04-22",
+      "close": 103.03,
+      "signal": "SELL",
+      "signal_label": "Sell",
+      "signal_color": "#D50000",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.5072,
+      "description": "Vanguard Info Tech ETF (VGT) is trading 8.0% above its 20-day moving average ($95.37). The stock appears overbought at 2 standard deviations from normal. A pullback toward $95.37 is likely. Consider taking profits or tightening stops. Fair value near $95.37.",
+      "run_date": "2026-04-23",
+      "is_new": true,
+      "first_detected": "2026-04-23",
+      "detected_at": "2026-04-23",
+      "details": {
+        "fourier_score": 0.6456,
+        "mp_score": 0.2146,
+        "ensemble_score": 0.5729,
+        "ewma_score": 0.6104,
+        "trajectory": "normal",
+        "deviation_pct": 8.04,
+        "ewma_value": 95.37
+      }
+    },
+    {
+      "ticker": "GE",
+      "ticker_name": "GE Aerospace",
+      "display": "GE Aerospace (GE)",
+      "date": "2026-04-22",
+      "close": 276.29,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.4929,
+      "description": "GE Aerospace (GE) is trading 7.6% below its 20-day moving average ($298.93). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-23",
+      "is_new": true,
+      "first_detected": "2026-04-23",
+      "detected_at": "2026-04-23",
+      "details": {
+        "fourier_score": 0.1079,
+        "mp_score": 0.5308,
+        "ensemble_score": 0.7236,
+        "ewma_score": 0.4862,
+        "trajectory": "normal",
+        "deviation_pct": -7.57,
+        "ewma_value": 298.93
+      }
+    },
     {
       "ticker": "MCD",
       "ticker_name": "McDonald's",
@@ -17,7 +98,7 @@
       "consensus_score": 0.574,
       "description": "McDonald's (MCD) is trading 2.2% below its 20-day moving average ($308.70). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-22",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-22",
       "detected_at": "2026-04-22",
       "details": {
@@ -530,7 +611,7 @@
       "consensus_score": 0.4962,
       "description": "Target (TGT) is trading 6.3% above its 20-day moving average ($113.66). Detection methods flagged this because price pattern is unprecedented and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-22",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-22",
       "detected_at": "2026-04-22",
       "details": {
@@ -854,7 +935,7 @@
       "consensus_score": 0.5696,
       "description": "Walmart (WMT) is trading 7.8% above its 20-day moving average ($123.75). Detection methods flagged this because trading rhythm has shifted and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-22",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-22",
       "detected_at": "2026-04-22",
       "details": {
@@ -1313,7 +1394,7 @@
       "consensus_score": 0.5475,
       "description": "Alphabet (GOOGL) is trading 12.2% above its 20-day moving average ($287.78). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
       "run_date": "2026-04-22",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-22",
       "detected_at": "2026-04-22",
       "details": {
@@ -1405,6 +1486,33 @@
         "trajectory": "normal",
         "deviation_pct": -6.46,
         "ewma_value": 83.28
+      }
+    },
+    {
+      "ticker": "QGRPX",
+      "ticker_name": "UBS US Quality Growth P",
+      "display": "UBS US Quality Growth P (QGRPX)",
+      "date": "2025-04-21",
+      "close": 13.82,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.4998,
+      "description": "UBS US Quality Growth P (QGRPX) is trading 5.5% below its 20-day moving average ($14.63). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-23",
+      "is_new": true,
+      "first_detected": "2026-04-23",
+      "detected_at": "2026-04-23",
+      "details": {
+        "fourier_score": 0.0561,
+        "mp_score": 0.6922,
+        "ensemble_score": 0.5953,
+        "ewma_score": 0.5479,
+        "trajectory": "normal",
+        "deviation_pct": -5.52,
+        "ewma_value": 14.63
       }
     },
     {
