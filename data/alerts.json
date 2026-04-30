@@ -1,8 +1,89 @@
 {
-  "generated_at": "2026-04-29T19:08:08.455656Z",
-  "total_signals": 89,
-  "new_signals": 4,
+  "generated_at": "2026-04-30T17:37:13.191462Z",
+  "total_signals": 94,
+  "new_signals": 5,
   "signals": [
+    {
+      "ticker": "V",
+      "ticker_name": "Visa",
+      "display": "Visa (V)",
+      "date": "2026-04-29",
+      "close": 334.86,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.5766,
+      "description": "Visa (V) is trading 7.4% above its 20-day moving average ($311.91). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-30",
+      "is_new": true,
+      "first_detected": "2026-04-30",
+      "detected_at": "2026-04-30",
+      "details": {
+        "fourier_score": 0.0042,
+        "mp_score": 0.419,
+        "ensemble_score": 0.8057,
+        "ewma_score": 0.9171,
+        "trajectory": "normal",
+        "deviation_pct": 7.36,
+        "ewma_value": 311.91
+      }
+    },
+    {
+      "ticker": "SBUX",
+      "ticker_name": "Starbucks",
+      "display": "Starbucks (SBUX)",
+      "date": "2026-04-29",
+      "close": 105.5,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.5759,
+      "description": "Starbucks (SBUX) is trading 7.7% above its 20-day moving average ($97.99). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-30",
+      "is_new": true,
+      "first_detected": "2026-04-30",
+      "detected_at": "2026-04-30",
+      "details": {
+        "fourier_score": 0.0358,
+        "mp_score": 0.7456,
+        "ensemble_score": 0.8863,
+        "ewma_score": 0.4657,
+        "trajectory": "normal",
+        "deviation_pct": 7.67,
+        "ewma_value": 97.99
+      }
+    },
+    {
+      "ticker": "BIL",
+      "ticker_name": "SPDR Bloomberg 1-3 Month T-Bill",
+      "display": "SPDR Bloomberg 1-3 Month T-Bill (BIL)",
+      "date": "2026-04-29",
+      "close": 91.63,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.5168,
+      "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-30",
+      "is_new": true,
+      "first_detected": "2026-04-30",
+      "detected_at": "2026-04-30",
+      "details": {
+        "fourier_score": 0.0006,
+        "mp_score": 0.5191,
+        "ensemble_score": 0.7769,
+        "ewma_score": 0.6154,
+        "trajectory": "normal",
+        "deviation_pct": 0.12,
+        "ewma_value": 91.52
+      }
+    },
     {
       "ticker": "GOOGL",
       "ticker_name": "Alphabet",
@@ -17,7 +98,7 @@
       "consensus_score": 0.4963,
       "description": "Alphabet (GOOGL) is trading 6.3% above its 20-day moving average ($329.14). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-29",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-29",
       "detected_at": "2026-04-29",
       "details": {
@@ -287,7 +368,7 @@
       "consensus_score": 0.4922,
       "description": "Vanguard Info Tech ETF (VGT) is trading 7.7% above its 20-day moving average ($96.74). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-29",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-29",
       "detected_at": "2026-04-29",
       "details": {
@@ -314,7 +395,7 @@
       "consensus_score": 0.4915,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-29",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-29",
       "detected_at": "2026-04-29",
       "details": {
@@ -946,6 +1027,33 @@
         "trajectory": "normal",
         "deviation_pct": -6.83,
         "ewma_value": 177.27
+      }
+    },
+    {
+      "ticker": "XOM",
+      "ticker_name": "ExxonMobil",
+      "display": "ExxonMobil (XOM)",
+      "date": "2026-03-30",
+      "close": 171.47,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.4877,
+      "description": "ExxonMobil (XOM) is trading 7.6% above its 20-day moving average ($159.41). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-30",
+      "is_new": true,
+      "first_detected": "2026-04-30",
+      "detected_at": "2026-04-30",
+      "details": {
+        "fourier_score": 0.0355,
+        "mp_score": 0.3606,
+        "ensemble_score": 0.6881,
+        "ewma_score": 0.7361,
+        "trajectory": "normal",
+        "deviation_pct": 7.57,
+        "ewma_value": 159.41
       }
     },
     {
@@ -2002,6 +2110,33 @@
       }
     },
     {
+      "ticker": "JPM",
+      "ticker_name": "JPMorgan Chase",
+      "display": "JPMorgan Chase (JPM)",
+      "date": "2025-09-11",
+      "close": 301.17,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.4888,
+      "description": "JPMorgan Chase (JPM) is trading 2.8% above its 20-day moving average ($293.11). Detection methods flagged this because trading rhythm has shifted, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-04-30",
+      "is_new": true,
+      "first_detected": "2026-04-30",
+      "detected_at": "2026-04-30",
+      "details": {
+        "fourier_score": 0.6575,
+        "mp_score": 0.8071,
+        "ensemble_score": 0.3287,
+        "ewma_score": 0.2276,
+        "trajectory": "normal",
+        "deviation_pct": 2.75,
+        "ewma_value": 293.11
+      }
+    },
+    {
       "ticker": "IWM",
       "ticker_name": "iShares Russell 2000",
       "display": "iShares Russell 2000 (IWM)",
@@ -2231,7 +2366,7 @@
       "consensus_score": 0.6031,
       "description": "Invesco QQQ (Nasdaq 100) (QQQ) is trading 10.4% below its 20-day moving average ($462.31). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $462.31 moving average.",
       "run_date": "2026-04-29",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-29",
       "detected_at": "2026-04-29",
       "details": {
