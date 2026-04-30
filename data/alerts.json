@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-04-30T17:37:13.191462Z",
+  "generated_at": "2026-04-30T19:05:32.302182Z",
   "total_signals": 94,
-  "new_signals": 5,
+  "new_signals": 0,
   "signals": [
     {
       "ticker": "V",
@@ -17,7 +17,7 @@
       "consensus_score": 0.5766,
       "description": "Visa (V) is trading 7.4% above its 20-day moving average ($311.91). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-30",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-30",
       "detected_at": "2026-04-30",
       "details": {
@@ -44,7 +44,7 @@
       "consensus_score": 0.5759,
       "description": "Starbucks (SBUX) is trading 7.7% above its 20-day moving average ($97.99). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-30",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-30",
       "detected_at": "2026-04-30",
       "details": {
@@ -71,7 +71,7 @@
       "consensus_score": 0.5168,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-30",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-30",
       "detected_at": "2026-04-30",
       "details": {
@@ -1043,7 +1043,7 @@
       "consensus_score": 0.4877,
       "description": "ExxonMobil (XOM) is trading 7.6% above its 20-day moving average ($159.41). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-30",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-30",
       "detected_at": "2026-04-30",
       "details": {
@@ -2123,7 +2123,7 @@
       "consensus_score": 0.4888,
       "description": "JPMorgan Chase (JPM) is trading 2.8% above its 20-day moving average ($293.11). Detection methods flagged this because trading rhythm has shifted, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-04-30",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-04-30",
       "detected_at": "2026-04-30",
       "details": {
