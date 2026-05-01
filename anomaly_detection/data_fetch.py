@@ -26,12 +26,14 @@ def fetch_ticker(
     """
     end = end_date or datetime.today()
     start_str = start_date
+    # yfinance treats `end` as exclusive, so add a day to include today's bar.
+    end_str = (end + timedelta(days=1)).strftime("%Y-%m-%d")
 
     try:
         df = yf.download(
             ticker,
             start=start_str,
-            end=end.strftime("%Y-%m-%d"),
+            end=end_str,
             progress=False,
             auto_adjust=True,
         )

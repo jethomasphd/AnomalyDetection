@@ -2,8 +2,9 @@ name: Stock Anomaly Detection
 
 on:
   schedule:
-    # Run every weekday at 6:00 PM UTC (after US market close)
-    - cron: '0 18 * * 1-5'
+    # Run every weekday at 10:00 PM UTC, safely after the US market close
+    # (20:00 UTC during EDT, 21:00 UTC during EST) so today's closing bar is available.
+    - cron: '0 22 * * 1-5'
   workflow_dispatch:
     inputs:
       tickers:
