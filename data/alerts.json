@@ -1,8 +1,62 @@
 {
-  "generated_at": "2026-05-11T22:45:37.628216Z",
-  "total_signals": 150,
-  "new_signals": 5,
+  "generated_at": "2026-05-12T22:53:07.948603Z",
+  "total_signals": 153,
+  "new_signals": 3,
   "signals": [
+    {
+      "ticker": "BIL",
+      "ticker_name": "SPDR Bloomberg 1-3 Month T-Bill",
+      "display": "SPDR Bloomberg 1-3 Month T-Bill (BIL)",
+      "date": "2026-05-12",
+      "close": 91.49,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 0,
+      "consensus_score": 0.4939,
+      "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-05-12",
+      "is_new": true,
+      "first_detected": "2026-05-12",
+      "detected_at": "2026-05-12",
+      "details": {
+        "fourier_score": 0.0001,
+        "mp_score": 0.6223,
+        "ensemble_score": 0.5395,
+        "ewma_score": 0.7057,
+        "trajectory": "normal",
+        "deviation_pct": 0.14,
+        "ewma_value": 91.37
+      }
+    },
+    {
+      "ticker": "STM",
+      "ticker_name": "STMicroelectronics",
+      "display": "STMicroelectronics (STM)",
+      "date": "2026-05-12",
+      "close": 57.93,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.4927,
+      "description": "STMicroelectronics (STM) is trading 11.5% above its 20-day moving average ($51.95). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-05-12",
+      "is_new": true,
+      "first_detected": "2026-05-12",
+      "detected_at": "2026-05-12",
+      "details": {
+        "fourier_score": 0.2014,
+        "mp_score": 0.5187,
+        "ensemble_score": 0.661,
+        "ewma_score": 0.4978,
+        "trajectory": "normal",
+        "deviation_pct": 11.52,
+        "ewma_value": 51.95
+      }
+    },
     {
       "ticker": "BIL",
       "ticker_name": "SPDR Bloomberg 1-3 Month T-Bill",
@@ -17,7 +71,7 @@
       "consensus_score": 0.5389,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-05-11",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-05-11",
       "detected_at": "2026-05-11",
       "details": {
@@ -44,7 +98,7 @@
       "consensus_score": 0.5154,
       "description": "AMD (AMD) is trading 31.6% above its 20-day moving average ($348.67). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
       "run_date": "2026-05-11",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-05-11",
       "detected_at": "2026-05-11",
       "details": {
@@ -71,7 +125,7 @@
       "consensus_score": 0.5086,
       "description": "McDonald's (MCD) is trading 5.8% below its 20-day moving average ($291.37). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-05-11",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-05-11",
       "detected_at": "2026-05-11",
       "details": {
@@ -98,7 +152,7 @@
       "consensus_score": 0.4873,
       "description": "STMicroelectronics (STM) is trading 17.2% above its 20-day moving average ($51.32). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-05-11",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-05-11",
       "detected_at": "2026-05-11",
       "details": {
@@ -2893,6 +2947,33 @@
       }
     },
     {
+      "ticker": "COST",
+      "ticker_name": "Costco",
+      "display": "Costco (COST)",
+      "date": "2026-02-17",
+      "close": 1010.58,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 0,
+      "consensus_score": 0.4952,
+      "description": "Costco (COST) is trading 3.7% above its 20-day moving average ($974.94). Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-05-12",
+      "is_new": true,
+      "first_detected": "2026-05-12",
+      "detected_at": "2026-05-12",
+      "details": {
+        "fourier_score": 0.5816,
+        "mp_score": 0.672,
+        "ensemble_score": 0.4031,
+        "ewma_score": 0.3598,
+        "trajectory": "normal",
+        "deviation_pct": 3.66,
+        "ewma_value": 974.94
+      }
+    },
+    {
       "ticker": "WMT",
       "ticker_name": "Walmart",
       "display": "Walmart (WMT)",
@@ -3095,7 +3176,7 @@
       "consensus_score": 0.5841,
       "description": "PepsiCo (PEP) is trading 10.9% above its 20-day moving average ($152.41). The stock appears overbought at 2 standard deviations from normal. A pullback toward $152.41 is likely. Consider taking profits or tightening stops. Fair value near $152.41.",
       "run_date": "2026-05-11",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-05-11",
       "detected_at": "2026-05-11",
       "details": {
