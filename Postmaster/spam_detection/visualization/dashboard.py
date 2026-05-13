@@ -176,9 +176,31 @@ def generate_dashboard(
     rest_domains = sorted(domain_ranking[10:], key=lambda x: x["domain"])
     domain_info = top_domains + rest_domains
 
-    # --- Top 12 Offenders (highest spam rate) and Bottom 12 Performers (lowest spam rate) ---
-    offenders = domain_ranking[:12]  # already sorted highest first
-    performers = domain_ranking[-12:][::-1]  # lowest spam rate, reversed so lowest first
+    # --- Top 12 Offenders / Bottom 12 Performers ranked by trailing 10-day avg spam rate ---
+    window_days = 10
+    spam_window = sorted_results.dropna(subset=["SpamRate"])
+    if not spam_window.empty:
+        cutoff = spam_window["Date"].max() - pd.Timedelta(days=window_days - 1)
+        spam_window = spam_window[spam_window["Date"] >= cutoff]
+        windowed_spam = spam_window.groupby("Domain")["SpamRate"].mean().to_dict()
+    else:
+        windowed_spam = {}
+
+    windowed_ranking = []
+    for d in domains:
+        rate = windowed_spam.get(d, latest_spam.get(d, 0))
+        windowed_ranking.append({
+            "domain": d,
+            "display": d if len(d) <= 35 else d[:32] + "...",
+            "spam_rate": rate,
+            "spam_rate_pct": f"{rate * 100:.2f}%",
+            "reputation": latest_reputation.get(d, "N/A"),
+            "has_signal": d in signal_domains,
+        })
+    windowed_ranking.sort(key=lambda x: x["spam_rate"], reverse=True)
+
+    offenders = windowed_ranking[:12]  # highest 10-day avg first
+    performers = windowed_ranking[-12:][::-1]  # lowest 10-day avg first
 
     # --- Country distribution pie charts ---
     offender_domains = [d["domain"] for d in offenders]
