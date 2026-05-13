@@ -22535,7 +22535,7 @@ jbe.best-jobs-online.com,2025-04-04,0.001,HIGH,-0.5,0.894544,False,0.0,False,0.1
 jbe.best-jobs-online.com,2025-04-05,0.001,HIGH,0.0,0.894544,False,0.0,False,0.057873,False,0.0,0.0037,0.1892,0.320346,False,0.001449,-30.97,decelerating,0.23163,0,False
 jbe.best-jobs-online.com,2025-04-06,0.001,HIGH,0.0,0.894544,False,0.0,False,0.059606,False,0.0,0.0095,0.1892,0.298645,False,0.001406,-28.87,decelerating,0.22672464999999997,0,False
 jbe.best-jobs-online.com,2025-04-07,0.002,HIGH,1.0,0.894544,False,0.872235,False,0.151664,False,0.0,0.0283,0.4772,0.38017,False,0.001462,36.75,normal,0.5363937999999999,0,True
-jbe.best-jobs-online.com,2025-04-09,0.001,HIGH,-0.5,0.8087,False,0.872235,True,0.122452,False,0.0,0.0083,0.3999,0.305146,False,0.001418,-29.5,accelerating,0.4959975999999999,1,False
+jbe.best-jobs-online.com,2025-04-09,0.001,HIGH,-0.5,0.8087,False,0.872235,False,0.122452,False,0.0,0.0083,0.3999,0.305146,False,0.001418,-29.5,accelerating,0.4959975999999999,0,False
 jbe.best-jobs-online.com,2025-04-10,0.002,HIGH,1.0,0.8087,False,0.0,False,0.147106,False,0.0,0.0131,0.4772,0.369287,False,0.001474,35.7,accelerating,0.25775855,0,False
 jbe.best-jobs-online.com,2025-04-11,0.001,HIGH,-0.5,0.85997,False,0.0,False,0.127209,False,0.0,0.0242,0.3999,0.310383,False,0.001429,-30.01,normal,0.24475395,0,False
 jbe.best-jobs-online.com,2025-04-12,0.001,HIGH,0.0,0.85997,False,0.0,False,0.058036,False,0.0,0.0043,0.1892,0.289084,False,0.001388,-27.95,decelerating,0.2186773,0,False
@@ -22866,7 +22866,7 @@ jbe.best-jobs-online.com,2026-05-03,0.002,HIGH,1.0,0.562136,False,0.872235,True,
 jbe.best-jobs-online.com,2026-05-05,0.002,HIGH,0.0,0.797637,False,0.872235,False,0.133845,False,0.0,0.0119,0.4343,0.529804,False,0.001323,51.22,accelerating,0.55392055,0,True
 jbe.best-jobs-online.com,2026-05-06,0.002,HIGH,0.0,0.660174,False,0.83977,False,0.133845,False,0.0,0.0119,0.4343,0.457052,False,0.001387,44.19,accelerating,0.5053736,0,False
 jbe.best-jobs-online.com,2026-05-08,0.002,HIGH,0.0,0.660174,False,0.0,False,0.132813,False,0.0,0.0084,0.4343,0.396824,False,0.001445,38.36,accelerating,0.238076,0,False
-jbe.best-jobs-online.com,2026-05-10,0.002,HIGH,0.0,0.655555,False,0.872235,False,0.143171,False,0.0,0.0107,0.4666,0.346376,False,0.001498,33.49,decelerating,0.48954905,0,False
+jbe.best-jobs-online.com,2026-05-10,0.002,HIGH,0.0,0.655555,False,0.872235,True,0.143171,False,0.0,0.0107,0.4666,0.346376,False,0.001498,33.49,decelerating,0.48954905,1,False
 jipijapa.net,2024-11-15,0.003,HIGH,,0.0,False,0.0,False,0.037623,False,0.0,0.1254,0.0,0.0,False,0.003,0.0,normal,0.011286899999999999,0,False
 jipijapa.net,2024-11-16,0.004,HIGH,0.33333333333333326,0.0,False,0.0,False,0.006711,False,0.0,0.0224,0.0,0.211415,False,0.003095,29.23,normal,0.05486705,0,False
 jipijapa.net,2024-11-17,0.004,HIGH,0.0,0.0,False,0.0,False,0.005697,False,0.0,0.019,0.0,0.186099,False,0.003181,25.73,normal,0.048233849999999995,0,False
@@ -49952,7 +49952,7 @@ winklepickertwins.com,2024-12-25,0.004,HIGH,0.33333333333333326,0.318925,False,0
 winklepickertwins.com,2024-12-26,0.004,HIGH,0.0,0.318925,False,0.446205,False,0.120491,False,0.2769,0.0129,0.0196,0.143,False,0.003538,13.05,decelerating,0.25359755,0,False
 winklepickertwins.com,2024-12-27,0.005,HIGH,0.25,0.316866,False,0.481906,False,0.302691,False,0.5177,0.2438,0.0748,0.394016,False,0.003677,35.97,accelerating,0.38141299999999995,0,False
 winklepickertwins.com,2024-12-28,0.004,HIGH,-0.19999999999999996,0.271043,False,0.474527,False,0.125591,False,0.2307,0.0371,0.0739,0.086237,False,0.003708,7.87,accelerating,0.2422511,0,False
-winklepickertwins.com,2024-12-29,0.004,HIGH,0.0,0.273789,False,0.571559,False,0.09705,False,0.2157,0.0057,0.0302,0.077443,False,0.003736,7.07,decelerating,0.2610118,0,False
+winklepickertwins.com,2024-12-29,0.004,HIGH,0.0,0.273789,False,0.571559,True,0.09705,False,0.2157,0.0057,0.0302,0.077443,False,0.003736,7.07,decelerating,0.2610118,1,False
 winklepickertwins.com,2024-12-30,0.004,HIGH,0.0,0.281139,False,0.430151,False,0.092649,False,0.2014,0.0102,0.0302,0.069599,False,0.003761,6.35,decelerating,0.2164106,0,False
 winklepickertwins.com,2024-12-31,0.004,HIGH,0.0,0.266035,False,0.0,False,0.147729,False,0.1876,0.1212,0.1212,0.062592,False,0.003784,5.71,decelerating,0.09987194999999999,0,False
 winklepickertwins.com,2025-01-01,0.003,HIGH,-0.25,0.261597,False,0.0,False,0.133924,False,0.0747,0.16,0.1868,0.209454,False,0.003709,-19.12,decelerating,0.13178025000000002,0,False
@@ -50364,7 +50364,7 @@ winklepickertwins.com,2026-04-13,0.003,HIGH,-0.4,0.584949,True,0.408548,False,0.
 winklepickertwins.com,2026-04-14,0.004,HIGH,0.33333333333333326,0.590007,True,0.434001,False,0.198151,False,0.2438,0.0283,0.3071,0.234831,False,0.005091,-21.44,decelerating,0.33685439999999994,1,False
 winklepickertwins.com,2026-04-16,0.004,HIGH,0.0,0.605377,True,0.481906,False,0.140617,False,0.2282,0.0882,0.0763,0.216894,False,0.004987,-19.8,normal,0.33178694999999997,1,False
 winklepickertwins.com,2026-04-18,0.004,HIGH,0.0,0.595626,True,0.393414,False,0.172994,False,0.2194,0.208,0.0761,0.200009,False,0.004893,-18.26,normal,0.30926855,1,False
-winklepickertwins.com,2026-04-19,0.004,HIGH,0.0,0.55081,True,0.571559,True,0.228809,False,0.2109,0.4513,0.0302,0.184163,False,0.004808,-16.81,accelerating,0.36877265000000004,2,True
+winklepickertwins.com,2026-04-19,0.004,HIGH,0.0,0.55081,True,0.571559,False,0.228809,False,0.2109,0.4513,0.0302,0.184163,False,0.004808,-16.81,accelerating,0.36877265000000004,1,False
 winklepickertwins.com,2026-04-20,0.006,HIGH,0.5,0.513225,False,0.391457,False,0.176074,False,0.0233,0.2202,0.3356,0.239989,False,0.004922,21.91,accelerating,0.30724029999999997,0,False
 winklepickertwins.com,2026-04-22,0.008,HIGH,0.33333333333333326,0.527968,True,0.343875,False,0.258838,False,0.1583,0.0478,0.6039,0.585054,True,0.005215,53.4,accelerating,0.4062726,2,True
 winklepickertwins.com,2026-04-24,0.01,HIGH,0.25,0.527968,True,0.206873,False,0.476196,False,0.3342,0.3471,0.7946,0.836375,True,0.005671,76.35,accelerating,0.49320964999999994,2,True
