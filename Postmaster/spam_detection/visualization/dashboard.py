@@ -8,7 +8,13 @@ from datetime import datetime
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
-from ..config import DEFAULT_DATA_CSV_PATH, DEFAULT_DOMAIN_CLASS_PATH, DOCS_DIR, GOOGLE_THRESHOLDS
+from ..config import (
+    DEFAULT_DATA_CSV_PATH,
+    DEFAULT_DATA_PATH,
+    DEFAULT_DOMAIN_CLASS_PATH,
+    DOCS_DIR,
+    GOOGLE_THRESHOLDS,
+)
 from ..data_load import load_country_distribution
 from .charts import (
     country_pie_chart,
@@ -28,9 +34,31 @@ TEMPLATE_DIR = os.path.join(os.path.dirname(__file__), "templates")
 COMPLIANCE_THRESHOLD = GOOGLE_THRESHOLDS["monitor"]
 
 
+def _load_raw_latest_spam(raw_data_path: str, domains: list[str]) -> dict[str, float]:
+    """Look up each domain's most recent non-null spam rate directly from the raw
+    Postmaster file. Used as a fallback for domains the detection pipeline drops
+    (e.g., insufficient history) but that still appear in Domain_Class.csv.
+    """
+    if not os.path.exists(raw_data_path):
+        return {}
+    try:
+        raw = pd.read_csv(raw_data_path, na_values="\\N", usecols=[
+            "domain", "date", "userReportedSpamRatio",
+        ])
+    except (ValueError, FileNotFoundError):
+        return {}
+    raw = raw[raw["domain"].isin(domains)].dropna(subset=["userReportedSpamRatio"])
+    if raw.empty:
+        return {}
+    raw["date"] = pd.to_datetime(raw["date"])
+    latest = raw.sort_values("date").groupby("domain").tail(1)
+    return dict(zip(latest["domain"], latest["userReportedSpamRatio"]))
+
+
 def _load_domain_classifications(
     class_path: str,
     latest_spam: dict[str, float],
+    raw_data_path: str = DEFAULT_DATA_PATH,
 ) -> dict:
     """Load Domain_Class.csv and build classification data for the dashboard."""
     try:
@@ -38,6 +66,12 @@ def _load_domain_classifications(
     except FileNotFoundError:
         logger.warning("Domain_Class.csv not found at %s", class_path)
         return {"chronic": [], "acute": [], "prophylactic": []}
+
+    # Fall back to raw Postmaster data for any classified domain missing from
+    # latest_spam (e.g., domains the detection pipeline dropped for short history).
+    missing = [d for d in df["Domain"] if d not in latest_spam]
+    if missing:
+        latest_spam = {**_load_raw_latest_spam(raw_data_path, missing), **latest_spam}
 
     result = {"chronic": [], "acute": [], "prophylactic": []}
     for _, row in df.iterrows():
@@ -103,9 +137,15 @@ def generate_dashboard(
     # Count by severity
     n_urgent_critical = sum(1 for a in alerts if a["signal"] in ("URGENT", "CRITICAL"))
 
-    # Build domain info with latest spam rate for sorting/display
-    latest_per_domain = results.sort_values("Date").groupby("Domain").tail(1)
-    latest_spam = dict(zip(latest_per_domain["Domain"], latest_per_domain["SpamRate"]))
+    # Build domain info with latest spam rate for sorting/display.
+    # Use the most recent row with a non-null SpamRate so domains whose latest
+    # day lacks a reported spam rate still show their most recent known value.
+    sorted_results = results.sort_values("Date")
+    latest_per_domain = sorted_results.groupby("Domain").tail(1)
+    latest_spam_known = (
+        sorted_results.dropna(subset=["SpamRate"]).groupby("Domain").tail(1)
+    )
+    latest_spam = dict(zip(latest_spam_known["Domain"], latest_spam_known["SpamRate"]))
     latest_reputation = dict(zip(
         latest_per_domain["Domain"],
         latest_per_domain["DomainReputation"] if "DomainReputation" in latest_per_domain.columns else ["N/A"] * len(latest_per_domain),
