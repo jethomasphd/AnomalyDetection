@@ -1,8 +1,62 @@
 {
-  "generated_at": "2026-05-18T22:47:17.766214Z",
-  "total_signals": 172,
-  "new_signals": 6,
+  "generated_at": "2026-05-19T22:57:12.746046Z",
+  "total_signals": 175,
+  "new_signals": 3,
   "signals": [
+    {
+      "ticker": "D",
+      "ticker_name": "Dominion Energy",
+      "display": "Dominion Energy (D)",
+      "date": "2026-05-19",
+      "close": 68.13,
+      "signal": "LONG",
+      "signal_label": "Long",
+      "signal_color": "#00897B",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.7067,
+      "description": "Dominion Energy (D) is trading 7.3% above its 20-day moving average ($63.48). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
+      "run_date": "2026-05-19",
+      "is_new": true,
+      "first_detected": "2026-05-19",
+      "detected_at": "2026-05-19",
+      "details": {
+        "fourier_score": 0.4724,
+        "mp_score": 0.4215,
+        "ensemble_score": 0.9407,
+        "ewma_score": 0.8985,
+        "trajectory": "accelerating",
+        "deviation_pct": 7.32,
+        "ewma_value": 63.48
+      }
+    },
+    {
+      "ticker": "COST",
+      "ticker_name": "Costco",
+      "display": "Costco (COST)",
+      "date": "2026-05-19",
+      "close": 1094.32,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.5105,
+      "description": "Costco (COST) is trading 6.5% above its 20-day moving average ($1,027.54). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-05-19",
+      "is_new": true,
+      "first_detected": "2026-05-19",
+      "detected_at": "2026-05-19",
+      "details": {
+        "fourier_score": 0.04,
+        "mp_score": 0.267,
+        "ensemble_score": 0.9195,
+        "ewma_score": 0.6397,
+        "trajectory": "normal",
+        "deviation_pct": 6.5,
+        "ewma_value": 1027.54
+      }
+    },
     {
       "ticker": "D",
       "ticker_name": "Dominion Energy",
@@ -17,7 +71,7 @@
       "consensus_score": 0.7836,
       "description": "Dominion Energy (D) is trading 7.2% above its 20-day moving average ($63.00). Detection methods flagged this because trading rhythm has shifted and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-05-18",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-05-18",
       "detected_at": "2026-05-18",
       "details": {
@@ -44,7 +98,7 @@
       "consensus_score": 0.5925,
       "description": "NextEra Energy (NEE) is trading 5.2% below its 20-day moving average ($93.87). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-05-18",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-05-18",
       "detected_at": "2026-05-18",
       "details": {
@@ -71,7 +125,7 @@
       "consensus_score": 0.5461,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-05-18",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-05-18",
       "detected_at": "2026-05-18",
       "details": {
@@ -98,7 +152,7 @@
       "consensus_score": 0.5164,
       "description": "Costco (COST) is trading 5.5% above its 20-day moving average ($1,020.51). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-05-18",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-05-18",
       "detected_at": "2026-05-18",
       "details": {
@@ -125,7 +179,7 @@
       "consensus_score": 0.5036,
       "description": "STMicroelectronics (STM) is trading 10.0% above its 20-day moving average ($55.40). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-05-18",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-05-18",
       "detected_at": "2026-05-18",
       "details": {
@@ -4324,6 +4378,33 @@
       }
     },
     {
+      "ticker": "CVX",
+      "ticker_name": "Chevron",
+      "display": "Chevron (CVX)",
+      "date": "2025-04-10",
+      "close": 129.17,
+      "signal": "BUY",
+      "signal_label": "Buy",
+      "signal_color": "#00C853",
+      "confidence": "Strong",
+      "methods_flagged": 3,
+      "consensus_score": 0.5716,
+      "description": "Chevron (CVX) is trading 12.1% below its 20-day moving average ($146.88). The stock appears oversold at 3 standard deviations from normal. Mean-reversion toward $146.88 is likely. Consider entering a long position targeting the $146.88 moving average.",
+      "run_date": "2026-05-19",
+      "is_new": true,
+      "first_detected": "2026-05-19",
+      "detected_at": "2026-05-19",
+      "details": {
+        "fourier_score": 0.2306,
+        "mp_score": 0.386,
+        "ensemble_score": 0.6239,
+        "ewma_score": 0.9675,
+        "trajectory": "normal",
+        "deviation_pct": -12.06,
+        "ewma_value": 146.88
+      }
+    },
+    {
       "ticker": "VTI",
       "ticker_name": "Vanguard Total Stock Market",
       "display": "Vanguard Total Stock Market (VTI)",
@@ -4580,7 +4661,7 @@
       "consensus_score": 0.5927,
       "description": "Costco (COST) is trading 8.2% below its 20-day moving average ($1,011.16). Selling pressure is fading, suggesting a potential bounce back toward the trend line. Consider entering a long position targeting the $1,011.16 moving average.",
       "run_date": "2026-05-18",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-05-18",
       "detected_at": "2026-05-18",
       "details": {
