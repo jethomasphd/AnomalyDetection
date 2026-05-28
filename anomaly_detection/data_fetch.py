@@ -54,6 +54,10 @@ def fetch_ticker(
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = df.columns.get_level_values(0)
 
+    # yfinance >=1.4 leaves the datetime index unnamed, so reset_index() yields
+    # an "index" column instead of "Date". Name it so the column check below
+    # finds "Date" regardless of the installed yfinance version.
+    df.index.name = "Date"
     df = df.reset_index()
     df["Ticker"] = ticker
 
