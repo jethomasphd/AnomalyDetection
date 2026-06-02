@@ -1,8 +1,62 @@
 {
-  "generated_at": "2026-06-01T23:22:19.165880Z",
+  "generated_at": "2026-06-02T23:26:08.906570Z",
   "total_signals": 200,
-  "new_signals": 11,
+  "new_signals": 2,
   "signals": [
+    {
+      "ticker": "STM",
+      "ticker_name": "STMicroelectronics",
+      "display": "STMicroelectronics (STM)",
+      "date": "2026-06-02",
+      "close": 79.51,
+      "signal": "SELL",
+      "signal_label": "Sell",
+      "signal_color": "#D50000",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.7091,
+      "description": "STMicroelectronics (STM) is trading 23.6% above its 20-day moving average ($64.33). The stock appears overbought at 2 standard deviations from normal. A pullback toward $64.33 is likely. Consider taking profits or tightening stops. Fair value near $64.33.",
+      "run_date": "2026-06-02",
+      "is_new": true,
+      "first_detected": "2026-06-02",
+      "detected_at": "2026-06-02",
+      "details": {
+        "fourier_score": 0.3642,
+        "mp_score": 0.5312,
+        "ensemble_score": 0.845,
+        "ewma_score": 1.0,
+        "trajectory": "normal",
+        "deviation_pct": 23.59,
+        "ewma_value": 64.33
+      }
+    },
+    {
+      "ticker": "BIL",
+      "ticker_name": "SPDR Bloomberg 1-3 Month T-Bill",
+      "display": "SPDR Bloomberg 1-3 Month T-Bill (BIL)",
+      "date": "2026-06-02",
+      "close": 91.39,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.6336,
+      "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-06-02",
+      "is_new": true,
+      "first_detected": "2026-06-02",
+      "detected_at": "2026-06-02",
+      "details": {
+        "fourier_score": 0.0008,
+        "mp_score": 0.7492,
+        "ensemble_score": 0.9603,
+        "ewma_score": 0.6321,
+        "trajectory": "normal",
+        "deviation_pct": 0.12,
+        "ewma_value": 91.28
+      }
+    },
     {
       "ticker": "CRM",
       "ticker_name": "Salesforce",
@@ -17,7 +71,7 @@
       "consensus_score": 0.6679,
       "description": "Salesforce (CRM) is trading 15.0% above its 20-day moving average ($182.24). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
       "run_date": "2026-06-01",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-01",
       "detected_at": "2026-06-01",
       "details": {
@@ -44,7 +98,7 @@
       "consensus_score": 0.6269,
       "description": "NextEra Energy (NEE) is trading 7.0% below its 20-day moving average ($90.00). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-06-01",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-01",
       "detected_at": "2026-06-01",
       "details": {
@@ -71,7 +125,7 @@
       "consensus_score": 0.6238,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because price pattern is unprecedented and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-06-01",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-01",
       "detected_at": "2026-06-01",
       "details": {
@@ -98,7 +152,7 @@
       "consensus_score": 0.5689,
       "description": "Bristol-Myers Squibb (BMY) is trading 4.4% below its 20-day moving average ($57.47). Detection methods flagged this because trading rhythm has shifted and statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-06-01",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-01",
       "detected_at": "2026-06-01",
       "details": {
@@ -125,7 +179,7 @@
       "consensus_score": 0.5605,
       "description": "Amazon (AMZN) is trading 1.5% below its 20-day moving average ($265.13). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-06-01",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-01",
       "detected_at": "2026-06-01",
       "details": {
@@ -152,7 +206,7 @@
       "consensus_score": 0.5231,
       "description": "Oracle (ORCL) is trading 26.3% above its 20-day moving average ($196.51). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
       "run_date": "2026-06-01",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-01",
       "detected_at": "2026-06-01",
       "details": {
@@ -179,7 +233,7 @@
       "consensus_score": 0.5077,
       "description": "Tyson Foods (TSN) is trading 7.3% below its 20-day moving average ($64.68). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-06-01",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-01",
       "detected_at": "2026-06-01",
       "details": {
@@ -206,7 +260,7 @@
       "consensus_score": 0.4902,
       "description": "Microsoft (MSFT) is trading 8.9% above its 20-day moving average ($422.71). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
       "run_date": "2026-06-01",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-01",
       "detected_at": "2026-06-01",
       "details": {
@@ -233,7 +287,7 @@
       "consensus_score": 0.49,
       "description": "STMicroelectronics (STM) is trading 10.0% above its 20-day moving average ($62.73). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-06-01",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-01",
       "detected_at": "2026-06-01",
       "details": {
@@ -4661,7 +4715,7 @@
       "consensus_score": 0.5174,
       "description": "McKesson (MCK) is trading 11.6% above its 20-day moving average ($861.75). Upward momentum is accelerating with multiple detection methods confirming the move. Consider a momentum-based long position with a trailing stop below the trend line.",
       "run_date": "2026-06-01",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-01",
       "detected_at": "2026-06-01",
       "details": {
@@ -5255,7 +5309,7 @@
       "consensus_score": 0.494,
       "description": "Oracle (ORCL) is trading 18.2% above its 20-day moving average ($167.38). The stock appears overbought at 3 standard deviations from normal. A pullback toward $167.38 is likely. Consider taking profits or tightening stops. Fair value near $167.38.",
       "run_date": "2026-06-01",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-01",
       "detected_at": "2026-06-01",
       "details": {
@@ -5347,60 +5401,6 @@
         "trajectory": "normal",
         "deviation_pct": -4.45,
         "ewma_value": 261.27
-      }
-    },
-    {
-      "ticker": "SPY",
-      "ticker_name": "SPDR S&P 500 ETF",
-      "display": "SPDR S&P 500 ETF (SPY)",
-      "date": "2025-04-21",
-      "close": 508.06,
-      "signal": "WATCH",
-      "signal_label": "Watch",
-      "signal_color": "#42A5F5",
-      "confidence": "Developing",
-      "methods_flagged": 1,
-      "consensus_score": 0.4766,
-      "description": "SPDR S&P 500 ETF (SPY) is trading 4.5% below its 20-day moving average ($531.93). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
-      "run_date": "2026-05-01",
-      "is_new": false,
-      "first_detected": "2026-05-01",
-      "detected_at": "2026-05-01",
-      "details": {
-        "fourier_score": 0.1996,
-        "mp_score": 0.5983,
-        "ensemble_score": 0.5685,
-        "ewma_score": 0.4663,
-        "trajectory": "normal",
-        "deviation_pct": -4.49,
-        "ewma_value": 531.93
-      }
-    },
-    {
-      "ticker": "PFE",
-      "ticker_name": "Pfizer",
-      "display": "Pfizer (PFE)",
-      "date": "2025-04-10",
-      "close": 20.13,
-      "signal": "BUY",
-      "signal_label": "Buy",
-      "signal_color": "#00C853",
-      "confidence": "Strong",
-      "methods_flagged": 3,
-      "consensus_score": 0.5743,
-      "description": "Pfizer (PFE) is trading 10.7% below its 20-day moving average ($22.55). The stock appears oversold at 3 standard deviations from normal. Mean-reversion toward $22.55 is likely. Consider entering a long position targeting the $22.55 moving average.",
-      "run_date": "2026-04-27",
-      "is_new": false,
-      "first_detected": "2026-04-27",
-      "detected_at": "2026-04-27",
-      "details": {
-        "fourier_score": 0.2618,
-        "mp_score": 0.3336,
-        "ensemble_score": 0.6814,
-        "ewma_score": 0.9366,
-        "trajectory": "normal",
-        "deviation_pct": -10.74,
-        "ewma_value": 22.55
       }
     }
   ]
