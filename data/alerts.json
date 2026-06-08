@@ -1,8 +1,35 @@
 {
-  "generated_at": "2026-06-05T22:56:58.003254Z",
+  "generated_at": "2026-06-08T23:07:07.313860Z",
   "total_signals": 200,
   "new_signals": 1,
   "signals": [
+    {
+      "ticker": "BIL",
+      "ticker_name": "SPDR Bloomberg 1-3 Month T-Bill",
+      "display": "SPDR Bloomberg 1-3 Month T-Bill (BIL)",
+      "date": "2026-06-08",
+      "close": 91.46,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 0,
+      "consensus_score": 0.5861,
+      "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-06-08",
+      "is_new": true,
+      "first_detected": "2026-06-08",
+      "detected_at": "2026-06-08",
+      "details": {
+        "fourier_score": 0.0008,
+        "mp_score": 0.7133,
+        "ensemble_score": 0.7452,
+        "ewma_score": 0.7361,
+        "trajectory": "normal",
+        "deviation_pct": 0.14,
+        "ewma_value": 91.33
+      }
+    },
     {
       "ticker": "BIL",
       "ticker_name": "SPDR Bloomberg 1-3 Month T-Bill",
@@ -17,7 +44,7 @@
       "consensus_score": 0.6307,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-06-05",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-05",
       "detected_at": "2026-06-05",
       "details": {
@@ -5374,33 +5401,6 @@
         "trajectory": "normal",
         "deviation_pct": 7.64,
         "ewma_value": 150.75
-      }
-    },
-    {
-      "ticker": "SCHW",
-      "ticker_name": "Charles Schwab",
-      "display": "Charles Schwab (SCHW)",
-      "date": "2026-01-05",
-      "close": 103.39,
-      "signal": "WATCH",
-      "signal_label": "Watch",
-      "signal_color": "#42A5F5",
-      "confidence": "Developing",
-      "methods_flagged": 1,
-      "consensus_score": 0.4979,
-      "description": "Charles Schwab (SCHW) is trading 4.8% above its 20-day moving average ($98.66). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
-      "run_date": "2026-04-20",
-      "is_new": false,
-      "first_detected": "2026-04-20",
-      "detected_at": "2026-04-20",
-      "details": {
-        "fourier_score": 0.3139,
-        "mp_score": 0.7073,
-        "ensemble_score": 0.4756,
-        "ewma_score": 0.4624,
-        "trajectory": "normal",
-        "deviation_pct": 4.79,
-        "ewma_value": 98.66
       }
     }
   ]
