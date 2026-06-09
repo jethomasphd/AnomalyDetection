@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-09T20:25:48.035250Z",
+  "generated_at": "2026-06-09T23:09:09.185042Z",
   "total_signals": 200,
-  "new_signals": 2,
+  "new_signals": 0,
   "signals": [
     {
       "ticker": "BIL",
@@ -17,7 +17,7 @@
       "consensus_score": 0.508,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-06-09",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-09",
       "detected_at": "2026-06-09",
       "details": {
@@ -44,7 +44,7 @@
       "consensus_score": 0.5,
       "description": "GE Aerospace (GE) is trading 5.4% above its 20-day moving average ($313.48). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-06-09",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-09",
       "detected_at": "2026-06-09",
       "details": {
