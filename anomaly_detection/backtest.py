@@ -44,6 +44,7 @@ import pandas as pd
 from .config import (
     BACKTEST_BENCHMARK_TICKER,
     BACKTEST_COST_BPS_PER_SIDE,
+    BACKTEST_LONG_ONLY,
     BACKTEST_MAX_HOLD_TRADING_DAYS,
     BACKTEST_UNIT_DOLLARS,
     ticker_display,
@@ -118,6 +119,7 @@ def _find_exit(
     signal: str,
     target: float | None,
     opposite_entries: list[int],
+    max_hold: int = BACKTEST_MAX_HOLD_TRADING_DAYS,
 ) -> tuple[int | None, str]:
     """Earliest exit bar index for a position opened at entry_i.
 
@@ -133,7 +135,7 @@ def _find_exit(
     j = bisect.bisect_right(opposite_entries, entry_i)
     opp_i = opposite_entries[j] if j < len(opposite_entries) else None
 
-    time_i = entry_i + BACKTEST_MAX_HOLD_TRADING_DAYS
+    time_i = entry_i + max_hold
 
     target_i = None
     if signal in REVERSION_SIGNALS and target and target > 0:
@@ -162,8 +164,19 @@ def compute_backtest(
     results: pd.DataFrame,
     ledger_signals: list[dict],
     unit: float = BACKTEST_UNIT_DOLLARS,
+    long_only: bool = BACKTEST_LONG_ONLY,
+    max_hold: int = BACKTEST_MAX_HOLD_TRADING_DAYS,
 ) -> dict:
-    """Run the walk-forward simulation over the full signal ledger."""
+    """Run the walk-forward simulation over the full signal ledger.
+
+    With long_only=True (the default; see config.BACKTEST_LONG_ONLY for the
+    measured rationale), only BUY/LONG open positions. SELL/SHORT signals
+    still act on the book — they close every open long on their ticker at
+    their own next-bar entry — but never open shorts. Their information is
+    used as risk management, which matches their dashboard semantics
+    ("take profits / tighten stops"), without taking the systematically
+    edge-less short side of the book.
+    """
     empty = {
         "signal_ledger": [],
         "total_gain": 0.0, "total_pct": 0.0,
@@ -177,7 +190,8 @@ def compute_backtest(
         "provenance_stats": {},
         "exit_reasons": {},
         "cost_bps_per_side": BACKTEST_COST_BPS_PER_SIDE,
-        "max_hold_days": BACKTEST_MAX_HOLD_TRADING_DAYS,
+        "max_hold_days": max_hold,
+        "long_only": long_only,
     }
     if results.empty or not ledger_signals:
         return empty
@@ -208,16 +222,20 @@ def compute_backtest(
         orders.append(order)
 
     # Entry bars of each direction per ticker (for opposite-signal exits).
+    # In long-only mode, short-side orders contribute their entry bars here
+    # (so they CLOSE longs) but are excluded from position opening below.
     entries_by_dir: dict[tuple[str, int], list[int]] = {}
     for o in orders:
         entries_by_dir.setdefault((o["ticker"], o["direction"]), []).append(o["entry_i"])
     for v in entries_by_dir.values():
         v.sort()
 
+    position_orders = [o for o in orders if not (long_only and o["direction"] < 0)]
+
     # ----- Simulate each position independently -----
     trades = []
     for seq, o in enumerate(
-        sorted(orders, key=lambda x: (x["entry_i"], x["ticker"], x["signal"])), start=1
+        sorted(position_orders, key=lambda x: (x["entry_i"], x["ticker"], x["signal"])), start=1
     ):
         series = by_ticker[o["ticker"]]
         closes, dates = series["Close"], series["DateStr"]
@@ -228,7 +246,8 @@ def compute_backtest(
 
         opposite = entries_by_dir.get((o["ticker"], -o["direction"]), [])
         exit_i, reason = _find_exit(
-            series, entry_i, o["direction"], o["signal"], o["target"], opposite
+            series, entry_i, o["direction"], o["signal"], o["target"], opposite,
+            max_hold=max_hold,
         )
 
         if exit_i is None:
@@ -273,23 +292,33 @@ def compute_backtest(
     # ----- Daily mark-to-market equity curve -----
     equity_curve = _build_equity_curve(trades, by_ticker, all_dates, cost_per_side)
 
+    # Average capital actually at risk on days the book held anything —
+    # the honest denominator for a % return, and the same capital base the
+    # benchmark is scaled to (so the two percentages are comparable).
+    avg_deployed = _average_deployed(trades, all_dates, unit)
+
     # ----- Benchmark: buy-and-hold the benchmark ticker, same capital -----
-    benchmark = _benchmark_curve(by_ticker, all_dates, trades, unit)
+    benchmark = _benchmark_curve(by_ticker, all_dates, trades, avg_deployed)
 
     realized = sum(t["dollar_gain"] for t in closed)
     unrealized = sum(t["dollar_gain"] for t in open_t)
+    total_gain = realized + unrealized
     n_trades = len(trades)
     total_invested = n_trades * unit
 
     stats = _compute_trade_stats(closed, equity_curve, unit=unit, n_trades_total=n_trades)
     stats["benchmark_return_pct"] = benchmark.get("return_pct")
+    stats["avg_deployed"] = round(avg_deployed, 2)
+    stats["return_on_avg_deployed_pct"] = (
+        round(total_gain / avg_deployed * 100, 2) if avg_deployed > 0 else None
+    )
 
     ledger_rows = sorted(trades, key=lambda t: (t["entry_date"], t["id"]), reverse=True)
 
     return {
         "signal_ledger": ledger_rows,
-        "total_gain": round(realized + unrealized, 2),
-        "total_pct": round(((realized + unrealized) / total_invested * 100) if total_invested else 0, 2),
+        "total_gain": round(total_gain, 2),
+        "total_pct": round((total_gain / total_invested * 100) if total_invested else 0, 2),
         "realized_gain": round(realized, 2),
         "unrealized_gain": round(unrealized, 2),
         "total_invested": int(total_invested),
@@ -306,8 +335,27 @@ def compute_backtest(
         "provenance_stats": _provenance_split(trades),
         "exit_reasons": dict(Counter(t["exit_reason"] for t in closed)),
         "cost_bps_per_side": BACKTEST_COST_BPS_PER_SIDE,
-        "max_hold_days": BACKTEST_MAX_HOLD_TRADING_DAYS,
+        "max_hold_days": max_hold,
+        "long_only": long_only,
     }
+
+
+def _average_deployed(trades: list[dict], all_dates: list[str], unit: float) -> float:
+    """Mean $ at risk across days where the book held at least one position."""
+    if not trades or not all_dates:
+        return 0.0
+    date_pos = {d: i for i, d in enumerate(all_dates)}
+    deployed = np.zeros(len(all_dates))
+    for t in trades:
+        lo = date_pos.get(t["entry_date"])
+        if lo is None:
+            continue
+        hi = len(all_dates) - 1 if t["status"] == "OPEN" else date_pos.get(
+            t["exit_date"], len(all_dates) - 1
+        )
+        deployed[lo : hi + 1] += unit
+    active = deployed[deployed > 0]
+    return float(active.mean()) if active.size else 0.0
 
 
 def _build_equity_curve(
@@ -367,28 +415,19 @@ def _benchmark_curve(
     by_ticker: dict[str, dict],
     all_dates: list[str],
     trades: list[dict],
-    unit: float,
+    avg_deployed: float,
 ) -> dict:
     """Buy-and-hold benchmark over the same window, scaled to average deployed capital.
 
     Answers: "what if the average dollars the strategy had at risk had just
-    sat in the benchmark instead?"
+    sat in the benchmark instead?" Uses the same capital base as the
+    strategy's return_on_avg_deployed_pct, so the two percentages compare
+    like for like.
     """
     out = {"dates": [], "equity": [], "ticker": BACKTEST_BENCHMARK_TICKER, "return_pct": None}
     series = by_ticker.get(BACKTEST_BENCHMARK_TICKER)
-    if series is None or not trades:
+    if series is None or not trades or avg_deployed <= 0:
         return out
-
-    date_pos = {d: i for i, d in enumerate(all_dates)}
-    deployed = np.zeros(len(all_dates))
-    for t in trades:
-        lo = date_pos.get(t["entry_date"])
-        hi = date_pos.get(t["exit_date"], len(all_dates) - 1)
-        if lo is None:
-            continue
-        hi_eff = len(all_dates) - 1 if t["status"] == "OPEN" else hi
-        deployed[lo : hi_eff + 1] += unit
-    avg_deployed = float(deployed[deployed > 0].mean()) if (deployed > 0).any() else unit
 
     start = min(t["entry_date"] for t in trades)
     bench_dates, bench_equity = [], []

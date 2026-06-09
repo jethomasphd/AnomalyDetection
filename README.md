@@ -47,9 +47,14 @@ materiality floor** — statistically unusual but economically trivial moves
 
 - Fills at the **next session's close** after a signal exists — never the same
   bar, never a backdated price. 5 bps costs per side. 30-bar time stop.
-- Mean-reversion trades exit at the trend target **frozen at detection time**;
-  any trade exits on an opposite signal.
-- **SPY buy-and-hold benchmark** on the same average deployed capital.
+- **Long-only book**: BUY/LONG open $10k positions; SELL/SHORT close the longs
+  on their ticker ("take profits / tighten stops") but open nothing — the
+  measured edge in this universe is in buying washouts, and the short side
+  showed none (validated in both halves of the sample; see HOW_IT_WORKS.md).
+- BUY trades exit at the trend target **frozen at detection time**, on an
+  opposite signal, or at the time stop.
+- **SPY buy-and-hold benchmark** on the *same average capital at risk* — the
+  strategy % and benchmark % share one denominator.
 - Walk-forward (simulated history) and **live out-of-sample** results are
   tagged by provenance and reported separately, always.
 

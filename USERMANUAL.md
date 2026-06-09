@@ -214,8 +214,8 @@ Both cutoffs are fixed and documented — never a quantile of the run's own outp
 The Signal Performance section of the dashboard is a **walk-forward simulation** over the full signals ledger:
 
 - A signal exists only after the close of its detection day; the simulated trade fills at the **next session's close**. No same-bar fills, no backdated entries.
-- Every BUY/LONG is an independent $10k long; every SELL/SHORT a $10k short; 5 bps costs per side.
-- BUY/SELL exit when price touches the trend target frozen at detection time; any position closes on an opposite-direction signal; a 30-bar time stop catches the rest. Open positions are marked to the latest close.
+- The book is **long-only**: every BUY/LONG is an independent $10k long; SELL/SHORT close the open longs on their ticker (their "take profits / tighten stops" meaning) but never open shorts — the measured edge in this universe is on the long side (washouts rebound; blowoffs just drift). 5 bps costs per side.
+- BUY trades exit when price touches the trend target frozen at detection time; any long closes when a SELL/SHORT fires on its ticker; a 30-bar time stop catches the rest. Open positions are marked to the latest close.
 - The dashed benchmark line is SPY buy-and-hold on the strategy's average deployed capital.
 - Trades are tagged by **provenance**: `backfill` (simulated history — legitimate because detection is causal) vs `live` (signals produced by scheduled runs on new bars, i.e., true out-of-sample). The dashboard reports both separately.
 

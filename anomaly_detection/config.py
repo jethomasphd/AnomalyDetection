@@ -288,6 +288,15 @@ BACKTEST_UNIT_DOLLARS = 10_000
 BACKTEST_COST_BPS_PER_SIDE = 5.0      # one-way transaction cost, basis points
 BACKTEST_MAX_HOLD_TRADING_DAYS = 30   # time-stop for every position
 BACKTEST_BENCHMARK_TICKER = "SPY"
+# Long-only book: BUY/LONG open positions; SELL/SHORT act purely as exit
+# triggers (close longs on their ticker) — matching their dashboard meaning
+# of "take profits / tighten stops". Set by the measured edge: extreme
+# below-trend stretches rebound (+2.3%/10 bars avg) while above-trend
+# stretches show ~no drift, so the short side has no edge to harvest; the
+# split-half study confirmed shorts only subtract (both-sides book went
+# NEGATIVE in the second half; long-only stayed positive in both). Flip to
+# False to simulate both sides. See HOW_IT_WORKS.md "Why long-only".
+BACKTEST_LONG_ONLY = True
 
 # --- Model version — bump when detection logic changes materially ---
 # 2.0.0: causal detection regime. Every score at bar t uses only data

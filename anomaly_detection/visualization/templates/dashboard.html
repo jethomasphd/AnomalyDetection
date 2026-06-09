@@ -646,10 +646,12 @@
             <strong>Trade rules (walk-forward, no peeking):</strong><br>
             &bull; A signal exists only after the close of its detection day; the trade fills at the
               <em>next session's close</em>. Never the same bar.<br>
-            &bull; Every BUY/LONG opens a $10k long; every SELL/SHORT opens a $10k short.
-              Same-direction signals stack into independent positions.<br>
-            &bull; Exits, whichever comes first: BUY/SELL close when price touches the trend target frozen
-              at detection time; an opposite-direction signal closes every open position of the other side;
+            &bull; The book is long-only: every BUY/LONG opens a $10k long (same-direction signals stack).
+              SELL/SHORT close the longs on their ticker &mdash; "take profits / tighten stops" &mdash; but open
+              nothing, because the measured edge in this universe is in buying washouts; extreme above-trend
+              stretches showed no drift worth shorting (held in both halves of the sample).<br>
+            &bull; Exits, whichever comes first: BUY trades close when price touches the trend target frozen
+              at detection time; a SELL/SHORT signal closes every open long on that ticker;
               a time stop closes anything still open after the max hold.<br>
             &bull; Transaction costs are charged per side. WATCH and REDUCE are informational only &mdash; no trade.<br>
             &bull; The dashed line is the benchmark: buy-and-hold scaled to the strategy's average deployed capital.<br>
@@ -992,11 +994,17 @@
                     <strong style="color:var(--green)">"Does this actually work?"</strong>
                     The book holds only what the Signal fired, traded the only way a real follower could:
                     each signal fills at the <strong>next session's close</strong> after it was produced &mdash; never the same bar, never a backdated price.
-                    Every BUY/LONG is a $10k long, every SELL/SHORT a $10k short, with
-                    {{ backtest.cost_bps_per_side|default(5)|round(0)|int }} bps costs per side.
-                    BUY/SELL trades exit at the trend target frozen at detection time, at an opposite signal, or at the
+                    {% if backtest.long_only %}
+                    The book is <strong>long-only</strong>: every BUY/LONG is a $10k long; SELL/SHORT close the longs on their ticker
+                    (their "take profits / tighten stops" meaning) but open nothing &mdash; the measured edge in this universe lives in
+                    buying washouts, while extreme above-trend stretches showed no drift to short.
+                    {% else %}
+                    Every BUY/LONG is a $10k long, every SELL/SHORT a $10k short.
+                    {% endif %}
+                    Costs are {{ backtest.cost_bps_per_side|default(5)|round(0)|int }} bps per side.
+                    BUY trades exit at the trend target frozen at detection time, at an opposite signal, or at the
                     {{ backtest.max_hold_days|default(30) }}-bar time stop &mdash; whichever comes first.
-                    The dashed line is {{ backtest.benchmark.ticker if backtest.benchmark else 'SPY' }} buy-and-hold on the same average capital.
+                    The dashed line is {{ backtest.benchmark.ticker if backtest.benchmark else 'SPY' }} buy-and-hold on the same average capital at risk.
                 </p>
 
                 {% if backtest.provenance_stats %}
@@ -1030,12 +1038,17 @@
                 <div class="bottom-line-banner {% if backtest.total_gain < 0 %}loss{% endif %}">
                     <div class="bl-headline">
                         Following THE SIGNAL from {{ backtest.start_date }} &mdash; {{ backtest.end_date }}:
-                        ${{ "{:+,.2f}".format(backtest.total_gain) }} ({{ "%+.1f"|format(backtest.total_pct) }}% of capital deployed) across {{ backtest.n_trades }} trades
+                        ${{ "{:+,.2f}".format(backtest.total_gain) }}
+                        {% if backtest.stats.return_on_avg_deployed_pct is not none %}
+                            ({{ "%+.1f"|format(backtest.stats.return_on_avg_deployed_pct) }}% on avg capital at risk{% if backtest.stats.benchmark_return_pct is not none %} vs {{ backtest.benchmark.ticker }} {{ "%+.1f"|format(backtest.stats.benchmark_return_pct) }}% on the same capital{% endif %})
+                        {% endif %}
+                        across {{ backtest.n_trades }} trades
                     </div>
                     <div class="bl-sub">
                         {{ backtest.n_closed }} closed &bull; {{ backtest.n_open }} open &bull;
                         {{ backtest.n_winning }} winning &bull;
-                        ${{ "{:,}".format(backtest.total_invested) }} deployed
+                        avg ${{ "{:,.0f}".format(backtest.stats.avg_deployed or 0) }} at risk &bull;
+                        ${{ "{:,}".format(backtest.total_invested) }} total committed
                     </div>
                 </div>
 

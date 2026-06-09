@@ -126,11 +126,36 @@ ledger** (never the capped alerts.json):
    (30) bars; otherwise marked open at the latest close.
 3. **Costs** — `BACKTEST_COST_BPS_PER_SIDE` (5 bps) charged on entry and exit.
 4. **Sizing** — every signal is an independent $10k unit; same-direction signals stack.
+   **The simulated book is long-only** (`BACKTEST_LONG_ONLY`): BUY/LONG open
+   positions; SELL/SHORT close every open long on their ticker at their own
+   next-bar entry — exactly their dashboard meaning ("take profits / tighten
+   stops") — but open no shorts.
 5. **Benchmark** — SPY buy-and-hold scaled to the strategy's average deployed
    capital, drawn on the same chart.
 6. **Reporting** — Sharpe and max drawdown from the daily mark-to-market equity
    curve; win rate / profit factor / holding period from closed trades; all
    stats split by provenance (walk-forward vs live).
+
+### Why long-only
+
+Two measurements, both reproducible from the ledger:
+
+1. **Resolution study** — extreme below-trend stretches rebounded +2.3% mean
+   (+3.3% median) over the next 10 sessions; extreme above-trend stretches
+   drifted ~0%. The harvestable edge is on the long side; the short side has
+   none in this universe.
+2. **Split-half robustness** — replaying the same frozen ledger through the
+   engine: the both-sides book made +$17.2k overall but was NEGATIVE in the
+   second half of the window; the long-only book improved every metric
+   (profit factor 1.56 -> 3.15, win rate 62% -> 76%) and stayed positive in
+   BOTH halves. A confidence-gated variant (3+ methods) and shorter time
+   stops were also tested and rejected (the former collapses trade count and
+   loses; the latter shows no consistent ordering across halves — keeping
+   the pre-registered 30-bar stop avoids curve-fitting).
+
+Reporting is symmetrical either way: `return_on_avg_deployed_pct` and the
+benchmark's return are computed on the SAME average-capital-at-risk base, so
+the dashboard's strategy-vs-SPY comparison is like for like.
 
 Known limitations, stated rather than hidden: fills at closes (no intraday),
 no borrow fees or market impact, dividends only via adjusted closes, and Yahoo

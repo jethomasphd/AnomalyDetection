@@ -63,7 +63,7 @@ def test_backdated_signal_cannot_trade_at_old_price():
     dates = pd.to_datetime(res["Date"]).dt.strftime("%Y-%m-%d").tolist()
     # Bar date = pre-crash bar 5 (price 100), but only detected at bar 15 (price 50)
     sig = _signal("AAA", dates[5], "SELL", detected_at=dates[15])
-    bt = compute_backtest(res, [sig])
+    bt = compute_backtest(res, [sig], long_only=False)
     trade = bt["signal_ledger"][0]
     assert trade["entry_date"] == dates[16]
     assert trade["entry_price"] == 50.0, "filled at a price from before the signal existed"
@@ -140,12 +140,49 @@ def test_watch_and_reduce_never_trade():
 
 
 def test_short_pnl_sign():
+    """Short mechanics stay correct when both sides are simulated."""
     closes = [100, 100, 90] + [90] * (BACKTEST_MAX_HOLD_TRADING_DAYS + 3)
     res = _results_frame({"AAA": closes})
     dates = pd.to_datetime(res["Date"]).dt.strftime("%Y-%m-%d").tolist()
     sig = _signal("AAA", dates[1], "SHORT", detected_at=dates[1])
-    bt = compute_backtest(res, [sig])
+    bt = compute_backtest(res, [sig], long_only=False)
     trade = bt["signal_ledger"][0]
     assert trade["entry_price"] == 90.0  # next bar after detection
     # price flat after entry: P&L is just costs (≈ 0 gross)
     assert trade["pct_change"] == 0.0
+
+
+def test_long_only_book_never_opens_shorts():
+    """Default book is long-only: SELL/SHORT open nothing."""
+    res = _results_frame({"AAA": [100] * 12})
+    dates = pd.to_datetime(res["Date"]).dt.strftime("%Y-%m-%d").tolist()
+    sigs = [_signal("AAA", dates[0], "SHORT"), _signal("AAA", dates[1], "SELL")]
+    bt = compute_backtest(res, sigs)  # default long_only=True
+    assert bt["long_only"] is True
+    assert bt["n_trades"] == 0
+
+
+def test_long_only_sell_still_closes_longs():
+    """In the long-only book, SELL/SHORT act as exit triggers for open longs."""
+    res = _results_frame({"AAA": [100] * 3 + [110] * 9})
+    dates = pd.to_datetime(res["Date"]).dt.strftime("%Y-%m-%d").tolist()
+    buy = _signal("AAA", dates[0], "BUY", detected_at=dates[0])
+    short = _signal("AAA", dates[4], "SHORT", detected_at=dates[4])
+    bt = compute_backtest(res, [buy, short])
+    assert bt["n_trades"] == 1  # only the BUY
+    trade = bt["signal_ledger"][0]
+    assert trade["action"] == "BUY"
+    assert trade["status"] == "CLOSED"
+    assert trade["exit_reason"] == "opposite_signal"
+    assert trade["exit_date"] == dates[5]  # the SHORT's next-bar entry
+
+
+def test_return_on_avg_deployed_is_reported():
+    """Strategy % and benchmark % must share the same capital base."""
+    res = _results_frame({"AAA": [100 + i for i in range(40)]})
+    dates = pd.to_datetime(res["Date"]).dt.strftime("%Y-%m-%d").tolist()
+    bt = compute_backtest(res, [_signal("AAA", dates[0], "BUY", detected_at=dates[0])])
+    s = bt["stats"]
+    assert s["avg_deployed"] == 10_000.0  # one $10k position
+    assert s["return_on_avg_deployed_pct"] is not None
+    assert abs(s["return_on_avg_deployed_pct"] - bt["total_gain"] / 10_000 * 100) < 0.1
