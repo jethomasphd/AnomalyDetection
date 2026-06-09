@@ -1,8 +1,62 @@
 {
-  "generated_at": "2026-06-08T23:07:07.313860Z",
+  "generated_at": "2026-06-09T20:25:48.035250Z",
   "total_signals": 200,
-  "new_signals": 1,
+  "new_signals": 2,
   "signals": [
+    {
+      "ticker": "BIL",
+      "ticker_name": "SPDR Bloomberg 1-3 Month T-Bill",
+      "display": "SPDR Bloomberg 1-3 Month T-Bill (BIL)",
+      "date": "2026-06-09",
+      "close": 91.46,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 0,
+      "consensus_score": 0.508,
+      "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-06-09",
+      "is_new": true,
+      "first_detected": "2026-06-09",
+      "detected_at": "2026-06-09",
+      "details": {
+        "fourier_score": 0.0009,
+        "mp_score": 0.6736,
+        "ensemble_score": 0.5766,
+        "ewma_score": 0.6659,
+        "trajectory": "normal",
+        "deviation_pct": 0.13,
+        "ewma_value": 91.34
+      }
+    },
+    {
+      "ticker": "GE",
+      "ticker_name": "GE Aerospace",
+      "display": "GE Aerospace (GE)",
+      "date": "2026-06-09",
+      "close": 330.44,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Developing",
+      "methods_flagged": 1,
+      "consensus_score": 0.5,
+      "description": "GE Aerospace (GE) is trading 5.4% above its 20-day moving average ($313.48). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
+      "run_date": "2026-06-09",
+      "is_new": true,
+      "first_detected": "2026-06-09",
+      "detected_at": "2026-06-09",
+      "details": {
+        "fourier_score": 0.4169,
+        "mp_score": 0.588,
+        "ensemble_score": 0.6094,
+        "ewma_score": 0.3474,
+        "trajectory": "normal",
+        "deviation_pct": 5.41,
+        "ewma_value": 313.48
+      }
+    },
     {
       "ticker": "BIL",
       "ticker_name": "SPDR Bloomberg 1-3 Month T-Bill",
@@ -17,7 +71,7 @@
       "consensus_score": 0.5861,
       "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day moving average. Detection methods flagged this because anomaly score is elevated, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
       "run_date": "2026-06-08",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-08",
       "detected_at": "2026-06-08",
       "details": {
@@ -5347,60 +5401,6 @@
         "trajectory": "normal",
         "deviation_pct": 12.24,
         "ewma_value": 96.41
-      }
-    },
-    {
-      "ticker": "GS",
-      "ticker_name": "Goldman Sachs",
-      "display": "Goldman Sachs (GS)",
-      "date": "2026-01-15",
-      "close": 970.75,
-      "signal": "WATCH",
-      "signal_label": "Watch",
-      "signal_color": "#42A5F5",
-      "confidence": "Developing",
-      "methods_flagged": 1,
-      "consensus_score": 0.4927,
-      "description": "Goldman Sachs (GS) is trading 6.2% above its 20-day moving average ($914.54). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
-      "run_date": "2026-05-08",
-      "is_new": false,
-      "first_detected": "2026-05-08",
-      "detected_at": "2026-05-08",
-      "details": {
-        "fourier_score": 0.0573,
-        "mp_score": 0.7252,
-        "ensemble_score": 0.6497,
-        "ewma_score": 0.4201,
-        "trajectory": "normal",
-        "deviation_pct": 6.15,
-        "ewma_value": 914.54
-      }
-    },
-    {
-      "ticker": "CVX",
-      "ticker_name": "Chevron",
-      "display": "Chevron (CVX)",
-      "date": "2026-01-05",
-      "close": 162.26,
-      "signal": "WATCH",
-      "signal_label": "Watch",
-      "signal_color": "#42A5F5",
-      "confidence": "Developing",
-      "methods_flagged": 1,
-      "consensus_score": 0.5071,
-      "description": "Chevron (CVX) is trading 7.6% above its 20-day moving average ($150.75). Detection methods flagged this because statistical tests flag unusual behavior, but no clear directional signal has emerged yet. Monitor for follow-through before taking a position.",
-      "run_date": "2026-04-20",
-      "is_new": false,
-      "first_detected": "2026-04-20",
-      "detected_at": "2026-04-20",
-      "details": {
-        "fourier_score": 0.0411,
-        "mp_score": 0.2876,
-        "ensemble_score": 0.9124,
-        "ewma_score": 0.613,
-        "trajectory": "normal",
-        "deviation_pct": 7.64,
-        "ewma_value": 150.75
       }
     }
   ]
