@@ -1,9 +1,18 @@
 """Durable append-only storage for anomalies and signals.
 
-Uses SQLite for simplicity and portability. Writes are append-only
-(INSERT OR IGNORE on unique keys): once a bar has been scored and written,
-its verdict is frozen so the backtest is reproducible and the anomaly log is
-an immutable audit trail.
+Two layers, one truth:
+
+  1. The LEDGER — newline-delimited JSON files under data/ledger/, committed
+     to git by every automated run. This is the durable, human-auditable
+     source of truth: append-only by convention, and *provably* append-only
+     because git history shows every line ever added. A fresh checkout
+     (every CI run) rebuilds the SQLite cache from the ledger, so watermarks
+     and frozen verdicts genuinely survive between runs.
+
+  2. SQLite — a fast local cache with uniqueness enforcement. Writes are
+     append-only (INSERT OR IGNORE on unique keys): once a bar has been
+     scored and written, its verdict is frozen so the backtest is
+     reproducible and the anomaly log is an immutable audit trail.
 
 Schema:
   anomalies:       (date, ticker, anomaly_type, model_version) is unique
@@ -16,6 +25,12 @@ Two timestamps on each row serve distinct purposes:
     correct anchor for backtest trade entries (no peeking at the future).
   - created_at: SQL insertion time. Infrastructure timestamp, not a
     business-meaningful event.
+
+Provenance marks how a row came to exist:
+  - 'backfill': produced by the walk-forward simulation over history (the
+    causal detectors guarantee the verdict equals what a live run that
+    evening would have said; detected_at is set to the bar date).
+  - 'live': produced by a scheduled run on a genuinely new bar.
 """
 
 import json
@@ -26,9 +41,13 @@ from datetime import datetime
 
 import pandas as pd
 
-from .config import DB_PATH, MODEL_VERSION
+from .config import DB_PATH, LEDGER_DIR, MODEL_VERSION
 
 logger = logging.getLogger(__name__)
+
+ANOMALIES_LEDGER = "anomalies.jsonl"
+SIGNALS_LEDGER = "signals.jsonl"
+WATERMARKS_LEDGER = "watermarks.json"
 
 
 def _get_conn(db_path: str | None = None) -> sqlite3.Connection:
@@ -85,11 +104,13 @@ def _init_schema(conn: sqlite3.Connection) -> None:
             updated_at TEXT NOT NULL DEFAULT (datetime('now'))
         );
     """)
-    # Lightweight migration for databases created before detected_at existed.
+    # Lightweight migrations for databases created before newer columns.
     for table in ("anomalies", "signals"):
         cols = {r[1] for r in conn.execute(f"PRAGMA table_info({table})").fetchall()}
         if "detected_at" not in cols:
             conn.execute(f"ALTER TABLE {table} ADD COLUMN detected_at TEXT")
+        if "provenance" not in cols:
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN provenance TEXT DEFAULT 'live'")
     conn.commit()
 
 
@@ -111,21 +132,23 @@ def upsert_anomalies(rows: list[dict], db_path: str | None = None) -> int:
         INSERT OR IGNORE INTO anomalies
             (date, ticker, anomaly_type, severity_score, direction,
              features_snapshot, model_version, threshold_params,
-             detected_at, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             detected_at, provenance, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
     now = datetime.utcnow().isoformat() + "Z"
     today = datetime.utcnow().strftime("%Y-%m-%d")
     params = []
     for r in rows:
+        snapshot = r.get("features_snapshot")
         params.append((
             r["date"], r["ticker"], r["anomaly_type"],
             r.get("severity_score", 0),
             r.get("direction"),
-            json.dumps(r["features_snapshot"]) if r.get("features_snapshot") else None,
+            (snapshot if isinstance(snapshot, str) else json.dumps(snapshot)) if snapshot else None,
             r.get("model_version", MODEL_VERSION),
             json.dumps(r["threshold_params"]) if r.get("threshold_params") else None,
             r.get("detected_at", today),
+            r.get("provenance", "live"),
             now,
         ))
     cur = conn.executemany(sql, params)
@@ -144,19 +167,21 @@ def upsert_signals(rows: list[dict], db_path: str | None = None) -> int:
     sql = """
         INSERT OR IGNORE INTO signals
             (date, ticker, signal, confidence, rationale,
-             model_version, detected_at, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+             model_version, detected_at, provenance, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """
     now = datetime.utcnow().isoformat() + "Z"
     today = datetime.utcnow().strftime("%Y-%m-%d")
     params = []
     for r in rows:
+        rationale = r.get("rationale")
         params.append((
             r["date"], r["ticker"], r["signal"],
             r.get("confidence"),
-            json.dumps(r["rationale"]) if r.get("rationale") else None,
+            (rationale if isinstance(rationale, str) else json.dumps(rationale)) if rationale else None,
             r.get("model_version", MODEL_VERSION),
             r.get("detected_at", today),
+            r.get("provenance", "live"),
             now,
         ))
     cur = conn.executemany(sql, params)
@@ -205,6 +230,102 @@ def update_bar_watermarks(watermarks: dict[str, str], db_path: str | None = None
 
 
 # ---------------------------------------------------------------------------
+# Ledger — the git-committed source of truth
+# ---------------------------------------------------------------------------
+
+# Stable field orders so exported lines are byte-identical run to run and
+# git diffs show pure appends.
+_ANOMALY_FIELDS = ["date", "ticker", "anomaly_type", "severity_score", "direction",
+                   "features_snapshot", "model_version", "threshold_params",
+                   "detected_at", "provenance"]
+_SIGNAL_FIELDS = ["date", "ticker", "signal", "confidence", "rationale",
+                  "model_version", "detected_at", "provenance"]
+
+
+def export_ledger(db_path: str | None = None, ledger_dir: str | None = None) -> dict:
+    """Write the full anomalies/signals/watermarks state to the ledger files.
+
+    Rows are sorted by primary key so output is deterministic: a run that
+    adds N rows produces a git diff of exactly N appended/interleaved lines.
+    """
+    ledger_dir = ledger_dir or LEDGER_DIR
+    os.makedirs(ledger_dir, exist_ok=True)
+    conn = _get_conn(db_path)
+    conn.row_factory = sqlite3.Row
+
+    counts = {}
+    specs = [
+        (ANOMALIES_LEDGER, "anomalies", _ANOMALY_FIELDS,
+         "ORDER BY date, ticker, anomaly_type, model_version"),
+        (SIGNALS_LEDGER, "signals", _SIGNAL_FIELDS,
+         "ORDER BY date, ticker, model_version"),
+    ]
+    for fname, table, fields, order in specs:
+        rows = conn.execute(f"SELECT * FROM {table} {order}").fetchall()
+        path = os.path.join(ledger_dir, fname)
+        with open(path, "w") as f:
+            for r in rows:
+                rec = {k: r[k] for k in fields}
+                f.write(json.dumps(rec, sort_keys=True, default=str) + "\n")
+        counts[table] = len(rows)
+
+    wm = {t: d for t, d in conn.execute(
+        "SELECT ticker, last_date FROM bar_watermarks ORDER BY ticker").fetchall()}
+    with open(os.path.join(ledger_dir, WATERMARKS_LEDGER), "w") as f:
+        json.dump(wm, f, indent=2, sort_keys=True)
+    counts["watermarks"] = len(wm)
+    conn.close()
+
+    logger.info("Ledger exported to %s: %s", ledger_dir, counts)
+    return counts
+
+
+def import_ledger(db_path: str | None = None, ledger_dir: str | None = None) -> dict:
+    """Load ledger files into SQLite (INSERT OR IGNORE — frozen rows win)."""
+    ledger_dir = ledger_dir or LEDGER_DIR
+    counts = {"anomalies": 0, "signals": 0, "watermarks": 0}
+
+    a_path = os.path.join(ledger_dir, ANOMALIES_LEDGER)
+    if os.path.isfile(a_path):
+        with open(a_path) as f:
+            rows = [json.loads(line) for line in f if line.strip()]
+        counts["anomalies"] = upsert_anomalies(rows, db_path=db_path)
+
+    s_path = os.path.join(ledger_dir, SIGNALS_LEDGER)
+    if os.path.isfile(s_path):
+        with open(s_path) as f:
+            rows = [json.loads(line) for line in f if line.strip()]
+        counts["signals"] = upsert_signals(rows, db_path=db_path)
+
+    w_path = os.path.join(ledger_dir, WATERMARKS_LEDGER)
+    if os.path.isfile(w_path):
+        with open(w_path) as f:
+            wm = json.load(f)
+        counts["watermarks"] = update_bar_watermarks(wm, db_path=db_path)
+
+    logger.info("Ledger imported from %s: %s", ledger_dir, counts)
+    return counts
+
+
+def bootstrap_from_ledger(db_path: str | None = None, ledger_dir: str | None = None) -> bool:
+    """If the SQLite cache is empty (fresh checkout), rebuild it from the ledger.
+
+    Returns True if an import was performed. This is what makes the durable
+    store actually durable on ephemeral CI runners: SQLite is disposable,
+    the committed ledger is not.
+    """
+    existing = count_rows(db_path=db_path)
+    has_watermarks = bool(get_bar_watermarks(db_path=db_path))
+    if existing["anomalies"] or existing["signals"] or has_watermarks:
+        return False
+    ledger_dir = ledger_dir or LEDGER_DIR
+    if not os.path.isdir(ledger_dir):
+        return False
+    import_ledger(db_path=db_path, ledger_dir=ledger_dir)
+    return True
+
+
+# ---------------------------------------------------------------------------
 # Reads
 # ---------------------------------------------------------------------------
 
@@ -227,6 +348,34 @@ def get_all_signals(limit: int = 500, db_path: str | None = None) -> list[dict]:
     ).fetchall()
     conn.close()
     return [dict(r) for r in rows]
+
+
+def get_signals_for_backtest(db_path: str | None = None) -> list[dict]:
+    """Read ALL signal rows (no cap) with parsed rationale, oldest first.
+
+    This is the backtest's input: the full immutable signal ledger, not the
+    display-capped alerts.json. Each row carries date (the bar), detected_at
+    (when the verdict existed), provenance, and the rationale details
+    (deviation, trend value, etc.) frozen at detection time.
+    """
+    conn = _get_conn(db_path)
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute(
+        "SELECT * FROM signals ORDER BY date, ticker, model_version"
+    ).fetchall()
+    conn.close()
+    out = []
+    for r in rows:
+        rec = dict(r)
+        if rec.get("rationale"):
+            try:
+                rec["rationale"] = json.loads(rec["rationale"])
+            except (json.JSONDecodeError, TypeError):
+                rec["rationale"] = {}
+        else:
+            rec["rationale"] = {}
+        out.append(rec)
+    return out
 
 
 def get_all_anomalies(limit: int = 5000, db_path: str | None = None) -> list[dict]:
@@ -277,12 +426,12 @@ def count_rows(db_path: str | None = None) -> dict:
     return {"anomalies": a_count, "signals": s_count}
 
 
-def reset_storage(db_path: str | None = None) -> dict:
-    """Wipe anomalies, signals, and watermarks. Used when the detection
-    regime changes (e.g. switching from a sliding window to a fixed anchor)
-    so old drifted verdicts don't contaminate the frozen log going forward.
+def reset_storage(db_path: str | None = None, ledger_dir: str | None = None) -> dict:
+    """Wipe anomalies, signals, watermarks AND the committed ledger files.
 
-    Returns counts of rows deleted for audit.
+    Used when the detection regime changes (e.g. v1 percentile thresholds ->
+    v2 causal scoring) so old drifted verdicts don't contaminate the frozen
+    log going forward. Returns counts of rows deleted for audit.
     """
     conn = _get_conn(db_path)
     a_count = conn.execute("SELECT COUNT(*) FROM anomalies").fetchone()[0]
@@ -295,8 +444,15 @@ def reset_storage(db_path: str | None = None) -> dict:
     """)
     conn.commit()
     conn.close()
+
+    ledger_dir = ledger_dir or LEDGER_DIR
+    for fname in (ANOMALIES_LEDGER, SIGNALS_LEDGER, WATERMARKS_LEDGER):
+        path = os.path.join(ledger_dir, fname)
+        if os.path.isfile(path):
+            os.remove(path)
+
     logger.warning(
-        "Storage wiped: %d anomalies, %d signals, %d watermarks deleted",
+        "Storage wiped: %d anomalies, %d signals, %d watermarks deleted (+ledger files)",
         a_count, s_count, w_count,
     )
     return {"anomalies_deleted": a_count, "signals_deleted": s_count,
@@ -307,13 +463,20 @@ def reset_storage(db_path: str | None = None) -> dict:
 # Conversion helpers: pipeline results -> storage rows
 # ---------------------------------------------------------------------------
 
-def results_to_anomaly_rows(results: pd.DataFrame, detected_at: str | None = None) -> list[dict]:
+def results_to_anomaly_rows(
+    results: pd.DataFrame,
+    detected_at: str | None = None,
+    provenance: str = "live",
+) -> list[dict]:
     """Convert detection results DataFrame to anomaly storage rows.
 
     Only includes rows where consensus_anomaly is True.
     Creates one row per (date, ticker, method) that flagged.
-    `detected_at` defaults to today (UTC) and marks the run-date on which the
-    verdict was produced — distinct from the bar's `date`.
+
+    For provenance='live', `detected_at` is the run date (defaults to today
+    UTC). For provenance='backfill', detected_at is set per-row to the BAR
+    date: the causal detectors guarantee that is exactly the verdict a live
+    run that evening would have produced.
     """
     anomalies = results[results.get("consensus_anomaly", False) == True].copy()
     if anomalies.empty:
@@ -331,6 +494,7 @@ def results_to_anomaly_rows(results: pd.DataFrame, detected_at: str | None = Non
 
     for _, r in anomalies.iterrows():
         date_str = r["Date"].strftime("%Y-%m-%d") if hasattr(r["Date"], "strftime") else str(r["Date"])
+        row_detected_at = date_str if provenance == "backfill" else detected_at
         dev_pct = r.get("deviation_pct", 0)
         direction = "above" if dev_pct > 0 else "below" if dev_pct < 0 else "neutral"
 
@@ -339,7 +503,8 @@ def results_to_anomaly_rows(results: pd.DataFrame, detected_at: str | None = Non
             "volume": float(r.get("Volume", 0)),
             "daily_return": float(r.get("daily_return", 0)) if pd.notna(r.get("daily_return")) else 0,
             "deviation_pct": float(dev_pct),
-            "trajectory": r.get("trajectory", "normal"),
+            "dev_z": float(r.get("dev_z", 0)),
+            "trajectory": r.get("trajectory", "stable"),
             "consensus_score": float(r.get("consensus_score", 0)),
             "methods_flagged": int(r.get("methods_flagged", 0)),
         }
@@ -355,7 +520,8 @@ def results_to_anomaly_rows(results: pd.DataFrame, detected_at: str | None = Non
                     "direction": direction,
                     "features_snapshot": features,
                     "model_version": MODEL_VERSION,
-                    "detected_at": detected_at,
+                    "detected_at": row_detected_at,
+                    "provenance": provenance,
                 })
 
         # Also store the consensus anomaly itself
@@ -367,7 +533,8 @@ def results_to_anomaly_rows(results: pd.DataFrame, detected_at: str | None = Non
             "direction": direction,
             "features_snapshot": features,
             "model_version": MODEL_VERSION,
-            "detected_at": detected_at,
+            "detected_at": row_detected_at,
+            "provenance": provenance,
         })
 
     return rows
@@ -392,5 +559,6 @@ def alerts_to_signal_rows(alerts: list[dict]) -> list[dict]:
             # first_detected is the alert's run-date of first appearance; fall
             # back to the bar date for legacy alerts that lack it.
             "detected_at": a.get("first_detected") or a.get("run_date") or a.get("date"),
+            "provenance": a.get("provenance", "live"),
         })
     return rows

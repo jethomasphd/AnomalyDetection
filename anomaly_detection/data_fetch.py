@@ -1,6 +1,13 @@
-"""Data fetching module — pulls stock data from Yahoo Finance."""
+"""Data fetching module — pulls stock data from Yahoo Finance.
+
+Each ticker download is retried with exponential backoff (Yahoo rate-limits
+burst traffic), and `fetch_multiple` returns alongside the data a fetch
+report — which tickers succeeded, which failed and why — so the pipeline
+can surface coverage drops instead of silently shrinking the universe.
+"""
 
 import logging
+import time
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -11,6 +18,9 @@ from .config import DEFAULT_TICKERS, MIN_DATA_POINTS, SIGNAL_START_DATE
 
 logger = logging.getLogger(__name__)
 
+FETCH_RETRIES = 3
+FETCH_BACKOFF_SECONDS = 2.0  # 2s, 4s, 8s
+
 
 def fetch_ticker(
     ticker: str,
@@ -20,26 +30,33 @@ def fetch_ticker(
 ) -> Optional[pd.DataFrame]:
     """Fetch OHLCV data for a single ticker from the anchored start date.
 
-    Returns a DataFrame with columns:
-        Date, Open, High, Low, Close, Volume, Ticker
-    or None if the fetch fails / insufficient data.
+    Retries transient failures with exponential backoff. Returns a DataFrame
+    with columns Date, Open, High, Low, Close, Volume, Ticker — or None if
+    the fetch fails / has insufficient data.
     """
     end = end_date or datetime.today()
     start_str = start_date
     # yfinance treats `end` as exclusive, so add a day to include today's bar.
     end_str = (end + timedelta(days=1)).strftime("%Y-%m-%d")
 
-    try:
-        df = yf.download(
-            ticker,
-            start=start_str,
-            end=end_str,
-            progress=False,
-            auto_adjust=True,
-        )
-    except Exception as exc:
-        logger.warning("Failed to fetch %s: %s", ticker, exc)
-        return None
+    df = None
+    for attempt in range(1, FETCH_RETRIES + 1):
+        try:
+            df = yf.download(
+                ticker,
+                start=start_str,
+                end=end_str,
+                progress=False,
+                auto_adjust=True,
+            )
+        except Exception as exc:
+            logger.warning("Fetch %s attempt %d/%d failed: %s",
+                           ticker, attempt, FETCH_RETRIES, exc)
+            df = None
+        if df is not None and len(df) > 0:
+            break
+        if attempt < FETCH_RETRIES:
+            time.sleep(FETCH_BACKOFF_SECONDS * (2 ** (attempt - 1)))
 
     if df is None or len(df) < MIN_DATA_POINTS:
         logger.warning(
@@ -76,16 +93,24 @@ def fetch_multiple(
     tickers: Optional[list[str]] = None,
     start_date: str = SIGNAL_START_DATE,
     lookback_days: Optional[int] = None,  # legacy, ignored
-) -> pd.DataFrame:
-    """Fetch data for multiple tickers and combine into one DataFrame."""
+    return_report: bool = False,
+):
+    """Fetch data for multiple tickers and combine into one DataFrame.
+
+    With return_report=True, returns (DataFrame, report) where report is
+    {"requested", "fetched", "failed": [{"ticker", "reason"}], "coverage_pct"}.
+    """
     tickers = tickers or DEFAULT_TICKERS
     frames = []
+    failed = []
 
     for ticker in tickers:
         logger.info("Fetching %s ...", ticker)
         df = fetch_ticker(ticker, start_date=start_date)
         if df is not None:
             frames.append(df)
+        else:
+            failed.append({"ticker": ticker, "reason": "fetch failed or insufficient data"})
 
     if not frames:
         raise RuntimeError("No data fetched for any ticker.")
@@ -94,11 +119,20 @@ def fetch_multiple(
     combined["Date"] = pd.to_datetime(combined["Date"])
     combined = combined.sort_values(["Ticker", "Date"]).reset_index(drop=True)
 
-    logger.info(
-        "Fetched %d rows across %d tickers",
-        len(combined),
-        combined["Ticker"].nunique(),
-    )
+    n_fetched = combined["Ticker"].nunique()
+    logger.info("Fetched %d rows across %d tickers", len(combined), n_fetched)
+    if failed:
+        logger.warning("Coverage gap: %d of %d tickers failed: %s",
+                       len(failed), len(tickers), [f["ticker"] for f in failed])
+
+    report = {
+        "requested": len(tickers),
+        "fetched": int(n_fetched),
+        "failed": failed,
+        "coverage_pct": round(n_fetched / len(tickers) * 100, 1) if tickers else 0.0,
+    }
+    if return_report:
+        return combined, report
     return combined
 
 

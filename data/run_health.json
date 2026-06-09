@@ -1,0 +1,10 @@
+{
+  "run_date": "2026-06-09",
+  "status": "ok",
+  "coverage_pct": 100.0,
+  "tickers_requested": 75,
+  "tickers_fetched": 75,
+  "fetch_failures": [],
+  "duration_seconds": 187.4,
+  "model_version": "2.0.0"
+}

@@ -98,83 +98,95 @@ Click any ticker button to see its full analysis:
 
 Each method looks for a different type of anomaly. When multiple methods independently flag the same date, confidence increases.
 
+**Every method is causal:** the score for any trading day uses only data through that day — never the future. This is enforced by the test suite (`test_causality.py`) and is what makes the walk-forward backtest legitimate and live monitoring identical to it. Every method's raw measurement is standardized against its own trailing history (robust z) and mapped onto one fixed scale: **0.5 = 2 sigma, 0.625 = 2.5 sigma, 1.0 = 4 sigma and beyond**. There are no percentile-of-own-output thresholds: a quiet stock produces a quiet report.
+
 ### 1. Fourier Transform — Frequency-Domain Structural Change
 
-Every stock has a characteristic oscillation pattern. The Fourier Transform decomposes the price series into frequency components and measures whether the energy distribution across those frequencies has shifted from the historical baseline. This detects *structural regime changes* — the stock is behaving in a fundamentally different way.
+Every stock has a characteristic oscillation pattern. The Fourier Transform decomposes the price series into frequency components and measures whether the energy distribution across those frequencies has shifted from the baseline. This detects *structural regime changes* — the stock is behaving in a fundamentally different way.
 
-- **Window:** 60-day sliding window compared against the full-history baseline
-- **Metric:** Symmetric KL divergence between local and historical frequency spectra
+- **Window:** trailing 60-day spectrum compared against the expanding baseline *up to the same day*
+- **Metric:** Symmetric KL divergence between local and baseline frequency-energy profiles
 - **Best at catching:** Transitions from choppy to trending behavior, volatility regime shifts, structural breaks that other methods miss
 
 ### 2. Matrix Profile (STUMPY) — Subsequence Novelty Detection
 
-For every recent 10-day window of price action, the algorithm asks: *"What is the most similar 10-day window in this stock's entire history?"* If even the best match is poor, the current pattern is genuinely unprecedented.
+For every 10-day window of price action, the algorithm asks: *"What is the most similar 10-day window that came BEFORE this one?"* If even the best past match is poor, the pattern is genuinely unprecedented. This uses STUMPY's incremental **left matrix profile** (`stumpy.stumpi`) — the honest formulation of novelty, which cannot match a pattern against its own future.
 
-- **Algorithm:** STUMPY (Scalable Time series Unsupervised Matrix Profile)
+- **Algorithm:** STUMPY (Scalable Time series Unsupervised Matrix Profile), left profile
 - **Subsequence length:** 10 trading days
 - **Best at catching:** First-time moves, breakouts into entirely new price territory, earnings reactions with no historical analog
 
 ### 3. Statistical Ensemble — Three Independent Tests
 
-Three complementary statistical approaches, each normalized and weighted:
+Three complementary statistical approaches, each causal, normalized, and weighted:
 
 | Component | Weight | What it measures |
 |-----------|--------|------------------|
-| Z-Score | 40% | How many standard deviations the price is from its rolling 60-day mean |
-| Seasonal Decomposition (STL) | 30% | The unexplained residual after removing trend and weekly seasonality |
-| Isolation Forest | 30% | Multivariate outlier detection across price level, daily return, and 20-day volatility simultaneously |
+| Z-Score | 40% | Today's return relative to the ticker's own trailing 60-day return volatility (excluding today) |
+| Seasonal Decomposition | 30% | The residual after removing a one-sided (past-only) trend and weekday pattern learned from prior bars |
+| Isolation Forest | 30% | Multivariate outlier detection across return, volatility, volume ratio, and intraday range — the forest is refit walk-forward and never scores bars it trained on |
 
-- **Best at catching:** Statistical outliers, unusual combinations of price/return/volatility that no single metric would flag
+- **Best at catching:** Statistical outliers, unusual combinations of return/volatility/volume that no single metric would flag
 
 ### 4. EWMA Trend Analysis — Momentum Deviation
 
-The Exponentially Weighted Moving Average (20-day span) creates a responsive trend line. The system measures how far price has deviated from this trend and classifies the *trajectory* of that deviation:
+The Exponentially Weighted Moving Average (20-day span) creates a responsive trend line. The system measures how far price has deviated from this trend, **standardized by that deviation's own trailing volatility** (`dev_z`) — so a 3-sigma stretch means the same thing for a sleepy T-bill fund as for NVIDIA — and classifies the *trajectory* of the stretch:
 
 | Trajectory | What it means |
 |------------|---------------|
-| **Breakout** | Deviation exceeds 80% of the historical range — extreme move |
-| **Accelerating** | Deviation is increasing (slope > 0.02) — momentum building |
-| **Decelerating** | Deviation is decreasing (slope < -0.02) — momentum fading |
-| **Normal** | Deviation is stable — no unusual trajectory |
+| **Breakout** | The standardized deviation is at extremes (beyond threshold + 1 sigma) |
+| **Extending** | The stretch is growing — price pulling further from trend |
+| **Reverting** | The stretch is shrinking — price snapping back toward trend |
+| **Stable** | The stretch is holding steady |
 
 - **Best at catching:** Overextended rallies and selloffs, momentum reversals, stocks drifting persistently from trend
-- **Key role:** Trajectory classification is the primary driver of signal direction (Buy/Sell vs. Long/Short)
+- **Key role:** `dev_z` magnitude and trajectory drive signal direction (Buy/Sell vs. Long/Short)
 
 ---
 
 ## How Signals Are Derived
 
-The signal derivation logic combines two dimensions:
+The signal derivation logic combines three dimensions:
 
-1. **Deviation magnitude** — How far is the price from its 20-day EWMA? (measured as a percentage)
-2. **Momentum trajectory** — Is the deviation accelerating, decelerating, or breaking out?
+1. **Standardized deviation (`dev_z`)** — how stretched is price from its 20-day EWMA, in units of this ticker's own typical variability?
+2. **Momentum trajectory** — is the stretch extending, reverting, breaking out, or stable?
+3. **Materiality** — is the move economically meaningful in absolute terms?
 
-The decision tree:
+The decision tree (medium sensitivity):
 
 ```
-IF price is far below trend AND momentum is decelerating:
-    → BUY (mean-reversion: oversold, selling exhaustion)
+TRADABLE requires: 2+ methods agree AND |deviation| >= 1% (materiality gate)
 
-IF price is far above trend AND momentum is decelerating:
-    → SELL (mean-reversion: overbought, buying exhaustion)
+IF trajectory is BREAKOUT (climactic extreme):        # fade the overreaction
+    dev_z <= -2.5  -> BUY  (capitulation washout: such extremes rebound on average)
+    dev_z >= +2.5  -> SELL (blowoff top: such extremes stall or revert)
 
-IF price is below trend AND momentum is accelerating downward:
-    → SHORT (trend-following: downward momentum building)
+ELIF trajectory is EXTENDING (stretch still building): # ride the momentum
+    dev_z >= +1.5  -> LONG
+    dev_z <= -1.5  -> SHORT
 
-IF price is above trend AND momentum is accelerating upward:
-    → LONG (trend-following: upward momentum building)
+ELSE (reverting/stable — stretch fading):              # reversion under way
+    dev_z <= -2.5  -> BUY
+    dev_z >= +2.5  -> SELL
 
 IF Fourier AND Matrix Profile both flag structural change:
-    → REDUCE EXPOSURE (regime change: unprecedented structural shift)
+    -> REDUCE EXPOSURE (regime change: unprecedented structural shift)
 
 OTHERWISE:
-    → WATCH (anomaly detected, no clear directional signal)
+    -> WATCH (anomaly detected, no tradable directional setup)
 ```
+
+The fade-the-breakout rule is calibrated to measured behavior: in this universe,
+bars stretched more than ~3.5 sigma below trend rebounded +2.3% on average over
+the next 10 sessions (the classic short-term overreaction reversal), so the
+naive momentum response — shorting a capitulation — is systematically wrong-way.
+
+The materiality gate is why a 4-sigma move of 0.15% in a T-bill ETF shows up as WATCH (it is genuinely unusual *for that fund*) but can never become a trade call.
 
 **Confidence** is determined by method agreement:
 - **Strong** — 3 or 4 of 4 methods independently flag the same date
 - **Moderate** — 2 of 4 methods agree
-- **Developing** — 1 method flags, but the consensus score is elevated
+- **Developing** — fewer
 
 ---
 
@@ -189,11 +201,23 @@ The four individual method scores are combined into a single consensus score usi
 | EWMA | 25% | Most directly actionable — deviation and trajectory drive signal direction |
 | Fourier | 20% | Structural detection is powerful but produces fewer signals |
 
-A day is flagged as anomalous when:
+All four scores share the same fixed sigma scale, so the weights mean what they say. A day is flagged as anomalous when:
 - Two or more individual methods flag it, **OR**
-- The consensus score exceeds the 97.5th percentile of its full historical distribution
+- The consensus score crosses the sensitivity cutoff (medium: 0.625, the 2.5-sigma equivalent)
+
+Both cutoffs are fixed and documented — never a quantile of the run's own output.
 
 ---
+
+## The Backtest and the Live Record
+
+The Signal Performance section of the dashboard is a **walk-forward simulation** over the full signals ledger:
+
+- A signal exists only after the close of its detection day; the simulated trade fills at the **next session's close**. No same-bar fills, no backdated entries.
+- Every BUY/LONG is an independent $10k long; every SELL/SHORT a $10k short; 5 bps costs per side.
+- BUY/SELL exit when price touches the trend target frozen at detection time; any position closes on an opposite-direction signal; a 30-bar time stop catches the rest. Open positions are marked to the latest close.
+- The dashed benchmark line is SPY buy-and-hold on the strategy's average deployed capital.
+- Trades are tagged by **provenance**: `backfill` (simulated history — legitimate because detection is causal) vs `live` (signals produced by scheduled runs on new bars, i.e., true out-of-sample). The dashboard reports both separately.
 
 ## Running the System
 
@@ -221,8 +245,11 @@ python -m anomaly_detection
 # Custom tickers
 python -m anomaly_detection --tickers "AAPL,TSLA,AMZN"
 
-# High sensitivity, 6-month lookback
-python -m anomaly_detection --sensitivity high --lookback 180
+# High sensitivity
+python -m anomaly_detection --sensitivity high
+
+# Rebuild the ledger from scratch (after a detection-regime change)
+python -m anomaly_detection --reset
 
 # Low sensitivity (only extreme anomalies)
 python -m anomaly_detection --sensitivity low
@@ -233,11 +260,16 @@ python -m anomaly_detection --sensitivity low
 | File | Description |
 |------|-------------|
 | `docs/index.html` | The interactive dashboard — open in any browser |
-| `data/alerts.json` | Structured signal data in JSON format — **persisted across runs** for incremental processing |
-| `data/stock_data.csv` | Raw price data with computed features (regenerated each run) |
-| `data/detection_results.csv` | Full detection results with all method scores (regenerated each run) |
+| `data/ledger/anomalies.jsonl` | **Committed append-only truth**: every anomaly verdict ever recorded |
+| `data/ledger/signals.jsonl` | **Committed append-only truth**: every signal ever produced (backtest input) |
+| `data/ledger/watermarks.json` | Per-ticker high-water mark of scored bars (edge-only cursor) |
+| `data/alerts.json` | Display view for the dashboard (capped at 200, newest first) |
+| `data/run_health.json` | Latest run's fetch coverage and failures |
+| `data/history/run_*.json` | One summary per run + `index.json` |
+| `data/stock_data.csv` | Raw price data with computed features (regenerated each run, gitignored) |
+| `data/detection_results.csv` | Full detection results with all method scores (regenerated each run, gitignored) |
 
-**Note:** `alerts.json` now includes additional fields per signal: `run_date` (when the signal was last evaluated), `is_new` (whether it appeared in the most recent run), and `first_detected` (when the signal was first seen). The file also includes a top-level `new_signals` count.
+Each signal carries `run_date`, `is_new`, `first_detected`, `detected_at`, and `provenance` (`backfill` = walk-forward simulated history, `live` = out-of-sample). The SQLite store (`data/anomaly_store.db`) is a local cache rebuilt from the ledger on fresh checkouts.
 
 ---
 

@@ -200,6 +200,9 @@ DEFAULT_LOOKBACK_DAYS = 365  # kept for API compatibility; superseded by SIGNAL_
 MIN_DATA_POINTS = 30
 
 # --- Sensitivity Presets ---
+# z_threshold is the causal robust-z a method's score must exceed to flag.
+# `percentile` is retained for backwards compatibility with old callers but
+# is no longer used by the v2 causal detectors.
 SENSITIVITY_PRESETS = {
     "low": {
         "percentile": 99.5,
@@ -220,6 +223,16 @@ SENSITIVITY_PRESETS = {
 
 DEFAULT_SENSITIVITY = os.environ.get("ANOMALY_SENSITIVITY", "medium")
 
+# --- Causal scoring scale ---
+# Method scores are standardized robust-z values mapped onto [0, 1] by
+# score = min(max(z, 0) / Z_SCORE_CAP, 1).  The scale is therefore directly
+# interpretable: 0.50 = 2 sigma, 0.625 = 2.5 sigma, 1.0 = 4+ sigma.
+Z_SCORE_CAP = 4.0
+
+# Warmup: number of bars a detector observes before it may flag anything.
+# Scores during warmup are 0 (insufficient history to standardize against).
+CAUSAL_WARMUP_BARS = 60
+
 # --- Detection Method Weights (for consensus score) ---
 METHOD_WEIGHTS = {
     "fourier": 0.20,
@@ -231,12 +244,22 @@ METHOD_WEIGHTS = {
 # --- EWMA Parameters ---
 EWMA_SPAN = 20
 EWMA_TREND_WINDOW = 5
+# Rolling window used to standardize the EWMA deviation per ticker (the
+# deviation is divided by its own trailing volatility, so thresholds adapt
+# to each ticker's scale: BIL and NVDA are judged against themselves).
+EWMA_DEV_VOL_WINDOW = 60
+EWMA_DEV_VOL_MIN_PERIODS = 20
+# Trajectory classification (units: sigma of standardized deviation per day).
+TRAJECTORY_SLOPE_SIGMA_PER_DAY = 0.15
+# |dev_z| above (z_threshold + this margin) classifies as breakout.
+BREAKOUT_SIGMA_MARGIN = 1.0
 
 # --- Matrix Profile Parameters ---
 MP_SUBSEQUENCE_LENGTH = 10
 
 # --- Fourier Parameters ---
 FOURIER_TOP_K = 5
+FOURIER_WINDOW = 60
 
 # --- Ensemble Weights ---
 ENSEMBLE_WEIGHTS = {
@@ -244,12 +267,42 @@ ENSEMBLE_WEIGHTS = {
     "seasonal": 0.30,
     "isolation_forest": 0.30,
 }
+# Walk-forward Isolation Forest: refit cadence and training lookback (bars).
+IFOREST_REFIT_EVERY = 21
+IFOREST_TRAIN_WINDOW = 250
+# Causal seasonal decomposition (additive): trailing trend window and period.
+SEASONAL_PERIOD = 5
+SEASONAL_TREND_WINDOW = 20
+
+# --- Signal materiality gate ---
+# A tradable signal (BUY/SELL/LONG/SHORT) requires the price to be at least
+# this far (in %) from its EWMA trend. Statistical anomalies below this
+# threshold remain visible as WATCH but never become trade calls — this is
+# what keeps a 0.1% wiggle in a T-bill ETF out of the trade ledger.
+TRADE_MIN_ABS_DEVIATION_PCT = 1.0
+
+# --- Backtest protocol ---
+# Signals are produced after the close of detected_at; fills happen at the
+# next session's close. No same-bar fills, ever.
+BACKTEST_UNIT_DOLLARS = 10_000
+BACKTEST_COST_BPS_PER_SIDE = 5.0      # one-way transaction cost, basis points
+BACKTEST_MAX_HOLD_TRADING_DAYS = 30   # time-stop for every position
+BACKTEST_BENCHMARK_TICKER = "SPY"
 
 # --- Model version — bump when detection logic changes materially ---
-MODEL_VERSION = "1.1.0"
+# 2.0.0: causal detection regime. Every score at bar t uses only data
+# through bar t; the historical backfill is therefore a true walk-forward
+# simulation and live operation is identical to the backtest by construction.
+MODEL_VERSION = "2.0.0"
 
 # --- Output Paths ---
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 DOCS_DIR = os.path.join(PROJECT_ROOT, "docs")
 DB_PATH = os.path.join(DATA_DIR, "anomaly_store.db")
+
+# The committed, git-versioned source of truth for the append-only record.
+# SQLite is a fast local cache rebuilt from these files on a fresh checkout;
+# the ledger (and its git history) is the durable audit trail.
+LEDGER_DIR = os.path.join(DATA_DIR, "ledger")
+HISTORY_DIR = os.path.join(DATA_DIR, "history")

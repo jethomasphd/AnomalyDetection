@@ -2,6 +2,24 @@
 
 Usage:
     python -m anomaly_detection.pipeline [options]
+
+Operating model (v2, causal regime):
+
+  * Detectors are causal: the verdict for bar t uses only bars <= t, so the
+    same bar gets the same verdict no matter when it is scored. The first
+    run over history is therefore a true walk-forward simulation
+    (provenance='backfill', detected_at = bar date); subsequent runs score
+    only bars beyond each ticker's watermark (provenance='live',
+    detected_at = run date).
+
+  * Durability: the SQLite store is a local cache. The committed JSONL
+    ledger under data/ledger/ is the source of truth — on a fresh checkout
+    (every CI run) the store is rebuilt from the ledger, so watermarks and
+    frozen verdicts genuinely survive between runs.
+
+  * The backtest consumes the FULL signals ledger (never the display-capped
+    alerts.json) and fills at the close of the first bar strictly after
+    detected_at.
 """
 
 import argparse
@@ -20,11 +38,13 @@ from .alerts import (
     generate_alerts,
     load_previous_alerts,
 )
+from .backtest import compute_backtest
 from .config import (
     DATA_DIR,
     DEFAULT_SENSITIVITY,
     DEFAULT_TICKERS,
     DOCS_DIR,
+    HISTORY_DIR,
     MODEL_VERSION,
     SIGNAL_START_DATE,
 )
@@ -32,8 +52,11 @@ from .data_fetch import compute_features, fetch_multiple
 from .detection.engine import run_all
 from .storage import (
     alerts_to_signal_rows,
+    bootstrap_from_ledger,
     count_rows,
+    export_ledger,
     get_bar_watermarks,
+    get_signals_for_backtest,
     reset_storage,
     results_to_anomaly_rows,
     update_bar_watermarks,
@@ -76,6 +99,25 @@ def _compute_watermarks(results: pd.DataFrame) -> dict[str, str]:
     )
 
 
+def _write_run_history(summary: dict) -> None:
+    """Append this run's summary to data/history/ and refresh the index."""
+    os.makedirs(HISTORY_DIR, exist_ok=True)
+    run_path = os.path.join(HISTORY_DIR, f"run_{summary['run_date']}.json")
+    with open(run_path, "w") as f:
+        json.dump(summary, f, indent=2)
+
+    index = []
+    for fname in sorted(os.listdir(HISTORY_DIR)):
+        if fname.startswith("run_") and fname.endswith(".json"):
+            try:
+                with open(os.path.join(HISTORY_DIR, fname)) as f:
+                    index.append(json.load(f))
+            except (json.JSONDecodeError, OSError):
+                continue
+    with open(os.path.join(HISTORY_DIR, "index.json"), "w") as f:
+        json.dump(index, f, indent=2)
+
+
 def run(
     tickers: list[str] | None = None,
     sensitivity: str = DEFAULT_SENSITIVITY,
@@ -85,25 +127,32 @@ def run(
 ) -> dict:
     """Execute the full anomaly detection pipeline.
 
-    THE SIGNAL anchors on `start_date` (default 2024-11-01). The first run
-    detects all historical anomalies from that date to today in a single
-    batch; subsequent runs only touch new bars at the edge (watermark-gated).
+    THE SIGNAL anchors on `start_date`. Tickers without a watermark are
+    backfilled with a walk-forward simulation over their history; tickers
+    with a watermark get live verdicts on new bars only. Once a bar is
+    written its verdict is frozen — the ledger is an immutable audit trail
+    and the backtest is reproducible across runs.
 
-    `reset=True` wipes the durable store and alerts.json first, so you can
-    rebuild the frozen log from scratch (use when switching detection
-    regimes, e.g. the sliding→anchored transition).
+    `reset=True` wipes the durable store, ledger, and alerts.json first
+    (use when switching detection regimes, e.g. v1 percentile -> v2 causal).
     """
+    started_at = datetime.utcnow()
     os.makedirs(DATA_DIR, exist_ok=True)
     os.makedirs(DOCS_DIR, exist_ok=True)
 
     if reset:
-        logger.warning("Reset requested — wiping durable store and alerts.json")
+        logger.warning("Reset requested — wiping durable store, ledger, and alerts.json")
         reset_storage()
         alerts_json = os.path.join(DATA_DIR, "alerts.json")
         if os.path.exists(alerts_json):
             os.remove(alerts_json)
 
-    # Stage 0: Ticker validation (optional, skipped in CI for speed)
+    # Stage 0a: Rebuild the SQLite cache from the committed ledger if needed.
+    # This is what makes durability real on ephemeral CI runners.
+    if bootstrap_from_ledger():
+        logger.info("SQLite cache rebuilt from committed ledger (fresh checkout)")
+
+    # Stage 0b: Ticker validation (optional, skipped in CI for speed)
     effective_tickers = tickers
     validation_failures = []
     if not skip_validation and tickers is None:
@@ -121,11 +170,13 @@ def run(
     elif tickers is None:
         effective_tickers = DEFAULT_TICKERS
 
-    # Stage 1: Fetch
+    # Stage 1: Fetch (with retry + coverage report)
     logger.info("=" * 60)
     logger.info("STAGE 1: Fetching stock data from %s", start_date)
     logger.info("=" * 60)
-    raw_df = fetch_multiple(tickers=effective_tickers, start_date=start_date)
+    raw_df, fetch_report = fetch_multiple(
+        tickers=effective_tickers, start_date=start_date, return_report=True
+    )
 
     # Stage 2: Features
     logger.info("=" * 60)
@@ -134,79 +185,131 @@ def run(
     featured_df = compute_features(raw_df)
     featured_df.to_csv(os.path.join(DATA_DIR, "stock_data.csv"), index=False)
 
-    # Stage 3: Detection
-    # Detectors score the full 365-day window (they need it to fit baselines
-    # and thresholds), but we only PERSIST verdicts for bars strictly newer
-    # than the per-ticker watermark. Once a bar is written, its verdict is
-    # frozen — the log is an immutable audit trail, and the backtest is
-    # reproducible across runs.
+    # Stage 3: Detection (causal — scores for old bars never change)
     logger.info("=" * 60)
-    logger.info("STAGE 3: Running anomaly detection (4 methods)")
+    logger.info("STAGE 3: Running anomaly detection (4 causal methods)")
     logger.info("=" * 60)
     results = run_all(featured_df, sensitivity=sensitivity)
     results.to_csv(os.path.join(DATA_DIR, "detection_results.csv"), index=False)
 
+    # Stage 3b: Edge-only persistence with provenance.
+    # Tickers WITHOUT a watermark are being seen for the first time: their
+    # history is persisted as a walk-forward backfill (detected_at = bar
+    # date, which causality makes honest). Tickers WITH a watermark get
+    # live rows (detected_at = run date) for bars beyond the watermark.
     watermarks = get_bar_watermarks()
     new_bars = _filter_to_new_bars(results, watermarks)
+    run_date = datetime.utcnow().strftime("%Y-%m-%d")
+
+    known = new_bars["Ticker"].astype(str).isin(set(watermarks.keys()))
+    live_bars = new_bars[known]
+    backfill_bars = new_bars[~known]
     logger.info(
-        "Edge-only persist: %d of %d scored bars are strictly newer than watermark",
-        len(new_bars), len(results),
+        "Edge persist: %d live bars (%d tickers) + %d backfill bars (%d tickers) "
+        "of %d scored",
+        len(live_bars), live_bars["Ticker"].nunique() if not live_bars.empty else 0,
+        len(backfill_bars), backfill_bars["Ticker"].nunique() if not backfill_bars.empty else 0,
+        len(results),
     )
 
-    # Stage 3b: Persist new-bar anomalies to durable store (append-only)
-    logger.info("Persisting new-bar anomalies to SQLite store ...")
-    run_date = datetime.utcnow().strftime("%Y-%m-%d")
-    anomaly_rows = results_to_anomaly_rows(new_bars, detected_at=run_date)
+    anomaly_rows = results_to_anomaly_rows(live_bars, detected_at=run_date, provenance="live")
+    anomaly_rows += results_to_anomaly_rows(backfill_bars, provenance="backfill")
     upsert_anomalies(anomaly_rows)
-    store_counts = count_rows()
-    logger.info("Store now has %d anomaly rows, %d signal rows",
-                store_counts["anomalies"], store_counts["signals"])
 
-    # Stage 4: Signals — generated only from new-bar anomalies, then merged
-    # with the durable signal history loaded from the (frozen) alerts file.
+    # Stage 4: Signals — generated only from new bars, then merged with the
+    # frozen display history. The ledger receives every signal; alerts.json
+    # is a capped view for the dashboard.
     logger.info("=" * 60)
     logger.info("STAGE 4: Generating trading signals (edge-only)")
     logger.info("=" * 60)
+    new_alerts = []
+    if not live_bars.empty:
+        new_alerts += generate_alerts(live_bars, sensitivity=sensitivity, provenance="live")
+    if not backfill_bars.empty:
+        new_alerts += generate_alerts(backfill_bars, sensitivity=sensitivity, provenance="backfill")
+
     alerts_path = os.path.join(DATA_DIR, "alerts.json")
     previous_alerts = load_previous_alerts(alerts_path)
-    new_alerts = generate_alerts(new_bars) if not new_bars.empty else []
     alerts = append_new_alerts(new_alerts, previous_alerts)
     alerts_to_json(alerts, alerts_path)
 
-    # Persist signals to durable store (append-only)
-    signal_rows = alerts_to_signal_rows(alerts)
-    upsert_signals(signal_rows)
+    # Persist ONLY the new signals to the store (frozen once written).
+    upsert_signals(alerts_to_signal_rows(new_alerts))
 
-    # Advance the per-ticker watermark to the max date we just scored
-    new_watermarks = _compute_watermarks(results)
-    update_bar_watermarks(new_watermarks)
+    # Advance watermarks, then export the ledger — the committed truth.
+    update_bar_watermarks(_compute_watermarks(results))
+    ledger_counts = export_ledger()
+    store_counts = count_rows()
+    logger.info("Store: %d anomaly rows, %d signal rows (ledger: %s)",
+                store_counts["anomalies"], store_counts["signals"], ledger_counts)
 
-    print("\n" + alerts_to_markdown(alerts))
+    print("\n" + alerts_to_markdown([a for a in alerts if a.get("is_new")] or alerts[:10]))
 
-    # Build summary
+    # Stage 5: Walk-forward backtest from the FULL signals ledger.
+    logger.info("=" * 60)
+    logger.info("STAGE 5: Walk-forward backtest (next-bar fills, costs, time stop)")
+    logger.info("=" * 60)
+    ledger_signals = get_signals_for_backtest()
+    backtest = compute_backtest(results, ledger_signals)
+    logger.info(
+        "Backtest: %d trades (%d closed, %d open, %d pending) | total $%+.2f | "
+        "backfill vs live: %s",
+        backtest["n_trades"], backtest["n_closed"], backtest["n_open"],
+        backtest["n_pending"], backtest["total_gain"],
+        {k: v["n_trades"] for k, v in backtest.get("provenance_stats", {}).items()},
+    )
+
+    # Build summary / health report
+    finished_at = datetime.utcnow()
     summary = {
-        "run_date": datetime.utcnow().strftime("%Y-%m-%d"),
+        "run_date": run_date,
+        "started_at": started_at.isoformat() + "Z",
+        "finished_at": finished_at.isoformat() + "Z",
+        "duration_seconds": round((finished_at - started_at).total_seconds(), 1),
         "tickers_analyzed": int(results["Ticker"].nunique()),
         "total_observations": len(results),
         "anomalies_detected": int(results["consensus_anomaly"].sum()),
+        "new_bars_scored": len(new_bars),
+        "new_signals": len(new_alerts),
         "actionable_signals": sum(1 for a in alerts if a["signal"] not in ("WATCH", "REDUCE")),
-        "total_signals": len(alerts),
+        "total_signals_view": len(alerts),
+        "ledger_signal_rows": store_counts["signals"],
+        "ledger_anomaly_rows": store_counts["anomalies"],
+        "backtest_total_gain": backtest["total_gain"],
+        "backtest_n_trades": backtest["n_trades"],
         "sensitivity": sensitivity,
         "start_date": start_date,
         "model_version": MODEL_VERSION,
+        "fetch": fetch_report,
         "validation_failures": validation_failures,
     }
 
-    # Stage 5: Dashboard (non-fatal — detection results are already saved)
+    health = {
+        "run_date": run_date,
+        "status": "degraded" if fetch_report["failed"] else "ok",
+        "coverage_pct": fetch_report["coverage_pct"],
+        "tickers_requested": fetch_report["requested"],
+        "tickers_fetched": fetch_report["fetched"],
+        "fetch_failures": fetch_report["failed"],
+        "duration_seconds": summary["duration_seconds"],
+        "model_version": MODEL_VERSION,
+    }
+    with open(os.path.join(DATA_DIR, "run_health.json"), "w") as f:
+        json.dump(health, f, indent=2)
+    _write_run_history(summary)
+
+    # Stage 6: Dashboard (non-fatal — detection results are already saved)
     logger.info("=" * 60)
-    logger.info("STAGE 5: Building dashboard")
+    logger.info("STAGE 6: Building dashboard")
     logger.info("=" * 60)
     try:
         dashboard_path = generate_dashboard(
             results, alerts,
+            backtest=backtest,
             sensitivity=sensitivity,
             start_date=start_date,
             validation_failures=validation_failures,
+            health=health,
         )
         summary["dashboard_path"] = dashboard_path
     except Exception as exc:
@@ -215,9 +318,9 @@ def run(
         summary["dashboard_error"] = str(exc)
 
     logger.info("=" * 60)
-    logger.info("DONE  |  %d tickers  |  %d anomalies  |  %d signals  |  %s",
+    logger.info("DONE  |  %d tickers  |  %d anomalies  |  %d new signals  |  %s",
                 summary["tickers_analyzed"], summary["anomalies_detected"],
-                summary["total_signals"], summary.get("dashboard_path", "N/A"))
+                summary["new_signals"], summary.get("dashboard_path", "N/A"))
     logger.info("=" * 60)
 
     return summary
@@ -231,7 +334,7 @@ def main():
 Examples:
   python -m anomaly_detection                               # defaults
   python -m anomaly_detection --tickers "AAPL,MSFT,GOOGL"   # specific tickers
-  python -m anomaly_detection --sensitivity high --lookback 180
+  python -m anomaly_detection --sensitivity high
         """,
     )
     parser.add_argument("--tickers", type=str, default="",
@@ -243,7 +346,7 @@ Examples:
     parser.add_argument("--skip-validation", action="store_true",
                         help="Skip ticker validation (faster, for CI)")
     parser.add_argument("--reset", action="store_true",
-                        help="Wipe durable store and alerts.json before running "
+                        help="Wipe durable store, ledger, and alerts.json before running "
                              "(use when switching detection regimes)")
     args = parser.parse_args()
 

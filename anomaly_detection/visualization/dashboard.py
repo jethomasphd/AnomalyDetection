@@ -19,11 +19,12 @@ from ..config import (
     ticker_display,
     tickers_by_category,
 )
+from ..backtest import compute_backtest
+from ..storage import get_signals_for_backtest
 from .charts import (
     attention_heatmap_chart,
     backtest_equity_chart,
     compute_attention_queue,
-    compute_backtest,
     method_ensemble_chart,
     method_ewma_chart,
     method_fourier_chart,
@@ -85,14 +86,23 @@ def _deep_dive_buttons(tickers: list[str]) -> tuple[list[str], list[str]]:
 def generate_dashboard(
     results: pd.DataFrame,
     alerts: list[dict],
+    backtest: dict | None = None,
     sensitivity: str = "medium",
     start_date: str = "2024-11-01",
     output_path: str | None = None,
     validation_failures: list[dict] | None = None,
+    health: dict | None = None,
 ) -> str:
-    """Generate the full HTML dashboard and write it to disk."""
+    """Generate the full HTML dashboard and write it to disk.
+
+    `backtest` is the walk-forward result from anomaly_detection.backtest;
+    if omitted it is computed here from the full signals ledger.
+    """
     output_path = output_path or os.path.join(DOCS_DIR, "index.html")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    if backtest is None:
+        backtest = compute_backtest(results, get_signals_for_backtest())
 
     tickers = sorted(results["Ticker"].unique())
     signal_tickers = {a["ticker"] for a in alerts} if alerts else set()
@@ -121,8 +131,7 @@ def generate_dashboard(
     # Attention heatmap (with signal info on hover)
     heatmap_json = attention_heatmap_chart(results, alerts=alerts)
 
-    # Backtest (full period)
-    backtest = compute_backtest(results, alerts)
+    # Backtest equity chart (walk-forward result computed from the ledger)
     backtest_chart_json = backtest_equity_chart(backtest)
 
     # Deep-dive buttons: pinned set + alphabetical dropdown
@@ -180,6 +189,7 @@ def generate_dashboard(
         category_labels=CATEGORY_LABELS,
         category_groups=cat_groups,
         validation_failures=validation_failures or [],
+        health=health or {},
     )
 
     with open(output_path, "w") as f:

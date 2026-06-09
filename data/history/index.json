@@ -1,12 +1,214 @@
 [
   {
     "run_date": "2026-02-09",
-    "tickers_analyzed": 11,
-    "total_observations": 660,
-    "anomalies_detected": 17,
-    "critical_alerts": 0,
-    "high_alerts": 0,
-    "sensitivity": "low",
-    "lookback_days": 90
+    "summary": {
+      "run_date": "2026-02-09",
+      "tickers_analyzed": 11,
+      "total_observations": 660,
+      "anomalies_detected": 17,
+      "critical_alerts": 0,
+      "high_alerts": 0,
+      "sensitivity": "low",
+      "lookback_days": 90
+    },
+    "alerts": [
+      {
+        "ticker": "META",
+        "date": "2026-01-29",
+        "close": 738.31,
+        "severity": "MODERATE",
+        "methods_flagged": 2,
+        "consensus_score": 0.5648,
+        "description": "Price is 12.5% above its moving average. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
+        "details": {
+          "fourier_score": 0.0,
+          "mp_score": 0.5391,
+          "ensemble_score": 0.6,
+          "ewma_score": 1.0,
+          "trajectory": "normal",
+          "deviation_pct": 12.49
+        }
+      },
+      {
+        "ticker": "MAN",
+        "date": "2026-01-30",
+        "close": 36.33,
+        "severity": "MODERATE",
+        "methods_flagged": 2,
+        "consensus_score": 0.5122,
+        "description": "Price is 17.4% above its moving average and momentum is building. Multiple statistical tests confirm unusual behavior. 2 of 4 detection methods flagged this.",
+        "details": {
+          "fourier_score": 0.0,
+          "mp_score": 0.5243,
+          "ensemble_score": 0.4372,
+          "ewma_score": 1.0,
+          "trajectory": "accelerating",
+          "deviation_pct": 17.35
+        }
+      },
+      {
+        "ticker": "^NDX",
+        "date": "2026-02-05",
+        "close": 24548.69,
+        "severity": "LOW",
+        "methods_flagged": 0,
+        "consensus_score": 0.5372,
+        "description": "Price is 3.5% below its moving average.",
+        "details": {
+          "fourier_score": 0.0,
+          "mp_score": 0.6625,
+          "ensemble_score": 0.555,
+          "ewma_score": 0.8204,
+          "trajectory": "normal",
+          "deviation_pct": -3.47
+        }
+      },
+      {
+        "ticker": "KELYA",
+        "date": "2026-02-02",
+        "close": 11.19,
+        "severity": "LOW",
+        "methods_flagged": 1,
+        "consensus_score": 0.5061,
+        "description": "Price is 12.0% above its moving average and momentum is building. Multiple statistical tests confirm unusual behavior.",
+        "details": {
+          "fourier_score": 0.0,
+          "mp_score": 0.4754,
+          "ensemble_score": 0.5273,
+          "ewma_score": 0.9162,
+          "trajectory": "accelerating",
+          "deviation_pct": 12.03
+        }
+      },
+      {
+        "ticker": "TTD",
+        "date": "2026-02-06",
+        "close": 27.04,
+        "severity": "LOW",
+        "methods_flagged": 1,
+        "consensus_score": 0.4723,
+        "description": "Price is 15.4% below its moving average. Multiple statistical tests confirm unusual behavior.",
+        "details": {
+          "fourier_score": 0.0,
+          "mp_score": 0.3786,
+          "ensemble_score": 0.6,
+          "ewma_score": 0.7906,
+          "trajectory": "normal",
+          "deviation_pct": -15.39
+        }
+      },
+      {
+        "ticker": "MSFT",
+        "date": "2026-01-29",
+        "close": 433.5,
+        "severity": "LOW",
+        "methods_flagged": 0,
+        "consensus_score": 0.4641,
+        "description": "Price is 7.2% below its moving average.",
+        "details": {
+          "fourier_score": 0.0,
+          "mp_score": 0.6254,
+          "ensemble_score": 0.5125,
+          "ewma_score": 0.616,
+          "trajectory": "normal",
+          "deviation_pct": -7.2
+        }
+      },
+      {
+        "ticker": "ASGN",
+        "date": "2026-02-04",
+        "close": 53.28,
+        "severity": "LOW",
+        "methods_flagged": 0,
+        "consensus_score": 0.4611,
+        "description": "Price is 5.4% above its moving average.",
+        "details": {
+          "fourier_score": 0.0,
+          "mp_score": 0.6133,
+          "ensemble_score": 0.4392,
+          "ewma_score": 0.7042,
+          "trajectory": "normal",
+          "deviation_pct": 5.42
+        }
+      },
+      {
+        "ticker": "^GSPC",
+        "date": "2026-01-20",
+        "close": 6796.86,
+        "severity": "LOW",
+        "methods_flagged": 1,
+        "consensus_score": 0.4565,
+        "description": "Price is 1.5% below its moving average. Multiple statistical tests confirm unusual behavior.",
+        "details": {
+          "fourier_score": 0.0,
+          "mp_score": 0.6618,
+          "ensemble_score": 0.5865,
+          "ewma_score": 0.4606,
+          "trajectory": "normal",
+          "deviation_pct": -1.48
+        }
+      },
+      {
+        "ticker": "NVDA",
+        "date": "2026-02-05",
+        "close": 171.88,
+        "severity": "LOW",
+        "methods_flagged": 1,
+        "consensus_score": 0.4553,
+        "description": "Price is 6.5% below its moving average and momentum is fading.",
+        "details": {
+          "fourier_score": 0.0,
+          "mp_score": 0.4442,
+          "ensemble_score": 0.3142,
+          "ewma_score": 1.0,
+          "trajectory": "decelerating",
+          "deviation_pct": -6.51
+        }
+      },
+      {
+        "ticker": "GOOGL",
+        "date": "2025-12-17",
+        "close": 296.72,
+        "severity": "LOW",
+        "methods_flagged": 1,
+        "consensus_score": 0.4472,
+        "description": "Price is 3.7% below its moving average. Multiple statistical tests confirm unusual behavior.",
+        "details": {
+          "fourier_score": 0.0,
+          "mp_score": 0.8208,
+          "ensemble_score": 0.4857,
+          "ewma_score": 0.3851,
+          "trajectory": "normal",
+          "deviation_pct": -3.69
+        }
+      }
+    ]
+  },
+  {
+    "run_date": "2026-06-09",
+    "started_at": "2026-06-09T21:19:24.043488Z",
+    "finished_at": "2026-06-09T21:22:31.442751Z",
+    "duration_seconds": 187.4,
+    "tickers_analyzed": 75,
+    "total_observations": 29997,
+    "anomalies_detected": 317,
+    "new_bars_scored": 29997,
+    "new_signals": 100,
+    "actionable_signals": 93,
+    "total_signals_view": 100,
+    "ledger_signal_rows": 100,
+    "ledger_anomaly_rows": 959,
+    "backtest_total_gain": 17180.4,
+    "backtest_n_trades": 93,
+    "sensitivity": "medium",
+    "start_date": "2024-11-01",
+    "model_version": "2.0.0",
+    "fetch": {
+      "requested": 75,
+      "fetched": 75,
+      "failed": [],
+      "coverage_pct": 100.0
+    },
+    "validation_failures": []
   }
 ]
