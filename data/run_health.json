@@ -5,6 +5,6 @@
   "tickers_requested": 130,
   "tickers_fetched": 130,
   "fetch_failures": [],
-  "duration_seconds": 320.5,
+  "duration_seconds": 289.2,
   "model_version": "2.0.0"
 }
