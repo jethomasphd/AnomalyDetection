@@ -210,5 +210,32 @@
       "coverage_pct": 100.0
     },
     "validation_failures": []
+  },
+  {
+    "run_date": "2026-06-11",
+    "started_at": "2026-06-11T13:34:55.661220Z",
+    "finished_at": "2026-06-11T13:40:16.182342Z",
+    "duration_seconds": 320.5,
+    "tickers_analyzed": 130,
+    "total_observations": 52257,
+    "anomalies_detected": 580,
+    "new_bars_scored": 52257,
+    "new_signals": 580,
+    "actionable_signals": 192,
+    "total_signals_view": 200,
+    "ledger_signal_rows": 580,
+    "ledger_anomaly_rows": 1753,
+    "backtest_total_gain": 41445.97,
+    "backtest_n_trades": 118,
+    "sensitivity": "medium",
+    "start_date": "2024-11-01",
+    "model_version": "2.0.0",
+    "fetch": {
+      "requested": 130,
+      "fetched": 130,
+      "failed": [],
+      "coverage_pct": 100.0
+    },
+    "validation_failures": []
   }
 ]

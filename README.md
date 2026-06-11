@@ -60,7 +60,10 @@ materiality floor** — statistically unusual but economically trivial moves
 
 ## Watchlist
 
-75 tickers across 11 categories — the full registry lives in `config.TICKER_REGISTRY`:
+130 tickers across 12 categories — including the **full top 100 US-listed
+tickers by market capitalization** (measured via yfinance, 2026-06; ~half were
+already in the thematic categories, the rest live under *The Mega-Cap 100*).
+The registry lives in `config.TICKER_REGISTRY`:
 
 | Category | Examples |
 |----------|----------|
@@ -72,6 +75,7 @@ materiality floor** — statistically unusual but economically trivial moves
 | Healthcare & Pharma | LLY, ABBV, MRK … |
 | Energy & Commodities | XOM, CVX, COP |
 | Wall Street's Darlings | SPY, QQQ, IWM, VTI, ARKK … |
+| The Mega-Cap 100 | TSM, AVGO, ASML, MU, INTC, ARM, PLTR, NVO, RTX, LIN + 45 more |
 | The Clergy House | ASTS, STM |
 | Reserve / UBS Funds | BIL, DVRUX, QGRPX, BNUEX |
 

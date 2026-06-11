@@ -633,8 +633,8 @@ def backtest_equity_chart(backtest: dict) -> str:
         row=1, col=1,
     )
 
-    # Benchmark overlay: buy-and-hold scaled to the strategy's average
-    # deployed capital — the honest "what if you'd just held?" reference.
+    # Benchmark overlay: the identical capital left 100% in the baseline —
+    # the exact "what if you'd done nothing" portfolio.
     bench = backtest.get("benchmark") or {}
     if bench.get("dates"):
         fig.add_trace(
@@ -642,47 +642,39 @@ def backtest_equity_chart(backtest: dict) -> str:
                 x=bench["dates"], y=bench["equity"],
                 mode="lines",
                 line=dict(color=MUTED, width=1.5, dash="dash"),
-                name=f"{bench.get('ticker', 'SPY')} buy & hold",
+                name=f"{bench.get('ticker', 'SPY')} baseline (no signals)",
                 hovertemplate="%{x}<br>$%{y:+,.0f}<extra></extra>",
             ),
             row=1, col=1,
         )
     fig.add_hline(y=0, line_color=MUTED, line_width=1, row=1, col=1)
 
-    # Overlay buy/sell markers on the equity curve
-    entry_marks = {"long": {"x": [], "y": [], "txt": []},
-                   "short": {"x": [], "y": [], "txt": []}}
+    # Overlay invest markers on the equity curve (the book only ever invests;
+    # divests are implicit in each trade's exit).
+    marks = {"x": [], "y": [], "txt": [], "color": []}
     date_to_equity = dict(zip(dates, equity))
     for t in ledger:
         d = t.get("entry_date")
         if d not in date_to_equity:
             continue
-        eq = date_to_equity[d]
-        grp = "long" if t["direction"] > 0 else "short"
-        entry_marks[grp]["x"].append(d)
-        entry_marks[grp]["y"].append(eq)
-        entry_marks[grp]["txt"].append(
-            f"{t['ticker']} {t['action']}<br>"
+        marks["x"].append(d)
+        marks["y"].append(date_to_equity[d])
+        marks["color"].append(SIGNAL_COLORS.get(t.get("action", "BUY"), NEON_GREEN))
+        marks["txt"].append(
+            f"{t['ticker']} {t['action']} (invest ${t.get('unit', 0):,.0f})<br>"
             f"Entry ${t['entry_price']:,.2f}<br>"
             f"Status: {t['status']}<br>"
             f"P&L: ${t['dollar_gain']:+,.2f}"
         )
 
-    if entry_marks["long"]["x"]:
+    if marks["x"]:
         fig.add_trace(go.Scatter(
-            x=entry_marks["long"]["x"], y=entry_marks["long"]["y"],
-            mode="markers", marker=dict(symbol="triangle-up", size=10,
-                                        color=NEON_GREEN, line=dict(color=DARK_BG, width=1)),
-            name="Long entry",
-            text=entry_marks["long"]["txt"], hoverinfo="text",
-        ), row=1, col=1)
-    if entry_marks["short"]["x"]:
-        fig.add_trace(go.Scatter(
-            x=entry_marks["short"]["x"], y=entry_marks["short"]["y"],
-            mode="markers", marker=dict(symbol="triangle-down", size=10,
-                                        color=NEON_RED, line=dict(color=DARK_BG, width=1)),
-            name="Short entry",
-            text=entry_marks["short"]["txt"], hoverinfo="text",
+            x=marks["x"], y=marks["y"],
+            mode="markers", marker=dict(symbol="triangle-up", size=9,
+                                        color=marks["color"],
+                                        line=dict(color=DARK_BG, width=1)),
+            name="Invest",
+            text=marks["txt"], hoverinfo="text",
         ), row=1, col=1)
 
     # Underwater curve (drawdown shown as negative values)

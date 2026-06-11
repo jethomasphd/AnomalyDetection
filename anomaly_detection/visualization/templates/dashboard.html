@@ -643,6 +643,21 @@
         <div class="tip-panel" id="tip-backtest">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Signal Performance</div>
+            <strong>The capital model (invest/divest, never short):</strong><br>
+            &bull; The portfolio starts 100% in the baseline. An entry signal moves a $10k slice
+              from the baseline into the ticker at the <em>next session's close</em> after the signal
+              existed. Never the same bar.<br>
+            &bull; SELL/SHORT signals move capital OUT of the ticker back to the baseline — they never
+              open short positions. BUY slices also return on the trend target frozen at detection
+              time; everything returns at the time stop.<br>
+            &bull; If the baseline can't fund a slice, the signal is skipped and counted — capital is
+              conserved, not invented.<br>
+            &bull; Costs are charged per stock transaction. The benchmark is the identical capital left
+              100% in the baseline: the strategy and benchmark differ ONLY by the signal overlay.<br>
+            <strong>Walk-forward vs Live:</strong> detection is causal (a past bar's verdict is exactly what
+            a live run that evening would have produced), so simulated history and the live record follow
+            identical rules &mdash; and are reported separately so they are never conflated.
+        </div>
             <strong>Trade rules (walk-forward, no peeking):</strong><br>
             &bull; A signal exists only after the close of its detection day; the trade fills at the
               <em>next session's close</em>. Never the same bar.<br>
@@ -689,9 +704,9 @@
             <strong>Think of it as:</strong> the worst peak-to-trough slide you'd have lived through.
             If the equity curve hit +$5,000 and then sagged to +$2,000 before recovering,
             max drawdown = $3,000 &mdash; even though the strategy ended up positive.<br>
-            <strong>Smaller is better.</strong> The percent figure is drawdown / total capital deployed
-            (trades &times; $10k), so "2%" means the book was 2 cents of every dollar committed
-            underwater at its worst moment.
+            <strong>Smaller is better.</strong> The percent figure is drawdown as a share of the
+            portfolio's peak value &mdash; "2%" means the whole portfolio (baseline + positions)
+            was 2% off its high at the worst moment.
         </div>
         <div class="tip-panel" id="tip-avghold">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -992,19 +1007,16 @@
                 {% if backtest.signal_ledger %}
                 <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.75rem; line-height:1.6;">
                     <strong style="color:var(--green)">"Does this actually work?"</strong>
-                    The book holds only what the Signal fired, traded the only way a real follower could:
-                    each signal fills at the <strong>next session's close</strong> after it was produced &mdash; never the same bar, never a backdated price.
-                    {% if backtest.long_only %}
-                    The book is <strong>long-only</strong>: every BUY/LONG is a $10k long; SELL/SHORT close the longs on their ticker
-                    (their "take profits / tighten stops" meaning) but open nothing &mdash; the measured edge in this universe lives in
-                    buying washouts, while extreme above-trend stretches showed no drift to short.
-                    {% else %}
-                    Every BUY/LONG is a $10k long, every SELL/SHORT a $10k short.
-                    {% endif %}
-                    Costs are {{ backtest.cost_bps_per_side|default(5)|round(0)|int }} bps per side.
-                    BUY trades exit at the trend target frozen at detection time, at an opposite signal, or at the
-                    {{ backtest.max_hold_days|default(30) }}-bar time stop &mdash; whichever comes first.
-                    The dashed line is {{ backtest.benchmark.ticker if backtest.benchmark else 'SPY' }} buy-and-hold on the same average capital at risk.
+                    A ${{ "{:,.0f}".format(backtest.initial_capital|default(100000)) }} portfolio starts 100% in
+                    {{ backtest.baseline_ticker|default('SPY') }} — the baseline. Signals move capital, nothing else:
+                    an entry signal <strong>invests</strong> a ${{ "{:,.0f}".format(backtest.unit|default(10000)) }} slice
+                    into the ticker at the <strong>next session's close</strong> after it was produced (never the same bar,
+                    never a backdated price); SELL/SHORT signals <strong>divest</strong> back to the baseline — no shorts, ever.
+                    Slices also return on the trend target frozen at detection time or the
+                    {{ backtest.max_hold_days|default(30) }}-bar time stop. If the baseline can't fund a slice, the signal
+                    is skipped — capital is conserved, not invented. Costs are
+                    {{ backtest.cost_bps_per_side|default(5)|round(0)|int }} bps per stock transaction.
+                    The dashed line is the same capital left 100% in the baseline — the exact "what if you'd done nothing" portfolio.
                 </p>
 
                 {% if backtest.provenance_stats %}
@@ -1035,20 +1047,23 @@
                 {% endif %}
 
                 <!-- Bottom-line banner -->
-                <div class="bottom-line-banner {% if backtest.total_gain < 0 %}loss{% endif %}">
+                <div class="bottom-line-banner {% if backtest.stats.excess_gain is defined and backtest.stats.excess_gain < 0 %}loss{% endif %}">
                     <div class="bl-headline">
                         Following THE SIGNAL from {{ backtest.start_date }} &mdash; {{ backtest.end_date }}:
-                        ${{ "{:+,.2f}".format(backtest.total_gain) }}
-                        {% if backtest.stats.return_on_avg_deployed_pct is not none %}
-                            ({{ "%+.1f"|format(backtest.stats.return_on_avg_deployed_pct) }}% on avg capital at risk{% if backtest.stats.benchmark_return_pct is not none %} vs {{ backtest.benchmark.ticker }} {{ "%+.1f"|format(backtest.stats.benchmark_return_pct) }}% on the same capital{% endif %})
+                        ${{ "{:,.0f}".format(backtest.initial_capital) }} &rarr; ${{ "{:,.0f}".format(backtest.final_value) }}
+                        ({{ "%+.1f"|format(backtest.stats.strategy_return_pct) }}%)
+                        {% if backtest.stats.benchmark_return_pct is not none %}
+                            vs baseline-only {{ "%+.1f"|format(backtest.stats.benchmark_return_pct) }}%
+                            &mdash; the overlay {% if backtest.stats.excess_gain >= 0 %}added{% else %}cost{% endif %}
+                            ${{ "{:,.0f}".format(backtest.stats.excess_gain|abs) }}
                         {% endif %}
-                        across {{ backtest.n_trades }} trades
                     </div>
                     <div class="bl-sub">
+                        {{ backtest.n_trades }} invest/divest round trips &bull;
                         {{ backtest.n_closed }} closed &bull; {{ backtest.n_open }} open &bull;
-                        {{ backtest.n_winning }} winning &bull;
-                        avg ${{ "{:,.0f}".format(backtest.stats.avg_deployed or 0) }} at risk &bull;
-                        ${{ "{:,}".format(backtest.total_invested) }} total committed
+                        {{ backtest.n_winning }} winning
+                        {% if backtest.n_skipped_no_capital %} &bull; {{ backtest.n_skipped_no_capital }} skipped (capital fully deployed){% endif %}
+                        &bull; baseline: {{ backtest.baseline_ticker }}
                     </div>
                 </div>
 
@@ -1076,7 +1091,7 @@
                         <div class="bt-num" style="color:{% if backtest.total_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
                             ${{ "{:+,.0f}".format(backtest.total_gain) }}
                         </div>
-                        <div class="bt-lbl">Total P&amp;L (book)</div>
+                        <div class="bt-lbl">Portfolio P&amp;L (incl. baseline)</div>
                     </div>
                     <div class="bt-stat">
                         <div class="bt-num" style="color:var(--amber)">
@@ -1205,7 +1220,8 @@
                                 </span>
                             </td>
                             <td style="font-size:0.68rem; color:var(--muted);">
-                                {% if s.exit_reason == 'opposite_signal' %}opposite signal
+                                {% if s.exit_reason == 'divest_signal' %}divest signal
+                                {% elif s.exit_reason == 'opposite_signal' %}opposite signal
                                 {% elif s.exit_reason == 'target' %}target hit
                                 {% elif s.exit_reason == 'time_stop' %}time stop
                                 {% elif s.exit_reason == 'open' %}<em>still open</em>
@@ -1219,13 +1235,13 @@
                 </div>
 
                 <p style="margin-top: 0.75rem; font-size: 0.65rem; color: var(--dim); font-style: italic; font-family: var(--mono);">
-                    Simulation for educational purposes only. Each signal = $10k trade filled at the next
-                    session's close, with {{ backtest.cost_bps_per_side|default(5)|round(0)|int }} bps per-side costs.
-                    No slippage beyond costs, no borrow fees, no market impact modelled; shorts assume frictionless borrow.
-                    Dividends are reflected via adjusted closes. "Walk-forward" trades are simulated on history by a
-                    causal model (verdicts use only data available that evening); "Live" trades are the out-of-sample
-                    record accumulated since go-live. This is NOT financial advice &mdash; past performance does not
-                    predict future results.
+                    Simulation for educational purposes only. Invest/divest portfolio model: capital is either in the
+                    baseline ({{ backtest.baseline_ticker|default('SPY') }}) or in signal positions — no shorts, no leverage.
+                    {{ backtest.cost_bps_per_side|default(5)|round(0)|int }} bps costs per stock transaction; baseline trades
+                    treated as frictionless. No slippage beyond costs or market impact modelled; dividends via adjusted closes.
+                    "Walk-forward" trades are simulated on history by a causal model (verdicts use only data available that
+                    evening); "Live" trades are the out-of-sample record accumulated since go-live. This is NOT financial
+                    advice &mdash; past performance does not predict future results.
                 </p>
                 {% else %}
                 <div class="empty-msg">No signal data available for performance tracking yet. Signals will appear after the first anomaly detection run.</div>

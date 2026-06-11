@@ -213,9 +213,9 @@ Both cutoffs are fixed and documented — never a quantile of the run's own outp
 
 The Signal Performance section of the dashboard is a **walk-forward simulation** over the full signals ledger:
 
-- A signal exists only after the close of its detection day; the simulated trade fills at the **next session's close**. No same-bar fills, no backdated entries.
-- The book is **long-only**: every BUY/LONG is an independent $10k long; SELL/SHORT close the open longs on their ticker (their "take profits / tighten stops" meaning) but never open shorts — the measured edge in this universe is on the long side (washouts rebound; blowoffs just drift). 5 bps costs per side.
-- BUY trades exit when price touches the trend target frozen at detection time; any long closes when a SELL/SHORT fires on its ticker; a 30-bar time stop catches the rest. Open positions are marked to the latest close.
+- **Invest/divest capital model — no shorts, ever.** A $100k portfolio starts 100% in the baseline (SPY). An entry signal *invests* a $10k slice into the ticker at the **next session's close** after the signal existed (no same-bar fills, no backdated entries). Bearish signals (SELL/SHORT) *divest* the ticker's slices back to the baseline — they carry exit information, never short positions.
+- Slices also return when price touches the trend target frozen at detection time (BUY) or at the 30-bar time stop. If the baseline cannot fund a slice, the signal is skipped and counted — capital is conserved, not invented. 5 bps costs per stock transaction.
+- The benchmark is the identical capital left 100% in the baseline, so the strategy-vs-benchmark gap is exactly the value the signal overlay added.
 - The dashed benchmark line is SPY buy-and-hold on the strategy's average deployed capital.
 - Trades are tagged by **provenance**: `backfill` (simulated history — legitimate because detection is causal) vs `live` (signals produced by scheduled runs on new bars, i.e., true out-of-sample). The dashboard reports both separately.
 

@@ -227,7 +227,7 @@ def generate_alerts(
     results: pd.DataFrame,
     sensitivity: str = "medium",
     provenance: str = "live",
-    top_n: int = 100,
+    top_n: int = 2000,
 ) -> list[dict]:
     """Generate structured trading signals from detection results.
 

@@ -1,37 +1,38 @@
-"""Walk-forward backtest — simulates trading the signal ledger honestly.
+"""Walk-forward portfolio backtest — invest/divest capital, never short.
 
-Protocol (the same rules a live trader following the system would face):
+The capital model (how a real allocator would follow the Signal):
 
-  ENTRY   A signal exists only after the close of its `detected_at` day.
-          The trade therefore fills at the close of the FIRST bar strictly
-          after detected_at. Never the bar the signal describes, never the
-          same day it was produced. Signals whose next bar hasn't happened
-          yet remain pending (no trade).
+  PORTFOLIO  Capital starts 100% in a baseline portfolio (SPY by default —
+             config.BACKTEST_BASELINE_TICKER). There are no shorts and no
+             notional side-bets: every dollar is either in the baseline or
+             in a signal position. The benchmark is, by construction, the
+             same capital left 100% in the baseline — so "did the overlay
+             add value?" is answered like-for-like.
 
-  EXIT    Whichever comes first:
-            - target:          BUY/SELL mean-reversion trades exit when the
-                               close crosses the trend value frozen in the
-                               signal at detection time
-            - opposite_signal: an opposite-direction signal on the ticker
-                               closes every open position of the other side
-                               at ITS entry bar
-            - time_stop:       BACKTEST_MAX_HOLD_TRADING_DAYS bars after entry
-            - still open:      marked to the latest close (unrealised)
+  INVEST     An entry signal (config.BACKTEST_ENTRY_SIGNALS) divests one
+             $BACKTEST_UNIT_DOLLARS slice from the baseline and invests it
+             in the ticker at the close of the FIRST bar strictly after
+             detected_at (a signal exists only after that evening's close —
+             never the same bar, never a backdated price). If the baseline
+             holds less than one slice, the signal is SKIPPED and counted:
+             capital is conserved, not invented.
 
-  COSTS   BACKTEST_COST_BPS_PER_SIDE per side, charged on entry and on exit.
+  DIVEST     Whichever comes first returns the slice to the baseline:
+               - target:        BUY trades exit when the close touches the
+                                trend value frozen in the signal
+               - divest_signal: the first SELL or SHORT on the ticker
+                                (at ITS next-bar entry) — bearish signals
+                                mean "get out", they never open shorts
+               - time_stop:     BACKTEST_MAX_HOLD_TRADING_DAYS bars
+               - still open:    marked at the latest close
 
-  CAPITAL Every signal is an independent $BACKTEST_UNIT_DOLLARS position;
-          same-direction signals stack.
+  COSTS      BACKTEST_COST_BPS_PER_SIDE charged on each stock transaction
+             (buy and sell). Baseline trades are treated as frictionless
+             (large index ETFs trade at ~1bp spreads).
 
-Because detection is causal (verdicts for historical bars are exactly what
-a live run that evening would have produced — see detection/causal.py), the
-'backfill' portion of the ledger is a legitimate walk-forward simulation,
-and the 'live' portion is true out-of-sample record. Stats are reported for
-the combined book and split by provenance so the two are never conflated.
-
-Input is the FULL signals ledger (storage.get_signals_for_backtest), not
-the display-capped alerts.json — the trade set cannot silently shrink as
-old alerts roll off the dashboard.
+Because detection is causal, the 'backfill' part of the ledger is a
+legitimate walk-forward simulation and 'live' rows are true out-of-sample;
+trades inherit that provenance and are reported separately.
 """
 
 import bisect
@@ -42,18 +43,25 @@ import numpy as np
 import pandas as pd
 
 from .config import (
-    BACKTEST_BENCHMARK_TICKER,
+    BACKTEST_BASELINE_TICKER,
     BACKTEST_COST_BPS_PER_SIDE,
-    BACKTEST_LONG_ONLY,
+    BACKTEST_ENTRY_SIGNALS,
     BACKTEST_MAX_HOLD_TRADING_DAYS,
     BACKTEST_UNIT_DOLLARS,
+    PORTFOLIO_CAPITAL,
     ticker_display,
 )
 
 logger = logging.getLogger(__name__)
 
-TRADABLE = {"BUY": +1, "LONG": +1, "SELL": -1, "SHORT": -1}
-REVERSION_SIGNALS = {"BUY", "SELL"}  # these exit at the frozen trend target
+# A signal invests min(slice, available baseline); below this fraction of a
+# slice it is skipped instead (avoids dust positions; costs make a recycled
+# slice land slightly under the nominal unit).
+MIN_INVEST_FRACTION = 0.5
+
+BULLISH = {"BUY", "LONG"}          # may invest (subject to BACKTEST_ENTRY_SIGNALS)
+BEARISH = {"SELL", "SHORT"}        # always divest triggers, never positions
+TARGET_SIGNALS = {"BUY"}           # exit at the frozen trend target
 
 
 def _build_price_index(results: pd.DataFrame) -> dict[str, dict]:
@@ -78,25 +86,9 @@ def _entry_index(series: dict, detected_at: str) -> int | None:
     return i if i < len(series["DateStr"]) else None
 
 
-def _signal_to_order(sig: dict) -> dict | None:
-    """Convert a ledger signal row into an order intent, or None if not tradable."""
-    direction = TRADABLE.get(sig.get("signal"))
-    if direction is None:
-        return None
-    rationale = sig.get("rationale") or {}
-    details = rationale.get("details") or {}
-    return {
-        "ticker": sig["ticker"],
-        "signal": sig["signal"],
-        "direction": direction,
-        "bar_date": sig["date"],
-        "detected_at": sig.get("detected_at") or sig["date"],
-        "provenance": sig.get("provenance") or "live",
-        "confidence": sig.get("confidence") or "",
-        "target": float(details.get("ewma_value") or 0) or None,
-        "methods_flagged": int(rationale.get("methods_flagged") or 0),
-        "details": details,
-    }
+def _price_on_or_before(series: dict, date_str: str) -> float | None:
+    i = bisect.bisect_right(series["DateStr"], date_str) - 1
+    return float(series["Close"][i]) if i >= 0 else None
 
 
 def _methods_str(details: dict) -> str:
@@ -115,43 +107,30 @@ def _methods_str(details: dict) -> str:
 def _find_exit(
     series: dict,
     entry_i: int,
-    direction: int,
     signal: str,
     target: float | None,
-    opposite_entries: list[int],
-    max_hold: int = BACKTEST_MAX_HOLD_TRADING_DAYS,
+    divest_entries: list[int],
+    max_hold: int,
 ) -> tuple[int | None, str]:
-    """Earliest exit bar index for a position opened at entry_i.
-
-    Scans closes after entry for (a) the mean-reversion target, (b) the
-    first opposite-direction signal's entry bar, (c) the time stop. Returns
-    (exit_index, reason) or (None, 'open') if nothing triggers before the
-    end of data.
-    """
+    """Earliest divest bar for a slice invested at entry_i (long positions only)."""
     closes = series["Close"]
     n = len(closes)
 
-    # First opposite-signal entry bar strictly after our entry bar.
-    j = bisect.bisect_right(opposite_entries, entry_i)
-    opp_i = opposite_entries[j] if j < len(opposite_entries) else None
-
+    j = bisect.bisect_right(divest_entries, entry_i)
+    div_i = divest_entries[j] if j < len(divest_entries) else None
     time_i = entry_i + max_hold
 
     target_i = None
-    if signal in REVERSION_SIGNALS and target and target > 0:
-        scan_end = min(n, time_i + 1, opp_i + 1 if opp_i is not None else n)
+    if signal in TARGET_SIGNALS and target and target > 0:
+        scan_end = min(n, time_i + 1, div_i + 1 if div_i is not None else n)
         for k in range(entry_i + 1, scan_end):
-            # Long reversion exits when price recovers UP to the trend;
-            # short reversion exits when price falls back DOWN to it.
-            if (direction > 0 and closes[k] >= target) or (
-                direction < 0 and closes[k] <= target
-            ):
+            if closes[k] >= target:
                 target_i = k
                 break
 
     candidates = [
         (target_i, "target"),
-        (opp_i, "opposite_signal"),
+        (div_i, "divest_signal"),
         (time_i if time_i < n else None, "time_stop"),
     ]
     live = [(i, r) for i, r in candidates if i is not None]
@@ -163,294 +142,264 @@ def _find_exit(
 def compute_backtest(
     results: pd.DataFrame,
     ledger_signals: list[dict],
+    capital: float = PORTFOLIO_CAPITAL,
     unit: float = BACKTEST_UNIT_DOLLARS,
-    long_only: bool = BACKTEST_LONG_ONLY,
+    entry_signals: tuple[str, ...] = BACKTEST_ENTRY_SIGNALS,
+    baseline_ticker: str = BACKTEST_BASELINE_TICKER,
     max_hold: int = BACKTEST_MAX_HOLD_TRADING_DAYS,
 ) -> dict:
-    """Run the walk-forward simulation over the full signal ledger.
-
-    With long_only=True (the default; see config.BACKTEST_LONG_ONLY for the
-    measured rationale), only BUY/LONG open positions. SELL/SHORT signals
-    still act on the book — they close every open long on their ticker at
-    their own next-bar entry — but never open shorts. Their information is
-    used as risk management, which matches their dashboard semantics
-    ("take profits / tighten stops"), without taking the systematically
-    edge-less short side of the book.
-    """
+    """Run the invest/divest portfolio simulation over the full signal ledger."""
     empty = {
         "signal_ledger": [],
+        "initial_capital": capital, "final_value": capital,
         "total_gain": 0.0, "total_pct": 0.0,
         "realized_gain": 0.0, "unrealized_gain": 0.0,
-        "total_invested": 0, "n_trades": 0, "n_winning": 0,
-        "n_open": 0, "n_closed": 0, "n_pending": 0,
+        "total_invested": int(capital),
+        "n_trades": 0, "n_winning": 0, "n_open": 0, "n_closed": 0,
+        "n_pending": 0, "n_skipped_no_capital": 0,
         "start_date": None, "end_date": None,
         "equity_curve": {"dates": [], "equity": [], "drawdown": []},
-        "benchmark": {"dates": [], "equity": [], "ticker": BACKTEST_BENCHMARK_TICKER},
+        "benchmark": {"dates": [], "equity": [], "ticker": baseline_ticker,
+                      "return_pct": None},
         "stats": _empty_trade_stats(),
         "provenance_stats": {},
         "exit_reasons": {},
         "cost_bps_per_side": BACKTEST_COST_BPS_PER_SIDE,
         "max_hold_days": max_hold,
-        "long_only": long_only,
+        "entry_signals": list(entry_signals),
+        "baseline_ticker": baseline_ticker,
+        "unit": unit,
     }
     if results.empty or not ledger_signals:
         return empty
 
     by_ticker = _build_price_index(results)
-    all_dates = sorted({d for v in by_ticker.values() for d in v["DateStr"]})
-    if not all_dates:
+    baseline = by_ticker.get(baseline_ticker)
+    if baseline is None:
+        logger.warning("Baseline ticker %s not in results — backtest skipped", baseline_ticker)
         return empty
-
+    all_dates = sorted({d for v in by_ticker.values() for d in v["DateStr"]})
     cost_frac = BACKTEST_COST_BPS_PER_SIDE / 10_000.0
-    cost_per_side = unit * cost_frac
 
-    # ----- Resolve orders to entry bars -----
-    orders = []
+    # ----- Resolve signals to candidate invests and divest triggers -----
+    candidates = []          # potential invest events
+    divests: dict[str, list[int]] = {}  # ticker -> sorted entry bars of bearish signals
     n_pending = 0
     for sig in ledger_signals:
-        order = _signal_to_order(sig)
-        if order is None:
+        s = sig.get("signal")
+        ticker = sig["ticker"]
+        series = by_ticker.get(ticker)
+        if series is None or ticker == baseline_ticker:
             continue
-        series = by_ticker.get(order["ticker"])
-        if series is None:
+        detected_at = sig.get("detected_at") or sig["date"]
+        if s in BEARISH:
+            i = _entry_index(series, detected_at)
+            if i is not None:
+                divests.setdefault(ticker, []).append(i)
             continue
-        entry_i = _entry_index(series, order["detected_at"])
-        if entry_i is None:
-            n_pending += 1  # signal produced after the last available bar
+        if s not in BULLISH or s not in entry_signals:
             continue
-        order["entry_i"] = entry_i
-        orders.append(order)
-
-    # Entry bars of each direction per ticker (for opposite-signal exits).
-    # In long-only mode, short-side orders contribute their entry bars here
-    # (so they CLOSE longs) but are excluded from position opening below.
-    entries_by_dir: dict[tuple[str, int], list[int]] = {}
-    for o in orders:
-        entries_by_dir.setdefault((o["ticker"], o["direction"]), []).append(o["entry_i"])
-    for v in entries_by_dir.values():
+        i = _entry_index(series, detected_at)
+        if i is None:
+            n_pending += 1
+            continue
+        rationale = sig.get("rationale") or {}
+        details = rationale.get("details") or {}
+        candidates.append({
+            "ticker": ticker,
+            "signal": s,
+            "bar_date": sig["date"],
+            "detected_at": detected_at,
+            "provenance": sig.get("provenance") or "live",
+            "confidence": sig.get("confidence") or "",
+            "target": float(details.get("ewma_value") or 0) or None,
+            "methods_flagged": int(rationale.get("methods_flagged") or 0),
+            "details": details,
+            "entry_i": i,
+        })
+    for v in divests.values():
         v.sort()
 
-    position_orders = [o for o in orders if not (long_only and o["direction"] < 0)]
-
-    # ----- Simulate each position independently -----
-    trades = []
-    for seq, o in enumerate(
-        sorted(position_orders, key=lambda x: (x["entry_i"], x["ticker"], x["signal"])), start=1
-    ):
-        series = by_ticker[o["ticker"]]
-        closes, dates = series["Close"], series["DateStr"]
-        entry_i = o["entry_i"]
-        entry_price = float(closes[entry_i])
-        if entry_price <= 0:
-            continue
-
-        opposite = entries_by_dir.get((o["ticker"], -o["direction"]), [])
+    # Exit of each candidate is signal/price-driven only (independent of
+    # capital), so it can be precomputed before the capital walk.
+    for c in candidates:
+        series = by_ticker[c["ticker"]]
         exit_i, reason = _find_exit(
-            series, entry_i, o["direction"], o["signal"], o["target"], opposite,
-            max_hold=max_hold,
+            series, c["entry_i"], c["signal"], c["target"],
+            divests.get(c["ticker"], []), max_hold,
         )
+        c["exit_i"], c["exit_reason"] = exit_i, reason
+        c["entry_date"] = series["DateStr"][c["entry_i"]]
+        c["exit_date"] = series["DateStr"][exit_i] if exit_i is not None else None
 
-        if exit_i is None:
-            status, exit_idx_eff = "OPEN", len(closes) - 1
-        else:
-            status, exit_idx_eff = "CLOSED", exit_i
-        exit_price = float(closes[exit_idx_eff])
+    candidates.sort(key=lambda c: (c["entry_date"], c["ticker"], c["signal"]))
 
-        gross = o["direction"] * (exit_price - entry_price) / entry_price * unit
-        costs = cost_per_side + (cost_per_side if status == "CLOSED" else 0.0)
-        pnl = gross - costs
+    # ----- Chronological capital walk: invest only what the baseline holds -----
+    base_price0 = float(baseline["Close"][0])
+    baseline_shares = capital / base_price0
+    bench_shares = capital / base_price0  # benchmark: never touched
 
-        trades.append({
-            "id": seq,
-            "ticker": o["ticker"],
-            "display": ticker_display(o["ticker"]),
-            "direction": o["direction"],
-            "action": o["signal"],
-            "date": o["bar_date"],
-            "detected_at": o["detected_at"],
-            "provenance": o["provenance"],
-            "entry_date": dates[entry_i],
-            "entry_price": round(entry_price, 4),
-            "entry_i": entry_i,
-            "exit_i": exit_idx_eff,
-            "exit_date": dates[exit_idx_eff],
-            "exit_price": round(exit_price, 4),
-            "exit_reason": reason if status == "CLOSED" else "open",
-            "status": status,
-            "unit": unit,
-            "dollar_gain": round(pnl, 2),
-            "pct_change": round(o["direction"] * (exit_price - entry_price) / entry_price * 100, 2),
-            "holding_days": exit_idx_eff - entry_i,
-            "confidence": o["confidence"],
-            "methods": _methods_str(o["details"]),
-            "methods_flagged": o["methods_flagged"],
-        })
+    entries_by_date: dict[str, list[dict]] = {}
+    for c in candidates:
+        entries_by_date.setdefault(c["entry_date"], []).append(c)
+
+    exits_by_date: dict[str, list[dict]] = {}
+    trades: list[dict] = []
+    skipped: list[dict] = []
+    open_positions: list[dict] = []
+    seq = 0
+
+    pf_dates, pf_values, bench_values = [], [], []
+
+    for d in all_dates:
+        base_px = _price_on_or_before(baseline, d) or base_price0
+
+        # 1) Divest: positions exiting today return capital to the baseline.
+        for pos in exits_by_date.pop(d, []):
+            series = by_ticker[pos["ticker"]]
+            exit_px = float(series["Close"][pos["exit_i"]])
+            proceeds = pos["shares"] * exit_px * (1 - cost_frac)
+            baseline_shares += proceeds / base_px
+            pos["exit_price"] = round(exit_px, 4)
+            pos["dollar_gain"] = round(proceeds - pos["unit"], 2)
+            pos["pct_change"] = round((exit_px / pos["entry_price_raw"] - 1) * 100, 2)
+            pos["status"] = "CLOSED"
+            open_positions.remove(pos)
+
+        # 2) Invest: new signals fill at today's close if capital is available.
+        # A signal takes min(slice, what the baseline holds); below half a
+        # slice it is skipped — capital is conserved, never invented.
+        for c in entries_by_date.pop(d, []):
+            available = baseline_shares * base_px
+            if available < unit * MIN_INVEST_FRACTION:
+                skipped.append({"ticker": c["ticker"], "date": c["entry_date"],
+                                "signal": c["signal"]})
+                continue
+            invested = min(unit, available)
+            series = by_ticker[c["ticker"]]
+            entry_px = float(series["Close"][c["entry_i"]])
+            if entry_px <= 0:
+                continue
+            baseline_shares -= invested / base_px
+            seq += 1
+            pos = {
+                "id": seq,
+                "ticker": c["ticker"],
+                "display": ticker_display(c["ticker"]),
+                "action": c["signal"],
+                "date": c["bar_date"],
+                "detected_at": c["detected_at"],
+                "provenance": c["provenance"],
+                "confidence": c["confidence"],
+                "methods": _methods_str(c["details"]),
+                "methods_flagged": c["methods_flagged"],
+                "entry_i": c["entry_i"],
+                "entry_date": c["entry_date"],
+                "entry_price_raw": entry_px,
+                "entry_price": round(entry_px, 4),
+                "shares": invested * (1 - cost_frac) / entry_px,
+                "unit": invested,
+                "exit_i": c["exit_i"],
+                "exit_date": c["exit_date"],
+                "exit_reason": c["exit_reason"],
+                "status": "OPEN",
+                "holding_days": (
+                    (c["exit_i"] - c["entry_i"]) if c["exit_i"] is not None
+                    else (len(series["Close"]) - 1 - c["entry_i"])
+                ),
+            }
+            trades.append(pos)
+            open_positions.append(pos)
+            if c["exit_i"] is not None:
+                exits_by_date.setdefault(c["exit_date"], []).append(pos)
+
+        # 3) Mark the portfolio.
+        stock_value = 0.0
+        for pos in open_positions:
+            px = _price_on_or_before(by_ticker[pos["ticker"]], d)
+            if px:
+                stock_value += pos["shares"] * px
+        pf_dates.append(d)
+        pf_values.append(baseline_shares * base_px + stock_value)
+        bench_values.append(bench_shares * base_px)
+
+    # Mark still-open positions (net of the exit cost they will pay).
+    for pos in open_positions:
+        series = by_ticker[pos["ticker"]]
+        last_px = float(series["Close"][-1])
+        pos["exit_price"] = round(last_px, 4)
+        pos["exit_date"] = series["DateStr"][-1]
+        pos["dollar_gain"] = round(pos["shares"] * last_px * (1 - cost_frac) - pos["unit"], 2)
+        pos["pct_change"] = round((last_px / pos["entry_price_raw"] - 1) * 100, 2)
+        pos["exit_reason"] = "open"
 
     closed = [t for t in trades if t["status"] == "CLOSED"]
     open_t = [t for t in trades if t["status"] == "OPEN"]
 
-    # ----- Daily mark-to-market equity curve -----
-    equity_curve = _build_equity_curve(trades, by_ticker, all_dates, cost_per_side)
+    pf = np.asarray(pf_values)
+    bench = np.asarray(bench_values)
+    equity = pf - capital
+    running_max = np.maximum.accumulate(pf)
+    drawdown = running_max - pf
 
-    # Average capital actually at risk on days the book held anything —
-    # the honest denominator for a % return, and the same capital base the
-    # benchmark is scaled to (so the two percentages are comparable).
-    avg_deployed = _average_deployed(trades, all_dates, unit)
-
-    # ----- Benchmark: buy-and-hold the benchmark ticker, same capital -----
-    benchmark = _benchmark_curve(by_ticker, all_dates, trades, avg_deployed)
-
+    final_value = float(pf[-1])
+    baseline_final = float(bench[-1])
     realized = sum(t["dollar_gain"] for t in closed)
     unrealized = sum(t["dollar_gain"] for t in open_t)
-    total_gain = realized + unrealized
-    n_trades = len(trades)
-    total_invested = n_trades * unit
 
-    stats = _compute_trade_stats(closed, equity_curve, unit=unit, n_trades_total=n_trades)
-    stats["benchmark_return_pct"] = benchmark.get("return_pct")
-    stats["avg_deployed"] = round(avg_deployed, 2)
-    stats["return_on_avg_deployed_pct"] = (
-        round(total_gain / avg_deployed * 100, 2) if avg_deployed > 0 else None
-    )
+    stats = _compute_trade_stats(closed, pf, drawdown, capital)
+    stats["strategy_return_pct"] = round((final_value / capital - 1) * 100, 2)
+    stats["benchmark_return_pct"] = round((baseline_final / capital - 1) * 100, 2)
+    stats["excess_return_pct"] = round(
+        stats["strategy_return_pct"] - stats["benchmark_return_pct"], 2)
+    stats["excess_gain"] = round(final_value - baseline_final, 2)
+    stats["baseline_earnings"] = round(
+        (final_value - capital) - (realized + unrealized), 2)
+    deployed = [unit * len([1 for t in trades
+                            if t["entry_date"] <= d <= (t["exit_date"] or d)])
+                for d in pf_dates[:: max(1, len(pf_dates) // 200)]]
+    stats["avg_deployed"] = round(float(np.mean([x for x in deployed if x > 0]) if any(deployed) else 0), 2)
+    stats["n_skipped_no_capital"] = len(skipped)
 
     ledger_rows = sorted(trades, key=lambda t: (t["entry_date"], t["id"]), reverse=True)
 
     return {
         "signal_ledger": ledger_rows,
-        "total_gain": round(total_gain, 2),
-        "total_pct": round((total_gain / total_invested * 100) if total_invested else 0, 2),
+        "initial_capital": capital,
+        "final_value": round(final_value, 2),
+        "total_gain": round(final_value - capital, 2),
+        "total_pct": stats["strategy_return_pct"],
         "realized_gain": round(realized, 2),
         "unrealized_gain": round(unrealized, 2),
-        "total_invested": int(total_invested),
-        "n_trades": n_trades,
+        "total_invested": int(capital),
+        "n_trades": len(trades),
         "n_winning": sum(1 for t in trades if t["dollar_gain"] > 0),
         "n_open": len(open_t),
         "n_closed": len(closed),
         "n_pending": n_pending,
-        "start_date": min((t["entry_date"] for t in trades), default=all_dates[0]),
-        "end_date": all_dates[-1],
-        "equity_curve": equity_curve,
-        "benchmark": benchmark,
+        "n_skipped_no_capital": len(skipped),
+        "start_date": pf_dates[0] if pf_dates else None,
+        "end_date": pf_dates[-1] if pf_dates else None,
+        "equity_curve": {
+            "dates": pf_dates,
+            "equity": [round(float(x), 2) for x in equity],
+            "drawdown": [round(float(x), 2) for x in drawdown],
+        },
+        "benchmark": {
+            "dates": pf_dates,
+            "equity": [round(float(x - capital), 2) for x in bench],
+            "ticker": baseline_ticker,
+            "return_pct": stats["benchmark_return_pct"],
+        },
         "stats": stats,
         "provenance_stats": _provenance_split(trades),
         "exit_reasons": dict(Counter(t["exit_reason"] for t in closed)),
         "cost_bps_per_side": BACKTEST_COST_BPS_PER_SIDE,
         "max_hold_days": max_hold,
-        "long_only": long_only,
+        "entry_signals": list(entry_signals),
+        "baseline_ticker": baseline_ticker,
+        "unit": unit,
     }
-
-
-def _average_deployed(trades: list[dict], all_dates: list[str], unit: float) -> float:
-    """Mean $ at risk across days where the book held at least one position."""
-    if not trades or not all_dates:
-        return 0.0
-    date_pos = {d: i for i, d in enumerate(all_dates)}
-    deployed = np.zeros(len(all_dates))
-    for t in trades:
-        lo = date_pos.get(t["entry_date"])
-        if lo is None:
-            continue
-        hi = len(all_dates) - 1 if t["status"] == "OPEN" else date_pos.get(
-            t["exit_date"], len(all_dates) - 1
-        )
-        deployed[lo : hi + 1] += unit
-    active = deployed[deployed > 0]
-    return float(active.mean()) if active.size else 0.0
-
-
-def _build_equity_curve(
-    trades: list[dict],
-    by_ticker: dict[str, dict],
-    all_dates: list[str],
-    cost_per_side: float,
-) -> dict:
-    """Daily mark-to-market of the whole book.
-
-    For each day d and each trade: 0 before entry; entry cost + MTM gross
-    P&L while the position is on; the realized (cost-inclusive) P&L after
-    exit. Costs hit the curve the day they are incurred, like real fills.
-    """
-    if not all_dates:
-        return {"dates": [], "equity": [], "drawdown": []}
-    date_pos = {d: i for i, d in enumerate(all_dates)}
-    equity = np.zeros(len(all_dates))
-
-    for t in trades:
-        series = by_ticker.get(t["ticker"])
-        if series is None:
-            continue
-        closes, dates = series["Close"], series["DateStr"]
-        gi_entry = date_pos[dates[t["entry_i"]]]
-        gi_exit = date_pos[dates[t["exit_i"]]]
-        entry_price = t["entry_price"]
-        # Active window: mark against the ticker's own bars; carry forward
-        # across days the ticker didn't trade.
-        local = t["entry_i"]
-        last_mark = 0.0
-        for gi in range(gi_entry, len(all_dates)):
-            if t["status"] == "CLOSED" and gi >= gi_exit:
-                equity[gi] += t["dollar_gain"]
-                continue
-            d = all_dates[gi]
-            li = series["_index"].get(d)
-            if li is not None:
-                local = li
-            mark_price = closes[local]
-            last_mark = (
-                t["direction"] * (mark_price - entry_price) / entry_price * t["unit"]
-                - cost_per_side
-            )
-            equity[gi] += last_mark
-
-    running_max = np.maximum.accumulate(equity)
-    drawdown = running_max - equity
-    return {
-        "dates": all_dates,
-        "equity": [round(float(x), 2) for x in equity],
-        "drawdown": [round(float(x), 2) for x in drawdown],
-    }
-
-
-def _benchmark_curve(
-    by_ticker: dict[str, dict],
-    all_dates: list[str],
-    trades: list[dict],
-    avg_deployed: float,
-) -> dict:
-    """Buy-and-hold benchmark over the same window, scaled to average deployed capital.
-
-    Answers: "what if the average dollars the strategy had at risk had just
-    sat in the benchmark instead?" Uses the same capital base as the
-    strategy's return_on_avg_deployed_pct, so the two percentages compare
-    like for like.
-    """
-    out = {"dates": [], "equity": [], "ticker": BACKTEST_BENCHMARK_TICKER, "return_pct": None}
-    series = by_ticker.get(BACKTEST_BENCHMARK_TICKER)
-    if series is None or not trades or avg_deployed <= 0:
-        return out
-
-    start = min(t["entry_date"] for t in trades)
-    bench_dates, bench_equity = [], []
-    base = None
-    idx = series["_index"]
-    closes = series["Close"]
-    for d in all_dates:
-        if d < start:
-            continue
-        li = idx.get(d)
-        if li is None:
-            continue
-        if base is None:
-            base = closes[li]
-        bench_dates.append(d)
-        bench_equity.append(round((closes[li] / base - 1.0) * avg_deployed, 2))
-
-    out["dates"] = bench_dates
-    out["equity"] = bench_equity
-    out["avg_deployed"] = round(avg_deployed, 2)
-    if bench_equity and avg_deployed:
-        out["return_pct"] = round(bench_equity[-1] / avg_deployed * 100, 2)
-    return out
 
 
 def _provenance_split(trades: list[dict]) -> dict:
@@ -479,43 +428,40 @@ def _empty_trade_stats() -> dict:
         "win_rate": 0.0, "avg_hold_days": 0.0,
         "avg_win": 0.0, "avg_loss": 0.0, "profit_factor": None,
         "hit_rate_by_signal": {}, "n_closed": 0,
-        "benchmark_return_pct": None,
+        "strategy_return_pct": 0.0, "benchmark_return_pct": None,
+        "excess_return_pct": None, "excess_gain": 0.0,
+        "baseline_earnings": 0.0, "avg_deployed": 0.0,
+        "n_skipped_no_capital": 0,
     }
 
 
 def _compute_trade_stats(
     closed_trades: list[dict],
-    equity_curve: dict,
-    unit: float = BACKTEST_UNIT_DOLLARS,
-    n_trades_total: int | None = None,
+    pf_values: np.ndarray,
+    drawdown: np.ndarray,
+    capital: float,
 ) -> dict:
     """Risk & quality stats.
 
-    - Sharpe & Max Drawdown come from the DAILY mark-to-market equity curve
-      (realized + unrealized): what the whole book actually did, day by day.
-    - Win rate, profit factor, holding period, and hit-rate-by-signal come
-      from CLOSED trades only, because "win" is only meaningful once
-      realized.
+    Sharpe and max drawdown come from the DAILY portfolio value — a real
+    capital base, so daily returns are well-defined. Win rate, profit
+    factor, holding period, and hit-rate-by-signal come from CLOSED
+    round-trips only.
     """
     stats = _empty_trade_stats()
     n_closed = len(closed_trades)
     stats["n_closed"] = n_closed
 
-    equity = np.array(equity_curve.get("equity", []), dtype=float)
-    if equity.size >= 2:
-        daily_pnl = np.diff(equity)
-        std_pnl = float(daily_pnl.std(ddof=1)) if daily_pnl.size > 1 else 0.0
-        mean_pnl = float(daily_pnl.mean()) if daily_pnl.size else 0.0
-        if std_pnl > 0:
-            stats["sharpe"] = round((mean_pnl / std_pnl) * float(np.sqrt(252)), 2)
-
-        drawdown = np.array(equity_curve.get("drawdown", []), dtype=float)
+    if pf_values.size >= 2:
+        rets = np.diff(pf_values) / pf_values[:-1]
+        std = float(rets.std(ddof=1)) if rets.size > 1 else 0.0
+        if std > 0:
+            stats["sharpe"] = round(float(rets.mean()) / std * float(np.sqrt(252)), 2)
         if drawdown.size:
             max_dd = float(drawdown.max())
+            peak = float(np.maximum.accumulate(pf_values).max())
             stats["max_drawdown"] = round(max_dd, 2)
-            capital = (n_trades_total or 1) * unit
-            if capital > 0:
-                stats["max_drawdown_pct"] = round(max_dd / capital * 100, 2)
+            stats["max_drawdown_pct"] = round(max_dd / peak * 100, 2) if peak > 0 else 0.0
 
     if n_closed:
         pnl = np.array([float(t["dollar_gain"]) for t in closed_trades])

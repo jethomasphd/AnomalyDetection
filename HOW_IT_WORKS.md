@@ -111,54 +111,70 @@ ticker's watermark**. A ticker never seen before is backfilled; a known ticker
 gets live rows only. `INSERT OR IGNORE` on primary keys means a written verdict
 can never be overwritten.
 
-## The Backtest Protocol
+## The Backtest Protocol — Invest/Divest Portfolio Model
 
 Implemented in `anomaly_detection/backtest.py`, consuming the **full signals
-ledger** (never the capped alerts.json):
+ledger** (never the capped alerts.json). There are no shorts and no notional
+side-bets — the simulation moves real, conserved capital:
 
-1. **Entry** — a signal exists only after the close of `detected_at`; the trade
-   fills at the close of the **first bar strictly after** `detected_at`.
-   No same-bar fills, no backdated entries. Signals newer than the last bar are
-   *pending*, not traded.
-2. **Exits** (earliest wins) — BUY/SELL: price touches the trend target frozen in
-   the signal at detection time; any trade: first opposite-direction signal on
-   the ticker (at *its* entry bar); time stop after `BACKTEST_MAX_HOLD_TRADING_DAYS`
-   (30) bars; otherwise marked open at the latest close.
-3. **Costs** — `BACKTEST_COST_BPS_PER_SIDE` (5 bps) charged on entry and exit.
-4. **Sizing** — every signal is an independent $10k unit; same-direction signals stack.
-   **The simulated book is long-only** (`BACKTEST_LONG_ONLY`): BUY/LONG open
-   positions; SELL/SHORT close every open long on their ticker at their own
-   next-bar entry — exactly their dashboard meaning ("take profits / tighten
-   stops") — but open no shorts.
-5. **Benchmark** — SPY buy-and-hold scaled to the strategy's average deployed
-   capital, drawn on the same chart.
-6. **Reporting** — Sharpe and max drawdown from the daily mark-to-market equity
-   curve; win rate / profit factor / holding period from closed trades; all
-   stats split by provenance (walk-forward vs live).
+1. **Portfolio** — $PORTFOLIO_CAPITAL (100k) starts 100% in the baseline
+   (`BACKTEST_BASELINE_TICKER`, SPY). Every dollar is either in the baseline
+   or in a signal position at all times.
+2. **Invest** — an entry signal (`BACKTEST_ENTRY_SIGNALS`) moves a
+   $BACKTEST_UNIT_DOLLARS slice from the baseline into the ticker at the
+   close of the **first bar strictly after** `detected_at`. A signal exists
+   only after that evening's close — no same-bar fills, no backdated
+   entries. If the baseline holds less than half a slice, the signal is
+   skipped and counted (`n_skipped_no_capital`); otherwise it invests
+   min(slice, available). Capital is conserved, never invented.
+3. **Divest** (earliest wins) — BUY slices return when the close touches the
+   trend target frozen at detection time; any slice returns when the first
+   SELL/SHORT fires on its ticker (bearish signals move capital OUT — they
+   never open shorts); the time stop (`BACKTEST_MAX_HOLD_TRADING_DAYS`)
+   returns whatever remains; still-open slices are marked at the last close.
+4. **Costs** — `BACKTEST_COST_BPS_PER_SIDE` per stock transaction (buy and
+   sell). Baseline trades are treated as frictionless (large index ETFs
+   trade at ~1bp spreads).
+5. **Benchmark** — the identical capital left 100% in the baseline. Strategy
+   and benchmark share the same starting dollar and the same calendar, so
+   `excess_return_pct` isolates exactly what the signal overlay added.
+6. **Reporting** — Sharpe and max drawdown from the daily portfolio value
+   (a real capital base); win rate / profit factor / holds from closed
+   round trips; everything split by provenance (walk-forward vs live).
 
-### Why long-only
+### Why these defaults
 
-Two measurements, both reproducible from the ledger:
+Measured on this universe (130 tickers, Nov 2024 anchor), reproducible from
+the committed ledger:
 
-1. **Resolution study** — extreme below-trend stretches rebounded +2.3% mean
-   (+3.3% median) over the next 10 sessions; extreme above-trend stretches
-   drifted ~0%. The harvestable edge is on the long side; the short side has
-   none in this universe.
-2. **Split-half robustness** — replaying the same frozen ledger through the
-   engine: the both-sides book made +$17.2k overall but was NEGATIVE in the
-   second half of the window; the long-only book improved every metric
-   (profit factor 1.56 -> 3.15, win rate 62% -> 76%) and stayed positive in
-   BOTH halves. A confidence-gated variant (3+ methods) and shorter time
-   stops were also tested and rejected (the former collapses trade count and
-   loses; the latter shows no consistent ordering across halves — keeping
-   the pre-registered 30-bar stop avoids curve-fitting).
+- **Why invest on washouts:** extreme below-trend stretches rebounded +2.3%
+  mean (+3.3% median) over the next 10 sessions; extreme above-trend
+  stretches drifted ~0%. Bearish signals therefore carry exit information,
+  not shortable edge — which is why they divest instead of shorting.
+- **Entry-set and baseline choices** are fixed by a split-half robustness
+  study run through the production engine (excess vs baseline must be
+  positive in BOTH halves of the window) — see the table below, regenerated
+  whenever the rules change.
 
-Reporting is symmetrical either way: `return_on_avg_deployed_pct` and the
-benchmark's return are computed on the SAME average-capital-at-risk base, so
-the dashboard's strategy-vs-SPY comparison is like for like.
+**Split-half robustness study** (130-ticker universe, complete ledger,
+production engine; H1/H2 = excess vs baseline earned in each half of the
+window — the acceptance bar is positive in BOTH):
+
+| Variant | Trades | Strategy | Baseline | Excess | H1 | H2 | Verdict |
+|---|---|---|---|---|---|---|---|
+| BUY+LONG entries, SPY baseline | 118 | +41.5% | +29.6% | +11.9pp | **−0.7pp** | +9.8pp | fails H1 |
+| **BUY-only entries, SPY baseline** | **65** | **+41.1%** | **+29.6%** | **+11.5pp** | **+7.2pp** | **+1.7pp** | **ACCEPTED** |
+| BUY+LONG entries, BIL baseline | 112 | +18.6% | +6.5% | +12.1pp | **−1.7pp** | +13.0pp | fails H1 |
+| BUY-only entries, BIL baseline | 63 | +19.5% | +6.5% | +12.9pp | +9.6pp | +2.5pp | passes (reference) |
+
+Adding LONG entries roughly doubles the trade count and adds no excess —
+momentum entries spend the capital that washout entries use better. LONG
+remains an informational momentum flag; only BUY invests. The SPY baseline is
+a philosophy choice ("idle capital owns the market"), not a fitted parameter;
+the BIL row shows the cash-parked view leads to the same entry-set decision.
 
 Known limitations, stated rather than hidden: fills at closes (no intraday),
-no borrow fees or market impact, dividends only via adjusted closes, and Yahoo
+dividends only via adjusted closes, baseline assumed frictionless, and Yahoo
 back-adjusts prices after distributions (frozen verdicts are not retroactively
 revised for this — the divergence is microscopic for the large caps tracked).
 

@@ -123,6 +123,67 @@ TICKER_REGISTRY = {
     "XLE":   {"name": "Energy Select SPDR",         "category": "WALL_STREET_DARLINGS", "is_fund": True, "sector": "Energy"},
 
     # =========================================================================
+    # THE MEGA-CAP 100 — completion of the top 100 US-listed tickers by market
+    # capitalization (measured via yfinance, 2026-06; the other top-100 names
+    # already live in the thematic categories above). Includes US-listed ADRs.
+    # =========================================================================
+    "TSM":   {"name": "Taiwan Semiconductor (ADR)",  "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "AVGO":  {"name": "Broadcom",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "MU":    {"name": "Micron Technology",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "ASML":  {"name": "ASML Holding (ADR)",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "INTC":  {"name": "Intel",                       "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "CSCO":  {"name": "Cisco Systems",               "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "LRCX":  {"name": "Lam Research",                "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "AMAT":  {"name": "Applied Materials",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "ARM":   {"name": "Arm Holdings (ADR)",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "PLTR":  {"name": "Palantir",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "HSBC":  {"name": "HSBC Holdings (ADR)",         "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+    "PM":    {"name": "Philip Morris",               "category": "MEGA_CAP_100", "is_fund": False, "sector": "Consumer Staples"},
+    "NVS":   {"name": "Novartis (ADR)",              "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "KLAC":  {"name": "KLA Corporation",             "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "AZN":   {"name": "AstraZeneca (ADR)",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "BABA":  {"name": "Alibaba (ADR)",               "category": "MEGA_CAP_100", "is_fund": False, "sector": "Consumer Discretionary"},
+    "RY":    {"name": "Royal Bank of Canada",        "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+    "TXN":   {"name": "Texas Instruments",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "IBM":   {"name": "IBM",                         "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "DELL":  {"name": "Dell Technologies",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "RTX":   {"name": "RTX Corporation",             "category": "MEGA_CAP_100", "is_fund": False, "sector": "Defense"},
+    "SHEL":  {"name": "Shell (ADR)",                 "category": "MEGA_CAP_100", "is_fund": False, "sector": "Energy"},
+    "LIN":   {"name": "Linde",                       "category": "MEGA_CAP_100", "is_fund": False, "sector": "Materials"},
+    "GEV":   {"name": "GE Vernova",                  "category": "MEGA_CAP_100", "is_fund": False, "sector": "Industrials"},
+    "TM":    {"name": "Toyota Motor (ADR)",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Consumer Discretionary"},
+    "MRVL":  {"name": "Marvell Technology",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "PANW":  {"name": "Palo Alto Networks",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "AXP":   {"name": "American Express",            "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+    "QCOM":  {"name": "Qualcomm",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "TMUS":  {"name": "T-Mobile US",                 "category": "MEGA_CAP_100", "is_fund": False, "sector": "Communication Services"},
+    "SAP":   {"name": "SAP (ADR)",                   "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "TTE":   {"name": "TotalEnergies (ADR)",         "category": "MEGA_CAP_100", "is_fund": False, "sector": "Energy"},
+    "VZ":    {"name": "Verizon",                     "category": "MEGA_CAP_100", "is_fund": False, "sector": "Communication Services"},
+    "ADI":   {"name": "Analog Devices",              "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "ANET":  {"name": "Arista Networks",             "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "NVO":   {"name": "Novo Nordisk (ADR)",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "TD":    {"name": "Toronto-Dominion Bank",       "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+    "TJX":   {"name": "TJX Companies",               "category": "MEGA_CAP_100", "is_fund": False, "sector": "Consumer Discretionary"},
+    "APH":   {"name": "Amphenol",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "TMO":   {"name": "Thermo Fisher Scientific",    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "DIS":   {"name": "Walt Disney",                 "category": "MEGA_CAP_100", "is_fund": False, "sector": "Communication Services"},
+    "APP":   {"name": "AppLovin",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "CRWD":  {"name": "CrowdStrike",                 "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "T":     {"name": "AT&T",                        "category": "MEGA_CAP_100", "is_fund": False, "sector": "Communication Services"},
+    "ABT":   {"name": "Abbott Laboratories",         "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "GILD":  {"name": "Gilead Sciences",             "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "WELL":  {"name": "Welltower",                   "category": "MEGA_CAP_100", "is_fund": False, "sector": "Real Estate"},
+    "ISRG":  {"name": "Intuitive Surgical",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "ETN":   {"name": "Eaton",                       "category": "MEGA_CAP_100", "is_fund": False, "sector": "Industrials"},
+    "BX":    {"name": "Blackstone",                  "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+    "SHOP":  {"name": "Shopify",                     "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "UBER":  {"name": "Uber Technologies",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "PLD":   {"name": "Prologis",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Real Estate"},
+    "DHR":   {"name": "Danaher",                     "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "CB":    {"name": "Chubb",                       "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+
+    # =========================================================================
     # THE CLERGY HOUSE — a Priest's bespoke collection. Curated picks outside
     # the standard taxonomy that the Signal still tracks for the house.
     # =========================================================================
@@ -152,6 +213,7 @@ CATEGORY_LABELS = {
     "HEALTHCARE_PHARMA": "Healthcare & Pharma",
     "ENERGY_COMMODITIES": "Energy & Commodities",
     "WALL_STREET_DARLINGS": "Wall Street's Darlings",
+    "MEGA_CAP_100": "The Mega-Cap 100",
     "CLERGY_HOUSE": "The Clergy House",
     "RESERVE": "Reserve",
     "UBS_FUNDS": "UBS Funds",
@@ -281,22 +343,28 @@ SEASONAL_TREND_WINDOW = 20
 # what keeps a 0.1% wiggle in a T-bill ETF out of the trade ledger.
 TRADE_MIN_ABS_DEVIATION_PCT = 1.0
 
-# --- Backtest protocol ---
-# Signals are produced after the close of detected_at; fills happen at the
-# next session's close. No same-bar fills, ever.
-BACKTEST_UNIT_DOLLARS = 10_000
-BACKTEST_COST_BPS_PER_SIDE = 5.0      # one-way transaction cost, basis points
+# --- Backtest protocol: invest/divest portfolio model ---
+# Capital starts 100% in a baseline portfolio. Entry signals INVEST a fixed
+# slice from the baseline into the ticker at the next session's close after
+# detected_at; the slice DIVESTS back to the baseline on the frozen trend
+# target (BUY), on the first bearish signal for the ticker, or at the time
+# stop. No shorts, ever — bearish signals only move capital out. If the
+# baseline holds less than one slice, the signal is skipped (capital is
+# conserved, not invented). The benchmark is the same capital left 100% in
+# the baseline, so strategy-vs-benchmark is like-for-like by construction.
+PORTFOLIO_CAPITAL = 100_000
+BACKTEST_UNIT_DOLLARS = 10_000        # slice moved per invest signal
+BACKTEST_COST_BPS_PER_SIDE = 5.0      # per stock transaction; baseline assumed frictionless
 BACKTEST_MAX_HOLD_TRADING_DAYS = 30   # time-stop for every position
-BACKTEST_BENCHMARK_TICKER = "SPY"
-# Long-only book: BUY/LONG open positions; SELL/SHORT act purely as exit
-# triggers (close longs on their ticker) — matching their dashboard meaning
-# of "take profits / tighten stops". Set by the measured edge: extreme
-# below-trend stretches rebound (+2.3%/10 bars avg) while above-trend
-# stretches show ~no drift, so the short side has no edge to harvest; the
-# split-half study confirmed shorts only subtract (both-sides book went
-# NEGATIVE in the second half; long-only stayed positive in both). Flip to
-# False to simulate both sides. See HOW_IT_WORKS.md "Why long-only".
-BACKTEST_LONG_ONLY = True
+BACKTEST_BASELINE_TICKER = "SPY"      # where idle capital lives (and the benchmark)
+BACKTEST_BENCHMARK_TICKER = BACKTEST_BASELINE_TICKER  # back-compat alias
+# Which bullish signals invest. ("BUY",) = washout entries only;
+# ("BUY", "LONG") would also invest on building-momentum entries. Set by the
+# split-half robustness study (see HOW_IT_WORKS.md): adding LONG roughly
+# doubles trade count, adds no excess return, and turns the first half of
+# the window NEGATIVE vs baseline — BUY-only is positive in both halves
+# under both baselines. LONG remains an informational momentum flag.
+BACKTEST_ENTRY_SIGNALS = ("BUY",)
 
 # --- Model version — bump when detection logic changes materially ---
 # 2.0.0: causal detection regime. Every score at bar t uses only data
