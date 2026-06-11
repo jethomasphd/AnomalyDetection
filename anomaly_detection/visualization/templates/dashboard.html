@@ -545,6 +545,19 @@
         </div>
         {% endif %}
 
+        <!-- Run health: surface data-coverage problems instead of hiding them -->
+        {% if health and health.status == 'degraded' %}
+        <div class="val-warn">
+            [DEGRADED] Data coverage {{ health.coverage_pct }}% &mdash;
+            {{ health.tickers_fetched }}/{{ health.tickers_requested }} tickers fetched this run.
+            Missing:
+            {% for f in health.fetch_failures %}
+                {{ f.ticker }}{% if not loop.last %}, {% endif %}
+            {% endfor %}.
+            Verdicts for missing tickers resume at the next successful fetch; the frozen ledger is unaffected.
+        </div>
+        {% endif %}
+
         <!-- Stats -->
         <div class="stats">
             <div class="stat glow-blue">
@@ -630,16 +643,36 @@
         <div class="tip-panel" id="tip-backtest">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Signal Performance</div>
-            <strong>Trade rules:</strong><br>
-            &bull; Every BUY or LONG opens a $10k long at that day's close.<br>
-            &bull; Every SELL or SHORT opens a $10k short at that day's close.<br>
-            &bull; Two signals in the same direction on one ticker stack into two independent positions.<br>
-            &bull; An opposite-direction signal closes <em>every</em> open position of the other side on that ticker
-                (realising their P&amp;L) and opens its own new trade.<br>
-            &bull; WATCH and REDUCE are informational only &mdash; no trade.<br>
-            <strong>No baseline, no fixed holding window.</strong> Trades end when the opposite signal fires.
-            Everything still open at today's close stays marked-to-current.<br>
-            The curve below is the daily mark-to-market of the combined book.
+            <strong>The capital model (invest/divest, never short):</strong><br>
+            &bull; The portfolio starts 100% in the baseline. An entry signal moves a $10k slice
+              from the baseline into the ticker at the <em>next session's close</em> after the signal
+              existed. Never the same bar.<br>
+            &bull; SELL/SHORT signals move capital OUT of the ticker back to the baseline — they never
+              open short positions. BUY slices also return on the trend target frozen at detection
+              time; everything returns at the time stop.<br>
+            &bull; If the baseline can't fund a slice, the signal is skipped and counted — capital is
+              conserved, not invented.<br>
+            &bull; Costs are charged per stock transaction. The benchmark is the identical capital left
+              100% in the baseline: the strategy and benchmark differ ONLY by the signal overlay.<br>
+            <strong>Walk-forward vs Live:</strong> detection is causal (a past bar's verdict is exactly what
+            a live run that evening would have produced), so simulated history and the live record follow
+            identical rules &mdash; and are reported separately so they are never conflated.
+        </div>
+            <strong>Trade rules (walk-forward, no peeking):</strong><br>
+            &bull; A signal exists only after the close of its detection day; the trade fills at the
+              <em>next session's close</em>. Never the same bar.<br>
+            &bull; The book is long-only: every BUY/LONG opens a $10k long (same-direction signals stack).
+              SELL/SHORT close the longs on their ticker &mdash; "take profits / tighten stops" &mdash; but open
+              nothing, because the measured edge in this universe is in buying washouts; extreme above-trend
+              stretches showed no drift worth shorting (held in both halves of the sample).<br>
+            &bull; Exits, whichever comes first: BUY trades close when price touches the trend target frozen
+              at detection time; a SELL/SHORT signal closes every open long on that ticker;
+              a time stop closes anything still open after the max hold.<br>
+            &bull; Transaction costs are charged per side. WATCH and REDUCE are informational only &mdash; no trade.<br>
+            &bull; The dashed line is the benchmark: buy-and-hold scaled to the strategy's average deployed capital.<br>
+            <strong>Walk-forward vs Live:</strong> detection is causal (a past bar's verdict is exactly what a
+            live run that evening would have produced), so simulated history and the live record follow
+            identical rules &mdash; and are reported separately below so they are never conflated.
         </div>
         <div class="tip-panel" id="tip-realized">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -671,9 +704,9 @@
             <strong>Think of it as:</strong> the worst peak-to-trough slide you'd have lived through.
             If the equity curve hit +$5,000 and then sagged to +$2,000 before recovering,
             max drawdown = $3,000 &mdash; even though the strategy ended up positive.<br>
-            <strong>Smaller is better.</strong> The percent figure is drawdown / total capital deployed
-            (trades &times; $10k), so "2%" means the book was 2 cents of every dollar committed
-            underwater at its worst moment.
+            <strong>Smaller is better.</strong> The percent figure is drawdown as a share of the
+            portfolio's peak value &mdash; "2%" means the whole portfolio (baseline + positions)
+            was 2% off its high at the worst moment.
         </div>
         <div class="tip-panel" id="tip-avghold">
             <button class="tip-close" onclick="hideTips()">&times;</button>
@@ -718,16 +751,20 @@
         <div class="tip-panel" id="tip-ensemble">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Statistical Ensemble</div>
-            Combines three independent tests: Z-score (40%) measures standard deviations from mean,
-            Seasonal decomposition (30%) isolates residuals after removing trend/seasonality,
-            Isolation Forest ML (30%) detects multivariate outliers. Answers: "Do independent statistical tests agree?"
+            Combines three independent tests, all causal: Z-score (40%) standardizes today's return by the
+            ticker's own trailing volatility; Seasonal decomposition (30%) isolates the residual after removing
+            a one-sided trend and weekday pattern learned from past bars only; Isolation Forest ML (30%) scores
+            multivariate outliers with a model refit walk-forward, never trained on the bars it scores.
+            Answers: "Do independent statistical tests agree?"
         </div>
         <div class="tip-panel" id="tip-ewma">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">EWMA Trend</div>
-            Measures deviation from the 20-day exponentially weighted moving average.
-            Classifies trajectory: breakout (&gt;80% of range), accelerating (slope &gt;0.02),
-            decelerating, or normal. Answers: "Is the current momentum abnormal?"
+            Measures deviation from the 20-day exponentially weighted moving average, standardized by that
+            deviation's own trailing volatility &mdash; so a 3-sigma stretch means the same thing for a sleepy
+            T-bill fund as for NVIDIA. Trajectory classifies what the stretch is doing: extending (growing),
+            reverting (snapping back), breakout (extreme), or stable.
+            Answers: "Is the current momentum abnormal <em>for this ticker</em>?"
         </div>
 
         <!-- ==================== ATTENTION QUEUE ==================== -->
@@ -970,23 +1007,63 @@
                 {% if backtest.signal_ledger %}
                 <p style="font-size:0.82rem; color:var(--text); margin-bottom:0.75rem; line-height:1.6;">
                     <strong style="color:var(--green)">"Does this actually work?"</strong>
-                    The book holds only what the Signal fired.
-                    Every BUY/LONG opens a $10k long at that day's close; every SELL/SHORT opens a $10k short.
-                    An opposite-direction signal closes every open position on that ticker and opens its own &mdash; so trades end when the math says the other side is taking over, not on a clock.
-                    Two BUYs on one ticker = two independent long positions.
-                    The curve below is the daily mark-to-market of the whole book.
+                    A ${{ "{:,.0f}".format(backtest.initial_capital|default(100000)) }} portfolio starts 100% in
+                    {{ backtest.baseline_ticker|default('SPY') }} — the baseline. Signals move capital, nothing else:
+                    an entry signal <strong>invests</strong> a ${{ "{:,.0f}".format(backtest.unit|default(10000)) }} slice
+                    into the ticker at the <strong>next session's close</strong> after it was produced (never the same bar,
+                    never a backdated price); SELL/SHORT signals <strong>divest</strong> back to the baseline — no shorts, ever.
+                    Slices also return on the trend target frozen at detection time or the
+                    {{ backtest.max_hold_days|default(30) }}-bar time stop. If the baseline can't fund a slice, the signal
+                    is skipped — capital is conserved, not invented. Costs are
+                    {{ backtest.cost_bps_per_side|default(5)|round(0)|int }} bps per stock transaction.
+                    The dashed line is the same capital left 100% in the baseline — the exact "what if you'd done nothing" portfolio.
                 </p>
 
+                {% if backtest.provenance_stats %}
+                <div class="bt-grid" style="margin-bottom:0.75rem;">
+                    {% set bf = backtest.provenance_stats.get('backfill', {}) %}
+                    {% set lv = backtest.provenance_stats.get('live', {}) %}
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:var(--blue)">{{ bf.get('n_trades', 0) }}</div>
+                        <div class="bt-lbl">Walk-forward trades (simulated history)</div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:{% if (bf.get('realized_gain', 0) + bf.get('unrealized_gain', 0)) >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                            ${{ "{:+,.0f}".format(bf.get('realized_gain', 0) + bf.get('unrealized_gain', 0)) }}
+                        </div>
+                        <div class="bt-lbl">Walk-forward P&amp;L</div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:var(--orange)">{{ lv.get('n_trades', 0) }}</div>
+                        <div class="bt-lbl">Live trades (out-of-sample)</div>
+                    </div>
+                    <div class="bt-stat">
+                        <div class="bt-num" style="color:{% if (lv.get('realized_gain', 0) + lv.get('unrealized_gain', 0)) >= 0 %}var(--green){% else %}var(--red){% endif %}">
+                            ${{ "{:+,.0f}".format(lv.get('realized_gain', 0) + lv.get('unrealized_gain', 0)) }}
+                        </div>
+                        <div class="bt-lbl">Live P&amp;L</div>
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- Bottom-line banner -->
-                <div class="bottom-line-banner {% if backtest.total_gain < 0 %}loss{% endif %}">
+                <div class="bottom-line-banner {% if backtest.stats.excess_gain is defined and backtest.stats.excess_gain < 0 %}loss{% endif %}">
                     <div class="bl-headline">
                         Following THE SIGNAL from {{ backtest.start_date }} &mdash; {{ backtest.end_date }}:
-                        ${{ "{:+,.2f}".format(backtest.total_gain) }} ({{ "%+.1f"|format(backtest.total_pct) }}% of capital deployed) across {{ backtest.n_trades }} trades
+                        ${{ "{:,.0f}".format(backtest.initial_capital) }} &rarr; ${{ "{:,.0f}".format(backtest.final_value) }}
+                        ({{ "%+.1f"|format(backtest.stats.strategy_return_pct) }}%)
+                        {% if backtest.stats.benchmark_return_pct is not none %}
+                            vs baseline-only {{ "%+.1f"|format(backtest.stats.benchmark_return_pct) }}%
+                            &mdash; the overlay {% if backtest.stats.excess_gain >= 0 %}added{% else %}cost{% endif %}
+                            ${{ "{:,.0f}".format(backtest.stats.excess_gain|abs) }}
+                        {% endif %}
                     </div>
                     <div class="bl-sub">
+                        {{ backtest.n_trades }} invest/divest round trips &bull;
                         {{ backtest.n_closed }} closed &bull; {{ backtest.n_open }} open &bull;
-                        {{ backtest.n_winning }} winning &bull;
-                        ${{ "{:,}".format(backtest.total_invested) }} deployed
+                        {{ backtest.n_winning }} winning
+                        {% if backtest.n_skipped_no_capital %} &bull; {{ backtest.n_skipped_no_capital }} skipped (capital fully deployed){% endif %}
+                        &bull; baseline: {{ backtest.baseline_ticker }}
                     </div>
                 </div>
 
@@ -1014,7 +1091,7 @@
                         <div class="bt-num" style="color:{% if backtest.total_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">
                             ${{ "{:+,.0f}".format(backtest.total_gain) }}
                         </div>
-                        <div class="bt-lbl">Total P&amp;L (book)</div>
+                        <div class="bt-lbl">Portfolio P&amp;L (incl. baseline)</div>
                     </div>
                     <div class="bt-stat">
                         <div class="bt-num" style="color:var(--amber)">
@@ -1143,7 +1220,10 @@
                                 </span>
                             </td>
                             <td style="font-size:0.68rem; color:var(--muted);">
-                                {% if s.exit_reason == 'opposite_signal' %}opposite signal
+                                {% if s.exit_reason == 'divest_signal' %}divest signal
+                                {% elif s.exit_reason == 'opposite_signal' %}opposite signal
+                                {% elif s.exit_reason == 'target' %}target hit
+                                {% elif s.exit_reason == 'time_stop' %}time stop
                                 {% elif s.exit_reason == 'open' %}<em>still open</em>
                                 {% else %}{{ s.exit_reason }}{% endif %}
                             </td>
@@ -1155,9 +1235,13 @@
                 </div>
 
                 <p style="margin-top: 0.75rem; font-size: 0.65rem; color: var(--dim); font-style: italic; font-family: var(--mono);">
-                    Simulation for educational purposes only. Each signal = $10k trade.
-                    No slippage, commissions, borrow costs, or market impact modelled. Shorts assume
-                    frictionless borrow. This is NOT financial advice &mdash; past performance does not predict future results.
+                    Simulation for educational purposes only. Invest/divest portfolio model: capital is either in the
+                    baseline ({{ backtest.baseline_ticker|default('SPY') }}) or in signal positions — no shorts, no leverage.
+                    {{ backtest.cost_bps_per_side|default(5)|round(0)|int }} bps costs per stock transaction; baseline trades
+                    treated as frictionless. No slippage beyond costs or market impact modelled; dividends via adjusted closes.
+                    "Walk-forward" trades are simulated on history by a causal model (verdicts use only data available that
+                    evening); "Live" trades are the out-of-sample record accumulated since go-live. This is NOT financial
+                    advice &mdash; past performance does not predict future results.
                 </p>
                 {% else %}
                 <div class="empty-msg">No signal data available for performance tracking yet. Signals will appear after the first anomaly detection run.</div>
@@ -1176,12 +1260,16 @@
                         No single method controls the outcome &mdash; consensus is the signal.
                     </p>
                     <ul>
-                        <li><strong style="color:var(--green)">Buy / Sell</strong> &mdash; mean-reversion: price extended from trend, momentum fading</li>
-                        <li><strong style="color:var(--teal)">Long / Short</strong> &mdash; momentum: breakout with accelerating force</li>
+                        <li><strong style="color:var(--green)">Buy / Sell</strong> &mdash; mean-reversion: price stretched beyond the sigma threshold from trend (in units of the ticker's own deviation volatility) while the stretch is contracting or stable</li>
+                        <li><strong style="color:var(--teal)">Long / Short</strong> &mdash; momentum: price stretched from trend while the stretch is still extending or at breakout extremes</li>
                         <li><strong style="color:var(--amber)">Reduce</strong> &mdash; regime change: both Fourier and Matrix Profile flag structural shift</li>
-                        <li><strong style="color:var(--cyan)">Watch</strong> &mdash; anomaly detected but awaiting directional confirmation</li>
+                        <li><strong style="color:var(--cyan)">Watch</strong> &mdash; anomaly detected but no tradable directional setup</li>
                     </ul>
-                    <p><strong style="color:var(--text)">Confidence:</strong> Strong (3-4 methods agree), Moderate (2), Developing (1 with high score).</p>
+                    <p><strong style="color:var(--text)">Confidence:</strong> Strong (3-4 methods agree), Moderate (2), Developing (fewer).</p>
+                    <p><strong style="color:var(--text)">Materiality gate:</strong> a trade call additionally requires
+                    at least 2 methods in agreement AND the price to be a meaningful absolute distance from trend
+                    (default 1%) &mdash; statistically unusual but economically trivial moves (a 0.1% wiggle in a
+                    T-bill ETF) stay informational.</p>
                 </div>
             </div>
         </details>

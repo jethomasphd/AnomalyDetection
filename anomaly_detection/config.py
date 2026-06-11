@@ -123,6 +123,67 @@ TICKER_REGISTRY = {
     "XLE":   {"name": "Energy Select SPDR",         "category": "WALL_STREET_DARLINGS", "is_fund": True, "sector": "Energy"},
 
     # =========================================================================
+    # THE MEGA-CAP 100 — completion of the top 100 US-listed tickers by market
+    # capitalization (measured via yfinance, 2026-06; the other top-100 names
+    # already live in the thematic categories above). Includes US-listed ADRs.
+    # =========================================================================
+    "TSM":   {"name": "Taiwan Semiconductor (ADR)",  "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "AVGO":  {"name": "Broadcom",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "MU":    {"name": "Micron Technology",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "ASML":  {"name": "ASML Holding (ADR)",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "INTC":  {"name": "Intel",                       "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "CSCO":  {"name": "Cisco Systems",               "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "LRCX":  {"name": "Lam Research",                "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "AMAT":  {"name": "Applied Materials",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "ARM":   {"name": "Arm Holdings (ADR)",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "PLTR":  {"name": "Palantir",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "HSBC":  {"name": "HSBC Holdings (ADR)",         "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+    "PM":    {"name": "Philip Morris",               "category": "MEGA_CAP_100", "is_fund": False, "sector": "Consumer Staples"},
+    "NVS":   {"name": "Novartis (ADR)",              "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "KLAC":  {"name": "KLA Corporation",             "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "AZN":   {"name": "AstraZeneca (ADR)",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "BABA":  {"name": "Alibaba (ADR)",               "category": "MEGA_CAP_100", "is_fund": False, "sector": "Consumer Discretionary"},
+    "RY":    {"name": "Royal Bank of Canada",        "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+    "TXN":   {"name": "Texas Instruments",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "IBM":   {"name": "IBM",                         "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "DELL":  {"name": "Dell Technologies",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "RTX":   {"name": "RTX Corporation",             "category": "MEGA_CAP_100", "is_fund": False, "sector": "Defense"},
+    "SHEL":  {"name": "Shell (ADR)",                 "category": "MEGA_CAP_100", "is_fund": False, "sector": "Energy"},
+    "LIN":   {"name": "Linde",                       "category": "MEGA_CAP_100", "is_fund": False, "sector": "Materials"},
+    "GEV":   {"name": "GE Vernova",                  "category": "MEGA_CAP_100", "is_fund": False, "sector": "Industrials"},
+    "TM":    {"name": "Toyota Motor (ADR)",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Consumer Discretionary"},
+    "MRVL":  {"name": "Marvell Technology",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "PANW":  {"name": "Palo Alto Networks",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "AXP":   {"name": "American Express",            "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+    "QCOM":  {"name": "Qualcomm",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "TMUS":  {"name": "T-Mobile US",                 "category": "MEGA_CAP_100", "is_fund": False, "sector": "Communication Services"},
+    "SAP":   {"name": "SAP (ADR)",                   "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "TTE":   {"name": "TotalEnergies (ADR)",         "category": "MEGA_CAP_100", "is_fund": False, "sector": "Energy"},
+    "VZ":    {"name": "Verizon",                     "category": "MEGA_CAP_100", "is_fund": False, "sector": "Communication Services"},
+    "ADI":   {"name": "Analog Devices",              "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "ANET":  {"name": "Arista Networks",             "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "NVO":   {"name": "Novo Nordisk (ADR)",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "TD":    {"name": "Toronto-Dominion Bank",       "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+    "TJX":   {"name": "TJX Companies",               "category": "MEGA_CAP_100", "is_fund": False, "sector": "Consumer Discretionary"},
+    "APH":   {"name": "Amphenol",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "TMO":   {"name": "Thermo Fisher Scientific",    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "DIS":   {"name": "Walt Disney",                 "category": "MEGA_CAP_100", "is_fund": False, "sector": "Communication Services"},
+    "APP":   {"name": "AppLovin",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "CRWD":  {"name": "CrowdStrike",                 "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "T":     {"name": "AT&T",                        "category": "MEGA_CAP_100", "is_fund": False, "sector": "Communication Services"},
+    "ABT":   {"name": "Abbott Laboratories",         "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "GILD":  {"name": "Gilead Sciences",             "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "WELL":  {"name": "Welltower",                   "category": "MEGA_CAP_100", "is_fund": False, "sector": "Real Estate"},
+    "ISRG":  {"name": "Intuitive Surgical",          "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "ETN":   {"name": "Eaton",                       "category": "MEGA_CAP_100", "is_fund": False, "sector": "Industrials"},
+    "BX":    {"name": "Blackstone",                  "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+    "SHOP":  {"name": "Shopify",                     "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "UBER":  {"name": "Uber Technologies",           "category": "MEGA_CAP_100", "is_fund": False, "sector": "Technology"},
+    "PLD":   {"name": "Prologis",                    "category": "MEGA_CAP_100", "is_fund": False, "sector": "Real Estate"},
+    "DHR":   {"name": "Danaher",                     "category": "MEGA_CAP_100", "is_fund": False, "sector": "Healthcare"},
+    "CB":    {"name": "Chubb",                       "category": "MEGA_CAP_100", "is_fund": False, "sector": "Financials"},
+
+    # =========================================================================
     # THE CLERGY HOUSE — a Priest's bespoke collection. Curated picks outside
     # the standard taxonomy that the Signal still tracks for the house.
     # =========================================================================
@@ -152,6 +213,7 @@ CATEGORY_LABELS = {
     "HEALTHCARE_PHARMA": "Healthcare & Pharma",
     "ENERGY_COMMODITIES": "Energy & Commodities",
     "WALL_STREET_DARLINGS": "Wall Street's Darlings",
+    "MEGA_CAP_100": "The Mega-Cap 100",
     "CLERGY_HOUSE": "The Clergy House",
     "RESERVE": "Reserve",
     "UBS_FUNDS": "UBS Funds",
@@ -200,6 +262,9 @@ DEFAULT_LOOKBACK_DAYS = 365  # kept for API compatibility; superseded by SIGNAL_
 MIN_DATA_POINTS = 30
 
 # --- Sensitivity Presets ---
+# z_threshold is the causal robust-z a method's score must exceed to flag.
+# `percentile` is retained for backwards compatibility with old callers but
+# is no longer used by the v2 causal detectors.
 SENSITIVITY_PRESETS = {
     "low": {
         "percentile": 99.5,
@@ -220,6 +285,16 @@ SENSITIVITY_PRESETS = {
 
 DEFAULT_SENSITIVITY = os.environ.get("ANOMALY_SENSITIVITY", "medium")
 
+# --- Causal scoring scale ---
+# Method scores are standardized robust-z values mapped onto [0, 1] by
+# score = min(max(z, 0) / Z_SCORE_CAP, 1).  The scale is therefore directly
+# interpretable: 0.50 = 2 sigma, 0.625 = 2.5 sigma, 1.0 = 4+ sigma.
+Z_SCORE_CAP = 4.0
+
+# Warmup: number of bars a detector observes before it may flag anything.
+# Scores during warmup are 0 (insufficient history to standardize against).
+CAUSAL_WARMUP_BARS = 60
+
 # --- Detection Method Weights (for consensus score) ---
 METHOD_WEIGHTS = {
     "fourier": 0.20,
@@ -231,12 +306,22 @@ METHOD_WEIGHTS = {
 # --- EWMA Parameters ---
 EWMA_SPAN = 20
 EWMA_TREND_WINDOW = 5
+# Rolling window used to standardize the EWMA deviation per ticker (the
+# deviation is divided by its own trailing volatility, so thresholds adapt
+# to each ticker's scale: BIL and NVDA are judged against themselves).
+EWMA_DEV_VOL_WINDOW = 60
+EWMA_DEV_VOL_MIN_PERIODS = 20
+# Trajectory classification (units: sigma of standardized deviation per day).
+TRAJECTORY_SLOPE_SIGMA_PER_DAY = 0.15
+# |dev_z| above (z_threshold + this margin) classifies as breakout.
+BREAKOUT_SIGMA_MARGIN = 1.0
 
 # --- Matrix Profile Parameters ---
 MP_SUBSEQUENCE_LENGTH = 10
 
 # --- Fourier Parameters ---
 FOURIER_TOP_K = 5
+FOURIER_WINDOW = 60
 
 # --- Ensemble Weights ---
 ENSEMBLE_WEIGHTS = {
@@ -244,12 +329,57 @@ ENSEMBLE_WEIGHTS = {
     "seasonal": 0.30,
     "isolation_forest": 0.30,
 }
+# Walk-forward Isolation Forest: refit cadence and training lookback (bars).
+IFOREST_REFIT_EVERY = 21
+IFOREST_TRAIN_WINDOW = 250
+# Causal seasonal decomposition (additive): trailing trend window and period.
+SEASONAL_PERIOD = 5
+SEASONAL_TREND_WINDOW = 20
+
+# --- Signal materiality gate ---
+# A tradable signal (BUY/SELL/LONG/SHORT) requires the price to be at least
+# this far (in %) from its EWMA trend. Statistical anomalies below this
+# threshold remain visible as WATCH but never become trade calls — this is
+# what keeps a 0.1% wiggle in a T-bill ETF out of the trade ledger.
+TRADE_MIN_ABS_DEVIATION_PCT = 1.0
+
+# --- Backtest protocol: invest/divest portfolio model ---
+# Capital starts 100% in a baseline portfolio. Entry signals INVEST a fixed
+# slice from the baseline into the ticker at the next session's close after
+# detected_at; the slice DIVESTS back to the baseline on the frozen trend
+# target (BUY), on the first bearish signal for the ticker, or at the time
+# stop. No shorts, ever — bearish signals only move capital out. If the
+# baseline holds less than one slice, the signal is skipped (capital is
+# conserved, not invented). The benchmark is the same capital left 100% in
+# the baseline, so strategy-vs-benchmark is like-for-like by construction.
+PORTFOLIO_CAPITAL = 100_000
+BACKTEST_UNIT_DOLLARS = 10_000        # slice moved per invest signal
+BACKTEST_COST_BPS_PER_SIDE = 5.0      # per stock transaction; baseline assumed frictionless
+BACKTEST_MAX_HOLD_TRADING_DAYS = 30   # time-stop for every position
+BACKTEST_BASELINE_TICKER = "SPY"      # where idle capital lives (and the benchmark)
+BACKTEST_BENCHMARK_TICKER = BACKTEST_BASELINE_TICKER  # back-compat alias
+# Which bullish signals invest. ("BUY",) = washout entries only;
+# ("BUY", "LONG") would also invest on building-momentum entries. Set by the
+# split-half robustness study (see HOW_IT_WORKS.md): adding LONG roughly
+# doubles trade count, adds no excess return, and turns the first half of
+# the window NEGATIVE vs baseline — BUY-only is positive in both halves
+# under both baselines. LONG remains an informational momentum flag.
+BACKTEST_ENTRY_SIGNALS = ("BUY",)
 
 # --- Model version — bump when detection logic changes materially ---
-MODEL_VERSION = "1.1.0"
+# 2.0.0: causal detection regime. Every score at bar t uses only data
+# through bar t; the historical backfill is therefore a true walk-forward
+# simulation and live operation is identical to the backtest by construction.
+MODEL_VERSION = "2.0.0"
 
 # --- Output Paths ---
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 DOCS_DIR = os.path.join(PROJECT_ROOT, "docs")
 DB_PATH = os.path.join(DATA_DIR, "anomaly_store.db")
+
+# The committed, git-versioned source of truth for the append-only record.
+# SQLite is a fast local cache rebuilt from these files on a fresh checkout;
+# the ledger (and its git history) is the durable audit trail.
+LEDGER_DIR = os.path.join(DATA_DIR, "ledger")
+HISTORY_DIR = os.path.join(DATA_DIR, "history")

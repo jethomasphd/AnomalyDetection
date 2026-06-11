@@ -591,475 +591,7 @@ def compute_attention_queue(results: pd.DataFrame, alerts: list[dict]) -> list[d
     return queue
 
 
-# ---- Backtest: full lookback signal-following performance ----
-
-def compute_backtest(
-    results: pd.DataFrame,
-    alerts: list[dict],
-    unit: float = 10_000,
-) -> dict:
-    """Simulate signal performance from the anchored start date forward.
-
-    Trade model:
-      - Every actionable signal (BUY/LONG/SELL/SHORT) opens a new $10k trade
-        at the close of the signal's bar date. Long for BUY/LONG, short for
-        SELL/SHORT. WATCH and REDUCE are informational only.
-      - Multiple same-direction signals on a ticker stack into independent
-        positions (three BUYs on AAPL = three independent $10k longs).
-      - An opposite-direction signal on a ticker closes EVERY open position
-        of the other direction at that day's close, realising their P&L,
-        and then opens its own new position.
-      - No baseline, no buy-and-hold reference — only trades the Signal
-        actually produced.
-
-    Every open trade is marked-to-current at the last available bar. The
-    equity curve is a daily mark-to-market time series (realised P&L on
-    closed trades + unrealised P&L on still-open trades, per ticker,
-    summed each day), which is what powers Sharpe / drawdown downstream.
-    """
-    empty = {
-        "signal_ledger": [],
-        "total_gain": 0.0,
-        "realized_gain": 0.0,
-        "unrealized_gain": 0.0,
-        "total_invested": 0.0,
-        "n_trades": 0,
-        "n_winning": 0,
-        "n_open": 0,
-        "n_closed": 0,
-        "start_date": None,
-        "end_date": None,
-        "equity_curve": {"dates": [], "equity": [], "drawdown": []},
-        "stats": _empty_trade_stats(),
-    }
-    if results.empty or not alerts:
-        return empty
-
-    # Per-ticker sorted price series (as float arrays keyed by DateStr)
-    by_ticker = _build_price_index(results)
-    all_dates = _union_sorted_dates(by_ticker)
-    if not all_dates:
-        return empty
-
-    start_str = all_dates[0]
-    today_str = all_dates[-1]
-
-    # Long = +1, Short = -1
-    def direction_for(sig: str) -> int | None:
-        if sig in ("BUY", "LONG"):
-            return +1
-        if sig in ("SELL", "SHORT"):
-            return -1
-        return None
-
-    # ----- Simulate trades chronologically -----
-    # open_trades[ticker] is a list of open trade dicts.
-    open_trades: dict[str, list[dict]] = {}
-    closed_trades: list[dict] = []
-    trade_seq = 0  # stable ordering for display
-
-    # Sort alerts by (date, ticker, signal) so ties are deterministic.
-    tradable = [
-        a for a in alerts
-        if direction_for(a.get("signal")) is not None
-        and a.get("date", "") >= start_str
-    ]
-    tradable.sort(key=lambda a: (a["date"], a["ticker"], a["signal"]))
-
-    for a in tradable:
-        sig = a["signal"]
-        ticker = a["ticker"]
-        series = by_ticker.get(ticker)
-        if series is None:
-            continue
-
-        # Resolve the trade price from the ticker's own bar on or after
-        # signal.date — if the signal's bar isn't in the frame (e.g. the
-        # ticker was delisted), skip it.
-        entry_price, entry_date_resolved = _price_on_or_after(series, a["date"])
-        if entry_price is None or entry_price <= 0:
-            continue
-
-        new_dir = direction_for(sig)
-
-        # Close any opposite-direction positions on this ticker at today's close
-        still_open = []
-        for t in open_trades.get(ticker, []):
-            if t["direction"] != new_dir:
-                pnl = _position_pnl(t, entry_price)
-                closed_trades.append(_close_trade(
-                    t, exit_date=entry_date_resolved, exit_price=entry_price,
-                    exit_reason="opposite_signal", pnl=pnl, series=series,
-                ))
-            else:
-                still_open.append(t)
-        open_trades[ticker] = still_open
-
-        # Open the new trade
-        trade_seq += 1
-        open_trades.setdefault(ticker, []).append({
-            "id": trade_seq,
-            "ticker": ticker,
-            "direction": new_dir,
-            "action": sig,
-            "entry_date": entry_date_resolved,
-            "entry_price": entry_price,
-            "unit": unit,
-            "confidence": a.get("confidence", ""),
-            "methods": _methods_list(a),
-            "methods_flagged": int(a.get("methods_flagged", 0)),
-            "bar_date": a["date"],
-        })
-
-    # Mark remaining open trades to the latest available close
-    still_open_flat: list[dict] = []
-    for ticker, trades in open_trades.items():
-        series = by_ticker.get(ticker)
-        last_close = float(series["Close"][-1]) if series is not None and len(series["Close"]) else 0.0
-        last_date = series["DateStr"][-1] if series is not None and len(series["DateStr"]) else today_str
-        for t in trades:
-            marked = _close_trade(
-                t, exit_date=last_date, exit_price=last_close,
-                exit_reason="open", pnl=_position_pnl(t, last_close), series=series,
-            )
-            marked["status"] = "OPEN"
-            still_open_flat.append(marked)
-
-    for t in closed_trades:
-        t["status"] = "CLOSED"
-
-    signal_ledger = sorted(
-        closed_trades + still_open_flat,
-        key=lambda t: (t["entry_date"], t["id"]),
-        reverse=True,
-    )
-
-    # ----- Daily mark-to-market equity curve -----
-    equity_curve = _build_equity_curve(closed_trades, still_open_flat, by_ticker, all_dates, unit=unit)
-
-    # Summary
-    realized_gain = sum(t["dollar_gain"] for t in closed_trades)
-    unrealized_gain = sum(t["dollar_gain"] for t in still_open_flat)
-    total_gain = realized_gain + unrealized_gain
-    n_closed = len(closed_trades)
-    n_open = len(still_open_flat)
-    n_trades = n_closed + n_open
-    n_winning = sum(1 for t in signal_ledger if t["dollar_gain"] > 0)
-    total_invested = n_trades * unit
-
-    stats = _compute_trade_stats(
-        closed_trades=closed_trades,
-        equity_curve=equity_curve,
-        unit=unit,
-        n_trades_total=n_trades,
-    )
-
-    return {
-        "signal_ledger": signal_ledger,
-        "total_gain": round(total_gain, 2),
-        "total_pct": round((total_gain / total_invested * 100) if total_invested > 0 else 0, 2),
-        "realized_gain": round(realized_gain, 2),
-        "unrealized_gain": round(unrealized_gain, 2),
-        "total_invested": total_invested,
-        "n_trades": n_trades,
-        "n_winning": n_winning,
-        "n_open": n_open,
-        "n_closed": n_closed,
-        "start_date": start_str,
-        "end_date": today_str,
-        "equity_curve": equity_curve,
-        "stats": stats,
-    }
-
-
-# ----- backtest helpers -----
-
-def _build_price_index(results: pd.DataFrame) -> dict[str, dict]:
-    """Pre-index prices per ticker as plain numpy arrays for fast lookup."""
-    out: dict[str, dict] = {}
-    for ticker, grp in results.groupby("Ticker"):
-        g = grp[["Date", "Close"]].sort_values("Date").reset_index(drop=True)
-        if g.empty:
-            continue
-        date_strs = pd.to_datetime(g["Date"]).dt.strftime("%Y-%m-%d").tolist()
-        closes = g["Close"].to_numpy(dtype=float)
-        out[ticker] = {
-            "DateStr": date_strs,
-            "Close": closes,
-            # DateStr -> index, for O(1) lookup during MTM
-            "_index": {d: i for i, d in enumerate(date_strs)},
-        }
-    return out
-
-
-def _union_sorted_dates(by_ticker: dict[str, dict]) -> list[str]:
-    s: set[str] = set()
-    for v in by_ticker.values():
-        s.update(v["DateStr"])
-    return sorted(s)
-
-
-def _price_on_or_after(series: dict, date_str: str) -> tuple[float | None, str | None]:
-    """First bar at or after date_str (YYYY-MM-DD)."""
-    dates = series["DateStr"]
-    # Linear scan — trading series per ticker is small (a few hundred bars)
-    for i, d in enumerate(dates):
-        if d >= date_str:
-            return float(series["Close"][i]), d
-    return None, None
-
-
-def _position_pnl(trade: dict, mark_price: float) -> float:
-    """Signed $ P&L of a position marked at `mark_price`."""
-    if trade["entry_price"] <= 0 or mark_price <= 0:
-        return 0.0
-    pct = (mark_price - trade["entry_price"]) / trade["entry_price"]
-    return trade["direction"] * pct * trade["unit"]
-
-
-def _close_trade(trade: dict, *, exit_date: str, exit_price: float,
-                 exit_reason: str, pnl: float, series: dict | None) -> dict:
-    """Return a ledger-row dict from an open trade + exit info."""
-    pct = 0.0
-    if trade["entry_price"] > 0:
-        pct = trade["direction"] * (exit_price - trade["entry_price"]) / trade["entry_price"] * 100
-    held = 0
-    if series is not None and exit_date:
-        idx = series["_index"]
-        i0 = idx.get(trade["entry_date"])
-        i1 = idx.get(exit_date)
-        if i0 is not None and i1 is not None:
-            held = max(0, i1 - i0)
-    return {
-        "id": trade["id"],
-        "date": trade["bar_date"],
-        "ticker": trade["ticker"],
-        "display": ticker_display(trade["ticker"]),
-        "action": trade["action"],
-        "direction": trade["direction"],
-        "entry_date": trade["entry_date"],
-        "exit_date": exit_date,
-        "action_price": round(trade["entry_price"], 2),
-        "entry_price": round(trade["entry_price"], 2),
-        "exit_price": round(exit_price, 2),
-        "current_price": round(exit_price, 2),
-        "dollar_gain": round(pnl, 2),
-        "pct_change": round(pct, 2),
-        "exit_reason": exit_reason,
-        "holding_days": held,
-        "methods": trade.get("methods", ""),
-        "methods_flagged": trade.get("methods_flagged", 0),
-        "confidence": trade.get("confidence", ""),
-        # Preserved for the equity-curve walker; round for clean JSON.
-        "unit": round(trade["unit"], 2),
-        "_entry_price_raw": trade["entry_price"],
-    }
-
-
-def _build_equity_curve(
-    closed_trades: list[dict],
-    open_trades_marked: list[dict],
-    by_ticker: dict[str, dict],
-    all_dates: list[str],
-    unit: float,
-) -> dict:
-    """Build a daily mark-to-market equity series across every trading day.
-
-    For each day d:
-        equity(d) = sum over all trades whose entry_date <= d of:
-            realized P&L if exit_date <= d
-            mark-to-market P&L against close(d) if still open on d
-
-    Returns {dates, equity, drawdown} as parallel lists. Drawdown is the
-    running-max-minus-equity underwater curve in dollars.
-    """
-    if not all_dates:
-        return {"dates": [], "equity": [], "drawdown": []}
-
-    # Reconstruct "positions with exit info" for everyone.
-    all_trades = []
-    for t in closed_trades:
-        all_trades.append({**t, "status": "CLOSED"})
-    for t in open_trades_marked:
-        all_trades.append({**t, "status": "OPEN", "exit_date_override": None})
-
-    # Per-day equity
-    equity = np.zeros(len(all_dates), dtype=float)
-    for t in all_trades:
-        ticker = t["ticker"]
-        series = by_ticker.get(ticker)
-        if series is None:
-            continue
-        entry_i = _date_index(all_dates, t["entry_date"])
-        # For closed trades, the exit date is a real lock-in point.
-        # For open trades, effective "lock-in" never happens; they keep marking.
-        if t.get("status") == "CLOSED":
-            exit_i = _date_index(all_dates, t["exit_date"])
-        else:
-            exit_i = None  # open: mark all the way to end
-
-        if entry_i is None:
-            continue
-
-        # Walk day by day from entry to end; for CLOSED, after exit_i use the
-        # realized P&L; for OPEN, mark against the ticker's close on each day.
-        for i in range(entry_i, len(all_dates)):
-            d = all_dates[i]
-            if exit_i is not None and i >= exit_i:
-                pnl = t["dollar_gain"]  # realized, locked in
-            else:
-                mark = _close_on(series, d)
-                if mark is None:
-                    # Ticker has no bar on this day (holiday skew, delisting) —
-                    # carry the previous marked value forward.
-                    prev = _last_close_on_or_before(series, d)
-                    if prev is None:
-                        continue
-                    mark = prev
-                entry_px = t.get("_entry_price_raw") or t["entry_price"]
-                pnl = t["direction"] * (mark - entry_px) / entry_px * t["unit"] if entry_px > 0 else 0.0
-            equity[i] += pnl
-
-    # Drawdown in $
-    running_max = np.maximum.accumulate(equity)
-    drawdown = running_max - equity  # always >= 0
-
-    return {
-        "dates": all_dates,
-        "equity": [round(float(x), 2) for x in equity],
-        "drawdown": [round(float(x), 2) for x in drawdown],
-    }
-
-
-def _date_index(all_dates: list[str], d: str | None) -> int | None:
-    if d is None:
-        return None
-    # dates are sorted; use bisect for speed on larger series
-    import bisect
-    i = bisect.bisect_left(all_dates, d)
-    if i < len(all_dates) and all_dates[i] == d:
-        return i
-    # Otherwise use the first date >= d (signal may have fallen on a market holiday)
-    return i if i < len(all_dates) else None
-
-
-def _close_on(series: dict, date_str: str) -> float | None:
-    i = series["_index"].get(date_str)
-    return float(series["Close"][i]) if i is not None else None
-
-
-def _last_close_on_or_before(series: dict, date_str: str) -> float | None:
-    """Return the most recent close at or before date_str (for carry-forward)."""
-    import bisect
-    i = bisect.bisect_right(series["DateStr"], date_str) - 1
-    if i < 0:
-        return None
-    return float(series["Close"][i])
-
-
-def _empty_trade_stats() -> dict:
-    return {
-        "sharpe": None, "max_drawdown": 0.0, "max_drawdown_pct": 0.0,
-        "win_rate": 0.0, "avg_hold_days": 0.0,
-        "avg_win": 0.0, "avg_loss": 0.0, "profit_factor": None,
-        "hit_rate_by_signal": {}, "n_closed": 0,
-    }
-
-
-def _compute_trade_stats(
-    closed_trades: list[dict],
-    equity_curve: dict,
-    unit: float = 10_000,
-    n_trades_total: int | None = None,
-) -> dict:
-    """Risk & quality stats.
-
-    - Sharpe & Max Drawdown come from the DAILY mark-to-market equity curve
-      (realized + unrealized). This is the honest, time-series definition:
-      it tells you what a manager's equity actually did, day by day, as the
-      strategy ran. Computing these on closed trades alone would ignore the
-      unrealized-but-volatile portion of the book.
-
-    - Win rate, profit factor, avg holding period, and hit-rate-by-signal
-      come from CLOSED trades only, because "win" is only meaningful once
-      realized.
-    """
-    stats = _empty_trade_stats()
-    n_closed = len(closed_trades)
-    stats["n_closed"] = n_closed
-
-    equity = np.array(equity_curve.get("equity", []), dtype=float)
-    if equity.size >= 2:
-        # Daily $ change in equity
-        daily_pnl = np.diff(equity)
-        # Denominator for a return: scale by the total capital deployed.
-        # It's stable across time (it doesn't decline with drawdowns), which
-        # matches how a dollar-based strategy is usually evaluated.
-        deployed = max(unit, 1.0)  # at minimum one trade of capital
-        # If multiple trades ran, deployed = number of trades * unit — but we
-        # use the equity's own variability, not pct returns, for simplicity.
-        # Sharpe on $ returns, annualised by sqrt(252).
-        std_pnl = float(daily_pnl.std(ddof=1)) if daily_pnl.size > 1 else 0.0
-        mean_pnl = float(daily_pnl.mean()) if daily_pnl.size else 0.0
-        if std_pnl > 0:
-            stats["sharpe"] = round((mean_pnl / std_pnl) * float(np.sqrt(252)), 2)
-
-        # Drawdown in dollars; pct expressed against total capital deployed
-        # (n_trades × unit) so a 10% reading means "the book was ever $1 of
-        # every $10 committed underwater from its peak." This stays
-        # interpretable even when the equity peak is small or near zero.
-        drawdown = np.array(equity_curve.get("drawdown", []), dtype=float)
-        if drawdown.size:
-            max_dd = float(drawdown.max())
-            stats["max_drawdown"] = round(max_dd, 2)
-            capital = (n_trades_total or 1) * unit
-            if capital > 0:
-                stats["max_drawdown_pct"] = round(max_dd / capital * 100, 2)
-
-    if n_closed:
-        pnl = np.array([float(t["dollar_gain"]) for t in closed_trades])
-        holds = np.array([int(t.get("holding_days") or 0) for t in closed_trades], dtype=float)
-        wins = pnl[pnl > 0]
-        losses = pnl[pnl < 0]
-        stats["win_rate"] = round(len(wins) / n_closed * 100, 1)
-        stats["avg_hold_days"] = round(float(holds.mean()) if holds.size else 0.0, 1)
-        stats["avg_win"] = round(float(wins.mean()), 2) if wins.size else 0.0
-        stats["avg_loss"] = round(float(losses.mean()), 2) if losses.size else 0.0
-        loss_sum = float(abs(losses.sum()))
-        if loss_sum > 0:
-            stats["profit_factor"] = round(float(wins.sum()) / loss_sum, 2)
-
-        by_sig: dict[str, list[float]] = {}
-        for t in closed_trades:
-            by_sig.setdefault(t["action"], []).append(float(t["dollar_gain"]))
-        hit: dict[str, dict] = {}
-        for sig, vals in by_sig.items():
-            arr = np.array(vals)
-            n_sig = len(arr)
-            n_win = int((arr > 0).sum())
-            hit[sig] = {
-                "n": n_sig,
-                "n_win": n_win,
-                "win_rate": (n_win / n_sig) if n_sig else 0.0,
-                "avg_pnl": float(arr.mean()) if n_sig else 0.0,
-            }
-        stats["hit_rate_by_signal"] = hit
-    return stats
-
-
-def _methods_list(alert: dict) -> str:
-    """Return a compact string of which detection methods flagged this alert."""
-    details = alert.get("details", {})
-    methods = []
-    if details.get("fourier_score", 0) > 0:
-        methods.append("Fourier")
-    if details.get("mp_score", 0) > 0:
-        methods.append("MatrixProfile")
-    if details.get("ensemble_score", 0) > 0:
-        methods.append("Ensemble")
-    if details.get("ewma_score", 0) > 0:
-        methods.append("EWMA")
-    return ", ".join(methods) if methods else f"{alert.get('methods_flagged', '?')} methods"
+# ---- Backtest chart (computation lives in anomaly_detection.backtest) ----
 
 
 def backtest_equity_chart(backtest: dict) -> str:
@@ -1095,47 +627,54 @@ def backtest_equity_chart(backtest: dict) -> str:
             line=dict(color=NEON_GREEN, width=2),
             fill="tozeroy",
             fillcolor="rgba(0,230,118,0.08)",
-            name="Equity",
+            name="Strategy",
             hovertemplate="%{x}<br>$%{y:+,.0f}<extra></extra>",
         ),
         row=1, col=1,
     )
+
+    # Benchmark overlay: the identical capital left 100% in the baseline —
+    # the exact "what if you'd done nothing" portfolio.
+    bench = backtest.get("benchmark") or {}
+    if bench.get("dates"):
+        fig.add_trace(
+            go.Scatter(
+                x=bench["dates"], y=bench["equity"],
+                mode="lines",
+                line=dict(color=MUTED, width=1.5, dash="dash"),
+                name=f"{bench.get('ticker', 'SPY')} baseline (no signals)",
+                hovertemplate="%{x}<br>$%{y:+,.0f}<extra></extra>",
+            ),
+            row=1, col=1,
+        )
     fig.add_hline(y=0, line_color=MUTED, line_width=1, row=1, col=1)
 
-    # Overlay buy/sell markers on the equity curve
-    entry_marks = {"long": {"x": [], "y": [], "txt": []},
-                   "short": {"x": [], "y": [], "txt": []}}
+    # Overlay invest markers on the equity curve (the book only ever invests;
+    # divests are implicit in each trade's exit).
+    marks = {"x": [], "y": [], "txt": [], "color": []}
     date_to_equity = dict(zip(dates, equity))
     for t in ledger:
         d = t.get("entry_date")
         if d not in date_to_equity:
             continue
-        eq = date_to_equity[d]
-        grp = "long" if t["direction"] > 0 else "short"
-        entry_marks[grp]["x"].append(d)
-        entry_marks[grp]["y"].append(eq)
-        entry_marks[grp]["txt"].append(
-            f"{t['ticker']} {t['action']}<br>"
+        marks["x"].append(d)
+        marks["y"].append(date_to_equity[d])
+        marks["color"].append(SIGNAL_COLORS.get(t.get("action", "BUY"), NEON_GREEN))
+        marks["txt"].append(
+            f"{t['ticker']} {t['action']} (invest ${t.get('unit', 0):,.0f})<br>"
             f"Entry ${t['entry_price']:,.2f}<br>"
             f"Status: {t['status']}<br>"
             f"P&L: ${t['dollar_gain']:+,.2f}"
         )
 
-    if entry_marks["long"]["x"]:
+    if marks["x"]:
         fig.add_trace(go.Scatter(
-            x=entry_marks["long"]["x"], y=entry_marks["long"]["y"],
-            mode="markers", marker=dict(symbol="triangle-up", size=10,
-                                        color=NEON_GREEN, line=dict(color=DARK_BG, width=1)),
-            name="Long entry",
-            text=entry_marks["long"]["txt"], hoverinfo="text",
-        ), row=1, col=1)
-    if entry_marks["short"]["x"]:
-        fig.add_trace(go.Scatter(
-            x=entry_marks["short"]["x"], y=entry_marks["short"]["y"],
-            mode="markers", marker=dict(symbol="triangle-down", size=10,
-                                        color=NEON_RED, line=dict(color=DARK_BG, width=1)),
-            name="Short entry",
-            text=entry_marks["short"]["txt"], hoverinfo="text",
+            x=marks["x"], y=marks["y"],
+            mode="markers", marker=dict(symbol="triangle-up", size=9,
+                                        color=marks["color"],
+                                        line=dict(color=DARK_BG, width=1)),
+            name="Invest",
+            text=marks["txt"], hoverinfo="text",
         ), row=1, col=1)
 
     # Underwater curve (drawdown shown as negative values)

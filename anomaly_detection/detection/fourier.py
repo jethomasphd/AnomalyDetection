@@ -1,9 +1,14 @@
-"""Fourier Transform anomaly detection.
+"""Fourier Transform anomaly detection (causal).
 
-Detects structural changes in the frequency-domain energy distribution
-of a price series. When the spectrum shifts significantly from historical
-norms, it signals a regime change (e.g., shift from mean-reversion to
-trending behavior).
+Detects structural change in how a price series distributes its energy
+across frequencies. For each bar t we compare the spectral-energy
+concentration of the trailing window ending at t against a baseline
+spectrum computed from ALL bars up to t (expanding, never the future),
+using a symmetric KL-style divergence.
+
+The raw divergence stream is standardized against its own expanding
+history (robust z), so the flag means: "today's rhythm-shift is large
+relative to every rhythm-shift this ticker has shown so far."
 
 Plain-English: "Has the *rhythm* of this stock changed?"
 """
@@ -12,9 +17,15 @@ import logging
 
 import numpy as np
 import pandas as pd
-from scipy.fft import fft, fftfreq
+from scipy.fft import fft
 
-from ..config import FOURIER_TOP_K, SENSITIVITY_PRESETS
+from ..config import (
+    CAUSAL_WARMUP_BARS,
+    FOURIER_TOP_K,
+    FOURIER_WINDOW,
+    SENSITIVITY_PRESETS,
+)
+from .causal import causal_robust_z, z_to_unit
 
 logger = logging.getLogger(__name__)
 
@@ -27,60 +38,67 @@ def _spectral_energy(series: np.ndarray, top_k: int = FOURIER_TOP_K) -> np.ndarr
     total = power.sum()
     if total == 0:
         return np.zeros(top_k)
-    # Sort by power descending, take top k
     top_idx = np.argsort(power)[::-1][:top_k]
-    return power[top_idx] / total
+    out = power[top_idx] / total
+    if len(out) < top_k:
+        out = np.pad(out, (0, top_k - len(out)))
+    return out
+
+
+def _divergence(current: np.ndarray, baseline: np.ndarray) -> float:
+    """Symmetric KL-like divergence between two top-k energy profiles."""
+    eps = 1e-10
+    b = baseline + eps
+    c = current + eps
+    return float(0.5 * np.sum(c * np.log(c / b) + b * np.log(b / c)))
 
 
 def detect(
     df: pd.DataFrame,
     sensitivity: str = "medium",
-    window: int = 60,
+    window: int = FOURIER_WINDOW,
 ) -> pd.DataFrame:
-    """Run Fourier anomaly detection on each ticker.
+    """Run causal Fourier anomaly detection on each ticker.
 
-    Compares the spectral energy distribution of a trailing window
-    against the full historical baseline using KL-divergence-inspired
-    distance.
+    For bar t (t >= window): divergence between the spectrum of
+    closes[t-window+1 .. t] and the spectrum of closes[0 .. t].
+    Both operands end at t — nothing after t is ever touched.
 
     Returns a DataFrame with columns:
-        Ticker, Date, fourier_score, fourier_anomaly (bool)
+        Ticker, Date, fourier_score (0..1, 0.5 = 2 sigma),
+        fourier_z, fourier_anomaly (bool)
     """
-    preset = SENSITIVITY_PRESETS[sensitivity]
+    z_threshold = SENSITIVITY_PRESETS[sensitivity]["z_threshold"]
     results = []
 
     for ticker, grp in df.groupby("Ticker"):
-        g = grp.sort_values("Date").copy()
-        closes = g["Close"].values
+        g = grp.sort_values("Date")
+        closes = g["Close"].values.astype(float)
         dates = g["Date"].values
+        n = len(closes)
 
-        if len(closes) < window + FOURIER_TOP_K:
+        if n < window + FOURIER_TOP_K:
             logger.info("Fourier: skipping %s (insufficient data)", ticker)
             continue
 
-        # Full-history baseline spectrum
-        baseline = _spectral_energy(closes)
+        raw = np.zeros(n)
+        for t in range(window, n):
+            current = _spectral_energy(closes[t - window + 1 : t + 1])
+            baseline = _spectral_energy(closes[: t + 1])
+            raw[t] = _divergence(current, baseline)
 
-        scores = np.zeros(len(closes))
-        for i in range(window, len(closes)):
-            segment = closes[i - window : i]
-            current = _spectral_energy(segment)
-            # Symmetric KL-like divergence (epsilon-smoothed)
-            eps = 1e-10
-            b = baseline + eps
-            c = current + eps
-            divergence = 0.5 * np.sum(c * np.log(c / b) + b * np.log(b / c))
-            scores[i] = divergence
+        warmup = max(window, CAUSAL_WARMUP_BARS)
+        z = causal_robust_z(raw, valid_from=warmup)
+        scores = z_to_unit(z)
 
-        threshold = np.percentile(scores[scores > 0], preset["percentile"]) if np.any(scores > 0) else 0
-
-        for i in range(len(closes)):
+        for i in range(n):
             results.append(
                 {
                     "Ticker": ticker,
                     "Date": dates[i],
                     "fourier_score": round(float(scores[i]), 6),
-                    "fourier_anomaly": bool(scores[i] > threshold) if threshold > 0 else False,
+                    "fourier_z": round(float(z[i]), 4),
+                    "fourier_anomaly": bool(z[i] > z_threshold),
                 }
             )
 

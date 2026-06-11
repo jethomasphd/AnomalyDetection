@@ -1,7 +1,14 @@
 """Signal generation — translates anomaly detection into actionable trading signals.
 
-Supports incremental processing: new alerts merge with previously saved alerts
-so that the dashboard accumulates history across runs.
+Derivation operates in standardized units (dev_z = the EWMA deviation divided
+by its own trailing volatility, per ticker), so "stretched" means the same
+thing for every ticker, plus an absolute materiality gate so statistically
+unusual but economically meaningless moves (a 0.1% wiggle in a T-bill ETF)
+can never become trade calls.
+
+Supports incremental processing: new alerts merge with previously saved
+alerts so the dashboard accumulates history across runs. The full immutable
+record lives in the signals ledger; alerts.json is a capped display view.
 """
 
 import json
@@ -9,20 +16,24 @@ import logging
 import os
 from datetime import datetime
 
-import numpy as np
 import pandas as pd
 
-from .config import TICKER_NAMES, ticker_display
+from .config import (
+    SENSITIVITY_PRESETS,
+    TICKER_NAMES,
+    TRADE_MIN_ABS_DEVIATION_PCT,
+    ticker_display,
+)
 
 logger = logging.getLogger(__name__)
 
 # --- Signal types and their meaning ---
-# BUY:   Mean-reversion long — oversold, selling pressure fading
-# SELL:  Mean-reversion exit — overbought, buying pressure fading
-# LONG:  Momentum long — accelerating upward breakout
-# SHORT: Momentum short — accelerating downward breakdown
-# REDUCE: Regime change — structural break, reduce exposure
-# WATCH: Anomaly detected but no clear directional signal yet
+# BUY:   Mean-reversion long — deeply stretched below trend, stretch no longer growing
+# SELL:  Mean-reversion exit — deeply stretched above trend, stretch no longer growing
+# LONG:  Momentum long — stretched above trend and still extending/breaking out
+# SHORT: Momentum short — stretched below trend and still extending/breaking out
+# REDUCE: Regime change — structural break (Fourier + Matrix Profile agree)
+# WATCH: Anomaly detected but no tradable directional setup
 
 SIGNAL_CONFIG = {
     "BUY":    {"color": "#00C853", "icon": "arrow_upward",    "label": "Buy"},
@@ -34,138 +45,228 @@ SIGNAL_CONFIG = {
 }
 
 
-def _derive_signal(row: pd.Series) -> tuple[str, str]:
-    """Derive an actionable trading signal from an anomaly row.
+def derivation_thresholds(sensitivity: str) -> dict:
+    """Sigma thresholds used by signal derivation, per sensitivity.
+
+    reversion_z: |dev_z| needed for a mean-reversion BUY/SELL.
+    momentum_z:  |dev_z| needed for a momentum LONG/SHORT (lower, because
+                 the trajectory — extending/breakout — provides the
+                 confirmation that reversion setups get from magnitude).
+    """
+    z = SENSITIVITY_PRESETS[sensitivity]["z_threshold"]
+    return {"reversion_z": z, "momentum_z": max(1.5, z - 1.0)}
+
+
+def _derive_signal(row: pd.Series, sensitivity: str = "medium") -> tuple[str, str]:
+    """Derive an actionable trading signal from a consensus-anomaly row.
 
     Returns (signal_type, confidence) where confidence is
     'Strong', 'Moderate', or 'Developing'.
+
+    Rules (dev_z = EWMA deviation in units of its own trailing sigma), in
+    two regimes split by what the stretch is DOING:
+
+      breakout (climactic extreme)      -> FADE the move (overreaction
+        BUY  if dev_z <= -reversion_z      reversal: extreme washouts and
+        SELL if dev_z >= +reversion_z      blowoffs revert, on average)
+
+      extending (stretch still building) -> RIDE the move
+        LONG  if dev_z >= +momentum_z
+        SHORT if dev_z <= -momentum_z
+
+      reverting/stable (stretch fading)  -> reversion already under way
+        BUY  if dev_z <= -reversion_z
+        SELL if dev_z >= +reversion_z
+
+      REDUCE  Fourier AND Matrix Profile both flag (structural change)
+      WATCH   anything else
+
+    The fade-the-breakout rule is calibrated to the measured resolution of
+    extreme stretches in this universe (see HOW_IT_WORKS.md): bars more
+    than ~3.5 sigma below trend rebounded ~+2-3% over the following 10
+    sessions on average, so shorting a capitulation — what a naive
+    momentum rule does — is systematically wrong-way.
+
+    Tradable signals additionally require at least 2 methods in agreement
+    and the materiality gate: |deviation_pct| >= TRADE_MIN_ABS_DEVIATION_PCT.
     """
-    dev = row.get("deviation_pct", 0)
-    traj = row.get("trajectory", "normal")
+    thresholds = derivation_thresholds(sensitivity)
+    dev_z = float(row.get("dev_z", 0) or 0)
+    dev_pct = float(row.get("deviation_pct", 0) or 0)
+    traj = row.get("trajectory", "stable")
     n_methods = int(row.get("methods_flagged", 0))
     fourier_flag = bool(row.get("fourier_anomaly", False))
     mp_flag = bool(row.get("mp_anomaly", False))
 
     confidence = "Strong" if n_methods >= 3 else "Moderate" if n_methods >= 2 else "Developing"
 
-    # --- Mean-reversion BUY: deeply oversold + selling exhaustion ---
-    if dev < -8 and traj in ("decelerating", "normal") and n_methods >= 2:
-        return "BUY", confidence
-    if dev < -5 and traj == "decelerating" and n_methods >= 2:
-        return "BUY", confidence
+    material = abs(dev_pct) >= TRADE_MIN_ABS_DEVIATION_PCT
+    tradable = material and n_methods >= 2
 
-    # --- Mean-reversion SELL: deeply overbought + buying exhaustion ---
-    if dev > 8 and traj in ("decelerating", "normal") and n_methods >= 2:
-        return "SELL", confidence
-    if dev > 5 and traj == "decelerating" and n_methods >= 2:
-        return "SELL", confidence
+    if tradable:
+        if traj == "breakout":
+            # Climactic extreme: fade it (overreaction reversal).
+            if dev_z <= -thresholds["reversion_z"]:
+                return "BUY", confidence
+            if dev_z >= thresholds["reversion_z"]:
+                return "SELL", confidence
+        elif traj == "extending":
+            # Momentum still building (not yet climactic): ride it.
+            if dev_z >= thresholds["momentum_z"]:
+                return "LONG", confidence
+            if dev_z <= -thresholds["momentum_z"]:
+                return "SHORT", confidence
+        else:  # reverting / stable
+            if dev_z <= -thresholds["reversion_z"]:
+                return "BUY", confidence
+            if dev_z >= thresholds["reversion_z"]:
+                return "SELL", confidence
 
-    # --- Momentum SHORT: accelerating decline ---
-    if dev < -3 and traj in ("accelerating", "breakout") and n_methods >= 2:
-        return "SHORT", confidence
-
-    # --- Momentum LONG: accelerating rally ---
-    if dev > 3 and traj in ("accelerating", "breakout") and n_methods >= 2:
-        return "LONG", confidence
-
-    # --- Structural regime change (Fourier + Matrix Profile agree) ---
     if fourier_flag and mp_flag:
         return "REDUCE", confidence
-
-    # --- Overbought/oversold without clear trajectory ---
-    if dev < -8 and n_methods >= 2:
-        return "BUY", "Developing"
-    if dev > 8 and n_methods >= 2:
-        return "SELL", "Developing"
 
     return "WATCH", confidence
 
 
 def _describe_signal(row: pd.Series, signal: str, confidence: str) -> str:
-    """Generate a plain-English actionable description for a signal."""
+    """Generate a plain-English, numerically honest description for a signal."""
     ticker = row["Ticker"]
     display = ticker_display(ticker)
-    dev = row.get("deviation_pct", 0)
-    traj = row.get("trajectory", "normal")
-    ewma_val = row.get("ewma_value", 0)
-    close = row.get("Close", 0)
+    dev_pct = float(row.get("deviation_pct", 0) or 0)
+    dev_z = float(row.get("dev_z", 0) or 0)
+    traj = row.get("trajectory", "stable")
+    ewma_val = float(row.get("ewma_value", 0) or 0)
     n_methods = int(row.get("methods_flagged", 0))
 
-    direction = "above" if dev > 0 else "below"
-    abs_dev = abs(dev)
+    direction = "above" if dev_pct > 0 else "below"
+    abs_dev = abs(dev_pct)
+    abs_z = abs(dev_z)
 
-    # Build the core observation
-    if abs_dev > 1:
-        position = f"{display} is trading {abs_dev:.1f}% {direction} its 20-day moving average (${ewma_val:,.2f})"
+    if abs_dev >= 1:
+        position = (
+            f"{display} is trading {abs_dev:.1f}% {direction} its 20-day trend "
+            f"(${ewma_val:,.2f}) — a {abs_z:.1f}-sigma stretch for this ticker"
+        )
     else:
-        position = f"{display} is near its 20-day moving average"
+        position = f"{display} is near its 20-day trend (${ewma_val:,.2f})"
 
-    # Build the action rationale
+    traj_text = {
+        "reverting": "the stretch is contracting",
+        "extending": "the stretch is still widening",
+        "breakout": "the stretch is at breakout extremes",
+        "stable": "the stretch is holding steady",
+    }.get(traj, "")
+
     if signal == "BUY":
-        if traj == "decelerating":
-            rationale = "Selling pressure is fading, suggesting a potential bounce back toward the trend line."
+        if traj == "breakout":
+            rationale = (
+                f"A capitulation-grade washout: {traj_text}. Extreme downside stretches "
+                f"of this size historically rebound toward trend. {n_methods} of 4 methods agree."
+            )
         else:
-            rationale = f"The stock appears oversold at {n_methods} standard deviations from normal. Mean-reversion toward ${ewma_val:,.2f} is likely."
-        action = f"Consider entering a long position targeting the ${ewma_val:,.2f} moving average."
-
+            rationale = (
+                f"Oversold relative to its own typical variability, and {traj_text} — "
+                f"selling pressure is no longer building. {n_methods} of 4 methods agree."
+            )
+        action = f"Consider a mean-reversion long targeting the ${ewma_val:,.2f} trend line."
     elif signal == "SELL":
-        if traj == "decelerating":
-            rationale = "Buying momentum is exhausting, suggesting the rally may be losing steam."
+        if traj == "breakout":
+            rationale = (
+                f"A blowoff-grade extreme: {traj_text}. Stretches this far above trend "
+                f"historically stall or revert. {n_methods} of 4 methods agree."
+            )
         else:
-            rationale = f"The stock appears overbought at {n_methods} standard deviations from normal. A pullback toward ${ewma_val:,.2f} is likely."
-        action = f"Consider taking profits or tightening stops. Fair value near ${ewma_val:,.2f}."
-
+            rationale = (
+                f"Overbought relative to its own typical variability, and {traj_text} — "
+                f"buying pressure is no longer building. {n_methods} of 4 methods agree."
+            )
+        action = f"Consider taking profits or tightening stops; trend value near ${ewma_val:,.2f}."
     elif signal == "LONG":
-        rationale = "Upward momentum is accelerating with multiple detection methods confirming the move."
-        action = "Consider a momentum-based long position with a trailing stop below the trend line."
-
+        rationale = (
+            f"Upward momentum: {traj_text}, with {n_methods} of 4 methods confirming "
+            f"the move is abnormal for this ticker."
+        )
+        action = "Consider a momentum long with a trailing stop below the trend line."
     elif signal == "SHORT":
-        rationale = "Downward momentum is accelerating with multiple detection methods confirming the decline."
-        action = "Consider a short position or protective puts. Set stops above the recent high."
-
+        rationale = (
+            f"Downward momentum: {traj_text}, with {n_methods} of 4 methods confirming "
+            f"the move is abnormal for this ticker."
+        )
+        action = "Consider a short position or protective puts; stops above the recent high."
     elif signal == "REDUCE":
-        rationale = "Both frequency analysis and pattern matching detect a structural regime change. The stock's behavior has shifted in a way that has no recent historical precedent."
+        rationale = (
+            "Both frequency analysis and pattern matching detect a structural change: "
+            "the stock's recent behavior has no precedent in its own history."
+        )
         action = "Reduce position size until the new regime clarifies. Avoid new entries."
-
     else:  # WATCH
         parts = []
         if row.get("fourier_anomaly"):
-            parts.append("trading rhythm has shifted")
+            parts.append("its trading rhythm has shifted")
         if row.get("mp_anomaly"):
-            parts.append("price pattern is unprecedented")
+            parts.append("its price pattern is novel")
         if row.get("ensemble_anomaly"):
             parts.append("statistical tests flag unusual behavior")
-        detail = " and ".join(parts) if parts else "anomaly score is elevated"
-        rationale = f"Detection methods flagged this because {detail}, but no clear directional signal has emerged yet."
+        if row.get("ewma_anomaly"):
+            parts.append("its trend deviation is abnormal")
+        detail = " and ".join(parts) if parts else "the combined anomaly score is elevated"
+        if abs(dev_pct) < TRADE_MIN_ABS_DEVIATION_PCT:
+            gate = (
+                f" The move is below the {TRADE_MIN_ABS_DEVIATION_PCT:.0f}% materiality "
+                f"threshold, so no trade call is made."
+            )
+        else:
+            gate = ""
+        rationale = f"Flagged because {detail}, but there is no tradable directional setup.{gate}"
         action = "Monitor for follow-through before taking a position."
 
     return f"{position}. {rationale} {action}"
 
 
-def generate_alerts(results: pd.DataFrame, top_n: int = 50) -> list[dict]:
-    """Generate structured trading signals from detection results."""
+def generate_alerts(
+    results: pd.DataFrame,
+    sensitivity: str = "medium",
+    provenance: str = "live",
+    top_n: int = 2000,
+) -> list[dict]:
+    """Generate structured trading signals from detection results.
+
+    Every consensus-anomaly bar in `results` produces one alert (the caller
+    passes only NEW bars under edge-only operation, or the full history when
+    backfilling). For provenance='backfill', run_date/detected_at are set to
+    the BAR date — the causal detectors guarantee that verdict is what a
+    live run that evening would have produced — and is_new is False.
+    """
     run_date = datetime.utcnow().strftime("%Y-%m-%d")
     anomalies = results[results["consensus_anomaly"]].copy()
     if anomalies.empty:
         logger.info("No anomalies detected.")
         return []
 
-    # Keep the most recent anomaly per ticker + any high-severity historical ones
-    latest_per_ticker = anomalies.sort_values("Date").groupby("Ticker").tail(1)
-    high_severity = anomalies[anomalies["methods_flagged"] >= 3]
-    combined = pd.concat([latest_per_ticker, high_severity]).drop_duplicates(subset=["Ticker", "Date"])
-    combined = combined.sort_values("consensus_score", ascending=False)
+    anomalies = anomalies.sort_values("consensus_score", ascending=False)
+    if len(anomalies) > top_n:
+        logger.warning(
+            "Capping alerts at %d of %d consensus anomalies (safety valve)",
+            top_n, len(anomalies),
+        )
+        anomalies = anomalies.head(top_n)
 
     alerts = []
-    for _, row in combined.head(top_n).iterrows():
+    for _, row in anomalies.iterrows():
         n_methods = int(row.get("methods_flagged", 0))
-        signal, confidence = _derive_signal(row)
+        signal, confidence = _derive_signal(row, sensitivity=sensitivity)
+        date_str = (
+            row["Date"].strftime("%Y-%m-%d")
+            if hasattr(row["Date"], "strftime")
+            else str(row["Date"])[:10]
+        )
+        detected = date_str if provenance == "backfill" else run_date
 
         alert = {
             "ticker": row["Ticker"],
             "ticker_name": TICKER_NAMES.get(row["Ticker"], row["Ticker"]),
             "display": ticker_display(row["Ticker"]),
-            "date": row["Date"].strftime("%Y-%m-%d") if hasattr(row["Date"], "strftime") else str(row["Date"]),
+            "date": date_str,
             "close": round(float(row["Close"]), 2),
             "signal": signal,
             "signal_label": SIGNAL_CONFIG[signal]["label"],
@@ -174,17 +275,19 @@ def generate_alerts(results: pd.DataFrame, top_n: int = 50) -> list[dict]:
             "methods_flagged": n_methods,
             "consensus_score": round(float(row["consensus_score"]), 4),
             "description": _describe_signal(row, signal, confidence),
-            "run_date": run_date,
-            "is_new": True,
-            "first_detected": run_date,
-            "detected_at": run_date,
+            "run_date": detected,
+            "is_new": provenance == "live",
+            "first_detected": detected,
+            "detected_at": detected,
+            "provenance": provenance,
             "details": {
                 "fourier_score": round(float(row.get("fourier_score", 0)), 4),
                 "mp_score": round(float(row.get("mp_score", 0)), 4),
                 "ensemble_score": round(float(row.get("ensemble_score", 0)), 4),
                 "ewma_score": round(float(row.get("ewma_score", 0)), 4),
-                "trajectory": row.get("trajectory", "normal"),
+                "trajectory": row.get("trajectory", "stable"),
                 "deviation_pct": round(float(row.get("deviation_pct", 0)), 2),
+                "dev_z": round(float(row.get("dev_z", 0) or 0), 2),
                 "ewma_value": round(float(row.get("ewma_value", 0)), 2),
             },
         }
@@ -225,6 +328,9 @@ def append_new_alerts(new_alerts: list[dict], previous_alerts: list[dict], max_a
     resolve. Previous alerts are marked is_new=False; the concatenated list
     is sorted newest-first and capped at max_alerts.
 
+    The cap applies only to this DISPLAY view (alerts.json). The complete
+    record lives in the signals ledger and is never truncated.
+
     If a conflicting (ticker, date) is somehow present (legacy data), the
     previous alert wins: the log is frozen, so the original verdict is
     preserved rather than overwritten.
@@ -259,7 +365,7 @@ def append_new_alerts(new_alerts: list[dict], previous_alerts: list[dict], max_a
         combined = combined[:max_alerts]
 
     n_new = sum(1 for a in combined if a.get("is_new"))
-    logger.info("Alerts: %d new-this-run + %d frozen-history = %d total",
+    logger.info("Alerts: %d new-this-run + %d frozen-history = %d total (display view)",
                 n_new, len(combined) - n_new, len(combined))
     return combined
 
