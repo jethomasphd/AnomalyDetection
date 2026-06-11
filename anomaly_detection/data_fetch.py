@@ -21,6 +21,31 @@ logger = logging.getLogger(__name__)
 FETCH_RETRIES = 3
 FETCH_BACKOFF_SECONDS = 2.0  # 2s, 4s, 8s
 
+# A daily bar is final at the 4pm ET close: 20:00 UTC during EDT, 21:00 UTC
+# during EST. 21:00 UTC is therefore at-or-after the close year-round.
+US_CLOSE_UTC_HOUR = 21
+
+
+def drop_partial_intraday_bar(df: pd.DataFrame, now_utc: Optional[datetime] = None) -> pd.DataFrame:
+    """Drop a same-day bar fetched before the US close.
+
+    Yahoo includes the in-progress daily bar during market hours. A midday
+    run (e.g. a push-triggered CI build) would otherwise score and FREEZE a
+    verdict on a half-formed bar that the close then contradicts. Verdicts
+    must only ever be written on final bars; the dropped bar is picked up
+    by the next post-close run via the watermark.
+    """
+    if df is None or len(df) == 0:
+        return df
+    now = now_utc or datetime.utcnow()
+    if now.hour >= US_CLOSE_UTC_HOUR:
+        return df
+    today = now.strftime("%Y-%m-%d")
+    last_bar_date = pd.to_datetime(df.index[-1]).strftime("%Y-%m-%d")
+    if last_bar_date == today:
+        return df.iloc[:-1]
+    return df
+
 
 def fetch_ticker(
     ticker: str,
@@ -57,6 +82,8 @@ def fetch_ticker(
             break
         if attempt < FETCH_RETRIES:
             time.sleep(FETCH_BACKOFF_SECONDS * (2 ** (attempt - 1)))
+
+    df = drop_partial_intraday_bar(df)
 
     if df is None or len(df) < MIN_DATA_POINTS:
         logger.warning(
