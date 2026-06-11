@@ -5,6 +5,15 @@ on:
     # Run every weekday at 10:00 PM UTC, safely after the US market close
     # (20:00 UTC during EDT, 21:00 UTC during EST) so today's closing bar is available.
     - cron: '0 22 * * 1-5'
+  push:
+    # Re-run the full iteration whenever the CODE changes on main. Results
+    # commits made by the workflow itself touch only data/ and docs/, which
+    # don't match these paths — no self-triggering.
+    branches: [main]
+    paths:
+      - 'anomaly_detection/**'
+      - 'requirements.txt'
+      - '.github/workflows/detect.yml'
   workflow_dispatch:
     inputs:
       tickers:
