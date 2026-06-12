@@ -1,8 +1,37 @@
 {
-  "generated_at": "2026-06-11T23:18:49.290145Z",
+  "generated_at": "2026-06-12T23:12:39.261722Z",
   "total_signals": 200,
-  "new_signals": 0,
+  "new_signals": 1,
   "signals": [
+    {
+      "ticker": "KLAC",
+      "ticker_name": "KLA Corporation",
+      "display": "KLA Corporation (KLAC)",
+      "date": "2026-06-12",
+      "close": 254.54,
+      "signal": "SELL",
+      "signal_label": "Sell",
+      "signal_color": "#D50000",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.4742,
+      "description": "KLA Corporation (KLAC) is trading 23.1% above its 20-day trend ($206.81) \u2014 a 4.7-sigma stretch for this ticker. A blowoff-grade extreme: the stretch is at breakout extremes. Stretches this far above trend historically stall or revert. 2 of 4 methods agree. Consider taking profits or tightening stops; trend value near $206.81.",
+      "run_date": "2026-06-12",
+      "is_new": true,
+      "first_detected": "2026-06-12",
+      "detected_at": "2026-06-12",
+      "provenance": "live",
+      "details": {
+        "fourier_score": 0.1418,
+        "mp_score": 0.0,
+        "ensemble_score": 0.6529,
+        "ewma_score": 1.0,
+        "trajectory": "breakout",
+        "deviation_pct": 23.08,
+        "dev_z": 4.71,
+        "ewma_value": 206.81
+      }
+    },
     {
       "ticker": "MRVL",
       "ticker_name": "Marvell Technology",
@@ -5772,35 +5801,6 @@
         "deviation_pct": 0.15,
         "dev_z": 14.52,
         "ewma_value": 90.09
-      }
-    },
-    {
-      "ticker": "MS",
-      "ticker_name": "Morgan Stanley",
-      "display": "Morgan Stanley (MS)",
-      "date": "2026-01-15",
-      "close": 189.17,
-      "signal": "SELL",
-      "signal_label": "Sell",
-      "signal_color": "#D50000",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.5396,
-      "description": "Morgan Stanley (MS) is trading 5.0% above its 20-day trend ($180.23) \u2014 a 2.5-sigma stretch for this ticker. Overbought relative to its own typical variability, and the stretch is holding steady \u2014 buying pressure is no longer building. 2 of 4 methods agree. Consider taking profits or tightening stops; trend value near $180.23.",
-      "run_date": "2026-01-15",
-      "is_new": false,
-      "first_detected": "2026-01-15",
-      "detected_at": "2026-01-15",
-      "provenance": "backfill",
-      "details": {
-        "fourier_score": 0.0,
-        "mp_score": 0.3369,
-        "ensemble_score": 0.9917,
-        "ewma_score": 0.6314,
-        "trajectory": "stable",
-        "deviation_pct": 4.96,
-        "dev_z": 2.53,
-        "ewma_value": 180.23
       }
     }
   ]
