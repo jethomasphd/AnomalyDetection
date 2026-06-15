@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-12T23:12:39.261722Z",
+  "generated_at": "2026-06-15T23:35:04.610407Z",
   "total_signals": 200,
-  "new_signals": 1,
+  "new_signals": 0,
   "signals": [
     {
       "ticker": "KLAC",
@@ -17,7 +17,7 @@
       "consensus_score": 0.4742,
       "description": "KLA Corporation (KLAC) is trading 23.1% above its 20-day trend ($206.81) \u2014 a 4.7-sigma stretch for this ticker. A blowoff-grade extreme: the stretch is at breakout extremes. Stretches this far above trend historically stall or revert. 2 of 4 methods agree. Consider taking profits or tightening stops; trend value near $206.81.",
       "run_date": "2026-06-12",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-12",
       "detected_at": "2026-06-12",
       "provenance": "live",
