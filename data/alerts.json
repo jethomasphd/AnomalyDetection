@@ -1,8 +1,37 @@
 {
-  "generated_at": "2026-06-15T23:35:04.610407Z",
+  "generated_at": "2026-06-16T23:23:15.788709Z",
   "total_signals": 200,
-  "new_signals": 0,
+  "new_signals": 1,
   "signals": [
+    {
+      "ticker": "AXP",
+      "ticker_name": "American Express",
+      "display": "American Express (AXP)",
+      "date": "2026-06-16",
+      "close": 340.74,
+      "signal": "LONG",
+      "signal_label": "Long",
+      "signal_color": "#00897B",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.4552,
+      "description": "American Express (AXP) is trading 6.9% above its 20-day trend ($318.84) \u2014 a 2.7-sigma stretch for this ticker. Upward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a momentum long with a trailing stop below the trend line.",
+      "run_date": "2026-06-16",
+      "is_new": true,
+      "first_detected": "2026-06-16",
+      "detected_at": "2026-06-16",
+      "provenance": "live",
+      "details": {
+        "fourier_score": 0.9588,
+        "mp_score": 0.0,
+        "ensemble_score": 0.3104,
+        "ewma_score": 0.6813,
+        "trajectory": "extending",
+        "deviation_pct": 6.87,
+        "dev_z": 2.73,
+        "ewma_value": 318.84
+      }
+    },
     {
       "ticker": "KLAC",
       "ticker_name": "KLA Corporation",
@@ -5772,35 +5801,6 @@
         "deviation_pct": -6.24,
         "dev_z": -2.52,
         "ewma_value": 262.63
-      }
-    },
-    {
-      "ticker": "BIL",
-      "ticker_name": "SPDR Bloomberg 1-3 Month T-Bill",
-      "display": "SPDR Bloomberg 1-3 Month T-Bill (BIL)",
-      "date": "2026-01-16",
-      "close": 90.23,
-      "signal": "WATCH",
-      "signal_label": "Watch",
-      "signal_color": "#42A5F5",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.4534,
-      "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day trend ($90.09). Flagged because statistical tests flag unusual behavior and its trend deviation is abnormal, but there is no tradable directional setup. The move is below the 1% materiality threshold, so no trade call is made. Monitor for follow-through before taking a position.",
-      "run_date": "2026-01-16",
-      "is_new": false,
-      "first_detected": "2026-01-16",
-      "detected_at": "2026-01-16",
-      "provenance": "backfill",
-      "details": {
-        "fourier_score": 0.023,
-        "mp_score": 0.0,
-        "ensemble_score": 0.6628,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": 0.15,
-        "dev_z": 14.52,
-        "ewma_value": 90.09
       }
     }
   ]
