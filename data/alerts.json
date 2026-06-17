@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-16T23:23:15.788709Z",
+  "generated_at": "2026-06-17T23:21:25.278296Z",
   "total_signals": 200,
-  "new_signals": 1,
+  "new_signals": 0,
   "signals": [
     {
       "ticker": "AXP",
@@ -17,7 +17,7 @@
       "consensus_score": 0.4552,
       "description": "American Express (AXP) is trading 6.9% above its 20-day trend ($318.84) \u2014 a 2.7-sigma stretch for this ticker. Upward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a momentum long with a trailing stop below the trend line.",
       "run_date": "2026-06-16",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-06-16",
       "detected_at": "2026-06-16",
       "provenance": "live",
