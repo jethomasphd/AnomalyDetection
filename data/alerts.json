@@ -1,8 +1,37 @@
 {
-  "generated_at": "2026-07-06T23:01:06.560698Z",
+  "generated_at": "2026-07-07T22:56:06.565289Z",
   "total_signals": 200,
-  "new_signals": 0,
+  "new_signals": 1,
   "signals": [
+    {
+      "ticker": "GILD",
+      "ticker_name": "Gilead Sciences",
+      "display": "Gilead Sciences (GILD)",
+      "date": "2026-07-07",
+      "close": 136.36,
+      "signal": "LONG",
+      "signal_label": "Long",
+      "signal_color": "#00897B",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.4397,
+      "description": "Gilead Sciences (GILD) is trading 6.5% above its 20-day trend ($128.04) \u2014 a 3.2-sigma stretch for this ticker. Upward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a momentum long with a trailing stop below the trend line.",
+      "run_date": "2026-07-07",
+      "is_new": true,
+      "first_detected": "2026-07-07",
+      "detected_at": "2026-07-07",
+      "provenance": "live",
+      "details": {
+        "fourier_score": 0.061,
+        "mp_score": 0.0,
+        "ensemble_score": 0.7493,
+        "ewma_score": 0.8107,
+        "trajectory": "extending",
+        "deviation_pct": 6.5,
+        "dev_z": 3.24,
+        "ewma_value": 128.04
+      }
+    },
     {
       "ticker": "AZN",
       "ticker_name": "AstraZeneca (ADR)",
@@ -5772,35 +5801,6 @@
         "deviation_pct": 7.08,
         "dev_z": 2.87,
         "ewma_value": 162.12
-      }
-    },
-    {
-      "ticker": "UNH",
-      "ticker_name": "UnitedHealth Group",
-      "display": "UnitedHealth Group (UNH)",
-      "date": "2026-01-30",
-      "close": 284.72,
-      "signal": "BUY",
-      "signal_label": "Buy",
-      "signal_color": "#00C853",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.4068,
-      "description": "UnitedHealth Group (UNH) is trading 11.5% below its 20-day trend ($321.74) \u2014 a 2.8-sigma stretch for this ticker. Oversold relative to its own typical variability, and the stretch is holding steady \u2014 selling pressure is no longer building. 2 of 4 methods agree. Consider a mean-reversion long targeting the $321.74 trend line.",
-      "run_date": "2026-01-30",
-      "is_new": false,
-      "first_detected": "2026-01-30",
-      "detected_at": "2026-01-30",
-      "provenance": "backfill",
-      "details": {
-        "fourier_score": 0.7196,
-        "mp_score": 0.0,
-        "ensemble_score": 0.3017,
-        "ewma_score": 0.6895,
-        "trajectory": "stable",
-        "deviation_pct": -11.51,
-        "dev_z": -2.76,
-        "ewma_value": 321.74
       }
     }
   ]

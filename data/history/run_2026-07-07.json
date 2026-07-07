@@ -1,0 +1,27 @@
+{
+  "run_date": "2026-07-07",
+  "started_at": "2026-07-07T22:50:54.240726Z",
+  "finished_at": "2026-07-07T22:56:06.806485Z",
+  "duration_seconds": 312.6,
+  "tickers_analyzed": 130,
+  "total_observations": 54337,
+  "anomalies_detected": 616,
+  "new_bars_scored": 130,
+  "new_signals": 1,
+  "actionable_signals": 190,
+  "total_signals_view": 200,
+  "ledger_signal_rows": 605,
+  "ledger_anomaly_rows": 1830,
+  "backtest_total_gain": 44750.84,
+  "backtest_n_trades": 68,
+  "sensitivity": "medium",
+  "start_date": "2024-11-01",
+  "model_version": "2.0.0",
+  "fetch": {
+    "requested": 130,
+    "fetched": 130,
+    "failed": [],
+    "coverage_pct": 100.0
+  },
+  "validation_failures": []
+}
