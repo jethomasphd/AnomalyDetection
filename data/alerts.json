@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-07T22:56:06.565289Z",
+  "generated_at": "2026-07-08T22:59:43.019542Z",
   "total_signals": 200,
-  "new_signals": 1,
+  "new_signals": 0,
   "signals": [
     {
       "ticker": "GILD",
@@ -17,7 +17,7 @@
       "consensus_score": 0.4397,
       "description": "Gilead Sciences (GILD) is trading 6.5% above its 20-day trend ($128.04) \u2014 a 3.2-sigma stretch for this ticker. Upward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a momentum long with a trailing stop below the trend line.",
       "run_date": "2026-07-07",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-07-07",
       "detected_at": "2026-07-07",
       "provenance": "live",
