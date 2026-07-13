@@ -22,7 +22,7 @@ from ..config import (
     tickers_by_category,
 )
 from ..backtest import compute_backtest
-from ..storage import get_signals_for_backtest
+from ..storage import get_frozen_bar_closes, get_signals_for_backtest
 from .charts import (
     attention_heatmap_chart,
     backtest_equity_chart,
@@ -77,6 +77,7 @@ def _annotate_signal_staleness(alerts: list[dict], stale_after_days: int = 14) -
 def _annotate_price_basis(
     alerts: list[dict],
     results: pd.DataFrame,
+    ticker_status: dict | None = None,
     tolerance: float = PRICE_BASIS_TOLERANCE,
 ) -> None:
     """Add current-price context to each alert, in-place.
@@ -115,6 +116,13 @@ def _annotate_price_basis(
         a["current_price"] = round(last_close, 2)
         a["current_date"] = last_date
         factor = bar_basis_factor(a.get("close"), current[t].get(a.get("date")))
+        if factor is None:
+            # Signal bar absent from the current fetch (feed revised the
+            # date, or the window slid past it). Fall back to the ticker's
+            # known basis break so a frozen pre-split price is never shown
+            # next to a post-split "now" price without explanation.
+            basis = ((ticker_status or {}).get(t) or {}).get("price_basis")
+            factor = basis.get("factor") if basis else None
         if factor is None:
             continue
         a["basis_factor"] = round(factor, 4)
@@ -156,13 +164,14 @@ def generate_dashboard(
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
     if backtest is None:
-        backtest = compute_backtest(results, get_signals_for_backtest())
+        backtest = compute_backtest(results, get_signals_for_backtest(),
+                                    frozen_closes=get_frozen_bar_closes())
 
     tickers = sorted(results["Ticker"].unique())
     signal_tickers = {a["ticker"] for a in alerts} if alerts else set()
 
     _annotate_signal_staleness(alerts, stale_after_days=14)
-    _annotate_price_basis(alerts, results)
+    _annotate_price_basis(alerts, results, ticker_status=ticker_status)
 
     # Per-ticker main charts + method detail charts
     ticker_charts = {}

@@ -148,8 +148,22 @@ def compute_backtest(
     entry_signals: tuple[str, ...] = BACKTEST_ENTRY_SIGNALS,
     baseline_ticker: str = BACKTEST_BASELINE_TICKER,
     max_hold: int = BACKTEST_MAX_HOLD_TRADING_DAYS,
+    basis_breaks: dict[str, dict] | None = None,
+    frozen_closes: dict[tuple[str, str], float] | None = None,
 ) -> dict:
-    """Run the invest/divest portfolio simulation over the full signal ledger."""
+    """Run the invest/divest portfolio simulation over the full signal ledger.
+
+    `frozen_closes` (from storage.get_frozen_bar_closes) supplies the
+    full-precision detection-time close per (ticker, bar date) — preferred
+    over the rationale's rounded fields when computing the basis factor,
+    so translation is exactly a no-op when nothing changed.
+
+    `basis_breaks` (from adjustments.detect_price_basis_breaks) is the
+    fallback for translating frozen targets when a signal's own bar is
+    absent from `results` (window slid past it / vendor revised the date):
+    without it, an untranslatable pre-split target would silently pass
+    through untouched and never be reachable by post-split closes.
+    """
     empty = {
         "signal_ledger": [],
         "initial_capital": capital, "final_value": capital,
@@ -216,7 +230,28 @@ def compute_backtest(
         # touched, silently rewriting historical exits.
         bar_i = series["_index"].get(sig["date"])
         current_bar_close = float(series["Close"][bar_i]) if bar_i is not None else None
-        basis = bar_basis_factor(frozen_close_from_details(details), current_bar_close)
+        # Frozen close, best source first: the anomalies-ledger snapshot
+        # (full precision), then the rationale's close field (4dp). The
+        # 2dp-rounded ewma/deviation derivation is a last resort: its
+        # noise (~6e-5 relative) can nudge a target by pennies, so it is
+        # only trusted when the factor clearly indicates a real rescale.
+        frozen = (frozen_closes or {}).get((ticker, sig["date"])) or details.get("close")
+        if frozen:
+            basis = bar_basis_factor(float(frozen), current_bar_close)
+        else:
+            basis = bar_basis_factor(frozen_close_from_details(details), current_bar_close)
+            if basis is not None and abs(basis - 1.0) < 1e-3:
+                basis = 1.0
+        if basis is None and basis_breaks and ticker in basis_breaks:
+            # Signal bar not in the current fetch: fall back to the
+            # ticker-level break factor (exact for the dominant case — a
+            # single split with the missing bar on the pre-split side).
+            basis = basis_breaks[ticker].get("factor")
+            logger.warning(
+                "Backtest: %s signal bar %s absent from the current fetch; "
+                "translating its frozen target with the ticker-level basis "
+                "factor %.4g", ticker, sig["date"], basis,
+            )
         if target and basis:
             target /= basis
         candidates.append({

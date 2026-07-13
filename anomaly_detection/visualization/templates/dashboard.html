@@ -593,7 +593,7 @@
             [PRICE BASIS] Corporate action detected on
             {% for t, b in health.price_basis_breaks.items() %}
                 <strong>{{ t }}</strong> (frozen rows through {{ b.last_affected_date }} were recorded at
-                ~{{ "%.2g"|format(b.factor) }}&times; today's adjusted prices){% if not loop.last %}; {% endif %}
+                ~{{ "%.3g"|format(b.factor) }}&times; today's adjusted prices){% if not loop.last %}; {% endif %}
             {% endfor %}.
             Historical signal rows keep their detection-time prices (marked with a basis badge below);
             backtest targets are automatically translated to the current basis.
@@ -918,10 +918,12 @@
                             <td style="font-family:var(--mono);">
                                 ${{ "%.2f"|format(a.close) }}
                                 {% if a.get('basis_changed') %}
-                                <div class="basis-badge" title="A corporate action (split/adjustment) rescaled this ticker's price history AFTER this verdict was frozen. The price shown is the close as fetched on the detection date; on today's adjusted chart the same bar reads ${{ '%.2f'|format(a.close / a.basis_factor) }}.">&times;{{ "%.2g"|format(a.basis_factor) }} basis</div>
+                                <div class="basis-badge" title="A corporate action (split/adjustment) rescaled this ticker's price history AFTER this verdict was frozen. The price shown is the close as fetched on the detection date; on today's adjusted chart the same bar reads ${{ '%.2f'|format(a.close / a.basis_factor) }}.">&times;{{ "%.3g"|format(a.basis_factor) }} basis</div>
                                 {% endif %}
                                 {% if a.get('current_price') is not none %}
-                                <div class="now-price" title="Latest fetched close ({{ a.get('current_date', '') }}) — shown so a frozen detection-time price is never mistaken for the model's current price.{% if a.get('pct_since') is not none %} The % is measured basis-adjusted, from the signal bar to now.{% endif %}">now <strong>${{ "%.2f"|format(a.current_price) }}</strong>{% if a.get('pct_since') is not none %} ({{ "%+.1f"|format(a.pct_since) }}%){% endif %}</div>
+                                <div class="now-price" title="Latest fetched close ({{ a.get('current_date', '') }}) — shown so a frozen detection-time price is never mistaken for the model's current price.{% if a.get('pct_since') is not none %} The % is measured basis-adjusted, from the signal bar to now.{% endif %}">now <strong>${{ "%.2f"|format(a.current_price) }}</strong>{% if a.get('pct_since') is not none %} ({{ "%+.1f"|format(a.pct_since) }}%){% endif %}{% if run_info and run_info.latest_bar_date is defined and a.get('current_date') and a.current_date != run_info.latest_bar_date %} <span style="color:var(--amber);">as of {{ a.current_date }}</span>{% endif %}</div>
+                                {% elif run_info %}
+                                <div class="now-price" style="color:var(--amber);" title="This ticker was not in today's fetch (removed from the watchlist, delisted, or its fetch failed) — the price above is frozen at detection time and there is NO current price to compare it against.">no live data this run</div>
                                 {% endif %}
                             </td>
                             <td>
@@ -932,7 +934,7 @@
                                 </div>
                                 <span class="consensus-chip" title="Consensus score — weighted blend of all four detection methods (0 = normal, 1 = extreme).">cs {{ "%.2f"|format(a.consensus_score) }}</span>
                             </td>
-                            <td><span class="desc">{{ a.description }}</span></td>
+                            <td><span class="desc">{{ a.description }}{% if a.get('basis_changed') %} <em style="color:var(--muted);">[dollar figures in this note are in the detection-time price basis &mdash; &times;{{ "%.3g"|format(a.basis_factor) }} today's adjusted prices]</em>{% endif %}</span></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -962,10 +964,12 @@
                             <td style="font-family:var(--mono);">
                                 ${{ "%.2f"|format(a.close) }}
                                 {% if a.get('basis_changed') %}
-                                <div class="basis-badge" title="A corporate action (split/adjustment) rescaled this ticker's price history AFTER this verdict was frozen. The price shown is the close as fetched on the detection date; on today's adjusted chart the same bar reads ${{ '%.2f'|format(a.close / a.basis_factor) }}.">&times;{{ "%.2g"|format(a.basis_factor) }} basis</div>
+                                <div class="basis-badge" title="A corporate action (split/adjustment) rescaled this ticker's price history AFTER this verdict was frozen. The price shown is the close as fetched on the detection date; on today's adjusted chart the same bar reads ${{ '%.2f'|format(a.close / a.basis_factor) }}.">&times;{{ "%.3g"|format(a.basis_factor) }} basis</div>
                                 {% endif %}
                                 {% if a.get('current_price') is not none %}
-                                <div class="now-price" title="Latest fetched close ({{ a.get('current_date', '') }}) — shown so a frozen detection-time price is never mistaken for the model's current price.{% if a.get('pct_since') is not none %} The % is measured basis-adjusted, from the signal bar to now.{% endif %}">now <strong>${{ "%.2f"|format(a.current_price) }}</strong>{% if a.get('pct_since') is not none %} ({{ "%+.1f"|format(a.pct_since) }}%){% endif %}</div>
+                                <div class="now-price" title="Latest fetched close ({{ a.get('current_date', '') }}) — shown so a frozen detection-time price is never mistaken for the model's current price.{% if a.get('pct_since') is not none %} The % is measured basis-adjusted, from the signal bar to now.{% endif %}">now <strong>${{ "%.2f"|format(a.current_price) }}</strong>{% if a.get('pct_since') is not none %} ({{ "%+.1f"|format(a.pct_since) }}%){% endif %}{% if run_info and run_info.latest_bar_date is defined and a.get('current_date') and a.current_date != run_info.latest_bar_date %} <span style="color:var(--amber);">as of {{ a.current_date }}</span>{% endif %}</div>
+                                {% elif run_info %}
+                                <div class="now-price" style="color:var(--amber);" title="This ticker was not in today's fetch (removed from the watchlist, delisted, or its fetch failed) — the price above is frozen at detection time and there is NO current price to compare it against.">no live data this run</div>
                                 {% endif %}
                             </td>
                             <td>
@@ -976,7 +980,7 @@
                                 </div>
                                 <span class="consensus-chip" title="Consensus score — weighted blend of all four detection methods (0 = normal, 1 = extreme).">cs {{ "%.2f"|format(a.consensus_score) }}</span>
                             </td>
-                            <td><span class="desc">{{ a.description }}</span></td>
+                            <td><span class="desc">{{ a.description }}{% if a.get('basis_changed') %} <em style="color:var(--muted);">[dollar figures in this note are in the detection-time price basis &mdash; &times;{{ "%.3g"|format(a.basis_factor) }} today's adjusted prices]</em>{% endif %}</span></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -1270,7 +1274,7 @@
                             <td>
                                 ${{ "%.2f"|format(s.entry_price if s.entry_price is defined else s.action_price) }}
                                 {% if s.basis_factor is defined and (s.basis_factor > 1.02 or s.basis_factor < 0.98) %}
-                                <div class="basis-badge" title="This ticker's history was split-adjusted after the signal was frozen. Fills and the exit target are computed on today's adjusted prices (the signal row above shows the detection-time basis: &times;{{ '%.2g'|format(s.basis_factor) }}).">&times;{{ "%.2g"|format(s.basis_factor) }} adj</div>
+                                <div class="basis-badge" title="This ticker's history was split-adjusted after the signal was frozen. Fills and the exit target are computed on today's adjusted prices (the signal row above shows the detection-time basis: &times;{{ '%.3g'|format(s.basis_factor) }}).">&times;{{ "%.3g"|format(s.basis_factor) }} adj</div>
                                 {% endif %}
                             </td>
                             <td>${{ "%.2f"|format(s.exit_price) }}</td>

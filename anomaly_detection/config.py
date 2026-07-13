@@ -342,6 +342,10 @@ SEASONAL_TREND_WINDOW = 20
 # (they are re-scored once the feed moves) and the condition is surfaced
 # in run health and on the dashboard.
 STALE_FEED_MIN_BARS = 5
+# Instruments that may legitimately print identical closes for long runs
+# (e.g. a 1-3 month T-bill ETF while short rates sit near zero). Tickers
+# here are never stale-flagged; use sparingly.
+STALE_FEED_EXEMPT: frozenset[str] = frozenset()
 # Frozen ledger rows record dollar values at the price basis of the fetch
 # that wrote them. When the current fetch's close for the SAME bar diverges
 # from the frozen close by more than this fraction, a corporate action

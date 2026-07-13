@@ -144,6 +144,66 @@ def test_mid_series_flat_is_not_stale():
     assert detect_stale_feeds(res, min_bars=5) == {}
 
 
+def test_feed_that_stops_publishing_bars_is_stale():
+    """Second failure mode: the ticker's last bar falls N+ sessions behind
+    the rest of the universe — dead feed, even with no flat tail."""
+    n = 20
+    moving = [100 + i * 0.5 for i in range(n)]
+    res = _frame({"OK": moving, "GONE": moving[: n - 6]})
+    stale = detect_stale_feeds(res, min_bars=5)
+    assert stale == {"GONE": 6}
+
+
+def test_exempt_tickers_are_never_stale_flagged():
+    frozen = [91.5] * 12
+    res = _frame({"BIL": frozen})
+    assert detect_stale_feeds(res, min_bars=5, exempt=frozenset({"BIL"})) == {}
+    assert detect_stale_feeds(res, min_bars=5) == {"BIL": 12}
+
+
+def test_recovery_run_phantom_prints_never_persist():
+    """When a frozen feed resumes without revising history, the flat run is
+    mid-series, the ticker is un-flagged, and its held-back bars flow to
+    persistence — the repeats must still be filtered out permanently."""
+    from anomaly_detection.adjustments import phantom_flat_dates
+
+    closes = [100.0, 101.0, 102.0] + [248.15] * 6 + [140.0]  # recovered at the tail
+    res = _frame({"ORCL2": closes})
+    d = _dates(len(closes))
+    assert detect_stale_feeds(res, min_bars=5) == {}  # tail moved: un-flagged
+    phantoms = phantom_flat_dates(res, min_bars=5)
+    # Repeats of the 6-bar flat run (bars 4..8) are phantom; the first
+    # print (bar 3) and the recovery bar are kept.
+    assert phantoms == {("ORCL2", d[i]) for i in range(4, 9)}
+
+
+def test_short_flat_runs_are_not_phantom():
+    """2-3 identical closes happen on real, healthy series (measured max on
+    this universe: 3) — they must never be withheld."""
+    from anomaly_detection.adjustments import phantom_flat_dates
+
+    closes = [100.0, 100.0, 100.0, 101.0, 102.0, 102.0, 103.0]
+    res = _frame({"AAA": closes})
+    assert phantom_flat_dates(res, min_bars=5) == set()
+
+
+def test_drop_stale_tails_removes_phantom_bars_only():
+    """The frame handed to the backtest must lose a stale ticker's repeated
+    tail (keeping the first print, which may be genuine) so a dead feed
+    cannot mint fills or exits; healthy tickers pass through untouched."""
+    from anomaly_detection.adjustments import drop_stale_tails
+
+    moving = [100 + i for i in range(10)]
+    frozen = [50 + i for i in range(4)] + [53.0] * 5  # 53.0 printed 6x (incl. genuine)
+    res = _frame({"OK": moving, "DEAD": frozen})
+    stale = detect_stale_feeds(res, min_bars=5)
+    out = drop_stale_tails(res, stale)
+    assert len(out[out.Ticker == "OK"]) == 10
+    dead = out[out.Ticker == "DEAD"].sort_values("Date")
+    assert len(dead) == 4  # 3 moving bars + the first 53.0 print
+    assert dead["Close"].iloc[-1] == 53.0
+
+
 # ---------------------------------------------------------------------------
 # Ticker status view + alerts.json run metadata
 # ---------------------------------------------------------------------------
@@ -182,6 +242,42 @@ def test_alerts_json_carries_run_metadata_and_ticker_status(tmp_path):
     assert data["run"]["latest_bar_date"] == "2026-07-10"
     assert data["ticker_status"]["ORCL"]["last_close"] == 140.64
     assert data["new_signals"] == 0 and data["signals"] == []
+
+
+def test_dashboard_annotation_falls_back_to_ticker_basis_for_missing_bars():
+    """A split ticker's frozen row whose bar date is absent from the current
+    fetch must still get a basis badge (via the ticker-level break factor) —
+    never a bare pre-split price next to a post-split 'now' price."""
+    from anomaly_detection.visualization.dashboard import _annotate_price_basis
+
+    n = 6
+    res = _frame({"SPLIT": [100.0 + i for i in range(n)]})
+    alert = {"ticker": "SPLIT", "date": "2025-06-02", "close": 408.0}  # bar not in res
+    status = {"SPLIT": {"last_close": 105.0, "last_date": _dates(n)[-1],
+                        "stale_feed": False,
+                        "price_basis": {"factor": 4.0, "n_bars_affected": 3,
+                                        "n_bars_checked": 3,
+                                        "last_affected_date": "2026-01-05"}}}
+    _annotate_price_basis([alert], res, ticker_status=status)
+    assert alert["basis_factor"] == 4.0
+    assert alert["basis_changed"] is True
+    assert alert["current_price"] == 105.0
+    # pct measured basis-adjusted: 105 / (408/4) - 1 = +2.9%
+    assert abs(alert["pct_since"] - 2.9) < 0.05
+
+
+def test_dashboard_annotation_uses_exact_bar_factor_when_available():
+    from anomaly_detection.visualization.dashboard import _annotate_price_basis
+
+    n = 6
+    d = _dates(n)
+    res = _frame({"AAA": [100.0 + i for i in range(n)]})
+    alert = {"ticker": "AAA", "date": d[2], "close": 102.0}  # matches current bar
+    _annotate_price_basis([alert], res)
+    assert alert["basis_factor"] == 1.0
+    assert alert["basis_changed"] is False
+    assert alert["current_price"] == 105.0
+    assert abs(alert["pct_since"] - 2.9) < 0.05
 
 
 def test_new_alerts_freeze_the_detection_basis_close():

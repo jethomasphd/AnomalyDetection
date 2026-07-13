@@ -28,7 +28,7 @@ import logging
 
 import pandas as pd
 
-from .config import PRICE_BASIS_TOLERANCE, STALE_FEED_MIN_BARS
+from .config import PRICE_BASIS_TOLERANCE, STALE_FEED_EXEMPT, STALE_FEED_MIN_BARS
 
 logger = logging.getLogger(__name__)
 
@@ -144,29 +144,114 @@ def trailing_flat_run(closes: pd.Series) -> int:
 def detect_stale_feeds(
     df: pd.DataFrame,
     min_bars: int = STALE_FEED_MIN_BARS,
+    exempt: frozenset[str] = STALE_FEED_EXEMPT,
 ) -> dict[str, int]:
-    """Flag tickers whose series has flatlined at the tail.
+    """Flag tickers whose feed looks dead — two failure modes:
 
-    A real equity/fund series never prints the same close `min_bars`
-    sessions in a row; a frozen upstream feed does exactly that. Returns
-    {ticker: trailing_flat_run} for flagged tickers. The pipeline keeps
-    these tickers OUT of the frozen record for the run (bars are re-scored
-    once the feed moves again), so a dead feed can never mint permanent
-    verdicts.
+      * FLATLINED: the last `min_bars`+ closes are identical to the cent.
+        A real equity/fund series never does that; a frozen quote does.
+      * LAGGING: the ticker's last bar is `min_bars`+ sessions behind the
+        rest of the universe — the feed stopped publishing bars entirely.
+
+    Returns {ticker: bars_of_staleness} for flagged tickers. The pipeline
+    keeps these tickers OUT of the frozen record for the run (bars are
+    re-scored once the feed recovers), so a dead feed can never mint
+    permanent verdicts. `exempt` (config.STALE_FEED_EXEMPT) is the escape
+    hatch for instruments that legitimately print flat closes (e.g. a
+    T-bill ETF in a near-zero-rate regime).
     """
     if df.empty:
         return {}
+    dates = pd.to_datetime(df["Date"]).dt.strftime("%Y-%m-%d")
+    all_dates = sorted(dates.unique())
     stale: dict[str, int] = {}
-    for ticker, grp in df.groupby("Ticker"):
-        run = trailing_flat_run(grp.sort_values("Date")["Close"])
+    for (ticker,), grp in df.assign(_d=dates).groupby(["Ticker"]):
+        t = str(ticker)
+        if t in exempt:
+            continue
+        g = grp.sort_values("Date")
+        run = trailing_flat_run(g["Close"])
         if run >= min_bars:
-            stale[str(ticker)] = run
+            stale[t] = run
             logger.warning(
                 "Stale feed suspected for %s: last %d bars printed an identical "
                 "close — excluding its new bars from this run's frozen record.",
-                ticker, run,
+                t, run,
+            )
+            continue
+        last = g["_d"].iloc[-1]
+        lag = sum(1 for d in all_dates if d > last)
+        if lag >= min_bars:
+            stale[t] = lag
+            logger.warning(
+                "Stale feed suspected for %s: no bars for the last %d sessions "
+                "while the rest of the universe kept trading.",
+                t, lag,
             )
     return stale
+
+
+def phantom_flat_dates(
+    df: pd.DataFrame,
+    min_bars: int = STALE_FEED_MIN_BARS,
+    exempt: frozenset[str] = STALE_FEED_EXEMPT,
+) -> set[tuple[str, str]]:
+    """(ticker, date) keys of the REPEAT bars in every identical-close run
+    of `min_bars`+ anywhere in a series (the first print of a run is kept —
+    it may be genuine).
+
+    This is the persist-time guard behind the stale-feed watchdog: while a
+    feed is frozen the watchdog holds the ticker's bars back, but on the
+    RECOVERY run the flat run is no longer at the tail, the ticker is
+    un-flagged, and — if the vendor resumed without revising history — the
+    held-back phantom prints would be frozen as live verdicts forever.
+    Filtering new bars against this set keeps them out of the record
+    permanently. Residual exposure: the first `min_bars`-2 repeats are
+    persisted on the days before the run crosses the threshold; that
+    window is bounded and small by construction.
+    """
+    if df.empty:
+        return set()
+    out: set[tuple[str, str]] = set()
+    for ticker, grp in df.groupby("Ticker"):
+        t = str(ticker)
+        if t in exempt:
+            continue
+        g = grp.sort_values("Date")
+        closes = g["Close"].round(4).tolist()
+        dates = pd.to_datetime(g["Date"]).dt.strftime("%Y-%m-%d").tolist()
+        i = 0
+        while i < len(closes):
+            j = i
+            while j + 1 < len(closes) and closes[j + 1] == closes[i]:
+                j += 1
+            if j - i + 1 >= min_bars:
+                out.update((t, d) for d in dates[i + 1: j + 1])
+            i = j + 1
+    return out
+
+
+def drop_stale_tails(df: pd.DataFrame, stale_feeds: dict[str, int]) -> pd.DataFrame:
+    """Remove the repeated tail bars of stale-flagged tickers.
+
+    The first bar of a trailing flat run is kept — it is the last print
+    that could be genuine; the repeats after it are the frozen feed
+    echoing itself. Used on the frame handed to the backtest so phantom
+    bars from a dead feed cannot mint fills or exits in the very run that
+    diagnosed the feed as dead (lagging-mode tickers have no flat tail
+    and pass through unchanged).
+    """
+    if df.empty or not stale_feeds:
+        return df
+    parts = []
+    for ticker, grp in df.groupby("Ticker"):
+        g = grp.sort_values("Date")
+        if str(ticker) in stale_feeds:
+            run = trailing_flat_run(g["Close"])
+            if run > 1:
+                g = g.iloc[: len(g) - (run - 1)]
+        parts.append(g)
+    return pd.concat(parts, ignore_index=True)
 
 
 def compute_ticker_status(

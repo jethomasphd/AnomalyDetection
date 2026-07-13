@@ -411,14 +411,27 @@ def alerts_to_json(
     logger.info("Signals written to %s (%d new, %d total)", path, n_new, len(alerts))
 
 
-def alerts_to_markdown(alerts: list[dict]) -> str:
-    """Render signals as a Markdown summary."""
+def alerts_to_markdown(alerts: list[dict], run_info: dict | None = None) -> str:
+    """Render signals as a Markdown summary.
+
+    `run_info` prints proof-of-run next to the timestamp so a report full
+    of frozen rows on a quiet day cannot read as a re-stamped stale file.
+    """
+    run_line = ""
+    if run_info:
+        run_line = (
+            f"*Run {run_info.get('run_date', '?')}: scored "
+            f"{run_info.get('new_bars_scored', '?')} new bars through "
+            f"{run_info.get('latest_bar_date', '?')} — "
+            f"{run_info.get('new_signals', '?')} new signal(s).*\n"
+        )
     if not alerts:
-        return "## Trading Signals Report\n\nNo anomalies detected.\n"
+        return f"## Trading Signals Report\n\n{run_line}\nNo anomalies detected.\n"
 
     lines = [
         "## Trading Signals Report",
         f"*Generated {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}*\n",
+    ] + ([run_line] if run_line else []) + [
         f"**{len(alerts)} signals generated**\n",
         "| Signal | Confidence | Ticker | Date | Close | Score | Description |",
         "|--------|-----------|--------|------|-------|-------|-------------|",
