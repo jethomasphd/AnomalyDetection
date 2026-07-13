@@ -42,6 +42,7 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 
+from .adjustments import bar_basis_factor, frozen_close_from_details
 from .config import (
     BACKTEST_BASELINE_TICKER,
     BACKTEST_COST_BPS_PER_SIDE,
@@ -205,6 +206,19 @@ def compute_backtest(
             continue
         rationale = sig.get("rationale") or {}
         details = rationale.get("details") or {}
+        target = float(details.get("ewma_value") or 0) or None
+        # Frozen dollar values live in the price basis of the fetch that
+        # wrote them; a later split rescales the whole fetched history but
+        # not the ledger. Translate the target into the CURRENT basis via
+        # the signal bar's close in both bases — exact for any retroactive
+        # re-adjustment. Without this, a pre-split target (e.g. $416.75)
+        # is compared against post-split closes (~$95) and can never be
+        # touched, silently rewriting historical exits.
+        bar_i = series["_index"].get(sig["date"])
+        current_bar_close = float(series["Close"][bar_i]) if bar_i is not None else None
+        basis = bar_basis_factor(frozen_close_from_details(details), current_bar_close)
+        if target and basis:
+            target /= basis
         candidates.append({
             "ticker": ticker,
             "signal": s,
@@ -212,7 +226,8 @@ def compute_backtest(
             "detected_at": detected_at,
             "provenance": sig.get("provenance") or "live",
             "confidence": sig.get("confidence") or "",
-            "target": float(details.get("ewma_value") or 0) or None,
+            "target": target,
+            "basis_factor": round(basis, 4) if basis else 1.0,
             "methods_flagged": int(rationale.get("methods_flagged") or 0),
             "details": details,
             "entry_i": i,
@@ -291,6 +306,7 @@ def compute_backtest(
                 "detected_at": c["detected_at"],
                 "provenance": c["provenance"],
                 "confidence": c["confidence"],
+                "basis_factor": c["basis_factor"],
                 "methods": _methods_str(c["details"]),
                 "methods_flagged": c["methods_flagged"],
                 "entry_i": c["entry_i"],

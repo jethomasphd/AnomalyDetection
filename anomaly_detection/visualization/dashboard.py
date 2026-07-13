@@ -8,11 +8,13 @@ from datetime import date, datetime
 import pandas as pd
 from jinja2 import Environment, FileSystemLoader
 
+from ..adjustments import bar_basis_factor
 from ..config import (
     CATEGORY_LABELS,
     CATEGORY_ORDER,
     DOCS_DIR,
     MODEL_VERSION,
+    PRICE_BASIS_TOLERANCE,
     TICKER_NAMES,
     TICKER_REGISTRY,
     TICKER_SECTORS,
@@ -72,6 +74,56 @@ def _annotate_signal_staleness(alerts: list[dict], stale_after_days: int = 14) -
         a["is_stale"] = a["days_old"] > stale_after_days
 
 
+def _annotate_price_basis(
+    alerts: list[dict],
+    results: pd.DataFrame,
+    tolerance: float = PRICE_BASIS_TOLERANCE,
+) -> None:
+    """Add current-price context to each alert, in-place.
+
+    A signal row shows its close FROZEN at detection time; without context
+    a reader mistakes it for the model's current price (and after a split
+    it doesn't even match the current chart). Each alert gains:
+
+      current_price / current_date — the ticker's latest fetched close.
+      basis_factor  — frozen close ÷ current close for the SAME bar; ≈1
+                      normally, ≈4 after a 4:1 split rescaled the history.
+      basis_changed — True when the factor breaches `tolerance`.
+      pct_since     — % move from the (basis-translated) signal close to
+                      the current price; comparable across splits.
+    """
+    if not alerts or results is None or results.empty:
+        return
+    current: dict[str, dict[str, float]] = {}
+    latest: dict[str, tuple[str, float]] = {}
+    for ticker, grp in results.groupby("Ticker"):
+        g = grp.sort_values("Date")
+        dates = pd.to_datetime(g["Date"]).dt.strftime("%Y-%m-%d")
+        closes = g["Close"].astype(float)
+        current[str(ticker)] = dict(zip(dates, closes))
+        latest[str(ticker)] = (dates.iloc[-1], float(closes.iloc[-1]))
+
+    for a in alerts:
+        a.setdefault("current_price", None)
+        a.setdefault("basis_factor", None)
+        a.setdefault("basis_changed", False)
+        a.setdefault("pct_since", None)
+        t = a.get("ticker")
+        if t not in latest:
+            continue
+        last_date, last_close = latest[t]
+        a["current_price"] = round(last_close, 2)
+        a["current_date"] = last_date
+        factor = bar_basis_factor(a.get("close"), current[t].get(a.get("date")))
+        if factor is None:
+            continue
+        a["basis_factor"] = round(factor, 4)
+        a["basis_changed"] = abs(factor - 1.0) > tolerance
+        signal_close_now = a["close"] / factor  # frozen close in today's basis
+        if signal_close_now > 0:
+            a["pct_since"] = round((last_close / signal_close_now - 1) * 100, 1)
+
+
 def _deep_dive_buttons(tickers: list[str]) -> tuple[list[str], list[str]]:
     """Return (pinned_buttons, dropdown_remaining) for the deep-dive section.
 
@@ -92,6 +144,8 @@ def generate_dashboard(
     output_path: str | None = None,
     validation_failures: list[dict] | None = None,
     health: dict | None = None,
+    run_info: dict | None = None,
+    ticker_status: dict | None = None,
 ) -> str:
     """Generate the full HTML dashboard and write it to disk.
 
@@ -108,6 +162,7 @@ def generate_dashboard(
     signal_tickers = {a["ticker"] for a in alerts} if alerts else set()
 
     _annotate_signal_staleness(alerts, stale_after_days=14)
+    _annotate_price_basis(alerts, results)
 
     # Per-ticker main charts + method detail charts
     ticker_charts = {}
@@ -190,6 +245,8 @@ def generate_dashboard(
         category_groups=cat_groups,
         validation_failures=validation_failures or [],
         health=health or {},
+        run_info=run_info or {},
+        ticker_status=ticker_status or {},
     )
 
     with open(output_path, "w") as f:

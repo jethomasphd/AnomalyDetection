@@ -65,7 +65,7 @@ This is the core output. Each row represents a detected anomaly that has been tr
 | **Confidence** | How many detection methods independently agree — Strong (3-4), Moderate (2), or Developing (1) |
 | **Ticker** | The stock symbol and full company name |
 | **Date** | When the anomaly occurred |
-| **Close** | The closing price on that date |
+| **Close** | The closing price on that date, **frozen at detection time**. Underneath, `now $X (±Y%)` shows the ticker's latest fetched close so a weeks-old frozen price is never mistaken for the current one. If a stock split after the verdict was frozen, a purple `×N basis` badge marks that the row's dollar values are in the pre-split price basis (the % is computed basis-adjusted). |
 | **Methods** | Visual indicator (filled dots) showing how many of the 4 detection methods flagged this date |
 | **What to do & why** | Plain-English explanation: what the stock is doing, why it matters, and what action to consider |
 
@@ -263,8 +263,8 @@ python -m anomaly_detection --sensitivity low
 | `data/ledger/anomalies.jsonl` | **Committed append-only truth**: every anomaly verdict ever recorded |
 | `data/ledger/signals.jsonl` | **Committed append-only truth**: every signal ever produced (backtest input) |
 | `data/ledger/watermarks.json` | Per-ticker high-water mark of scored bars (edge-only cursor) |
-| `data/alerts.json` | Display view for the dashboard (capped at 200, newest first) |
-| `data/run_health.json` | Latest run's fetch coverage and failures |
+| `data/alerts.json` | Display view for the dashboard (capped at 200, newest first). Also carries a `run` block (bars scored, latest bar date — proof the model ran even on 0-signal days) and a `ticker_status` block (each ticker's current close/date, stale-feed and price-basis flags), both refreshed every run |
+| `data/run_health.json` | Latest run's fetch coverage, failures, stale feeds, and price-basis breaks |
 | `data/history/run_*.json` | One summary per run + `index.json` |
 | `data/stock_data.csv` | Raw price data with computed features (regenerated each run, gitignored) |
 | `data/detection_results.csv` | Full detection results with all method scores (regenerated each run, gitignored) |
@@ -289,6 +289,8 @@ All parameters live in `anomaly_detection/config.py`:
 | `MP_SUBSEQUENCE_LENGTH` | 10 | Matrix Profile window size (two trading weeks) |
 | `FOURIER_TOP_K` | 5 | Number of frequency components to track |
 | `ENSEMBLE_WEIGHTS` | Z-Score 40%, Seasonal 30%, IForest 30% | Sub-method weights within the ensemble |
+| `STALE_FEED_MIN_BARS` | 5 | Identical trailing closes before a ticker's feed is declared frozen (its new bars stay out of the frozen record until the feed moves) |
+| `PRICE_BASIS_TOLERANCE` | 0.02 | Frozen-vs-current close divergence (same bar) beyond which a corporate action is declared and frozen dollar values are basis-translated |
 
 ### Sensitivity Presets
 

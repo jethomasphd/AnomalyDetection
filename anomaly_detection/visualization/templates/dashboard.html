@@ -335,6 +335,19 @@
             color: var(--muted); letter-spacing: 0.03em;
         }
         .locked-badge::before { content: "\01F512  "; font-size: 0.6rem; }
+        .now-price {
+            font-family: var(--mono); font-size: 0.62rem;
+            color: var(--muted); margin-top: 0.15rem; white-space: nowrap;
+        }
+        .now-price strong { color: var(--text); font-weight: 600; }
+        .basis-badge {
+            display: inline-block; padding: 0.08rem 0.38rem; border-radius: 3px;
+            font-size: 0.56rem; font-weight: 700; letter-spacing: 0.04em;
+            text-transform: uppercase; font-family: var(--mono);
+            color: var(--purple, #D500F9); background: rgba(213,0,249,0.08);
+            border: 1px solid rgba(213,0,249,0.3);
+            margin-top: 0.15rem; white-space: nowrap;
+        }
         .stale-pill {
             display: inline-block; padding: 0.08rem 0.38rem; border-radius: 3px;
             font-size: 0.56rem; font-weight: 700; letter-spacing: 0.04em;
@@ -505,6 +518,10 @@
                 {{ sensitivity }} sensitivity <span>|</span>
                 since {{ start_date }} <span>|</span>
                 updated {{ generated_at }}
+                {% if run_info and run_info.new_bars_scored is defined %}
+                <span>|</span>
+                scored {{ run_info.new_bars_scored }} new bars through {{ run_info.latest_bar_date }}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -555,6 +572,31 @@
                 {{ f.ticker }}{% if not loop.last %}, {% endif %}
             {% endfor %}.
             Verdicts for missing tickers resume at the next successful fetch; the frozen ledger is unaffected.
+        </div>
+        {% endif %}
+
+        <!-- Stale feeds: a flatlined series means the SOURCE is broken, not the market -->
+        {% if health and health.stale_feeds %}
+        <div class="val-warn">
+            [STALE FEED] {{ health.stale_feeds|length }} ticker(s) returned an identical close for 5+
+            straight sessions &mdash; the upstream feed looks frozen, not the market:
+            {% for t, n in health.stale_feeds.items() %}
+                {{ t }} ({{ n }} bars){% if not loop.last %}, {% endif %}
+            {% endfor %}.
+            Their new bars are kept OUT of the frozen record and will be re-scored once the feed moves again.
+        </div>
+        {% endif %}
+
+        <!-- Price-basis breaks: a corporate action rescaled the fetched history -->
+        {% if health and health.price_basis_breaks %}
+        <div class="val-warn">
+            [PRICE BASIS] Corporate action detected on
+            {% for t, b in health.price_basis_breaks.items() %}
+                <strong>{{ t }}</strong> (frozen rows through {{ b.last_affected_date }} were recorded at
+                ~{{ "%.2g"|format(b.factor) }}&times; today's adjusted prices){% if not loop.last %}; {% endif %}
+            {% endfor %}.
+            Historical signal rows keep their detection-time prices (marked with a basis badge below);
+            backtest targets are automatically translated to the current basis.
         </div>
         {% endif %}
 
@@ -816,7 +858,9 @@
                 <div class="new-this-run-panel empty">
                     <div class="new-this-run-head">New This Run</div>
                     <div class="new-this-run-list" style="color:var(--muted);">
-                        No new signals on {{ run_date }}. All rows below are frozen history &mdash; their verdicts cannot change as the 365-day window slides.
+                        No new signals on {{ run_date }}{% if run_info and run_info.new_bars_scored is defined %} &mdash; the model DID run
+                        ({{ run_info.new_bars_scored }} new bars scored through {{ run_info.latest_bar_date }}), the tape was just quiet{% endif %}.
+                        All rows below are frozen history &mdash; verdicts never change once written.
                     </div>
                 </div>
                 {% endif %}
@@ -871,7 +915,15 @@
                                 <div class="locked-badge" title="Verdict produced on {{ a.detected_at }} — frozen for audit.">locked</div>
                                 {% endif %}
                             </td>
-                            <td style="font-family:var(--mono);">${{ "%.2f"|format(a.close) }}</td>
+                            <td style="font-family:var(--mono);">
+                                ${{ "%.2f"|format(a.close) }}
+                                {% if a.get('basis_changed') %}
+                                <div class="basis-badge" title="A corporate action (split/adjustment) rescaled this ticker's price history AFTER this verdict was frozen. The price shown is the close as fetched on the detection date; on today's adjusted chart the same bar reads ${{ '%.2f'|format(a.close / a.basis_factor) }}.">&times;{{ "%.2g"|format(a.basis_factor) }} basis</div>
+                                {% endif %}
+                                {% if a.get('current_price') is not none %}
+                                <div class="now-price" title="Latest fetched close ({{ a.get('current_date', '') }}) — shown so a frozen detection-time price is never mistaken for the model's current price.{% if a.get('pct_since') is not none %} The % is measured basis-adjusted, from the signal bar to now.{% endif %}">now <strong>${{ "%.2f"|format(a.current_price) }}</strong>{% if a.get('pct_since') is not none %} ({{ "%+.1f"|format(a.pct_since) }}%){% endif %}</div>
+                                {% endif %}
+                            </td>
                             <td>
                                 <div class="dots">
                                     {% for i in range(4) %}
@@ -907,7 +959,15 @@
                                 <div class="locked-badge" title="Verdict produced on {{ a.detected_at }} — frozen for audit.">locked</div>
                                 {% endif %}
                             </td>
-                            <td style="font-family:var(--mono);">${{ "%.2f"|format(a.close) }}</td>
+                            <td style="font-family:var(--mono);">
+                                ${{ "%.2f"|format(a.close) }}
+                                {% if a.get('basis_changed') %}
+                                <div class="basis-badge" title="A corporate action (split/adjustment) rescaled this ticker's price history AFTER this verdict was frozen. The price shown is the close as fetched on the detection date; on today's adjusted chart the same bar reads ${{ '%.2f'|format(a.close / a.basis_factor) }}.">&times;{{ "%.2g"|format(a.basis_factor) }} basis</div>
+                                {% endif %}
+                                {% if a.get('current_price') is not none %}
+                                <div class="now-price" title="Latest fetched close ({{ a.get('current_date', '') }}) — shown so a frozen detection-time price is never mistaken for the model's current price.{% if a.get('pct_since') is not none %} The % is measured basis-adjusted, from the signal bar to now.{% endif %}">now <strong>${{ "%.2f"|format(a.current_price) }}</strong>{% if a.get('pct_since') is not none %} ({{ "%+.1f"|format(a.pct_since) }}%){% endif %}</div>
+                                {% endif %}
+                            </td>
                             <td>
                                 <div class="dots">
                                     {% for i in range(4) %}
@@ -1207,7 +1267,12 @@
                             </td>
                             <td style="font-weight:600;">{{ s.display }}</td>
                             <td class="trade-{{ s.action|lower }}">{{ s.action }}</td>
-                            <td>${{ "%.2f"|format(s.entry_price if s.entry_price is defined else s.action_price) }}</td>
+                            <td>
+                                ${{ "%.2f"|format(s.entry_price if s.entry_price is defined else s.action_price) }}
+                                {% if s.basis_factor is defined and (s.basis_factor > 1.02 or s.basis_factor < 0.98) %}
+                                <div class="basis-badge" title="This ticker's history was split-adjusted after the signal was frozen. Fills and the exit target are computed on today's adjusted prices (the signal row above shows the detection-time basis: &times;{{ '%.2g'|format(s.basis_factor) }}).">&times;{{ "%.2g"|format(s.basis_factor) }} adj</div>
+                                {% endif %}
+                            </td>
                             <td>${{ "%.2f"|format(s.exit_price) }}</td>
                             <td>
                                 <span style="font-weight:700; color:{% if s.dollar_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">

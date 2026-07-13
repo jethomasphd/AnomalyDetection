@@ -117,6 +117,17 @@ ledger, so verdicts are written exactly once: new bars get **live** rows
 rows. Fresh signals get a **NEW** badge on the dashboard; `data/run_health.json`
 tracks fetch coverage and surfaces degraded days on the dashboard.
 
+**Corporate-action safe, feed-health aware:** every run reconciles the frozen
+ledger against the fresh fetch (`adjustments.py`). If a split rescaled the
+price history, backtest targets are translated to the current basis (trade
+outcomes don't change just because the backtest re-ran after the split) and
+affected rows get a basis badge on the dashboard. A ticker whose feed
+flatlines is flagged and kept out of the frozen record until it moves again.
+Signal rows always show the **current price next to the frozen
+detection-time price**, and `alerts.json` carries per-run proof (bars scored,
+latest bar date) that the model actually ran — even on days with zero new
+signals.
+
 **Setup:** Repo settings > Pages > Source > **GitHub Actions**.
 
 ---

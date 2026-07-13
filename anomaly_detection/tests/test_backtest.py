@@ -228,3 +228,55 @@ def test_watch_and_reduce_never_trade():
     sigs = [_signal("AAA", d[0], "WATCH"), _signal("AAA", d[1], "REDUCE")]
     bt = compute_backtest(res, sigs)
     assert bt["n_trades"] == 0
+
+
+def test_frozen_target_is_translated_after_a_split():
+    """The CRWD 2026-07-02 incident: a 4:1 split rescales the fetched
+    history ÷4 AFTER a signal froze its target pre-split. The pre-split
+    target ($400) can never be touched by post-split closes (~$100); it
+    must be translated via the signal bar's close in both bases so the
+    exit lands where it did before the re-adjustment."""
+    # Current (post-split) fetch. Frozen at detection: close 90*4=360,
+    # target 100*4=400. Post-split the close touches 100 at bar 4.
+    closes = [95.0, 90.0, 92.0, 96.0, 101.0, 103.0, 104.0, 105.0, 106.0, 107.0]
+    res = _results_frame({"AAA": closes})
+    d = _dates(res)
+    sig = _signal("AAA", d[1], "BUY", detected_at=d[1], target=400.0)
+    sig["rationale"]["details"]["close"] = 360.0  # frozen pre-split close of bar d[1]
+    bt = compute_backtest(res, [sig])
+    trade = bt["signal_ledger"][0]
+    assert abs(trade["basis_factor"] - 4.0) < 1e-6
+    assert trade["exit_reason"] == "target"
+    assert trade["exit_date"] == d[4]      # first close >= 400/4 = 100
+    assert trade["exit_price"] == 101.0
+
+
+def test_frozen_target_derived_from_legacy_rationale_fields():
+    """Rows written before the close field existed still reconcile: the
+    frozen close is recovered from ewma_value and deviation_pct."""
+    closes = [95.0, 90.0, 92.0, 96.0, 101.0, 103.0, 104.0, 105.0, 106.0, 107.0]
+    res = _results_frame({"AAA": closes})
+    d = _dates(res)
+    sig = _signal("AAA", d[1], "BUY", detected_at=d[1], target=400.0)
+    # frozen close 360 = ewma 400 * (1 - 10%)
+    sig["rationale"]["details"]["deviation_pct"] = -10.0
+    bt = compute_backtest(res, [sig])
+    trade = bt["signal_ledger"][0]
+    assert trade["exit_reason"] == "target"
+    assert trade["exit_date"] == d[4]
+
+
+def test_target_untouched_when_basis_matches():
+    """No corporate action: frozen close equals the current close for the
+    same bar, so the target must pass through bit-identical."""
+    closes = [100.0, 90.0, 88.0, 92.0, 96.0, 101.0, 103.0, 104.0, 105.0, 106.0]
+    res = _results_frame({"AAA": closes})
+    d = _dates(res)
+    sig = _signal("AAA", d[2], "BUY", detected_at=d[2], target=100.0)
+    sig["rationale"]["details"]["close"] = 88.0
+    bt = compute_backtest(res, [sig])
+    trade = bt["signal_ledger"][0]
+    assert trade["basis_factor"] == 1.0
+    assert trade["exit_reason"] == "target"
+    assert trade["exit_date"] == d[5]
+    assert trade["exit_price"] == 101.0

@@ -174,18 +174,43 @@ a philosophy choice ("idle capital owns the market"), not a fitted parameter;
 the BIL row shows the cash-parked view leads to the same entry-set decision.
 
 Known limitations, stated rather than hidden: fills at closes (no intraday),
-dividends only via adjusted closes, baseline assumed frictionless, and Yahoo
-back-adjusts prices after distributions (frozen verdicts are not retroactively
-revised for this — the divergence is microscopic for the large caps tracked).
+dividends only via adjusted closes, baseline assumed frictionless.
+
+**Corporate actions (price-basis reconciliation).** Yahoo back-adjusts the
+ENTIRE price history after a split or distribution, but frozen ledger rows
+keep the dollar basis of the fetch that wrote them — after a 4:1 split, a
+frozen close of $782.17 and a fresh close of $195.54 describe the same bar.
+Every run therefore compares the frozen closes against the current fetch
+(`adjustments.py`): each backtest target is translated into the current
+basis via the signal bar's close in both bases (exact for any retroactive
+rescale, so trade outcomes are invariant to when the backtest runs), and
+tickers whose basis broke are flagged in `run_health.json` and on the
+dashboard, with affected signal rows carrying a basis badge. The ledger
+itself is never rewritten. Ordinary dividend re-adjustments sit far inside
+the detection tolerance (`PRICE_BASIS_TOLERANCE`) and shift targets only
+microscopically.
 
 ## Run Health & History
 
 Every run writes `data/run_health.json` (coverage %, per-ticker fetch failures,
-duration) — surfaced as a DEGRADED banner on the dashboard when below 100% —
-and appends a summary to `data/history/run_<date>.json` with `index.json`
-rebuilt. Fetches retry 3x with exponential backoff before a ticker is declared
-missing for the day; a missing ticker's verdicts simply resume at the next
-successful fetch (the watermark waits).
+stale feeds, price-basis breaks, bars scored, duration) — surfaced as banners
+on the dashboard — and appends a summary to `data/history/run_<date>.json`
+with `index.json` rebuilt. Fetches retry 3x with exponential backoff before a
+ticker is declared missing for the day; a missing ticker's verdicts simply
+resume at the next successful fetch (the watermark waits).
+
+**Stale-feed watchdog.** A ticker whose last `STALE_FEED_MIN_BARS` closes are
+identical to the cent is treated as a frozen upstream feed, not a quiet
+market: its new bars are kept OUT of the frozen record (its watermark does
+not advance, so the bars are re-scored once the feed moves again), and the
+condition is flagged in run health and on the dashboard. A dead feed can
+never mint permanent verdicts.
+
+**Proof-of-run metadata.** `alerts.json` carries a `run` block (bars scored,
+latest bar date) and a `ticker_status` block (each ticker's current close and
+date, stale/basis flags) refreshed every run, so a quiet day with zero new
+signals is distinguishable from a job that only re-stamped the file — and a
+frozen signal-row price is never mistaken for the model's current price.
 
 ## Ticker Registry
 

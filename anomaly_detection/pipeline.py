@@ -31,6 +31,11 @@ from datetime import datetime
 
 import pandas as pd
 
+from .adjustments import (
+    compute_ticker_status,
+    detect_price_basis_breaks,
+    detect_stale_feeds,
+)
 from .alerts import (
     alerts_to_json,
     alerts_to_markdown,
@@ -56,6 +61,7 @@ from .storage import (
     count_rows,
     export_ledger,
     get_bar_watermarks,
+    get_frozen_bar_closes,
     get_signals_for_backtest,
     reset_storage,
     results_to_anomaly_rows,
@@ -192,6 +198,19 @@ def run(
     results = run_all(featured_df, sensitivity=sensitivity)
     results.to_csv(os.path.join(DATA_DIR, "detection_results.csv"), index=False)
 
+    # Stage 3a: Feed health + price-basis reconciliation (adjustments.py).
+    # Both checks compare the FRESH fetch against the FROZEN record:
+    #   * a flatlined series (identical trailing closes) means the upstream
+    #     feed is stale — its new bars are kept out of the frozen record so
+    #     a dead feed can never mint permanent verdicts;
+    #   * a frozen close that no longer matches the current close for the
+    #     same bar means a corporate action rescaled the fetched history —
+    #     frozen dollar values must be basis-translated wherever they are
+    #     compared against fresh prices (backtest targets, dashboard).
+    frozen_reference = get_frozen_bar_closes()
+    basis_breaks = detect_price_basis_breaks(results, frozen_reference)
+    stale_feeds = detect_stale_feeds(results)
+
     # Stage 3b: Edge-only persistence with provenance.
     # Tickers WITHOUT a watermark are being seen for the first time: their
     # history is persisted as a walk-forward backfill (detected_at = bar
@@ -199,6 +218,14 @@ def run(
     # live rows (detected_at = run date) for bars beyond the watermark.
     watermarks = get_bar_watermarks()
     new_bars = _filter_to_new_bars(results, watermarks)
+    if stale_feeds:
+        before = len(new_bars)
+        new_bars = new_bars[~new_bars["Ticker"].astype(str).isin(stale_feeds)].copy()
+        logger.warning(
+            "Stale feeds %s: excluded %d new bars from the frozen record "
+            "(they will be re-scored once the feed moves again)",
+            sorted(stale_feeds), before - len(new_bars),
+        )
     run_date = datetime.utcnow().strftime("%Y-%m-%d")
 
     known = new_bars["Ticker"].astype(str).isin(set(watermarks.keys()))
@@ -228,16 +255,32 @@ def run(
     if not backfill_bars.empty:
         new_alerts += generate_alerts(backfill_bars, sensitivity=sensitivity, provenance="backfill")
 
+    # Recomputed views: current-price context per ticker and proof the run
+    # actually scored bars — written next to (never into) the frozen rows.
+    ticker_status = compute_ticker_status(results, basis_breaks, stale_feeds)
+    latest_bar_date = pd.to_datetime(results["Date"]).max().strftime("%Y-%m-%d")
+    run_info = {
+        "run_date": run_date,
+        "new_bars_scored": len(new_bars),
+        "latest_bar_date": latest_bar_date,
+        "tickers_scored": int(results["Ticker"].nunique()),
+        "new_signals": len(new_alerts),
+    }
+
     alerts_path = os.path.join(DATA_DIR, "alerts.json")
     previous_alerts = load_previous_alerts(alerts_path)
     alerts = append_new_alerts(new_alerts, previous_alerts)
-    alerts_to_json(alerts, alerts_path)
+    alerts_to_json(alerts, alerts_path, run_info=run_info, ticker_status=ticker_status)
 
     # Persist ONLY the new signals to the store (frozen once written).
     upsert_signals(alerts_to_signal_rows(new_alerts))
 
     # Advance watermarks, then export the ledger — the committed truth.
-    update_bar_watermarks(_compute_watermarks(results))
+    # Stale-feed tickers keep their old watermark so their flatlined bars
+    # are re-scored on the first run after the feed recovers.
+    update_bar_watermarks({
+        t: d for t, d in _compute_watermarks(results).items() if t not in stale_feeds
+    })
     ledger_counts = export_ledger()
     store_counts = count_rows()
     logger.info("Store: %d anomaly rows, %d signal rows (ledger: %s)",
@@ -282,15 +325,22 @@ def run(
         "model_version": MODEL_VERSION,
         "fetch": fetch_report,
         "validation_failures": validation_failures,
+        "latest_bar_date": latest_bar_date,
+        "stale_feeds": stale_feeds,
+        "price_basis_breaks": basis_breaks,
     }
 
     health = {
         "run_date": run_date,
-        "status": "degraded" if fetch_report["failed"] else "ok",
+        "status": "degraded" if (fetch_report["failed"] or stale_feeds) else "ok",
         "coverage_pct": fetch_report["coverage_pct"],
         "tickers_requested": fetch_report["requested"],
         "tickers_fetched": fetch_report["fetched"],
         "fetch_failures": fetch_report["failed"],
+        "stale_feeds": stale_feeds,
+        "price_basis_breaks": basis_breaks,
+        "latest_bar_date": latest_bar_date,
+        "new_bars_scored": len(new_bars),
         "duration_seconds": summary["duration_seconds"],
         "model_version": MODEL_VERSION,
     }
@@ -310,6 +360,8 @@ def run(
             start_date=start_date,
             validation_failures=validation_failures,
             health=health,
+            run_info=run_info,
+            ticker_status=ticker_status,
         )
         summary["dashboard_path"] = dashboard_path
     except Exception as exc:
