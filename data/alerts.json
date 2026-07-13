@@ -1,8 +1,37 @@
 {
-  "generated_at": "2026-07-10T22:54:38.113633Z",
+  "generated_at": "2026-07-13T22:49:49.610027Z",
   "total_signals": 200,
-  "new_signals": 0,
+  "new_signals": 1,
   "signals": [
+    {
+      "ticker": "AZN",
+      "ticker_name": "AstraZeneca (ADR)",
+      "display": "AstraZeneca (ADR) (AZN)",
+      "date": "2026-07-13",
+      "close": 169.47,
+      "signal": "SHORT",
+      "signal_label": "Short",
+      "signal_color": "#FF6D00",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.4662,
+      "description": "AstraZeneca (ADR) (AZN) is trading 7.3% below its 20-day trend ($182.77) \u2014 a 2.7-sigma stretch for this ticker. Downward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a short position or protective puts; stops above the recent high.",
+      "run_date": "2026-07-13",
+      "is_new": true,
+      "first_detected": "2026-07-13",
+      "detected_at": "2026-07-13",
+      "provenance": "live",
+      "details": {
+        "fourier_score": 0.9275,
+        "mp_score": 0.0,
+        "ensemble_score": 0.3719,
+        "ewma_score": 0.6765,
+        "trajectory": "extending",
+        "deviation_pct": -7.28,
+        "dev_z": -2.71,
+        "ewma_value": 182.77
+      }
+    },
     {
       "ticker": "GILD",
       "ticker_name": "Gilead Sciences",
@@ -5772,35 +5801,6 @@
         "deviation_pct": 8.75,
         "dev_z": 4.79,
         "ewma_value": 23.85
-      }
-    },
-    {
-      "ticker": "CVX",
-      "ticker_name": "Chevron",
-      "display": "Chevron (CVX)",
-      "date": "2026-01-30",
-      "close": 173.6,
-      "signal": "LONG",
-      "signal_label": "Long",
-      "signal_color": "#00897B",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.4686,
-      "description": "Chevron (CVX) is trading 7.1% above its 20-day trend ($162.12) \u2014 a 2.9-sigma stretch for this ticker. Upward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a momentum long with a trailing stop below the trend line.",
-      "run_date": "2026-01-30",
-      "is_new": false,
-      "first_detected": "2026-01-30",
-      "detected_at": "2026-01-30",
-      "provenance": "backfill",
-      "details": {
-        "fourier_score": 0.3634,
-        "mp_score": 0.0,
-        "ensemble_score": 0.7209,
-        "ewma_score": 0.7184,
-        "trajectory": "extending",
-        "deviation_pct": 7.08,
-        "dev_z": 2.87,
-        "ewma_value": 162.12
       }
     }
   ]

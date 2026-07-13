@@ -804,5 +804,32 @@
       "coverage_pct": 100.0
     },
     "validation_failures": []
+  },
+  {
+    "run_date": "2026-07-13",
+    "started_at": "2026-07-13T22:44:01.522842Z",
+    "finished_at": "2026-07-13T22:49:49.859795Z",
+    "duration_seconds": 348.3,
+    "tickers_analyzed": 130,
+    "total_observations": 54857,
+    "anomalies_detected": 607,
+    "new_bars_scored": 130,
+    "new_signals": 1,
+    "actionable_signals": 190,
+    "total_signals_view": 200,
+    "ledger_signal_rows": 606,
+    "ledger_anomaly_rows": 1833,
+    "backtest_total_gain": 45861.14,
+    "backtest_n_trades": 68,
+    "sensitivity": "medium",
+    "start_date": "2024-11-01",
+    "model_version": "2.0.0",
+    "fetch": {
+      "requested": 130,
+      "fetched": 130,
+      "failed": [],
+      "coverage_pct": 100.0
+    },
+    "validation_failures": []
   }
 ]
