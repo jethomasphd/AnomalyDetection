@@ -587,18 +587,10 @@
         </div>
         {% endif %}
 
-        <!-- Price-basis breaks: a corporate action rescaled the fetched history -->
-        {% if health and health.price_basis_breaks %}
-        <div class="val-warn">
-            [PRICE BASIS] Corporate action detected on
-            {% for t, b in health.price_basis_breaks.items() %}
-                <strong>{{ t }}</strong> (frozen rows through {{ b.last_affected_date }} were recorded at
-                ~{{ "%.3g"|format(b.factor) }}&times; today's adjusted prices){% if not loop.last %}; {% endif %}
-            {% endfor %}.
-            Historical signal rows keep their detection-time prices (marked with a basis badge below);
-            backtest targets are automatically translated to the current basis.
-        </div>
-        {% endif %}
+        <!-- Price-basis breaks (splits etc.) are handled silently: affected
+             signal rows carry a basis badge, backtest targets are translated
+             to the current basis, and the mechanics are documented in the
+             Technical Details section below. No banner needed. -->
 
         <!-- Stats -->
         <div class="stats">
@@ -634,7 +626,7 @@
         <div class="tip-panel" id="tip-monitored">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Tickers Monitored</div>
-            {{ n_tickers }} stocks and funds tracked across 11 strategic categories:<br>
+            {{ n_tickers }} stocks and funds tracked across 12 strategic categories:<br>
             <strong><a href="https://the-companion-dossier.com/The_Watchtower" target="_blank" style="color:var(--green);">Engines of the Republic</a></strong> &mdash; the companies that build, feed, and finance America<br>
             <strong><a href="https://the-companion-dossier.com/The_Watchtower" target="_blank" style="color:var(--green);">Critical Choke Points</a></strong> &mdash; gatekeepers of energy, payments, logistics, and tech<br>
             <strong>Big Tech</strong> &mdash; highest signal density, highest retail interest<br>
@@ -643,7 +635,10 @@
             <strong>Healthcare &amp; Pharma</strong> &mdash; the companies keeping people alive<br>
             <strong>Energy &amp; Commodities</strong> &mdash; when geopolitics moves, these move first<br>
             <strong>Wall Street's Darlings</strong> &mdash; the ETFs and index funds they want you to buy<br>
+            <strong>The Mega-Cap 100</strong> &mdash; completion of the top 100 US-listed names by market cap<br>
             <strong>The Clergy House</strong> &mdash; a Priest's bespoke collection<br>
+            <strong>Reserve</strong> &mdash; a T-bill proxy for risk-off benchmarking<br>
+            <strong>UBS Funds</strong> &mdash; managed fund positions for comparison<br>
             These aren't random picks &mdash; they're the pillars and pressure points of the economy.
         </div>
         <div class="tip-panel" id="tip-anomalies">
@@ -700,26 +695,11 @@
             a live run that evening would have produced), so simulated history and the live record follow
             identical rules &mdash; and are reported separately so they are never conflated.
         </div>
-            <strong>Trade rules (walk-forward, no peeking):</strong><br>
-            &bull; A signal exists only after the close of its detection day; the trade fills at the
-              <em>next session's close</em>. Never the same bar.<br>
-            &bull; The book is long-only: every BUY/LONG opens a $10k long (same-direction signals stack).
-              SELL/SHORT close the longs on their ticker &mdash; "take profits / tighten stops" &mdash; but open
-              nothing, because the measured edge in this universe is in buying washouts; extreme above-trend
-              stretches showed no drift worth shorting (held in both halves of the sample).<br>
-            &bull; Exits, whichever comes first: BUY trades close when price touches the trend target frozen
-              at detection time; a SELL/SHORT signal closes every open long on that ticker;
-              a time stop closes anything still open after the max hold.<br>
-            &bull; Transaction costs are charged per side. WATCH and REDUCE are informational only &mdash; no trade.<br>
-            &bull; The dashed line is the benchmark: buy-and-hold scaled to the strategy's average deployed capital.<br>
-            <strong>Walk-forward vs Live:</strong> detection is causal (a past bar's verdict is exactly what a
-            live run that evening would have produced), so simulated history and the live record follow
-            identical rules &mdash; and are reported separately below so they are never conflated.
-        </div>
         <div class="tip-panel" id="tip-realized">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Realised P&amp;L</div>
-            The dollar total from trades that have actually closed (an opposite signal arrived and locked the price in).
+            The dollar total from trades that have actually closed &mdash; on the frozen trend target,
+            a bearish divest signal, or the time stop &mdash; locking the price in.
             This is money the strategy has "banked" &mdash; it cannot change if the market moves tomorrow.
         </div>
         <div class="tip-panel" id="tip-unrealized">
@@ -753,7 +733,8 @@
         <div class="tip-panel" id="tip-avghold">
             <button class="tip-close" onclick="hideTips()">&times;</button>
             <div class="tip-title">Average Holding Period</div>
-            Mean number of trading bars between entry and the opposite signal that closed the trade.<br>
+            Mean number of trading bars between entry and whichever exit came first
+            (trend target, divest signal, or time stop).<br>
             A very short average holding period means signals are flipping fast on the same tickers
             (choppy regime). A long average holding period means the Signal's calls tend to ride
             until the next clear reversal.
@@ -1359,11 +1340,32 @@
                     <div class="formula">ensemble = 0.4 * zscore + 0.3 * seasonal_residual + 0.3 * isolation_forest</div>
 
                     <h3>4. EWMA Trend &mdash; Momentum Deviation</h3>
-                    <p>Classifies trajectory: breakout (&gt;80% range), accelerating (slope &gt;0.02), decelerating, normal.</p>
+                    <p>Measures the price's deviation from its 20-day EWMA, standardized by that deviation's own
+                    trailing volatility (<span class="formula" style="display:inline; padding:0.1rem 0.3rem;">dev_z</span>),
+                    and classifies the trajectory of the stretch: <em>breakout</em> (beyond threshold + 1&sigma;),
+                    <em>extending</em> (still widening), <em>reverting</em> (contracting), or <em>stable</em>.</p>
 
                     <h3>Consensus</h3>
                     <div class="formula">consensus = 0.20*fourier + 0.25*matrix_profile + 0.30*ensemble + 0.25*ewma</div>
-                    <p>Flagged when 2+ methods agree OR consensus exceeds the 97.5th percentile.</p>
+                    <p>Every method's score lives on one fixed sigma scale (0.5 = 2&sigma;, 1.0 = 4&sigma;+).
+                    A day is flagged when 2+ methods agree OR the consensus crosses the fixed sensitivity cutoff
+                    (medium: 0.625, the 2.5&sigma; equivalent) &mdash; never a percentile of the run's own output,
+                    so a quiet tape produces a quiet report.</p>
+
+                    <h3>Data Integrity</h3>
+                    <p><strong>Frozen verdicts.</strong> Every verdict and its dollar values are written once to an
+                    append-only ledger and never revised &mdash; the <em>locked</em> badge on each signal row marks the
+                    run that produced it. The <em>now $</em> line underneath each frozen close is recomputed from the
+                    latest fetch so a detection-time price is never mistaken for a live quote.</p>
+                    <p><strong>Corporate actions.</strong> The price feed retroactively rescales its entire history when a
+                    stock splits. Each run reconciles the frozen ledger against the fresh fetch; rows recorded at a
+                    different price basis get a <em>&times;N basis</em> badge (with the translated value in the tooltip),
+                    and backtest exit targets are translated to the current basis via the signal bar's close in both
+                    bases &mdash; so trade outcomes do not change just because the backtest re-ran after a split.</p>
+                    <p><strong>Feed health.</strong> A ticker whose feed flatlines (identical closes) or stops publishing
+                    bars is quarantined: its bars stay out of the frozen record until the feed recovers, so dead data can
+                    never mint permanent verdicts. Run liveness (bars scored, latest bar date) is stamped in the header
+                    and in alerts.json on every run &mdash; a day with zero new signals is a quiet market, not a dead job.</p>
                 </div>
             </div>
         </details>
