@@ -6,38 +6,31 @@
 
 ## Purpose
 
-This system monitors securities that are adjacent to the recruitment marketing industry and informative to our competitive landscape. It runs four independent anomaly detection algorithms against each ticker every trading day, identifies statistically unusual behavior, and translates those anomalies into **actionable trading signals** — Buy, Sell, Long, Short, Reduce, or Watch.
+This system monitors securities adjacent to recruitment marketing, advertising platforms, AI infrastructure, and market benchmarks — plus the full top-100 US-listed tickers by market capitalization. It runs four independent anomaly detection algorithms against each ticker every trading day, identifies statistically unusual behavior, and translates those anomalies into **actionable trading signals** — Buy, Sell, Long, Short, Reduce, or Watch.
 
-The goal is straightforward: surface the moments that matter. When a staffing competitor's stock is doing something it has never done before, when an ad platform's momentum shifts structurally, when a benchmark index breaks from its historical rhythm — this system flags it, explains it in plain English, and tells you what to do about it.
+The goal is straightforward: surface the moments that matter. When a stock is doing something it has never done before, when a platform's momentum shifts structurally, when a benchmark index breaks from its historical rhythm — this system flags it, explains it in plain English, and tells you what to do about it.
 
 Everything runs automatically via GitHub Actions and publishes to a live dashboard on GitHub Pages.
 
 ### Incremental Processing
 
-The system preserves signals across runs. When the pipeline executes:
+The system scores each new trading day exactly once and never revises a verdict. When the pipeline executes:
 
-1. **Previous alerts are loaded** from `data/alerts.json` before new detection begins.
-2. **New alerts are generated** from the current detection run and tagged with a **NEW** badge.
-3. **Alerts are merged** — new signals take precedence for the same (ticker, date) pair; previous signals that are no longer in the current window are preserved as historical context.
-4. **Signals are sorted by date** — the most recent detections appear at the top of the dashboard, so you always see what's new first.
-5. **The alert history is capped at 200 entries** to prevent unbounded growth while retaining meaningful context.
+1. **The durable record is restored** — the SQLite cache and per-ticker watermarks are rebuilt from the committed ledger (`data/ledger/*.jsonl`), so every run knows precisely which bars have already been judged.
+2. **Only new bars produce verdicts** — detection runs over the full anchored history (the detectors need it for their baselines), but only bars strictly newer than each ticker's watermark are persisted. Verdicts are frozen once written: the ledger is append-only, enforced by `INSERT OR IGNORE` and auditable in git history.
+3. **New signals are tagged** with an orange **NEW** badge; previously recorded signals are preserved untouched as frozen history (slightly dimmed on the dashboard). Because persistence is edge-only, new and historical signals can never collide — and if legacy data ever conflicts, the frozen record wins.
+4. **Signals are sorted newest-first** so you always see what changed since your last visit.
+5. **The dashboard view is capped at 200 entries** (`data/alerts.json`); the complete record lives in the signals ledger and is never truncated.
 
-This means you can check the dashboard daily or weekly and immediately see what changed since your last visit. Historical signals remain visible (slightly dimmed) for reference, while fresh detections are highlighted with an orange **NEW** badge.
+Every run also stamps a `run` block into `data/alerts.json` (bars scored, latest bar date) — so a day with zero new signals is verifiably a quiet market, not a job that failed to run.
 
 ---
 
 ## The Watchlist
 
-The default watchlist is curated around our industry and adjacent sectors:
+130 tickers across 12 strategic categories — Engines of the Republic, Critical Choke Points, Big Tech, Consumer Leaders, Financial Titans, Healthcare & Pharma, Energy & Commodities, Wall Street's Darlings, The Mega-Cap 100 (completion of the top 100 US-listed names by market capitalization), The Clergy House, Reserve, and UBS Funds. The full registry — ticker, display name, category, sector — lives in `config.TICKER_REGISTRY`; the README shows the category table with examples.
 
-| Sector | Companies | Why we watch them |
-|--------|-----------|-------------------|
-| **Staffing & Recruitment** | ZipRecruiter (ZIP), Kelly Services (KELYA), ASGN Inc. (ASGN), ManpowerGroup (MAN) | Direct competitors and industry bellwethers. Anomalous price action here often precedes earnings surprises, leadership changes, or shifts in labor market demand. |
-| **Market Benchmarks** | S&P 500 (^GSPC), Nasdaq-100 (^NDX) | Baseline context. Distinguishes stock-specific anomalies from broad market moves. If the S&P 500 itself is anomalous, individual stock signals should be interpreted differently. |
-| **Advertising Platforms** | The Trade Desk (TTD), Meta Platforms (META), Alphabet (GOOGL) | Adjacent to recruitment marketing spend. These platforms are where job advertising dollars flow. Structural shifts in their stock behavior can signal changes in digital ad pricing, platform strategy, or advertiser demand. |
-| **AI Infrastructure** | NVIDIA (NVDA), Microsoft (MSFT) | The infrastructure layer powering LLM-driven recruitment tools. Anomalies here can signal shifts in the AI buildout that will eventually affect our technology stack and competitive positioning. |
-
-The watchlist is fully customizable. Any Yahoo Finance symbol works — US equities, ETFs, indices, even crypto.
+The watchlist is fully customizable. Any Yahoo Finance symbol works — US equities, ETFs, mutual funds, international ADRs.
 
 ---
 
@@ -45,11 +38,12 @@ The watchlist is fully customizable. Any Yahoo Finance symbol works — US equit
 
 ### At a Glance
 
-The top of the dashboard shows four summary statistics:
-- **Tickers Monitored** — how many securities are in the current run
-- **Anomalies Detected** — total anomalous days found across all tickers (over the lookback window)
-- **Actionable Signals** — the subset of anomalies that translate into a clear Buy, Sell, Long, or Short recommendation
-- **Lookback Window** — how many trading days of history were analyzed (default: 365)
+The header states when the dashboard was generated and how many new bars the run scored (through which bar date) — the liveness proof. Below it, five summary statistics:
+- **Monitored** — how many securities are in the current run
+- **Anomalies** — total anomalous days found across all tickers since the anchor date
+- **Actionable** — the subset of anomalies that translate into a clear Buy, Sell, Long, or Short recommendation
+- **New This Run** — signals that fired on the latest run (zero on a quiet day is normal)
+- **Anchor Date** — the fixed start of the analysis window (default 2024-11-01). Detection and the backtest run from here forward; anchoring (instead of a sliding window) is what keeps historical verdicts stable
 
 ### The Scoreboard
 
@@ -213,24 +207,34 @@ Both cutoffs are fixed and documented — never a quantile of the run's own outp
 
 The Signal Performance section of the dashboard is a **walk-forward simulation** over the full signals ledger:
 
-- **Invest/divest capital model — no shorts, ever.** A $100k portfolio starts 100% in the baseline (SPY). An entry signal *invests* a $10k slice into the ticker at the **next session's close** after the signal existed (no same-bar fills, no backdated entries). Bearish signals (SELL/SHORT) *divest* the ticker's slices back to the baseline — they carry exit information, never short positions.
+- **Invest/divest capital model — no shorts, ever.** A $100k portfolio starts 100% in the baseline (SPY). An entry signal (**BUY only** by default — LONG is an informational momentum flag, fixed by the split-half robustness study in HOW_IT_WORKS.md) *invests* a $10k slice into the ticker at the **next session's close** after the signal existed (no same-bar fills, no backdated entries). Bearish signals (SELL/SHORT) *divest* the ticker's slices back to the baseline — they carry exit information, never short positions.
 - Slices also return when price touches the trend target frozen at detection time (BUY) or at the 30-bar time stop. If the baseline cannot fund a slice, the signal is skipped and counted — capital is conserved, not invented. 5 bps costs per stock transaction.
-- The benchmark is the identical capital left 100% in the baseline, so the strategy-vs-benchmark gap is exactly the value the signal overlay added.
-- The dashed benchmark line is SPY buy-and-hold on the strategy's average deployed capital.
+- The benchmark (dashed line) is the identical capital left 100% in the baseline, so the strategy-vs-benchmark gap is exactly the value the signal overlay added.
+- Frozen trend targets are **basis-translated** across corporate actions (see Data Integrity below), so trade outcomes do not change just because the backtest re-ran after a split.
 - Trades are tagged by **provenance**: `backfill` (simulated history — legitimate because detection is causal) vs `live` (signals produced by scheduled runs on new bars, i.e., true out-of-sample). The dashboard reports both separately.
+
+---
+
+## Data Integrity
+
+Three mechanisms (implemented in `anomaly_detection/adjustments.py`) keep the frozen record honest against a live, revisable price feed:
+
+- **Price-basis reconciliation.** Yahoo retroactively rescales a ticker's entire history when it splits, but ledger rows keep the dollar basis of the fetch that wrote them. Every run compares frozen closes against the current fetch per bar; rows recorded at a different basis get a `×N basis` badge on the dashboard, and backtest targets are translated to the current basis via the signal bar's close in both bases — exact for any retroactive rescale. The ledger itself is never rewritten. Ordinary dividend re-adjustments sit inside `PRICE_BASIS_TOLERANCE` and are ignored.
+- **Stale-feed watchdog.** A ticker whose feed flatlines (identical closes for `STALE_FEED_MIN_BARS`+ sessions) or stops publishing bars is quarantined: its bars stay out of the frozen record and its watermark holds until the feed recovers, so a dead feed can never mint permanent verdicts. Flagged tickers appear in `run_health.json` and as a dashboard banner.
+- **Proof of run.** `alerts.json` carries a `run` block (bars scored, latest bar date) and a `ticker_status` block (current close/date and health flags per ticker), refreshed every run. Signal rows on the dashboard show `now $X (±Y%)` beside the frozen detection-time close.
 
 ## Running the System
 
 ### Automatic (recommended)
 
-The system runs automatically every weekday at 6:00 PM UTC (after US market close) via GitHub Actions. Results are committed to the repository and the dashboard is deployed to GitHub Pages. No manual intervention required.
+The system runs automatically every weekday at 10:00 PM UTC (safely after the US market close year-round) via GitHub Actions. Each run executes the test suite first — including the causality invariant — then commits results and deploys the dashboard to GitHub Pages. No manual intervention required.
 
 ### Manual — via GitHub Actions
 
 1. Navigate to **Actions** > **Stock Anomaly Detection**
 2. Click **Run workflow**
-3. Optionally specify custom tickers, sensitivity, or lookback window
-4. Wait for the run to complete (~90 seconds)
+3. Optionally specify custom tickers, sensitivity, anchor date, or a ledger reset
+4. Wait for the run to complete (~5–6 minutes for the full 130-ticker watchlist)
 5. View the updated dashboard on GitHub Pages
 
 ### Manual — local execution
@@ -279,68 +283,80 @@ All parameters live in `anomaly_detection/config.py`:
 
 | Parameter | Default | What it controls |
 |-----------|---------|------------------|
-| `DEFAULT_TICKERS` | 11 tickers (see watchlist above) | Which securities to analyze |
-| `TICKER_NAMES` | Company name mapping | Display names shown in dashboard and signals |
-| `TICKER_SECTORS` | Sector groupings | Sector labels for each ticker |
-| `DEFAULT_LOOKBACK_DAYS` | 365 | How many days of history to fetch from Yahoo Finance |
+| `TICKER_REGISTRY` | 130 tickers, 12 categories | The canonical watchlist: each entry maps a Yahoo Finance symbol to its display name, category, sector, and fund flag. `DEFAULT_TICKERS`, `TICKER_NAMES`, and `TICKER_SECTORS` are derived from it |
+| `SIGNAL_START_DATE` | 2024-11-01 | The fixed anchor date. Detection and the backtest run from here forward; anchoring (not a sliding window) keeps historical verdicts stable |
 | `DEFAULT_SENSITIVITY` | medium | Detection threshold — low / medium / high |
+| `Z_SCORE_CAP` | 4.0 | The top of the score scale: score = z / 4, so 0.5 = 2σ and 1.0 = 4σ+ |
+| `CAUSAL_WARMUP_BARS` | 60 | Bars a detector observes before it may flag anything |
 | `METHOD_WEIGHTS` | Ensemble 30%, MP 25%, EWMA 25%, Fourier 20% | How individual method scores are weighted in the consensus |
 | `EWMA_SPAN` | 20 | EWMA lookback (roughly one trading month) |
 | `MP_SUBSEQUENCE_LENGTH` | 10 | Matrix Profile window size (two trading weeks) |
 | `FOURIER_TOP_K` | 5 | Number of frequency components to track |
 | `ENSEMBLE_WEIGHTS` | Z-Score 40%, Seasonal 30%, IForest 30% | Sub-method weights within the ensemble |
-| `STALE_FEED_MIN_BARS` | 5 | Identical trailing closes before a ticker's feed is declared frozen (its new bars stay out of the frozen record until the feed moves) |
+| `TRADE_MIN_ABS_DEVIATION_PCT` | 1.0 | Materiality gate: minimum % distance from trend before a statistical anomaly may become a trade call |
+| `BACKTEST_ENTRY_SIGNALS` | `("BUY",)` | Which bullish signals invest capital (LONG is informational by default — set by the split-half study) |
+| `STALE_FEED_MIN_BARS` | 5 | Identical trailing closes (or missing sessions) before a ticker's feed is declared dead and quarantined |
+| `STALE_FEED_EXEMPT` | empty | Tickers allowed to print flat closes without being flagged (e.g. a T-bill ETF in a zero-rate regime) |
 | `PRICE_BASIS_TOLERANCE` | 0.02 | Frozen-vs-current close divergence (same bar) beyond which a corporate action is declared and frozen dollar values are basis-translated |
+| `MODEL_VERSION` | 2.0.0 | Bumped when detection logic changes materially; part of every ledger row's primary key |
 
 ### Sensitivity Presets
 
-| Level | Percentile Threshold | Z-Score Threshold | Behavior |
-|-------|---------------------|-------------------|----------|
-| **Low** | 99.5th | 3.0 | Only the most extreme anomalies. Fewer signals, highest confidence. |
-| **Medium** | 97.5th | 2.5 | Balanced. The default for daily monitoring. |
-| **High** | 95.0th | 2.0 | Sensitive. Catches early-stage signals. More noise, but earlier detection. |
+Thresholds are fixed sigma cutoffs on the ticker's own standardized deviation — never percentiles of the run's output:
+
+| Level | Reversion threshold (BUY/SELL) | Momentum threshold (LONG/SHORT) | Behavior |
+|-------|-------------------------------|--------------------------------|----------|
+| **Low** | 3.0σ | 2.0σ | Only the most extreme anomalies. Fewer signals, highest confidence. |
+| **Medium** | 2.5σ | 1.5σ | Balanced. The default for daily monitoring. |
+| **High** | 2.0σ | 1.5σ | Sensitive. Catches early-stage signals. More noise, but earlier detection. |
+
+(The momentum threshold is lower because the trajectory requirement — the stretch must still be building — provides the confirmation that reversion setups get from magnitude.)
 
 ### Adding new tickers
 
-1. Add the Yahoo Finance symbol to `DEFAULT_TICKERS` in `config.py`
-2. Add the company name to `TICKER_NAMES`
-3. Add the sector to `TICKER_SECTORS`
-4. Run the pipeline — the system handles everything else
+1. Add one entry to `TICKER_REGISTRY` in `config.py` — symbol, display name, category, fund flag, sector
+2. Run the pipeline — the new ticker is validated, backfilled as a walk-forward simulation over its history, and watermarked; everything else is automatic
 
-Any valid Yahoo Finance symbol works: US equities (`AAPL`), ETFs (`SPY`), indices (`^GSPC`, `^DJI`), crypto (`BTC-USD`), international (`TSM`, `BABA`).
+Any valid Yahoo Finance symbol works: US equities (`AAPL`), ETFs (`SPY`), mutual funds (`DVRUX`), international ADRs (`TSM`, `BABA`).
 
 ---
 
 ## Architecture
 
 ```
-                    Yahoo Finance API
-                          |
-                    [1. Fetch Data]
-                          |
-                    [2. Compute Features]
-                    (returns, volatility, z-scores)
-                          |
-              +-----------+-----------+
-              |           |           |
-         [Fourier]   [Matrix     [Ensemble]   [EWMA]
-                     Profile]
-              |           |           |           |
-              +-----------+-----------+-----------+
-                          |
-                    [3. Consensus Scoring]
-                    (weighted average, 2+ method agreement)
-                          |
-                    [4. Signal Derivation]
-                    (deviation + trajectory → Buy/Sell/Long/Short)
-                          |
-              +-----------+-----------+
-              |                       |
-        [alerts.json]          [Dashboard HTML]
-        (structured data)      (GitHub Pages)
+  committed ledger (data/ledger/*.jsonl)     Yahoo Finance API
+                 |                                 |
+    [0. Restore durable state]           [1. Fetch (anchored history,
+    (SQLite cache + watermarks            retry + coverage report)]
+     rebuilt on every fresh checkout)              |
+                 |                       [2. Compute Features]
+                 |                       (returns, volatility, volume)
+                 |                                 |
+                 |               +--------+--------+--------+
+                 |               |        |        |        |
+                 |          [Fourier] [Matrix [Ensemble] [EWMA]
+                 |                    Profile]
+                 |               +--------+--------+--------+
+                 |                                 |
+                 |               [3. Consensus Scoring — causal]
+                 |               (fixed sigma scale, 2+ method agreement)
+                 |                                 |
+                 +----------> [3a. Reconciliation: price basis + feed health]
+                 |                                 |
+                 +----------> [3b. Edge-only persistence] (only bars past
+                 |            (frozen verdicts, provenance) each watermark)
+                 |                                 |
+                 |               [4. Signal Derivation]
+                 |               (dev_z + trajectory + materiality gate)
+                 |                                 |
+                 +----------> [5. Walk-forward backtest] (full ledger,
+                 |            (next-bar fills, basis-translated targets)
+                 |                                 |
+                 +<---------- ledger export  [6. Dashboard + alerts.json]
+                                             (GitHub Pages)
 ```
 
-The pipeline runs in five stages and typically completes in under 90 seconds for the default 11-ticker watchlist.
+The pipeline runs in seven stages and typically completes in ~5–6 minutes for the full 130-ticker watchlist.
 
 ---
 

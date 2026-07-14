@@ -136,9 +136,11 @@ signals.
 
 ```
 anomaly_detection/
-  config.py              # Tickers, names, sectors, all tunable parameters
+  config.py              # Ticker registry, names, sectors, all tunable parameters
   data_fetch.py          # Yahoo Finance API (retry/backoff) + feature engineering
-  pipeline.py            # 6-stage orchestration with provenance + health
+  ticker_validation.py   # Pre-run symbol validation against yfinance
+  pipeline.py            # 7-stage orchestration with provenance + health
+  adjustments.py         # Price-basis reconciliation + stale-feed watchdog
   alerts.py              # Signal derivation (sigma-based + materiality gate)
   backtest.py            # Walk-forward backtest: next-bar fills, costs, benchmark
   storage.py             # Append-only SQLite cache + git-committed JSONL ledger
@@ -158,8 +160,9 @@ anomaly_detection/
       dashboard.html     # Dashboard template (GitHub Pages)
 data/
   ledger/                # Committed append-only truth (anomalies, signals, watermarks)
-  alerts.json            # Display view for the dashboard (capped)
-  run_health.json        # Coverage + fetch failures for the latest run
+  alerts.json            # Display view + run metadata + per-ticker status (capped)
+  run_health.json        # Coverage, fetch failures, stale feeds, basis breaks
+  history/               # One JSON summary per run + index.json
 ```
 
 ---

@@ -62,7 +62,7 @@ Two regimes, split by what the stretch is doing:
 | any | **REDUCE** | Fourier AND Matrix Profile both flag (structural break) |
 | any | **WATCH** | consensus anomaly without a tradable setup |
 
-**Why fade breakouts?** Measured on this universe (75 tickers, Nov 2024 anchor):
+**Why fade breakouts?** Measured on this universe (Nov 2024 anchor):
 bars stretched more than ~3.5 sigma BELOW trend rebounded +2.3% on average
 (+3.3% median) over the next 10 sessions, while extreme above-trend stretches
 went nowhere. Chasing a capitulation with a SHORT — what a naive momentum rule
