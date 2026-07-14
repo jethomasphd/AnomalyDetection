@@ -42,6 +42,7 @@ from collections import Counter
 import numpy as np
 import pandas as pd
 
+from .adjustments import bar_basis_factor, frozen_close_from_details
 from .config import (
     BACKTEST_BASELINE_TICKER,
     BACKTEST_COST_BPS_PER_SIDE,
@@ -147,8 +148,22 @@ def compute_backtest(
     entry_signals: tuple[str, ...] = BACKTEST_ENTRY_SIGNALS,
     baseline_ticker: str = BACKTEST_BASELINE_TICKER,
     max_hold: int = BACKTEST_MAX_HOLD_TRADING_DAYS,
+    basis_breaks: dict[str, dict] | None = None,
+    frozen_closes: dict[tuple[str, str], float] | None = None,
 ) -> dict:
-    """Run the invest/divest portfolio simulation over the full signal ledger."""
+    """Run the invest/divest portfolio simulation over the full signal ledger.
+
+    `frozen_closes` (from storage.get_frozen_bar_closes) supplies the
+    full-precision detection-time close per (ticker, bar date) — preferred
+    over the rationale's rounded fields when computing the basis factor,
+    so translation is exactly a no-op when nothing changed.
+
+    `basis_breaks` (from adjustments.detect_price_basis_breaks) is the
+    fallback for translating frozen targets when a signal's own bar is
+    absent from `results` (window slid past it / vendor revised the date):
+    without it, an untranslatable pre-split target would silently pass
+    through untouched and never be reachable by post-split closes.
+    """
     empty = {
         "signal_ledger": [],
         "initial_capital": capital, "final_value": capital,
@@ -205,6 +220,40 @@ def compute_backtest(
             continue
         rationale = sig.get("rationale") or {}
         details = rationale.get("details") or {}
+        target = float(details.get("ewma_value") or 0) or None
+        # Frozen dollar values live in the price basis of the fetch that
+        # wrote them; a later split rescales the whole fetched history but
+        # not the ledger. Translate the target into the CURRENT basis via
+        # the signal bar's close in both bases — exact for any retroactive
+        # re-adjustment. Without this, a pre-split target (e.g. $416.75)
+        # is compared against post-split closes (~$95) and can never be
+        # touched, silently rewriting historical exits.
+        bar_i = series["_index"].get(sig["date"])
+        current_bar_close = float(series["Close"][bar_i]) if bar_i is not None else None
+        # Frozen close, best source first: the anomalies-ledger snapshot
+        # (full precision), then the rationale's close field (4dp). The
+        # 2dp-rounded ewma/deviation derivation is a last resort: its
+        # noise (~6e-5 relative) can nudge a target by pennies, so it is
+        # only trusted when the factor clearly indicates a real rescale.
+        frozen = (frozen_closes or {}).get((ticker, sig["date"])) or details.get("close")
+        if frozen:
+            basis = bar_basis_factor(float(frozen), current_bar_close)
+        else:
+            basis = bar_basis_factor(frozen_close_from_details(details), current_bar_close)
+            if basis is not None and abs(basis - 1.0) < 1e-3:
+                basis = 1.0
+        if basis is None and basis_breaks and ticker in basis_breaks:
+            # Signal bar not in the current fetch: fall back to the
+            # ticker-level break factor (exact for the dominant case — a
+            # single split with the missing bar on the pre-split side).
+            basis = basis_breaks[ticker].get("factor")
+            logger.warning(
+                "Backtest: %s signal bar %s absent from the current fetch; "
+                "translating its frozen target with the ticker-level basis "
+                "factor %.4g", ticker, sig["date"], basis,
+            )
+        if target and basis:
+            target /= basis
         candidates.append({
             "ticker": ticker,
             "signal": s,
@@ -212,7 +261,8 @@ def compute_backtest(
             "detected_at": detected_at,
             "provenance": sig.get("provenance") or "live",
             "confidence": sig.get("confidence") or "",
-            "target": float(details.get("ewma_value") or 0) or None,
+            "target": target,
+            "basis_factor": round(basis, 4) if basis else 1.0,
             "methods_flagged": int(rationale.get("methods_flagged") or 0),
             "details": details,
             "entry_i": i,
@@ -291,6 +341,7 @@ def compute_backtest(
                 "detected_at": c["detected_at"],
                 "provenance": c["provenance"],
                 "confidence": c["confidence"],
+                "basis_factor": c["basis_factor"],
                 "methods": _methods_str(c["details"]),
                 "methods_flagged": c["methods_flagged"],
                 "entry_i": c["entry_i"],

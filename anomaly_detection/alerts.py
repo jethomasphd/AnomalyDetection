@@ -289,6 +289,9 @@ def generate_alerts(
                 "deviation_pct": round(float(row.get("deviation_pct", 0)), 2),
                 "dev_z": round(float(row.get("dev_z", 0) or 0), 2),
                 "ewma_value": round(float(row.get("ewma_value", 0)), 2),
+                # Frozen close at the detection-time price basis — the
+                # anchor for basis reconciliation after corporate actions.
+                "close": round(float(row["Close"]), 4),
             },
         }
         alerts.append(alert)
@@ -376,13 +379,31 @@ def append_new_alerts(new_alerts: list[dict], previous_alerts: list[dict], max_a
 merge_alerts = append_new_alerts
 
 
-def alerts_to_json(alerts: list[dict], path: str) -> None:
-    """Write signals to a JSON file."""
+def alerts_to_json(
+    alerts: list[dict],
+    path: str,
+    run_info: dict | None = None,
+    ticker_status: dict | None = None,
+) -> None:
+    """Write signals to a JSON file.
+
+    `run_info` and `ticker_status` are recomputed VIEWS refreshed on every
+    run, alongside the frozen signal rows:
+
+      * run_info proves the model actually ran — how many new bars were
+        scored and through which bar date. A quiet day (0 new signals) is
+        then distinguishable from a job that only re-stamped the file.
+      * ticker_status carries each ticker's current close/date, stale-feed
+        flag, and any price-basis break, so a frozen close from weeks ago
+        is never mistaken for the model's current price.
+    """
     n_new = sum(1 for a in alerts if a.get("is_new"))
     output = {
         "generated_at": datetime.utcnow().isoformat() + "Z",
+        "run": run_info or {},
         "total_signals": len(alerts),
         "new_signals": n_new,
+        "ticker_status": ticker_status or {},
         "signals": alerts,
     }
     with open(path, "w") as f:
@@ -390,14 +411,27 @@ def alerts_to_json(alerts: list[dict], path: str) -> None:
     logger.info("Signals written to %s (%d new, %d total)", path, n_new, len(alerts))
 
 
-def alerts_to_markdown(alerts: list[dict]) -> str:
-    """Render signals as a Markdown summary."""
+def alerts_to_markdown(alerts: list[dict], run_info: dict | None = None) -> str:
+    """Render signals as a Markdown summary.
+
+    `run_info` prints proof-of-run next to the timestamp so a report full
+    of frozen rows on a quiet day cannot read as a re-stamped stale file.
+    """
+    run_line = ""
+    if run_info:
+        run_line = (
+            f"*Run {run_info.get('run_date', '?')}: scored "
+            f"{run_info.get('new_bars_scored', '?')} new bars through "
+            f"{run_info.get('latest_bar_date', '?')} — "
+            f"{run_info.get('new_signals', '?')} new signal(s).*\n"
+        )
     if not alerts:
-        return "## Trading Signals Report\n\nNo anomalies detected.\n"
+        return f"## Trading Signals Report\n\n{run_line}\nNo anomalies detected.\n"
 
     lines = [
         "## Trading Signals Report",
         f"*Generated {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}*\n",
+    ] + ([run_line] if run_line else []) + [
         f"**{len(alerts)} signals generated**\n",
         "| Signal | Confidence | Ticker | Date | Close | Score | Description |",
         "|--------|-----------|--------|------|-------|-------|-------------|",

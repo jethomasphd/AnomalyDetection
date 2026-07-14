@@ -336,6 +336,24 @@ IFOREST_TRAIN_WINDOW = 250
 SEASONAL_PERIOD = 5
 SEASONAL_TREND_WINDOW = 20
 
+# --- Feed health & price-basis reconciliation ---
+# A ticker whose last N closes are identical to the cent is treated as a
+# frozen upstream feed: its new bars are excluded from the frozen record
+# (they are re-scored once the feed moves) and the condition is surfaced
+# in run health and on the dashboard.
+STALE_FEED_MIN_BARS = 5
+# Instruments that may legitimately print identical closes for long runs
+# (e.g. a 1-3 month T-bill ETF while short rates sit near zero). Tickers
+# here are never stale-flagged; use sparingly.
+STALE_FEED_EXEMPT: frozenset[str] = frozenset()
+# Frozen ledger rows record dollar values at the price basis of the fetch
+# that wrote them. When the current fetch's close for the SAME bar diverges
+# from the frozen close by more than this fraction, a corporate action
+# (split / large adjustment) is declared: frozen dollar values get
+# basis-translated wherever they are compared against fresh prices.
+# Routine dividend re-adjustments stay well inside this tolerance.
+PRICE_BASIS_TOLERANCE = 0.02
+
 # --- Signal materiality gate ---
 # A tradable signal (BUY/SELL/LONG/SHORT) requires the price to be at least
 # this far (in %) from its EWMA trend. Statistical anomalies below this

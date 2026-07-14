@@ -378,6 +378,30 @@ def get_signals_for_backtest(db_path: str | None = None) -> list[dict]:
     return out
 
 
+def get_frozen_bar_closes(db_path: str | None = None) -> dict[tuple[str, str], float]:
+    """Return {(ticker, date): close} as frozen at detection time.
+
+    Reads the consensus anomaly rows' feature snapshots — every signal bar
+    has one. This is the reference the price-basis reconciliation compares
+    against the current fetch to detect corporate-action rescales.
+    """
+    conn = _get_conn(db_path)
+    rows = conn.execute(
+        "SELECT ticker, date, features_snapshot FROM anomalies "
+        "WHERE anomaly_type = 'consensus' AND features_snapshot IS NOT NULL"
+    ).fetchall()
+    conn.close()
+    out: dict[tuple[str, str], float] = {}
+    for ticker, date, snapshot in rows:
+        try:
+            close = json.loads(snapshot).get("close")
+        except (json.JSONDecodeError, TypeError, AttributeError):
+            continue
+        if close:
+            out[(ticker, date)] = float(close)
+    return out
+
+
 def get_all_anomalies(limit: int = 5000, db_path: str | None = None) -> list[dict]:
     """Read all anomalies ordered by date desc."""
     conn = _get_conn(db_path)
