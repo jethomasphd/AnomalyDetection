@@ -1,7 +1,684 @@
 {
-  "generated_at": "2026-07-13T22:49:49.610027Z",
+  "generated_at": "2026-07-14T17:40:34.999711Z",
+  "run": {
+    "run_date": "2026-07-14",
+    "new_bars_scored": 3,
+    "latest_bar_date": "2026-07-13",
+    "tickers_scored": 130,
+    "new_signals": 0
+  },
   "total_signals": 200,
-  "new_signals": 1,
+  "new_signals": 0,
+  "ticker_status": {
+    "AAPL": {
+      "last_close": 317.31,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ABBV": {
+      "last_close": 248.0,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ABT": {
+      "last_close": 92.11,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ADI": {
+      "last_close": 386.01,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ADM": {
+      "last_close": 82.04,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "AMAT": {
+      "last_close": 575.39,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "AMD": {
+      "last_close": 534.39,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "AMGN": {
+      "last_close": 360.45,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "AMZN": {
+      "last_close": 247.31,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ANET": {
+      "last_close": 181.15,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "APH": {
+      "last_close": 155.99,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "APP": {
+      "last_close": 442.85,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ARKK": {
+      "last_close": 78.24,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ARM": {
+      "last_close": 298.99,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ASML": {
+      "last_close": 1726.04,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ASTS": {
+      "last_close": 67.58,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "AVGO": {
+      "last_close": 384.05,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "AXP": {
+      "last_close": 354.43,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "AZN": {
+      "last_close": 169.47,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "BABA": {
+      "last_close": 112.35,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "BAC": {
+      "last_close": 59.5,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "BG": {
+      "last_close": 117.4,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "BIL": {
+      "last_close": 91.5,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "BLK": {
+      "last_close": 1031.56,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "BMY": {
+      "last_close": 59.34,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "BNUEX": {
+      "last_close": 13.5,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "BRK-B": {
+      "last_close": 496.85,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "BX": {
+      "last_close": 122.04,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "C": {
+      "last_close": 140.71,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "CAT": {
+      "last_close": 931.47,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "CB": {
+      "last_close": 354.74,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "COP": {
+      "last_close": 112.85,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "COST": {
+      "last_close": 926.43,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "CRM": {
+      "last_close": 171.22,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "CRWD": {
+      "last_close": 187.91,
+      "last_date": "2026-07-13",
+      "stale_feed": false,
+      "price_basis": {
+        "factor": 4.0,
+        "n_bars_affected": 6,
+        "n_bars_checked": 6,
+        "last_affected_date": "2026-06-01"
+      }
+    },
+    "CSCO": {
+      "last_close": 119.25,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "CVX": {
+      "last_close": 182.2,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "D": {
+      "last_close": 70.8,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "DE": {
+      "last_close": 585.64,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "DELL": {
+      "last_close": 427.11,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "DHR": {
+      "last_close": 200.16,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "DIA": {
+      "last_close": 524.47,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "DIS": {
+      "last_close": 96.0,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "DVRUX": {
+      "last_close": 18.77,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ETN": {
+      "last_close": 402.85,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "GE": {
+      "last_close": 353.42,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "GEV": {
+      "last_close": 1042.6,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "GILD": {
+      "last_close": 131.4,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "GOOGL": {
+      "last_close": 352.51,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "GS": {
+      "last_close": 1045.91,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "HD": {
+      "last_close": 337.11,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "HON": {
+      "last_close": 222.25,
+      "last_date": "2026-07-13",
+      "stale_feed": false,
+      "price_basis": {
+        "factor": 0.9535,
+        "n_bars_affected": 5,
+        "n_bars_checked": 5,
+        "last_affected_date": "2025-10-23"
+      }
+    },
+    "HSBC": {
+      "last_close": 98.09,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "IBM": {
+      "last_close": 290.23,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "INTC": {
+      "last_close": 103.12,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ISRG": {
+      "last_close": 407.12,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "IWM": {
+      "last_close": 293.48,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "JNJ": {
+      "last_close": 257.77,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "JPM": {
+      "last_close": 334.53,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "KLAC": {
+      "last_close": 222.25,
+      "last_date": "2026-07-13",
+      "stale_feed": false,
+      "price_basis": {
+        "factor": 10.0,
+        "n_bars_affected": 2,
+        "n_bars_checked": 5,
+        "last_affected_date": "2026-01-15"
+      }
+    },
+    "KMI": {
+      "last_close": 32.24,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "KO": {
+      "last_close": 84.25,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "LIN": {
+      "last_close": 524.06,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "LLY": {
+      "last_close": 1181.87,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "LMT": {
+      "last_close": 520.68,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "LOW": {
+      "last_close": 207.7,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "LRCX": {
+      "last_close": 329.92,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "MA": {
+      "last_close": 537.7,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "MCD": {
+      "last_close": 272.61,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "MCK": {
+      "last_close": 812.28,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "META": {
+      "last_close": 656.73,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "MRK": {
+      "last_close": 124.03,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "MRVL": {
+      "last_close": 217.53,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "MS": {
+      "last_close": 221.09,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "MSFT": {
+      "last_close": 390.99,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "MU": {
+      "last_close": 937.0,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "NEE": {
+      "last_close": 88.38,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "NFLX": {
+      "last_close": 73.83,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "NKE": {
+      "last_close": 43.76,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "NSC": {
+      "last_close": 327.59,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "NVDA": {
+      "last_close": 203.53,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "NVO": {
+      "last_close": 49.28,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "NVS": {
+      "last_close": 153.37,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "ORCL": {
+      "last_close": 131.54,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "PANW": {
+      "last_close": 330.3,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "PEP": {
+      "last_close": 138.49,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "PFE": {
+      "last_close": 24.48,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "PG": {
+      "last_close": 148.37,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "PLD": {
+      "last_close": 142.16,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "PLTR": {
+      "last_close": 130.04,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "PM": {
+      "last_close": 180.19,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "QCOM": {
+      "last_close": 183.98,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "QGRPX": {
+      "last_close": 18.95,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "QQQ": {
+      "last_close": 711.74,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "RTX": {
+      "last_close": 196.39,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "RY": {
+      "last_close": 210.69,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "SAP": {
+      "last_close": 159.97,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "SBUX": {
+      "last_close": 107.34,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "SCHW": {
+      "last_close": 102.38,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "SHEL": {
+      "last_close": 83.98,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "SHOP": {
+      "last_close": 124.74,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "SPY": {
+      "last_close": 749.17,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "STM": {
+      "last_close": 68.47,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "T": {
+      "last_close": 21.55,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "TD": {
+      "last_close": 120.63,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "TGT": {
+      "last_close": 134.77,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "TJX": {
+      "last_close": 150.53,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "TM": {
+      "last_close": 174.75,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "TMO": {
+      "last_close": 528.51,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "TMUS": {
+      "last_close": 188.41,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "TSLA": {
+      "last_close": 394.76,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "TSM": {
+      "last_close": 421.58,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "TSN": {
+      "last_close": 57.92,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "TTE": {
+      "last_close": 81.21,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "TXN": {
+      "last_close": 298.57,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "UBER": {
+      "last_close": 74.26,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "UNH": {
+      "last_close": 429.09,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "UNP": {
+      "last_close": 289.13,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "V": {
+      "last_close": 357.75,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "VGT": {
+      "last_close": 115.58,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "VOO": {
+      "last_close": 688.5,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "VTI": {
+      "last_close": 369.78,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "VZ": {
+      "last_close": 42.68,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "WELL": {
+      "last_close": 234.55,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "WFC": {
+      "last_close": 87.67,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "WMB": {
+      "last_close": 74.46,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "WMT": {
+      "last_close": 114.78,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "XLE": {
+      "last_close": 56.74,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "XLF": {
+      "last_close": 56.07,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    },
+    "XOM": {
+      "last_close": 144.51,
+      "last_date": "2026-07-13",
+      "stale_feed": false
+    }
+  },
   "signals": [
     {
       "ticker": "AZN",
@@ -17,7 +694,7 @@
       "consensus_score": 0.4662,
       "description": "AstraZeneca (ADR) (AZN) is trading 7.3% below its 20-day trend ($182.77) \u2014 a 2.7-sigma stretch for this ticker. Downward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a short position or protective puts; stops above the recent high.",
       "run_date": "2026-07-13",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-07-13",
       "detected_at": "2026-07-13",
       "provenance": "live",
