@@ -1,5 +1,5 @@
 {
-  "run_date": "2026-08-07",
+  "run_date": "2026-08-10",
   "status": "ok",
   "coverage_pct": 100.0,
   "tickers_requested": 130,
@@ -26,8 +26,8 @@
       "last_affected_date": "2026-06-01"
     }
   },
-  "latest_bar_date": "2026-08-07",
+  "latest_bar_date": "2026-08-10",
   "new_bars_scored": 130,
-  "duration_seconds": 309.5,
+  "duration_seconds": 373.1,
   "model_version": "2.0.0"
 }
