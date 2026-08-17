@@ -1,5 +1,5 @@
 {
-  "run_date": "2026-08-14",
+  "run_date": "2026-08-17",
   "status": "ok",
   "coverage_pct": 100.0,
   "tickers_requested": 130,
@@ -8,7 +8,7 @@
   "stale_feeds": {},
   "price_basis_breaks": {
     "HON": {
-      "factor": 0.9535,
+      "factor": 0.9564,
       "n_bars_affected": 5,
       "n_bars_checked": 5,
       "last_affected_date": "2025-10-23"
@@ -26,8 +26,8 @@
       "last_affected_date": "2026-06-01"
     }
   },
-  "latest_bar_date": "2026-08-14",
+  "latest_bar_date": "2026-08-17",
   "new_bars_scored": 130,
-  "duration_seconds": 220.8,
+  "duration_seconds": 330.9,
   "model_version": "2.0.0"
 }
