@@ -1,5 +1,5 @@
 {
-  "run_date": "2026-08-17",
+  "run_date": "2026-08-18",
   "status": "ok",
   "coverage_pct": 100.0,
   "tickers_requested": 130,
@@ -14,7 +14,7 @@
       "last_affected_date": "2025-10-23"
     },
     "KLAC": {
-      "factor": 10.0,
+      "factor": 10.0113,
       "n_bars_affected": 2,
       "n_bars_checked": 5,
       "last_affected_date": "2026-01-15"
@@ -26,8 +26,8 @@
       "last_affected_date": "2026-06-01"
     }
   },
-  "latest_bar_date": "2026-08-17",
+  "latest_bar_date": "2026-08-18",
   "new_bars_scored": 130,
-  "duration_seconds": 330.9,
+  "duration_seconds": 324.8,
   "model_version": "2.0.0"
 }
