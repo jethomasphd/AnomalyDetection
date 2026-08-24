@@ -1,0 +1,49 @@
+{
+  "run_date": "2026-08-24",
+  "started_at": "2026-08-24T22:14:42.401983Z",
+  "finished_at": "2026-08-24T22:20:01.476629Z",
+  "duration_seconds": 319.1,
+  "tickers_analyzed": 130,
+  "total_observations": 58757,
+  "anomalies_detected": 639,
+  "new_bars_scored": 130,
+  "new_signals": 0,
+  "actionable_signals": 188,
+  "total_signals_view": 200,
+  "ledger_signal_rows": 639,
+  "ledger_anomaly_rows": 1933,
+  "backtest_total_gain": 50767.96,
+  "backtest_n_trades": 72,
+  "sensitivity": "medium",
+  "start_date": "2024-11-01",
+  "model_version": "2.0.0",
+  "fetch": {
+    "requested": 130,
+    "fetched": 130,
+    "failed": [],
+    "coverage_pct": 100.0
+  },
+  "validation_failures": [],
+  "latest_bar_date": "2026-08-24",
+  "stale_feeds": {},
+  "price_basis_breaks": {
+    "HON": {
+      "factor": 0.9564,
+      "n_bars_affected": 5,
+      "n_bars_checked": 5,
+      "last_affected_date": "2025-10-23"
+    },
+    "KLAC": {
+      "factor": 10.0113,
+      "n_bars_affected": 2,
+      "n_bars_checked": 5,
+      "last_affected_date": "2026-01-15"
+    },
+    "CRWD": {
+      "factor": 4.0,
+      "n_bars_affected": 6,
+      "n_bars_checked": 6,
+      "last_affected_date": "2026-06-01"
+    }
+  }
+}
