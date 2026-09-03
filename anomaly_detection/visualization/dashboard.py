@@ -10,14 +10,20 @@ from jinja2 import Environment, FileSystemLoader
 
 from ..adjustments import bar_basis_factor
 from ..config import (
+    BACKTEST_BASELINE_TICKER,
+    BACKTEST_MAX_HOLD_TRADING_DAYS,
+    BACKTEST_UNIT_DOLLARS,
     CATEGORY_LABELS,
     CATEGORY_ORDER,
     DOCS_DIR,
     MODEL_VERSION,
+    PORTFOLIO_CAPITAL,
     PRICE_BASIS_TOLERANCE,
+    SENSITIVITY_PRESETS,
     TICKER_NAMES,
     TICKER_REGISTRY,
     TICKER_SECTORS,
+    TRADE_MIN_ABS_DEVIATION_PCT,
     ticker_display,
     tickers_by_category,
 )
@@ -130,6 +136,47 @@ def _annotate_price_basis(
         signal_close_now = a["close"] / factor  # frozen close in today's basis
         if signal_close_now > 0:
             a["pct_since"] = round((last_close / signal_close_now - 1) * 100, 1)
+
+
+def explainer_context(backtest: dict | None, sensitivity: str = "medium") -> dict:
+    """Facts behind the dashboard's "What am I looking at?" panel.
+
+    Everything the panel states — the sigma threshold, the materiality gate,
+    the slice size, the time stop, and the record so far — is read from the
+    protocol parameters and the walk-forward backtest, never typed into the
+    template, so the copy can never drift from what the model actually does.
+    """
+    bt = backtest or {}
+    preset = SENSITIVITY_PRESETS.get(str(sensitivity).lower(), SENSITIVITY_PRESETS["medium"])
+    capital = float(bt.get("initial_capital") or PORTFOLIO_CAPITAL)
+    unit = float(bt.get("unit") or BACKTEST_UNIT_DOLLARS)
+    stats = bt.get("stats") or {}
+    prov = (bt.get("provenance_stats") or {}).get("live") or {}
+    n_trades = int(bt.get("n_trades") or 0)
+    n_winning = int(bt.get("n_winning") or 0)
+    final_value = bt.get("final_value")
+    benchmark_pct = stats.get("benchmark_return_pct")
+    return {
+        "z_threshold": preset["z_threshold"],
+        "materiality_pct": TRADE_MIN_ABS_DEVIATION_PCT,
+        "max_hold": int(bt.get("max_hold_days") or BACKTEST_MAX_HOLD_TRADING_DAYS),
+        "baseline": bt.get("baseline_ticker") or BACKTEST_BASELINE_TICKER,
+        "unit_pct": int(round(unit / capital * 100)) if capital else 0,
+        "capital": capital,
+        # The record so far — only shown once the backtest has something to say.
+        "has_record": bool(bt.get("signal_ledger")) and final_value is not None and benchmark_pct is not None,
+        "final_value": final_value,
+        "benchmark_value": (capital * (1 + benchmark_pct / 100.0)) if benchmark_pct is not None else None,
+        "strategy_pct": stats.get("strategy_return_pct"),
+        "benchmark_pct": benchmark_pct,
+        "excess_gain": stats.get("excess_gain"),
+        "n_trades": n_trades,
+        "win_rate_pct": (n_winning / n_trades * 100.0) if n_trades else None,
+        "live_n": int(prov.get("n_trades") or 0),
+        "live_pnl": float(prov.get("realized_gain") or 0) + float(prov.get("unrealized_gain") or 0),
+        "start_date": bt.get("start_date"),
+        "end_date": bt.get("end_date"),
+    }
 
 
 def _deep_dive_buttons(tickers: list[str]) -> tuple[list[str], list[str]]:
@@ -248,6 +295,7 @@ def generate_dashboard(
         heatmap_json=heatmap_json,
         backtest=backtest,
         backtest_chart_json=backtest_chart_json,
+        explainer=explainer_context(backtest, sensitivity),
         pinned_tickers=pinned_tickers,
         remaining_tickers=remaining_tickers,
         category_labels=CATEGORY_LABELS,

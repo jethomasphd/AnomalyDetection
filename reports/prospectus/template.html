@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Signal Prospectus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Libre+Franklin:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --paper: #FFFFFF;
+    --ground: #E4E8ED;
+    --ink: #14202E;
+    --ink-2: #4E5B6B;
+    --ink-3: #7C8794;
+    --rule: #D5DBE2;
+    --rule-2: #EDF0F3;
+    --tint: #F3F5F8;
+    --navy: #0F2340;
+    --brass: #A67C2E;
+    --s1: #2B5797;
+    --s2: #A67C2E;
+    --pos: #1F9D8B;
+    --neg: #B23A3A;
+    --neg-text: #8C2F2F;
+    --muted-bar: #C5CDD6;
+    --band: rgba(15, 35, 64, 0.05);
+    --serif: 'EB Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+    --sans: 'Libre Franklin', 'Franklin Gothic Medium', 'Helvetica Neue', Arial, sans-serif;
+    --mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --ground: #171B21; }
+  }
+  :root[data-theme="dark"] { --ground: #171B21; }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: var(--sans); font-size: 10.5pt; line-height: 1.55;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  .doc {
+    background: var(--paper); color: var(--ink);
+    max-width: 8.5in; margin: 0 auto; padding: 0.85in 0.9in 1in;
+    box-shadow: 0 1px 0 rgba(20,32,46,0.06), 0 12px 40px rgba(20,32,46,0.12);
+  }
+  @media (max-width: 700px) { .doc { padding: 1.4rem 1.1rem; } }
+
+  h1, h2, h3, h4 { font-weight: 500; margin: 0; text-wrap: balance; }
+  h1 { font-family: var(--serif); font-size: 26pt; line-height: 1.15; color: var(--navy); letter-spacing: -0.005em; }
+  h2 { font-family: var(--serif); font-size: 15.5pt; line-height: 1.25; color: var(--navy); margin-top: 1.6rem; margin-bottom: 0.45rem; }
+  h3 { font-family: var(--sans); font-size: 9.5pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); margin-top: 1.1rem; margin-bottom: 0.3rem; }
+  p { margin: 0 0 0.75rem; max-width: 66ch; }
+  p.lead { font-family: var(--serif); font-size: 13.5pt; line-height: 1.45; color: var(--ink); max-width: 60ch; }
+  em { font-style: italic; }
+  strong { font-weight: 600; }
+  a { color: var(--s1); text-decoration: none; }
+  a:hover, a:focus-visible { text-decoration: underline; outline: none; }
+  ul, ol { margin: 0 0 0.85rem; padding-left: 1.2rem; max-width: 66ch; }
+  li { margin-bottom: 0.3rem; }
+  li::marker { color: var(--ink-3); }
+  small, .small { font-size: 8.5pt; color: var(--ink-2); }
+  .tk { font-family: var(--mono); font-size: 0.92em; letter-spacing: 0.01em; }
+  .neg { color: var(--neg-text); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .eyebrow { font-family: var(--sans); font-size: 8pt; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); margin-bottom: 0.5rem; }
+  .sec { break-before: page; page-break-before: always; padding-top: 0.2rem; }
+  .sec-head { display: flex; align-items: baseline; gap: 1rem; border-bottom: 1px solid var(--ink); padding-bottom: 0.6rem; margin-bottom: 1.1rem; }
+  .sec-head .no { font-family: var(--serif); font-size: 26pt; color: var(--brass); font-variant-numeric: lining-nums; min-width: 1.6em; }
+  .sec-head h1 { flex: 1; }
+  .sec-head .pgmark { font-size: 1px; color: var(--paper); position: absolute; }
+
+  /* Cover */
+  .cover { height: 9.3in; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover .top { display: flex; justify-content: space-between; align-items: flex-start; border-top: 3px solid var(--navy); padding-top: 0.6rem; }
+  .cover .house { font-size: 8pt; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
+  .cover .title { margin-top: 2.2in; }
+  .cover .title .name { font-family: var(--serif); font-size: 64pt; line-height: 0.95; color: var(--navy); font-weight: 500; letter-spacing: -0.01em; }
+  .cover .title .sub { font-family: var(--serif); font-size: 17pt; color: var(--ink-2); margin-top: 0.8rem; font-style: italic; max-width: 26em; }
+  .cover .rule { width: 2.2in; border-top: 1px solid var(--brass); margin: 1.4rem 0 1.2rem; }
+  .cover .kind { font-size: 9.5pt; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); }
+  .cover .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 2rem; border-top: 1px solid var(--rule); padding-top: 0.9rem; }
+  .cover .meta div { display: grid; grid-template-columns: 9em 1fr; gap: 0.8rem; font-size: 9pt; }
+  .cover .meta dt { color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; font-size: 7.5pt; font-weight: 600; padding-top: 2px; }
+  .cover .meta dd { margin: 0; color: var(--ink); }
+  .cover .epigraph { font-family: var(--serif); font-style: italic; font-size: 12pt; color: var(--ink-2); max-width: 30em; }
+
+  /* Notice */
+  .notice p { font-size: 8.8pt; line-height: 1.5; color: var(--ink-2); max-width: none; }
+  .notice p strong { color: var(--ink); }
+
+  /* TOC */
+  .toc { list-style: none; padding: 0; margin: 0; max-width: none; }
+  .toc li { display: grid; grid-template-columns: 2.2em 1fr auto; gap: 0.6rem; align-items: baseline; padding: 0.42rem 0; border-bottom: 1px solid var(--rule-2); margin: 0; }
+  .toc li.appendix { grid-template-columns: 2.2em 1fr auto; }
+  .toc .n { font-family: var(--serif); color: var(--brass); font-size: 12pt; }
+  .toc .t { font-family: var(--serif); font-size: 12.5pt; color: var(--ink); }
+  .toc .d { display: block; font-family: var(--sans); font-size: 8.5pt; color: var(--ink-3); margin-top: 1px; }
+  .toc .pg { font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 9.5pt; min-width: 2em; text-align: right; }
+  .toc .pg:empty::before { content: ""; }
+  @media screen { .toc .pg { display: none; } }
+
+  /* Figures (stat row) */
+  .figs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin: 1rem 0 1.2rem; }
+  .figs.three { grid-template-columns: repeat(3, 1fr); }
+  .fig { border-top: 1px solid var(--brass); padding-top: 0.45rem; }
+  .fig .v { font-size: 20pt; font-weight: 600; line-height: 1.1; color: var(--navy); letter-spacing: -0.01em; }
+  .fig .v.neg { color: var(--neg-text); }
+  .fig .l { font-size: 7.6pt; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-top: 0.3rem; }
+  .fig .c { font-size: 8.6pt; color: var(--ink-2); margin-top: 0.15rem; font-variant-numeric: tabular-nums; }
+  @media (max-width: 700px) { .figs, .figs.three { grid-template-columns: 1fr 1fr; } }
+
+  /* Callout */
+  .callout { border-left: 3px solid var(--navy); background: var(--tint); padding: 0.8rem 1rem 0.6rem; margin: 1rem 0 1.1rem; }
+  .callout .eyebrow { margin-bottom: 0.25rem; }
+  .callout p { max-width: none; margin-bottom: 0.4rem; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* Tables */
+  .tbl-wrap { overflow-x: auto; margin: 0.5rem 0 1rem; }
+  table { border-collapse: collapse; width: 100%; font-size: 9pt; line-height: 1.35; }
+  th, td { padding: 0.36rem 0.5rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule-2); }
+  thead th { font-size: 7.4pt; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--ink); padding-bottom: 0.3rem; }
+  th.r, td.r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.k { color: var(--ink-2); }
+  tr.total td { border-top: 1px solid var(--ink); border-bottom: none; font-weight: 600; }
+  tr.group td { background: var(--tint); font-weight: 600; font-size: 8pt; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+  tr.dim td { color: var(--ink-3); }
+  table.terms td:first-child { width: 32%; color: var(--ink-2); font-weight: 500; }
+  table.terms td { border-bottom: 1px solid var(--rule-2); padding: 0.42rem 0.5rem; }
+  table.compact { font-size: 8.2pt; }
+  table.compact th, table.compact td { padding: 0.24rem 0.4rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2rem; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* Charts */
+  figure { margin: 0.9rem 0 1.1rem; }
+  figcaption { font-size: 8.4pt; color: var(--ink-2); margin-top: 0.4rem; max-width: 70ch; }
+  figcaption strong { color: var(--ink); }
+  .legend { display: flex; gap: 1.2rem; font-size: 8.4pt; color: var(--ink-2); margin-bottom: 0.3rem; }
+  .legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .legend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid; border-radius: 2px; }
+  .legend i.s1 { border-color: var(--s1); }
+  .legend i.s2 { border-color: var(--s2); }
+  .legend b { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+  .legend b.pos { background: var(--pos); }
+  .legend b.neg { background: var(--neg); }
+  .chart { width: 100%; height: auto; display: block; overflow: visible; }
+  .chart .grid { stroke: var(--rule); stroke-width: 1; }
+  .chart .grid.zero { stroke: var(--ink-3); }
+  .chart .tick { font-family: var(--sans); font-size: 10px; fill: var(--ink-3); }
+  .chart .val { font-family: var(--sans); font-size: 10px; font-weight: 500; fill: var(--ink); }
+  .chart .end-label { font-family: var(--sans); font-size: 11px; font-weight: 600; fill: var(--ink); }
+  .chart .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .chart .line.s1 { stroke: var(--s1); }
+  .chart .line.s2 { stroke: var(--s2); }
+  .chart .dot { stroke: var(--paper); stroke-width: 2; }
+  .chart .dot.s1 { fill: var(--s1); }
+  .chart .dot.s2 { fill: var(--s2); }
+  .chart .area.s1 { fill: var(--s1); fill-opacity: 0.1; stroke: none; }
+  .chart .bar { stroke: none; }
+  .chart .bar.pos { fill: var(--pos); }
+  .chart .bar.neg { fill: var(--neg); }
+  .chart .bar.s1 { fill: var(--s1); }
+  .chart .bar.muted { fill: var(--muted-bar); }
+  .chart .band { fill: var(--band); }
+  .chart .band-label { font-family: var(--sans); font-size: 9px; fill: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
+  .chart .marker { stroke: var(--ink-3); stroke-width: 1; }
+  .chart .xhair { stroke: var(--ink-2); stroke-width: 1; }
+  .chart .xdot.s1 { fill: var(--s1); stroke: var(--paper); stroke-width: 2; }
+  .chart .xdot.s2 { fill: var(--s2); stroke: var(--paper); stroke-width: 2; }
+  .chart .hit { cursor: crosshair; }
+  .tooltip { position: absolute; pointer-events: none; background: var(--navy); color: #fff; font-size: 8.5pt; line-height: 1.4; padding: 0.4rem 0.6rem; border-radius: 3px; white-space: nowrap; display: none; z-index: 5; font-variant-numeric: tabular-nums; }
+  .tooltip b { color: #fff; font-weight: 600; display: block; margin-bottom: 1px; }
+  .tooltip i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+  .tooltip i.s1 { background: var(--s1); } .tooltip i.s2 { background: var(--s2); }
+  .chart-wrap { position: relative; }
+
+  /* Process diagram */
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; margin: 0.8rem 0 1rem; }
+  .flow .step { border: 1px solid var(--rule); padding: 0.55rem 0.7rem; font-size: 8.6pt; line-height: 1.4; background: var(--paper); }
+  .flow .step .t { font-weight: 600; color: var(--navy); display: block; margin-bottom: 0.15rem; }
+  .flow .step .q { font-family: var(--serif); font-style: italic; color: var(--ink-2); display: block; margin-bottom: 0.25rem; }
+  @media (max-width: 700px) { .flow { grid-template-columns: 1fr 1fr; } }
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 1.4rem; margin: 0.6rem 0 1rem; }
+  .rules .rule-box { border-top: 1px solid var(--rule); padding-top: 0.45rem; font-size: 9pt; }
+  .rules .rule-box .t { font-weight: 600; color: var(--navy); }
+
+  /* Risk factors */
+  .risk h3 { margin-top: 0.9rem; text-transform: none; letter-spacing: 0; font-family: var(--serif); font-size: 12pt; font-weight: 500; color: var(--navy); }
+  .risk p { max-width: none; font-size: 9.6pt; }
+
+  /* Footer / colophon */
+  .colophon { margin-top: 2rem; border-top: 1px solid var(--rule); padding-top: 0.6rem; font-size: 8pt; color: var(--ink-3); }
+  .avoid { break-inside: avoid; page-break-inside: avoid; }
+  tr { break-inside: avoid; page-break-inside: avoid; }
+  h2, h3 { break-after: avoid; page-break-after: avoid; }
+
+  @media print {
+    body { background: #fff; font-size: 10pt; }
+    .doc { max-width: none; margin: 0; padding: 0; box-shadow: none; }
+    .cover { height: 9.35in; }
+    .tooltip, .hover { display: none !important; }
+    a { color: inherit; }
+    .figs { gap: 1rem; }
+  }
+  @page { size: Letter; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="doc">
+
+<!-- ===================================================== COVER -->
+<section class="cover" id="cover">
+  <div class="top">
+    <div class="house">{{ house }}</div>
+    <div class="house">Strictly private &amp; confidential</div>
+  </div>
+  <div class="title">
+    <div class="name">The Signal</div>
+    <div class="sub">A systematic washout-reversion overlay on the S&amp;P&nbsp;500, built on four causal anomaly detectors and an append-only audit trail.</div>
+    <div class="rule"></div>
+    <div class="kind">Investment prospectus &amp; proposal for corporate capital</div>
+  </div>
+  <div>
+    <p class="epigraph">“The noise is what they sell you. The signal is what we extract.”</p>
+    <div class="meta">
+      <div><dt>Prepared for</dt><dd>The Office of the Chief Executive</dd></div>
+      <div><dt>Prepared by</dt><dd>{{ author }} · {{ house }}</dd></div>
+      <div><dt>Document date</dt><dd>{{ generated_at }}</dd></div>
+      <div><dt>Data as of</dt><dd>Close of {{ as_of_long }}</dd></div>
+      <div><dt>Model version</dt><dd><span class="tk">{{ model_version }}</span> · causal regime · commit <span class="tk">{{ commit }}</span></dd></div>
+      <div><dt>Record</dt><dd>{{ anchor_long }} – {{ end_long }} ({{ n_days }} sessions)</dd></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================== NOTICE -->
+<section class="sec notice" id="notice">
+  <div class="eyebrow">Important information</div>
+  <h1>Notice to the reader</h1>
+  <p style="margin-top:0.8rem"><strong>Purpose.</strong> This document describes an internal, systematic equity strategy (“The Signal”) and proposes a framework under which company capital could be allocated to it. It is prepared for the Office of the Chief Executive and the board or committee responsible for treasury policy. It is not an offer to sell, or a solicitation of an offer to buy, any security, and it is not investment, legal, tax or accounting advice. Any allocation decision remains solely with the company’s governing bodies.</p>
+  <p><strong>Hypothetical performance.</strong> The performance presented in Sections 5 to 8 is a <em>walk-forward simulation</em>: the detection engine is causal (every verdict for a trading day uses only data available at that day’s close, a property enforced by the system’s test suite), and the simulation fills every trade at the close of the session <em>after</em> the signal existed, after transaction costs of {{ cost_bps }} basis points per side. It is nonetheless a simulation. It does not reflect actual trading, market impact, financing, taxes, or the behaviour of a human operator under stress. Hypothetical results have inherent limitations, including that they are generally prepared with the benefit of hindsight in the choice of universe and parameters. <strong>Past performance, simulated or real, is not a reliable indicator of future results.</strong></p>
+  <p><strong>Live record.</strong> Verdicts produced by scheduled runs on unseen data since {{ live_start_long }} are reported separately as the out-of-sample record (Section 6). That record is short and should be weighed accordingly.</p>
+  <p><strong>Sources.</strong> Every figure in this document is computed from files committed to the strategy’s repository as of the run dated {{ run_date }} (commit <span class="tk">{{ commit }}</span>): the append-only signal ledger, the run history, the run-health report and the walk-forward backtest rendered to the operational dashboard. The document is regenerated by <span class="tk">reports/prospectus/build_prospectus.py</span>; no number in it is typed by hand. Price data are sourced from Yahoo Finance via the <span class="tk">yfinance</span> library and are subject to vendor revision.</p>
+  <p><strong>Risk.</strong> The strategy is fully invested in US-listed equities at all times and carries the full market risk of the S&amp;P&nbsp;500 in addition to single-name risk. An investor could lose a substantial portion of the capital allocated. Section 9 sets out the principal risk factors and should be read in full before any decision is taken.</p>
+  <p><strong>Confidentiality.</strong> This document contains proprietary methodology and is intended solely for its addressees. It should not be reproduced or distributed, in whole or in part, without the written consent of {{ house }}.</p>
+</section>
+
+<!-- ===================================================== CONTENTS -->
+<section class="sec" id="contents">
+  <div class="eyebrow">Contents</div>
+  <h1>Table of contents</h1>
+  <ol class="toc" style="margin-top:1rem">
+    <li><span class="n">1</span><span class="t"><a href="#s1">Executive summary</a><span class="d">The proposition, the record, and the recommendation in two pages</span></span><span class="pg">{{ toc_pages.get('s1','') }}</span></li>
+    <li><span class="n">2</span><span class="t"><a href="#s2">Investment thesis</a><span class="d">Why washouts revert, why the default position is the market, why the evidence can be trusted</span></span><span class="pg">{{ toc_pages.get('s2','') }}</span></li>
+    <li><span class="n">3</span><span class="t"><a href="#s3">Strategy and process</a><span class="d">Four causal detectors, the signal rules, and the invest/divest capital model</span></span><span class="pg">{{ toc_pages.get('s3','') }}</span></li>
+    <li><span class="n">4</span><span class="t"><a href="#s4">Investment universe</a><span class="d">{{ n_tickers }} securities across {{ n_categories }} categories</span></span><span class="pg">{{ toc_pages.get('s4','') }}</span></li>
+    <li><span class="n">5</span><span class="t"><a href="#s5">Performance record</a><span class="d">Growth of {{ capital }}, risk statistics, drawdowns, monthly and calendar-year returns</span></span><span class="pg">{{ toc_pages.get('s5','') }}</span></li>
+    <li><span class="n">6</span><span class="t"><a href="#s6">The live record</a><span class="d">Out-of-sample trades since {{ live_start_long }}</span></span><span class="pg">{{ toc_pages.get('s6','') }}</span></li>
+    <li><span class="n">7</span><span class="t"><a href="#s7">Trade analytics</a><span class="d">Where the return came from: exits, methods, categories, winners and losers</span></span><span class="pg">{{ toc_pages.get('s7','') }}</span></li>
+    <li><span class="n">8</span><span class="t"><a href="#s8">Capacity and scaling</a><span class="d">The {{ n_skipped }} signals the {{ capital }} book could not fund, and what a larger book changes</span></span><span class="pg">{{ toc_pages.get('s8','') }}</span></li>
+    <li><span class="n">9</span><span class="t"><a href="#s9">Risk factors</a><span class="d">What can go wrong, stated plainly</span></span><span class="pg">{{ toc_pages.get('s9','') }}</span></li>
+    <li><span class="n">10</span><span class="t"><a href="#s10">Validation, controls and infrastructure</a><span class="d">Causality, fixed thresholds, the split-half study, data integrity, the audit trail</span></span><span class="pg">{{ toc_pages.get('s10','') }}</span></li>
+    <li><span class="n">11</span><span class="t"><a href="#s11">Proposed allocation of company capital</a><span class="d">Tiers, conditions precedent, guardrails, governance and reporting</span></span><span class="pg">{{ toc_pages.get('s11','') }}</span></li>
+    <li><span class="n">12</span><span class="t"><a href="#s12">Summary of key terms</a><span class="d">The strategy on one page</span></span><span class="pg">{{ toc_pages.get('s12','') }}</span></li>
+    <li class="appendix"><span class="n">A</span><span class="t"><a href="#appA">Complete trade ledger</a></span><span class="pg">{{ toc_pages.get('appA','') }}</span></li>
+    <li class="appendix"><span class="n">B</span><span class="t"><a href="#appB">The universe in full</a></span><span class="pg">{{ toc_pages.get('appB','') }}</span></li>
+    <li class="appendix"><span class="n">C</span><span class="t"><a href="#appC">Methodology notes and glossary</a></span><span class="pg">{{ toc_pages.get('appC','') }}</span></li>
+    <li class="appendix"><span class="n">D</span><span class="t"><a href="#appD">Data provenance and reproduction</a></span><span class="pg">{{ toc_pages.get('appD','') }}</span></li>
+  </ol>
+</section>
+
+<!-- ===================================================== 1 EXECUTIVE SUMMARY -->
+<section class="sec" id="s1">
+  <div class="sec-head"><span class="no">1</span><h1>Executive summary<span class="pgmark">§S01§</span></h1></div>
+  <p class="lead">The Signal is a long-only overlay on a passive S&amp;P&nbsp;500 position. The book holds {{ bench }} by default and moves {{ unit_pct }} slices into individual large-cap securities only when the detection engine identifies a statistically extreme washout. It never shorts, never borrows, and never holds a derivative.</p>
+  <div class="figs">
+    <div class="fig"><div class="v">{{ total_ret }}</div><div class="l">Total return</div><div class="c">{{ bench }} alone {{ bench_total }} · {{ years }} years</div></div>
+    <div class="fig"><div class="v">{{ excess_pp }}</div><div class="l">Excess over {{ bench }}</div><div class="c">{{ excess_usd }} on {{ capital }}</div></div>
+    <div class="fig"><div class="v">{{ sharpe }}</div><div class="l">Sharpe ratio</div><div class="c">{{ bench }} {{ bench_sharpe }} · beta {{ beta }}</div></div>
+    <div class="fig"><div class="v">{{ mdd }}</div><div class="l">Maximum drawdown</div><div class="c">{{ bench }} {{ bench_mdd }} over the same window</div></div>
+  </div>
+  <h2>The proposition</h2>
+  <p>A security that closes more than {{ z_rev }} standard deviations below its own 20-day trend, on a move confirmed by at least two of four independent detection methods and larger than {{ materiality }}% in absolute terms, has historically been a washout rather than the start of a decline. The Signal buys those washouts with capital drawn from {{ bench }}, and returns the capital to {{ bench }} when price recovers to the trend line that was frozen at detection, when a bearish signal fires on the same name, or after {{ max_hold }} trading sessions, whichever comes first. Because idle capital is never cash, the strategy’s return is the index return plus whatever the overlay adds or subtracts, and nothing else.</p>
+  <h2>The record</h2>
+  <p>Over the walk-forward record from {{ anchor_long }} to {{ end_long }}, a {{ capital }} book following the Signal grew to <strong>{{ final }}</strong> ({{ total_ret }}) against <strong>{{ bench_final }}</strong> ({{ bench_total }}) for the same capital left entirely in {{ bench }}. The overlay added {{ excess_usd }}. It did so with a beta of {{ beta }} to the index, a correlation of {{ corr }}, and a maximum drawdown ({{ mdd }}) {{ mdd_compare }} the index’s own ({{ bench_mdd }}) through the same episode. The overlay funded {{ n_trades }} round trips in {{ n_tickers_traded }} names; {{ win_rate }} of the {{ n_closed }} closed trades were profitable, the average winner ({{ avg_win }}) exceeded the average loser ({{ avg_loss }}), and the profit factor was {{ profit_factor }}.</p>
+  <p>Since the system went live on {{ live_start_long }}, every verdict has been produced by a scheduled run on data the model had never seen. The live book has funded {{ live_n }} trades, {{ live_n_win }} of them profitable, for {{ live_pnl }} (Section 6). That record is encouraging and short; it is presented separately for that reason.</p>
+  <h2>Why this is different from most systematic proposals</h2>
+  <ul>
+    <li><strong>The backtest is honest by construction.</strong> Every score for a trading day uses only data through that day; the test suite fails if appending future data changes any past verdict. The historical backfill is therefore the same machine as live operation, advanced one bar at a time.</li>
+    <li><strong>The benchmark is the strategy’s own idle asset.</strong> Strategy and benchmark start from the same dollar on the same day; the gap between them is exactly the overlay’s contribution.</li>
+    <li><strong>The record cannot be quietly rewritten.</strong> Verdicts are appended to a ledger committed to version control on every run; {{ ledger_signals }} signals and {{ ledger_anomalies }} anomaly verdicts are on the record today, each with its provenance.</li>
+    <li><strong>The rules were fixed before the live record began.</strong> Thresholds are sigma cut-offs, never percentiles of the run’s own output; the entry set (washouts only) was chosen by a split-half study documented in Section 10.</li>
+  </ul>
+  <div class="callout avoid">
+    <div class="eyebrow">Proposed action</div>
+    <p><strong>Fund a segregated pilot book of $250,000</strong> (ten slices of $25,000), mirroring the validated structure at 2.5× scale, subject to the conditions precedent in Section 11. Review at 90 days against the published guardrails. Scale to $500,000 and then $1,000,000 only on passing each review gate. At every tier the book remains fully invested in {{ bench }} except for the slices the Signal moves, so the company’s market exposure is the same as holding the index; what is being underwritten is the overlay.</p>
+  </div>
+</section>
+
+<!-- ===================================================== 2 THESIS -->
+<section class="sec" id="s2">
+  <div class="sec-head"><span class="no">2</span><h1>Investment thesis<span class="pgmark">§S02§</span></h1></div>
+  <h2>Short-term overreaction in large caps is persistent, and it is measurable</h2>
+  <p>The tendency of a security to rebound after an abrupt, statistically extreme decline is one of the oldest documented regularities in equity markets: the short-term reversal effect described by De Bondt and Thaler (1985), Jegadeesh (1990) and Lehmann (1990) among others. Forced selling, index and factor rebalancing, and the mechanical de-risking of leveraged holders push prices past the point that new information justifies; liquidity providers are compensated for absorbing that flow.</p>
+  <p>The effect was measured directly on this universe before any rule was set. Bars stretched more than roughly 3.5 standard deviations <em>below</em> trend rebounded +2.3% on average (+3.3% median) over the following ten sessions, while equally extreme stretches <em>above</em> trend drifted approximately nowhere. That asymmetry is the whole thesis: the Signal buys capitulations and treats blow-offs as exit information rather than as something to short. Across the {{ n_buy }} washout signals on the record, the average entry was {{ buy_dev_z }} standard deviations and {{ buy_dev_pct }} below trend.</p>
+  <h2>The default position is the market</h2>
+  <p>Most systematic strategies hold cash between trades and are judged on absolute return. The Signal holds {{ bench }} between trades. That choice does three things. It means the company is never paying an opportunity cost for the overlay’s patience; over the record, {{ baseline_pnl }} of the {{ total_gain }} gain came from the baseline itself. It makes the benchmark comparison exact rather than a matter of convention. And it bounds the question the board has to answer: not “should we own equities?” but “does this overlay add to the equities we would own anyway?”</p>
+  <h2>The evidence is causal, separated by provenance, and audited</h2>
+  <p>A backtest is only as good as its leakage discipline. Here the discipline is a property of the code rather than of the analyst: every detector standardises against its own trailing history, the pattern-matching method uses a left-only matrix profile that cannot see forward, the machine-learning component is refit walk-forward on blocks it never scores, and the causality invariant is executed by the test suite before every scheduled run. Signals produced on new bars by scheduled runs are tagged <em>live</em> and reported separately from the walk-forward history. Every verdict is an appended line in a version-controlled ledger; changing history would be visible in the commit log.</p>
+  <h2>What the company is being asked to underwrite</h2>
+  <p>Not a view on the market, and not a black box. The proposal is to let a documented, tested, and independently auditable rule move a bounded fraction of an index position into oversold large caps for a few weeks at a time, and to judge it against the index it draws from. The relevant question for the pilot is whether the live record continues to look like the walk-forward record; Section 11 sets out how that will be measured and what happens if it does not.</p>
+</section>
+
+<!-- ===================================================== 3 STRATEGY -->
+<section class="sec" id="s3">
+  <div class="sec-head"><span class="no">3</span><h1>Strategy and process<span class="pgmark">§S03§</span></h1></div>
+  <h2>Four independent detectors, one scale</h2>
+  <p>Each trading day, four methods score every security in the universe. Each answers a different question, and each is standardised against the security’s own trailing history so that a 3-sigma event means the same thing for a Treasury-bill fund as for a semiconductor stock. Scores share one fixed scale: 0.5 is two standard deviations, 0.625 is two and a half, 1.0 is four or more. Detectors observe {{ warmup }} bars plus 20 standardisation bars before they may flag anything.</p>
+  <div class="flow">
+    <div class="step"><span class="t">Fourier transform</span><span class="q">Has the rhythm changed?</span>Divergence between the frequency spectrum of the trailing 60 bars and the expanding baseline up to the same day. Weight 20%.</div>
+    <div class="step"><span class="t">Matrix profile</span><span class="q">Has this ever happened before?</span>Distance from the latest 10-day pattern to its nearest neighbour strictly in the past (STUMPY left profile). Weight 25%.</div>
+    <div class="step"><span class="t">Statistical ensemble</span><span class="q">Do independent tests agree?</span>Return z-score (40%), one-sided seasonal residual (30%), walk-forward isolation forest (30%). Weight 30%.</div>
+    <div class="step"><span class="t">EWMA trend</span><span class="q">Is momentum abnormal for this name?</span>Deviation from the 20-day exponential average, divided by that deviation’s own trailing volatility. Weight 25%.</div>
+  </div>
+  <h2>From anomaly to signal</h2>
+  <p>A day is anomalous when two or more methods flag it, or when the weighted consensus exceeds the sensitivity cut-off ({{ sensitivity }}: 0.625, the 2.5-sigma equivalent). The signal that follows depends on how far price sits from trend in units of its own volatility (<span class="tk">dev_z</span>) and on what the stretch is doing. A trade call additionally requires two methods in agreement and a move of at least {{ materiality }}% in absolute terms, so a genuinely unusual but economically trivial wiggle in a T-bill fund stays informational.</p>
+  <div class="rules">
+    <div class="rule-box"><span class="t">Buy</span> — stretch at or beyond −{{ z_rev }}σ and either climactic (breakout) or already fading. <em>The only signal that invests capital.</em></div>
+    <div class="rule-box"><span class="t">Sell</span> — stretch at or beyond +{{ z_rev }}σ, climactic or fading. Divests any slice held in the name.</div>
+    <div class="rule-box"><span class="t">Long / Short</span> — stretch beyond ±1.5σ and still building. Informational momentum flags; Short also divests.</div>
+    <div class="rule-box"><span class="t">Reduce / Watch</span> — structural regime change (Fourier and matrix profile agree), or an anomaly with no tradable set-up. Informational.</div>
+  </div>
+  <h2>The capital model</h2>
+  <p>The backtest, and the proposed live operation, follow one conserved pool of capital; nothing is notional.</p>
+  <ol>
+    <li><strong>Baseline.</strong> The book starts 100% in {{ bench }}. Every dollar is either in {{ bench }} or in a signal position.</li>
+    <li><strong>Invest.</strong> A Buy signal moves one slice ({{ unit }} on a {{ capital }} book, i.e. {{ unit_pct }}) from {{ bench }} into the security at the close of the first session <em>strictly after</em> the signal existed. If the baseline holds less than half a slice, the signal is skipped and counted; capital is never invented.</li>
+    <li><strong>Divest.</strong> The slice returns to {{ bench }} at the earliest of: the close touching the trend value frozen at detection; the first Sell or Short signal on the name; the {{ max_hold }}-session time stop. Positions still open are marked at the last close.</li>
+    <li><strong>Costs.</strong> {{ cost_bps }} basis points per side on every stock transaction. The {{ bench }} leg is treated as frictionless.</li>
+    <li><strong>Benchmark.</strong> The identical capital left 100% in {{ bench }} on the same calendar.</li>
+  </ol>
+  <h3>Protocol parameters</h3>
+  <div class="tbl-wrap"><table class="terms compact">
+    <tr><td>Anchor date</td><td>{{ anchor }} (fixed; detection and backtest run forward from here)</td></tr>
+    <tr><td>Sensitivity</td><td>{{ sensitivity }} — reversion threshold {{ z_rev }}σ, momentum threshold 1.5σ</td></tr>
+    <tr><td>Materiality gate</td><td>|deviation from trend| ≥ {{ materiality }}%</td></tr>
+    <tr><td>Entry set</td><td>BUY only (LONG informational; fixed by the split-half study, Section 10)</td></tr>
+    <tr><td>Slice / capital</td><td>{{ unit }} / {{ capital }} ({{ unit_pct }})</td></tr>
+    <tr><td>Time stop</td><td>{{ max_hold }} trading sessions</td></tr>
+    <tr><td>Transaction cost</td><td>{{ cost_bps }} bps per side</td></tr>
+    <tr><td>Model version</td><td><span class="tk">{{ model_version }}</span> — part of every ledger row’s primary key</td></tr>
+  </table></div>
+</section>
+
+<!-- ===================================================== 4 UNIVERSE -->
+<section class="sec" id="s4">
+  <div class="sec-head"><span class="no">4</span><h1>Investment universe<span class="pgmark">§S04§</span></h1></div>
+  <p class="lead">{{ n_tickers }} securities in {{ n_categories }} categories: the full top 100 US-listed tickers by market capitalisation, the index and sector funds Wall Street sells, and a curated set of thematic names. All are liquid, US-listed, and priced daily.</p>
+  <p>The universe is a registry in code (<span class="tk">config.TICKER_REGISTRY</span>): ticker, display name, category, sector, fund flag. Adding a name triggers a walk-forward backfill of its history on the next run without touching any other security’s record. {{ n_funds }} entries are funds, including three mutual funds ({{ mutual_funds }}) held for comparison; the operational implications of trading those are addressed in Section 9.</p>
+  <figure class="avoid">
+    <h3 style="margin-top:0">Composition by sector</h3>
+    {{ chart_sectors }}
+    <figcaption>Number of securities per sector, {{ n_tickers }} in total. Technology is the largest single sector by construction of the mega-cap set; the Signal’s per-name slice cap, not sector weights, governs exposure.</figcaption>
+  </figure>
+  <h3>Categories</h3>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>Category</th><th class="r">Names</th><th>Examples</th></tr></thead>
+    <tbody>
+    {% for c in universe_cats %}
+      <tr><td><strong>{{ c.label }}</strong>{% if c.tagline %}<br><span class="small">{{ c.tagline }}</span>{% endif %}</td><td class="r">{{ c.n }}</td><td class="tk">{{ c.examples }}{% if c.n > 6 %} …{% endif %}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  <p class="small">The complete membership is listed in Appendix B.</p>
+</section>
+
+<!-- ===================================================== 5 PERFORMANCE -->
+<section class="sec" id="s5">
+  <div class="sec-head"><span class="no">5</span><h1>Performance record<span class="pgmark">§S05§</span></h1></div>
+  <p>All figures are computed from the daily mark-to-market value of the {{ capital }} book (a real capital base, so daily returns are well defined) over {{ n_days }} sessions from {{ anchor_long }} to {{ end_long }}. The first signal could not fire until {{ first_signal }}, when the detectors had accumulated their warm-up history; before that date the book was identical to {{ bench }}, and the shaded band on the chart marks the period.</p>
+  <figure class="avoid">
+    <h3 style="margin-top:0">Growth of {{ capital }}</h3>
+    <div class="legend"><span><i class="s1"></i>The Signal</span><span><i class="s2"></i>{{ bench }} baseline, no signals</span></div>
+    <div class="chart-wrap" id="growth">{{ chart_growth }}<div class="tooltip" id="growth-tip"></div></div>
+    <figcaption>Daily portfolio value. Both series start from the same dollar on {{ anchor }}; the gap at any date is the cumulative contribution of the overlay. The live record (Section 6) begins at the vertical marker.</figcaption>
+  </figure>
+  <h3>Summary statistics</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Full record, {{ anchor }} – {{ as_of }}</th><th class="r">The Signal</th><th class="r">{{ bench }} baseline</th><th class="r">Difference</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Ending value of {{ capital }}</td><td class="r">{{ final }}</td><td class="r">{{ bench_final }}</td><td class="r">{{ excess_usd }}</td></tr>
+      <tr><td class="k">Total return</td><td class="r">{{ total_ret }}</td><td class="r">{{ bench_total }}</td><td class="r">{{ excess_pp }}</td></tr>
+      <tr><td class="k">Compound annual growth rate</td><td class="r">{{ cagr }}</td><td class="r">{{ bench_cagr }}</td><td class="r"></td></tr>
+      <tr><td class="k">Annualised volatility</td><td class="r">{{ vol }}</td><td class="r">{{ bench_vol }}</td><td class="r"></td></tr>
+      <tr><td class="k">Sharpe ratio (0% risk-free)</td><td class="r">{{ sharpe }}</td><td class="r">{{ bench_sharpe }}</td><td class="r"></td></tr>
+      <tr><td class="k">Sortino ratio</td><td class="r">{{ sortino }}</td><td class="r">{{ bench_sortino }}</td><td class="r"></td></tr>
+      <tr><td class="k">Maximum drawdown (peak to trough)</td><td class="r neg">{{ mdd }}</td><td class="r neg">{{ bench_mdd }}</td><td class="r"></td></tr>
+      <tr><td class="k">Calmar ratio</td><td class="r">{{ calmar }}</td><td class="r">{{ bench_calmar }}</td><td class="r"></td></tr>
+      <tr><td class="k">Best / worst day</td><td class="r">{{ best_day }} / <span class="neg">{{ worst_day }}</span></td><td class="r">{{ bench_best_day }} / <span class="neg">{{ bench_worst_day }}</span></td><td class="r"></td></tr>
+      <tr class="group"><td colspan="4">Relative to {{ bench }}</td></tr>
+      <tr><td class="k">Beta / correlation</td><td class="r">{{ beta }} / {{ corr }}</td><td class="r">1.00 / 1.00</td><td class="r"></td></tr>
+      <tr><td class="k">Annualised alpha (CAPM, 0% risk-free)</td><td class="r">{{ alpha }}</td><td class="r"></td><td class="r"></td></tr>
+      <tr><td class="k">Tracking error / information ratio</td><td class="r">{{ te }} / {{ ir }}</td><td class="r"></td><td class="r"></td></tr>
+      <tr><td class="k">Up-market / down-market capture</td><td class="r">{{ up_capture }} / {{ down_capture }}</td><td class="r"></td><td class="r"></td></tr>
+      <tr class="group"><td colspan="4">Overlay active only, {{ first_entry }} – {{ end_long }}</td></tr>
+      <tr><td class="k">Total return</td><td class="r">{{ act_total }}</td><td class="r">{{ act_bench_total }}</td><td class="r">{{ act_excess_pp }}</td></tr>
+      <tr><td class="k">CAGR / Sharpe</td><td class="r">{{ act_cagr }} / {{ act_sharpe }}</td><td class="r">{{ act_bench_cagr }} / {{ act_bench_sharpe }}</td><td class="r"></td></tr>
+      <tr><td class="k">Tracking error / information ratio</td><td class="r">{{ act_te }} / {{ act_ir }}</td><td class="r"></td><td class="r"></td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Sharpe and Sortino use daily returns annualised by √252 with a 0% risk-free rate, the convention used on the operational dashboard. Maximum drawdown is measured peak to trough on the daily series; see Appendix C on why this differs from the dashboard’s drawdown tile.</p>
+
+  <h2>Drawdowns</h2>
+  <figure class="avoid">
+    <div class="legend"><span><i class="s1"></i>The Signal</span><span><i class="s2"></i>{{ bench }} baseline</span></div>
+    {{ chart_drawdown }}
+    <figcaption>Decline from the running peak. The Signal’s deepest drawdown ({{ mdd }}, {{ mdd_usd }}) ran from {{ mdd_peak }} to {{ mdd_trough }} and was recovered by {{ mdd_recovery }}; {{ bench }} fell {{ bench_mdd }} through the same episode. {{ dd_note }}</figcaption>
+  </figure>
+  <p>The deepest drawdown on the record ran from {{ mdd_peak }} to {{ mdd_trough }}. The book was fully deployed into washouts through that decline: the {{ worst_cohort }} entries were the worst monthly cohort on the record ({{ worst_cohort_pnl }} on {{ worst_cohort_n }} slices) and the {{ best_cohort }} entries the best ({{ best_cohort_pnl }} on {{ best_cohort_n }} slices). The strategy recovered its peak {{ mdd_days_recover }} days after the trough, {{ recovery_note }}.{% if same_best_day %} The best single day for the book ({{ best_day }}, {{ best_day_date }}) and for the index were the same session.{% endif %}</p>
+
+  <h2>Monthly and calendar-year returns</h2>
+  <figure class="avoid">
+    <div class="legend"><span><b class="pos"></b>Signal ahead of {{ bench }}</span><span><b class="neg"></b>Signal behind {{ bench }}</span></div>
+    {{ chart_monthly_excess }}
+    <figcaption>Monthly return of the Signal minus the monthly return of {{ bench }}, in percentage points. Of the {{ n_months_active }} months with the overlay active, the Signal finished ahead in {{ n_beat }} and behind in {{ n_lag }}. Best relative month {{ best_excess_month }} ({{ best_excess }}); worst {{ worst_excess_month }} ({{ worst_excess }}).</figcaption>
+  </figure>
+  <div class="two-col avoid">
+    <div class="tbl-wrap"><table class="compact">
+      <thead><tr><th>Month</th><th class="r">Signal</th><th class="r">{{ bench }}</th><th class="r">Excess</th></tr></thead>
+      <tbody>
+      {% set half = (monthly_rows|length + 1) // 2 %}
+      {% for r in monthly_rows[:half] %}
+        <tr{% if not r.active %} class="dim"{% endif %}><td>{{ r.m }}</td><td class="r{% if r.s_neg %} neg{% endif %}">{{ r.s }}</td><td class="r{% if r.b_neg %} neg{% endif %}">{{ r.b }}</td><td class="r{% if r.x_neg %} neg{% endif %}">{% if r.x_zero %}—{% else %}{{ r.x }}{% endif %}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    <div class="tbl-wrap"><table class="compact">
+      <thead><tr><th>Month</th><th class="r">Signal</th><th class="r">{{ bench }}</th><th class="r">Excess</th></tr></thead>
+      <tbody>
+      {% for r in monthly_rows[half:] %}
+        <tr{% if not r.active %} class="dim"{% endif %}><td>{{ r.m }}</td><td class="r{% if r.s_neg %} neg{% endif %}">{{ r.s }}</td><td class="r{% if r.b_neg %} neg{% endif %}">{{ r.b }}</td><td class="r{% if r.x_neg %} neg{% endif %}">{% if r.x_zero %}—{% else %}{{ r.x }}{% endif %}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </div>
+  <div class="tbl-wrap avoid"><table class="compact">
+    <thead><tr><th>Calendar year</th><th>Span</th><th class="r">Signal</th><th class="r">{{ bench }}</th><th class="r">Excess</th></tr></thead>
+    <tbody>
+    {% for r in cy_rows %}
+      <tr><td>{{ r.year }}</td><td class="small">{{ r.span }}</td><td class="r">{{ r.s }}</td><td class="r">{{ r.b }}</td><td class="r{% if r.x_neg %} neg{% endif %}">{{ r.x }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  <p class="small">Dimmed months precede the first funded trade; the book was identical to {{ bench }}. Monthly figures are from month-end portfolio values.</p>
+</section>
+
+<!-- ===================================================== 6 LIVE RECORD -->
+<section class="sec" id="s6">
+  <div class="sec-head"><span class="no">6</span><h1>The live record<span class="pgmark">§S06§</span></h1></div>
+  <p class="lead">Since {{ live_start_long }} the system has run on a schedule, scoring each new session once and freezing the verdict. Trades below were entered on signals the model produced without any knowledge of what followed.</p>
+  <div class="figs">
+    <div class="fig"><div class="v">{{ live_n }}</div><div class="l">Live trades funded</div><div class="c">{{ live_n_closed }} closed · {{ live_n - live_n_closed }} open</div></div>
+    <div class="fig"><div class="v">{{ live_n_win }} of {{ live_n }}</div><div class="l">Profitable</div><div class="c">including open positions at mark</div></div>
+    <div class="fig"><div class="v">{{ live_pnl }}</div><div class="l">Live overlay P&amp;L</div><div class="c">on {{ unit }} slices</div></div>
+    <div class="fig"><div class="v">{{ live_excess_pp }}</div><div class="l">Book vs {{ bench }}</div><div class="c">{{ live_total }} vs {{ live_bench_total }} over {{ live_days }} sessions</div></div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Security</th><th>Signal</th><th>Filled</th><th>Exit</th><th class="r">Entry</th><th class="r">Exit / mark</th><th class="r">P&amp;L</th><th class="r">Return</th><th>Exit reason</th></tr></thead>
+    <tbody>
+    {% for r in live_trades %}
+      <tr><td><strong>{{ r.t.display.split(' (')[0] }}</strong> <span class="tk">{{ r.t.ticker }}</span></td><td>{{ r.t.signal_date }}</td><td>{{ r.t.entry_date }}</td><td>{{ r.t.exit_date or 'open' }}</td><td class="r">${{ '%.2f'|format(r.t.entry_price) }}</td><td class="r">${{ '%.2f'|format(r.t.exit_price) }}</td><td class="r{% if r.neg %} neg{% endif %}">{{ r.pnl }}</td><td class="r{% if r.neg %} neg{% endif %}">{{ r.pct }}</td><td class="small">{{ r.t.exit_reason }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  <p>The live signal ledger holds {{ n_live_signals }} signals of all types over the period, of which the washout entries above were the only ones to invest capital. Two things should be read from this table. First, the mechanics work as documented: fills occur at the close after the signal, exits follow the frozen target or the time stop, and {{ live_loss_note }}. Second, {{ live_n }} trades over {{ live_days }} sessions is not statistical evidence of edge; it is evidence that the live machine behaves like the walk-forward machine, which is the specific claim the pilot is designed to test at scale.</p>
+  <h3>Provenance split of the full record</h3>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>Provenance</th><th>Meaning</th><th class="r">Signals</th><th class="r">Trades funded</th><th class="r">Overlay P&amp;L</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Walk-forward</strong></td><td>Simulated on history by the causal engine; detected_at = bar date</td><td class="r">{{ n_backfill_signals }}</td><td class="r">{{ backfill_n }}</td><td class="r">{{ backfill_pnl }}</td></tr>
+      <tr><td><strong>Live</strong></td><td>Produced by a scheduled run on a new bar; detected_at = run date</td><td class="r">{{ n_live_signals }}</td><td class="r">{{ live_n }}</td><td class="r">{{ live_pnl }}</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===================================================== 7 TRADE ANALYTICS -->
+<section class="sec" id="s7">
+  <div class="sec-head"><span class="no">7</span><h1>Trade analytics<span class="pgmark">§S07§</span></h1></div>
+  <div class="figs">
+    <div class="fig"><div class="v">{{ n_trades }}</div><div class="l">Round trips</div><div class="c">{{ n_closed }} closed · {{ n_open }} open · {{ n_tickers_traded }} names</div></div>
+    <div class="fig"><div class="v">{{ win_rate }}</div><div class="l">Win rate, closed</div><div class="c">median trade {{ median_trade_pct }}</div></div>
+    <div class="fig"><div class="v">{{ profit_factor }}</div><div class="l">Profit factor</div><div class="c">avg win {{ avg_win }} · avg loss {{ avg_loss }}</div></div>
+    <div class="fig"><div class="v">{{ avg_hold_cal }}d</div><div class="l">Average hold, calendar</div><div class="c">up to {{ max_concurrent }} names held at once</div></div>
+  </div>
+  <figure class="avoid">
+    <h3 style="margin-top:0">Every funded trade, ranked</h3>
+    {{ chart_trades }}
+    <figcaption>Dollar profit or loss of each of the {{ n_trades }} slices, sorted. The overlay’s {{ overlay_pnl }} is the sum of these bars ({{ realized }} realised, {{ unrealized }} unrealised); the balance of the book’s gain, {{ baseline_pnl }}, is the {{ bench }} baseline itself.</figcaption>
+  </figure>
+  <h2>How trades ended</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Exit</th><th class="r">Trades</th><th class="r">Winners</th><th class="r">Win rate</th><th class="r">Avg return</th><th class="r">Avg P&amp;L</th><th class="r">Total P&amp;L</th></tr></thead>
+    <tbody>
+    {% for r in exit_reasons %}
+      <tr><td>{{ r.label }}</td><td class="r">{{ r.n }}</td><td class="r">{{ r.n_win }}</td><td class="r">{{ r.win_rate_s }}</td><td class="r{% if r.avg_pct < 0 %} neg{% endif %}">{{ r.avg_pct_s }}</td><td class="r{% if r.neg %} neg{% endif %}">{{ r.avg_s }}</td><td class="r{% if r.sum < 0 %} neg{% endif %}">{{ r.sum_s }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  <p>The exit table is the clearest description of the strategy’s character. Every trade that reached its frozen trend target was profitable by construction, and those exits carried the bulk of the return. Trades closed by a bearish signal were {% if divest_all_losses %}uniformly{% else %}predominantly{% endif %} losses: the divest rule is the strategy’s stop-loss, and the table shows it doing that job at a bounded average cost. The time stop is the mixed bucket: {{ ts_win_rate }} of the {{ ts_n }} time-stopped slices were winners, at a small average result of {{ ts_avg }}. The strategy therefore earns its excess return from the tail of large recoveries and pays for it with a larger number of small, capped outcomes.</p>
+  <div class="two-col">
+    <div>
+      <h3>By number of methods in agreement</h3>
+      <div class="tbl-wrap"><table class="compact">
+        <thead><tr><th>Methods</th><th class="r">Closed</th><th class="r">Win rate</th><th class="r">Avg P&amp;L</th></tr></thead>
+        <tbody>
+        {% for r in by_methods %}
+          <tr><td>{{ r.k }} of 4</td><td class="r">{{ r.n }}</td><td class="r">{{ r.win_rate_s }}</td><td class="r">{{ r.avg_s }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table></div>
+      <p class="small">More agreement did not mean better trades on this sample; the two-method minimum is doing the work. Sub-samples are small and should not be over-read.</p>
+    </div>
+    <div>
+      <h3>By category</h3>
+      <div class="tbl-wrap"><table class="compact">
+        <thead><tr><th>Category</th><th class="r">Trades</th><th class="r">Wins</th><th class="r">Total P&amp;L</th></tr></thead>
+        <tbody>
+        {% for r in cat_rows %}
+          <tr><td>{{ r.label }}</td><td class="r">{{ r.n }}</td><td class="r">{{ r.n_win }}</td><td class="r{% if r.neg %} neg{% endif %}">{{ r.sum_s }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="two-col avoid">
+    <div>
+      <h3>Largest winners</h3>
+      <div class="tbl-wrap"><table class="compact">
+        <thead><tr><th>Security</th><th>Filled</th><th class="r">P&amp;L</th><th class="r">Return</th></tr></thead>
+        <tbody>
+        {% for r in top_w %}
+          <tr><td><span class="tk">{{ r.t.ticker }}</span> {{ r.t.display.split(' (')[0] }}</td><td>{{ r.t.entry_date }}</td><td class="r">{{ r.pnl }}</td><td class="r">{{ r.pct }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <h3>Largest losers</h3>
+      <div class="tbl-wrap"><table class="compact">
+        <thead><tr><th>Security</th><th>Filled</th><th class="r">P&amp;L</th><th class="r">Return</th></tr></thead>
+        <tbody>
+        {% for r in top_l %}
+          <tr><td><span class="tk">{{ r.t.ticker }}</span> {{ r.t.display.split(' (')[0] }}</td><td>{{ r.t.entry_date }}</td><td class="r neg">{{ r.pnl }}</td><td class="r neg">{{ r.pct }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <p class="small">The full ledger of {{ n_trades }} trades, with entry and exit prices, exit reasons and the methods that flagged each signal, is Appendix A.</p>
+</section>
+
+<!-- ===================================================== 8 CAPACITY -->
+<section class="sec" id="s8">
+  <div class="sec-head"><span class="no">8</span><h1>Capacity and scaling<span class="pgmark">§S08§</span></h1></div>
+  <p class="lead">The {{ capital }} book was too small for its own signals. Of {{ n_buy }} eligible washout signals on the record, {{ n_trades }} were funded and {{ n_skipped }} ({{ skip_rate }}) were skipped because every slice was already deployed. This is the single most important fact for a capital decision.</p>
+  <figure class="avoid">
+    {{ chart_capacity }}
+    <figcaption>Washout (Buy) signals per month, split into those the book funded and those it had to skip. In {{ peak_month }} the engine produced {{ peak_month_signals }} washout signals and the book could fund {{ peak_month_funded }}.</figcaption>
+  </figure>
+  <p>Washout signals cluster in exactly the episodes the strategy is designed for. A ten-slice book is exhausted within days of a broad sell-off, and every subsequent signal in the cluster goes unfunded until a slice returns. The skipped signals are not a random sample of the record: they are concentrated in the sell-off months.{% if peak_is_best_cohort %} In {{ peak_month }} the {{ peak_month_funded }} slices the book could fund returned {{ peak_cohort_pnl }} in aggregate, the best monthly cohort on the record, while {{ peak_month_signals - peak_month_funded }} further signals went unfunded.{% else %} In {{ peak_month }} the {{ peak_month_funded }} slices the book could fund returned {{ peak_cohort_pnl }} in aggregate while {{ peak_month_signals - peak_month_funded }} further signals went unfunded.{% endif %} A larger book is therefore expected to capture more of the effect rather than merely more of the same, subject to the study below.</p>
+  <h2>Two ways to scale</h2>
+  <div class="rules">
+    <div class="rule-box"><span class="t">Proportional (validated)</span><br>The slice stays at {{ unit_pct }} of capital. The book behaves exactly as the record shows, scaled linearly; concentration, drawdown and turnover are unchanged. Skipped signals remain skipped.</div>
+    <div class="rule-box"><span class="t">Fixed slice (untested)</span><br>The slice stays near {{ unit }} and the additional capital funds signals the small book skipped. More names held at once; single-name weight falls; the equity curve has not been simulated at this configuration.</div>
+  </div>
+  <h3>Pro forma illustration, proportional scaling</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Tier</th><th class="r">Capital</th><th class="r">Slice</th><th class="r">Ending value</th><th class="r">{{ bench }} alone</th><th class="r">Overlay contribution</th><th class="r">Deepest drawdown</th></tr></thead>
+    <tbody>
+    {% for t in tiers %}
+      <tr><td><strong>{{ t.name }}</strong></td><td class="r">{{ t.capital_s }}</td><td class="r">{{ t.slice_s }}</td><td class="r">{{ t.final_s }}</td><td class="r">{{ t.bench_final_s }}</td><td class="r">{{ t.excess_s }}</td><td class="r neg">{{ t.mdd_s }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  <p class="small"><strong>Hypothetical.</strong> The table multiplies the {{ capital }} record by the capital ratio. It assumes the same {{ n_trades }} trades at the same prices with no market impact, which is reasonable for slices of this size in mega-cap names but is an assumption, not a result. It is an illustration of scale, not a forecast.</p>
+  <div class="callout avoid">
+    <div class="eyebrow">Condition precedent</div>
+    <p>Before any capital is committed, the walk-forward backtest is to be re-run at the proposed capital and slice size under both policies using <span class="tk">reports/prospectus/capacity_study.py</span>, which drives the production backtest engine with the same ledger and the same fills. The fixed-slice configuration is funded only if that study shows excess return positive in both halves of the window, the acceptance bar already applied to the entry-set decision (Section 10).</p>
+  </div>
+</section>
+
+<!-- ===================================================== 9 RISK FACTORS -->
+<section class="sec risk" id="s9">
+  <div class="sec-head"><span class="no">9</span><h1>Risk factors<span class="pgmark">§S09§</span></h1></div>
+  <p class="lead">An allocation to the Signal is an allocation to US large-cap equities with an active overlay. The following factors are material and are stated in the order a treasury committee is likely to weigh them.</p>
+  <h3>Simulated performance and a short live record</h3>
+  <p>The overlay has been active for {{ n_months_active }} months in simulation and {{ live_days }} sessions live. The record spans a single macro regime, a sharp sell-off in early 2025 followed by a strong recovery, which is a favourable environment for washout buying. Reversal strategies can underperform for extended periods, particularly in a persistent bear market where oversold names keep falling; the March 2025 cohort, the worst on the record, is the small-scale example. There is no assurance that the live record will resemble the walk-forward record.</p>
+  <h3>Full equity market risk</h3>
+  <p>The book is always approximately 100% invested in US equities. Its beta to {{ bench }} over the record was {{ beta }} and its deepest drawdown ({{ mdd }}) was the index’s own. The overlay does not hedge, does not raise cash in a decline, and cannot protect capital in a market fall. The company should size the allocation as it would size an index position.</p>
+  <h3>Concentration and clustering</h3>
+  <p>Signals cluster in sell-offs, so the book is most exposed to single names precisely when markets are most stressed. Up to {{ max_concurrent }} names were held at once; each slice is {{ unit_pct }} of capital. The universe is tilted toward technology by construction of the mega-cap set. Individual losses can be large: the largest single loss on the record was a {{ top_l[0].pct }} decline in a slice closed by {{ 'a divest signal' if top_l[0].t.exit_reason == 'divest signal' else 'the ' + top_l[0].t.exit_reason }}.</p>
+  <h3>Execution assumptions</h3>
+  <p>The simulation fills at the official close of the session after the signal and charges {{ cost_bps }} basis points per side. Live execution with market-on-close orders in mega-cap names should approximate this, but slippage, partial fills, halts and the operator’s own latency are not modelled. Dividends enter only through adjusted closes. Three names in the universe are open-end mutual funds ({{ mutual_funds }}), which settle at net asset value and commonly carry short-term redemption fees or frequent-trading restrictions; {{ n_mf_trades }} funded trades on the record were in these funds. The pilot should either exclude them or confirm terms with the fund sponsor.</p>
+  <h3>Data dependency</h3>
+  <p>All prices come from one free vendor via <span class="tk">yfinance</span>. Vendor outages, retroactive adjustments and symbol changes are real; the system mitigates them with retry, a coverage report, a stale-feed watchdog that quarantines flat-lined series, and price-basis reconciliation across corporate actions ({{ n_basis_breaks }} name{{ 's' if n_basis_breaks != 1 else '' }} carr{{ 'y' if n_basis_breaks != 1 else 'ies' }} a basis break today: {{ basis_breaks }}). A professional data feed is a reasonable upgrade at the Core tier.</p>
+  <h3>Model and parameter risk</h3>
+  <p>Thresholds, weights, the {{ max_hold }}-session time stop and the washout-only entry set were chosen by the model owner using this universe and this window. The split-half study is a robustness check, not a fresh out-of-sample test. Parameters are fixed and versioned, and the proposal treats any change to them as an event that re-opens validation (Section 11), but the risk that the rules are tuned to the past cannot be eliminated by any test on the past.</p>
+  <h3>Capacity</h3>
+  <p>Only the {{ capital }} / {{ unit }} configuration has been simulated. Scaling the slice with capital preserves the record’s behaviour; scaling the number of slices does not, and is untested until the capacity study is run.</p>
+  <h3>Operational and key-person risk</h3>
+  <p>The pipeline runs on GitHub-hosted infrastructure on a schedule; a failed or late run means no signal for that session. One individual currently maintains the code, the universe and the parameters. The proposal assigns an execution owner separate from the model owner and requires that the ledger and the daily health report, not the model owner’s account of them, be the basis of oversight.</p>
+  <h3>Tax, accounting and policy</h3>
+  <p>Average holding periods of about a month mean gains will be short-term. Corporate treasury policy, liquidity needs and any covenant restrictions on marketable-securities holdings should be confirmed before funding. Nothing in this document is tax or legal advice.</p>
+</section>
+
+<!-- ===================================================== 10 VALIDATION -->
+<section class="sec" id="s10">
+  <div class="sec-head"><span class="no">10</span><h1>Validation, controls and infrastructure<span class="pgmark">§S10§</span></h1></div>
+  <h2>The causality invariant</h2>
+  <p>Every score computed for a bar uses only that bar and earlier ones. This is not a modelling convention but a test: <span class="tk">test_causality.py</span> appends future data to a series and fails if any historical verdict changes, for every detector at every sensitivity. The test suite runs before every scheduled detection run. The consequence is that the walk-forward backfill and live operation are literally the same code path, so the historical record is a legitimate out-of-sample-style simulation rather than a fit.</p>
+  <h2>Fixed thresholds and the materiality gate</h2>
+  <p>Signals fire on fixed sigma cut-offs of each security’s own standardised deviation. Nothing is a percentile of the run’s own output, so a quiet market produces a quiet report and the number of signals is not forced. A trade call needs two methods in agreement and a move of at least {{ materiality }}%, which keeps statistically real but economically trivial anomalies in money-market funds out of the trade ledger.</p>
+  <h2>The split-half study that fixed the entry set</h2>
+  <p>Four candidate configurations were run through the production engine on the complete ledger. The acceptance bar was that excess return over the baseline be positive in <em>both</em> halves of the window. Adding momentum (Long) entries roughly doubled the trade count, added no excess return, and turned the first half negative; washout-only entries passed under both baselines. The Long signal remains an informational flag.</p>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>Variant</th><th class="r">Trades</th><th class="r">Strategy</th><th class="r">Baseline</th><th class="r">Excess</th><th class="r">First half</th><th class="r">Second half</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>BUY + LONG entries, SPY baseline</td><td class="r">118</td><td class="r">+41.5%</td><td class="r">+29.6%</td><td class="r">+11.9 pp</td><td class="r neg">−0.7 pp</td><td class="r">+9.8 pp</td><td>fails first half</td></tr>
+      <tr><td><strong>BUY-only entries, SPY baseline</strong></td><td class="r">65</td><td class="r">+41.1%</td><td class="r">+29.6%</td><td class="r">+11.5 pp</td><td class="r">+7.2 pp</td><td class="r">+1.7 pp</td><td><strong>accepted</strong></td></tr>
+      <tr><td>BUY + LONG entries, BIL baseline</td><td class="r">112</td><td class="r">+18.6%</td><td class="r">+6.5%</td><td class="r">+12.1 pp</td><td class="r neg">−1.7 pp</td><td class="r">+13.0 pp</td><td>fails first half</td></tr>
+      <tr><td>BUY-only entries, BIL baseline</td><td class="r">63</td><td class="r">+19.5%</td><td class="r">+6.5%</td><td class="r">+12.9 pp</td><td class="r">+9.6 pp</td><td class="r">+2.5 pp</td><td>passes (reference)</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Source: <span class="tk">HOW_IT_WORKS.md</span>, regenerated whenever the rules change. The study predates the current run; trade counts have since grown with the live record. The BIL rows show the cash-parked view reaches the same entry-set decision.</p>
+  <h2>Data integrity</h2>
+  <ul>
+    <li><strong>Price-basis reconciliation.</strong> The vendor rescales an entire history after a split; ledger rows keep the basis of the fetch that wrote them. Each run compares frozen closes with the current fetch per bar, translates frozen trade targets into the current basis exactly, and flags affected names. The ledger itself is never rewritten.</li>
+    <li><strong>Stale-feed watchdog.</strong> A series printing identical closes for five sessions is treated as a dead feed: its bars stay out of the frozen record until it moves again, so a vendor outage cannot mint permanent verdicts.</li>
+    <li><strong>Proof of run.</strong> Every run stamps bars scored and the latest bar date, so a day with no signals is verifiably a quiet market rather than a job that failed. Coverage on the latest run: {{ coverage }} of {{ n_tickers }} securities in {{ duration_min }} minutes.</li>
+  </ul>
+  <h2>The audit trail</h2>
+  <p>The durable record is two append-only files under <span class="tk">data/ledger/</span>, committed by every run: {{ ledger_signals }} signal rows and {{ ledger_anomalies }} anomaly verdicts today, across {{ observations }} scored bar-observations. Each row carries the bar date, the date the verdict existed, its provenance and the model version. Because the files are in version control, every verdict ever recorded is a visible line in a commit; an auditor can reconstruct the backtest from the repository alone. The operational dashboard is generated from the same files and published after each run.</p>
+  <h2>Infrastructure</h2>
+  <p>A GitHub Actions workflow runs every weekday at 22:00 UTC, after the US close. It installs dependencies, runs the test suite including the causality invariant, executes the seven-stage pipeline, commits the ledger, health report and run history, and deploys the dashboard. There are no servers to maintain and no credentials beyond the repository’s own. The run is idempotent: a re-run on the same day writes nothing new.</p>
+</section>
+
+<!-- ===================================================== 11 ALLOCATION -->
+<section class="sec" id="s11">
+  <div class="sec-head"><span class="no">11</span><h1>Proposed allocation of company capital<span class="pgmark">§S11§</span></h1></div>
+  <p class="lead">A staged programme that funds the validated structure first, measures the live record against explicit guardrails, and scales only on evidence.</p>
+  <h2>Tiers</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Tier</th><th class="r">Capital</th><th class="r">Slice</th><th>Sizing policy</th><th>Entry gate</th></tr></thead>
+    <tbody>
+      <tr><td><strong>I · Pilot</strong></td><td class="r">$250,000</td><td class="r">$25,000</td><td>Proportional; ten-slice book identical in behaviour to the record</td><td>Conditions precedent below</td></tr>
+      <tr><td><strong>II · Core</strong></td><td class="r">$500,000</td><td class="r">$50,000</td><td>Proportional, or fixed-slice if the capacity study passes</td><td>90-day review gate passed</td></tr>
+      <tr><td><strong>III · Scale</strong></td><td class="r">$1,000,000</td><td class="r">$50,000–$100,000</td><td>Per the capacity study; professional data feed in place</td><td>Second review gate passed; 12 months live</td></tr>
+    </tbody>
+  </table></div>
+  <h2>Conditions precedent to funding Tier I</h2>
+  <ul>
+    <li>Board or treasury-committee approval of the allocation and of this document’s guardrails as policy.</li>
+    <li>A segregated brokerage sub-account funded in {{ bench }}, with authority limited to the universe in Appendix B, long-only, no margin, no options.</li>
+    <li>The capacity study run at $250,000 / $25,000, confirming the proportional configuration reproduces the record.</li>
+    <li>An execution owner named, distinct from the model owner, with a written daily procedure: read the dashboard after the 22:00 UTC run, place market-on-close orders for that day’s entries and exits on the next session.</li>
+    <li>Mutual funds in the universe either excluded from live trading or cleared with the sponsor.</li>
+    <li>Baseline reporting in place: the daily dashboard link, and this document regenerated monthly.</li>
+  </ul>
+  <h2>Implementation timeline</h2>
+  <ol>
+    <li><strong>Weeks 0–2 · Approval and set-up.</strong> Policy amendment, account opening, execution procedure, capacity study, mutual-fund decision.</li>
+    <li><strong>Months 1–3 · Pilot.</strong> Tier I funded. Daily execution. Monthly one-page memo generated from the ledger. No parameter changes.</li>
+    <li><strong>Month 3 · First review gate.</strong> Live record measured against the guardrails. Proceed to Tier II, hold, or wind down.</li>
+    <li><strong>Months 4–12 · Core.</strong> Tier II funded. Quarterly review. Data-feed upgrade evaluated.</li>
+    <li><strong>Month 12 · Second review gate.</strong> Twelve months of live record. Tier III decision.</li>
+  </ol>
+  <h2>Guardrails</h2>
+  <p>Each rule is measured from the committed ledger and the daily portfolio value, not from anyone’s judgement, and each names its consequence.</p>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>Trigger</th><th>Measured as</th><th>Consequence</th></tr></thead>
+    <tbody>
+      <tr><td>Book drawdown exceeds 20% from peak</td><td>Daily portfolio value</td><td>No new entries; open slices run to their exits; committee review before resumption</td></tr>
+      <tr><td>Overlay lags {{ bench }} by more than 8 percentage points over a trailing 6 months</td><td>Book value vs baseline value</td><td>Halt new entries; model owner reports; committee decides</td></tr>
+      <tr><td>Trailing 30 closed live trades: profit factor below 1.0 or win rate below 45%</td><td>Signals ledger, live provenance</td><td>Halt new entries pending review</td></tr>
+      <tr><td>Fetch coverage below 95% on three consecutive runs, or a stale-feed flag on a held name</td><td><span class="tk">run_health.json</span></td><td>No new entries until coverage recovers; held names exit by rule</td></tr>
+      <tr><td>Any change to parameters, thresholds, universe membership or model version</td><td>Repository diff</td><td>Trading pauses until the split-half study and capacity study are re-run and approved</td></tr>
+      <tr><td>Scheduled run fails or is late</td><td>Workflow status</td><td>No trades that session; exits by rule on the next successful run</td></tr>
+    </tbody>
+  </table></div>
+  <h2>Governance and reporting</h2>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>Role</th><th>Holder</th><th>Responsibility</th></tr></thead>
+    <tbody>
+      <tr><td>Allocation owner</td><td>Chief Executive / treasury committee</td><td>Approves tiers, gates and any resumption after a guardrail</td></tr>
+      <tr><td>Model owner</td><td>{{ author }}</td><td>Maintains code, universe and parameters; may not execute trades</td></tr>
+      <tr><td>Execution owner</td><td>Treasury / finance designee</td><td>Places and confirms orders; reconciles fills against the ledger</td></tr>
+      <tr><td>Oversight</td><td>Finance or internal audit</td><td>Reads the ledger and health report directly; certifies the monthly memo</td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Reporting cadence.</strong> Daily: the dashboard, published automatically. Monthly: this document regenerated from the ledger, with the live section current. Quarterly: committee review of guardrails, capacity and data quality. Ad hoc: any guardrail breach, reported the same day.</p>
+</section>
+
+<!-- ===================================================== 12 KEY TERMS -->
+<section class="sec" id="s12">
+  <div class="sec-head"><span class="no">12</span><h1>Summary of key terms<span class="pgmark">§S12§</span></h1></div>
+  <div class="tbl-wrap"><table class="terms">
+    <tr><td>Strategy</td><td>The Signal — systematic washout-reversion overlay on an S&amp;P&nbsp;500 position</td></tr>
+    <tr><td>Manager / model owner</td><td>{{ author }}, {{ house }}</td></tr>
+    <tr><td>Vehicle</td><td>Segregated internal brokerage sub-account; no external investors, no fees</td></tr>
+    <tr><td>Objective</td><td>Outperform {{ bench }} held passively, with the same market exposure</td></tr>
+    <tr><td>Base currency</td><td>US dollars</td></tr>
+    <tr><td>Baseline asset</td><td>{{ bench }} (SPDR S&amp;P 500 ETF); all idle capital</td></tr>
+    <tr><td>Universe</td><td>{{ n_tickers }} US-listed securities (Appendix B); registry in code</td></tr>
+    <tr><td>Entry rule</td><td>Buy signal: ≤ −{{ z_rev }}σ from 20-day trend, 2+ methods agree, |move| ≥ {{ materiality }}%; fill at next session’s close</td></tr>
+    <tr><td>Exit rules</td><td>Frozen trend target, first bearish signal on the name, or {{ max_hold }}-session time stop, whichever first</td></tr>
+    <tr><td>Position size</td><td>{{ unit_pct }} of capital per slice; maximum ten concurrent slices at inception capital</td></tr>
+    <tr><td>Leverage / shorting / derivatives</td><td>None / none / none</td></tr>
+    <tr><td>Liquidity</td><td>Daily; every holding is an exchange-listed security or a daily-NAV fund</td></tr>
+    <tr><td>Valuation</td><td>Daily at official closes; ledger and dashboard refreshed each weekday at 22:00 UTC</td></tr>
+    <tr><td>Record</td><td>Walk-forward from {{ anchor }}; live since {{ live_start }}; model version {{ model_version }}</td></tr>
+    <tr><td>Performance to date</td><td>{{ capital }} → {{ final }} ({{ total_ret }}) vs {{ bench_final }} ({{ bench_total }}) in {{ bench }}; Sharpe {{ sharpe }}; max drawdown {{ mdd }}</td></tr>
+    <tr><td>Proposed capital</td><td>$250,000 pilot → $500,000 → $1,000,000, gated (Section 11)</td></tr>
+    <tr><td>Guardrails</td><td>Drawdown, relative-performance, hit-rate, data-coverage and change-control halts (Section 11)</td></tr>
+    <tr><td>Reporting</td><td>Daily dashboard; monthly regenerated prospectus; quarterly committee review</td></tr>
+    <tr><td>Audit trail</td><td>Append-only ledger in version control; every verdict reproducible from the repository</td></tr>
+    <tr><td>Data</td><td>Yahoo Finance via <span class="tk">yfinance</span>; coverage and health reported per run</td></tr>
+  </table></div>
+</section>
+
+<!-- ===================================================== APPENDIX A -->
+<section class="sec" id="appA">
+  <div class="sec-head"><span class="no">A</span><h1>Complete trade ledger<span class="pgmark">§APPA§</span></h1></div>
+  <p class="small">All {{ n_trades }} funded slices in order of fill, exactly as the walk-forward backtest records them. Provenance: W = walk-forward, L = live. Prices are in the current adjusted basis; CRWD rows were basis-translated across a 4:1 split. Methods list the detectors that flagged the signal bar.</p>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>#</th><th>Ticker</th><th>P</th><th>Signal</th><th>Filled</th><th>Exit</th><th class="r">Entry</th><th class="r">Exit / mark</th><th class="r">P&amp;L</th><th class="r">Return</th><th>Exit reason</th><th>Methods</th></tr></thead>
+    <tbody>
+    {% for r in ledger_rows %}
+      <tr><td class="small">{{ loop.index }}</td><td class="tk">{{ r.ticker }}</td><td class="small">{{ r.prov }}</td><td>{{ r.signal_date or '' }}</td><td>{{ r.entry_date }}</td><td>{{ r.exit_date_s }}</td><td class="r">{{ r.entry_s }}</td><td class="r">{{ r.exit_s }}</td><td class="r{% if r.neg %} neg{% endif %}">{{ r.pnl_s }}</td><td class="r{% if r.neg %} neg{% endif %}">{{ r.pct_s }}</td><td class="small">{{ r.exit_reason }}</td><td class="small">{{ r.methods.replace('MatrixProfile', 'Matrix profile') }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===================================================== APPENDIX B -->
+<section class="sec" id="appB">
+  <div class="sec-head"><span class="no">B</span><h1>The universe in full<span class="pgmark">§APPB§</span></h1></div>
+  {% for c in universe_cats %}
+  <div class="avoid">
+    <h3>{{ c.label }} <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· {{ c.n }} names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7">{% for k, n in c.members %}<span class="tk">{{ k }}</span> {{ n }}{% if not loop.last %} &nbsp;·&nbsp; {% endif %}{% endfor %}</p>
+  </div>
+  {% endfor %}
+</section>
+
+<!-- ===================================================== APPENDIX C -->
+<section class="sec" id="appC">
+  <div class="sec-head"><span class="no">C</span><h1>Methodology notes and glossary<span class="pgmark">§APPC§</span></h1></div>
+  <h3>Computation of statistics</h3>
+  <ul>
+    <li><strong>Daily returns</strong> are computed from the daily mark-to-market value of the book (baseline shares at the {{ bench }} close plus open slices at their closes), as the backtest records it.</li>
+    <li><strong>CAGR</strong> compounds the total return over the calendar span in years ({{ years }}). <strong>Volatility</strong> is the standard deviation of daily returns × √252.</li>
+    <li><strong>Sharpe</strong> = mean daily return ÷ standard deviation × √252, risk-free rate 0%, matching the dashboard. <strong>Sortino</strong> uses the downside deviation (negative days only, over all days) in the denominator.</li>
+    <li><strong>Maximum drawdown</strong> is the largest peak-to-trough decline of the daily series, divided by the value at that peak. The operational dashboard’s drawdown tile divides the same dollar decline by the series’ all-time high, which understates the figure (it shows 13.0% where the peak-to-trough measure is {{ mdd|replace('−','') }}); this document uses the conventional measure and the dashboard tile should be read accordingly.</li>
+    <li><strong>Beta, correlation and alpha</strong> are from daily returns against {{ bench }}; alpha is annualised (× 252). <strong>Tracking error</strong> is the standard deviation of daily active return × √252; the <strong>information ratio</strong> is annualised active return ÷ tracking error. <strong>Capture ratios</strong> sum the book’s returns on the index’s up (down) days over the index’s own.</li>
+    <li><strong>Trade statistics</strong> use closed round trips only, except where marked. <strong>Profit factor</strong> is gross profit ÷ gross loss. Holding periods are calendar days between fill and exit; the dashboard reports trading sessions.</li>
+    <li><strong>Monthly returns</strong> use month-end portfolio values; the first month runs from the anchor date.</li>
+  </ul>
+  <h3>Glossary</h3>
+  <div class="tbl-wrap"><table class="terms compact">
+    <tr><td>Anchor date</td><td>The fixed start of the analysis window. Detection and the backtest run forward from it; anchoring rather than sliding keeps every historical verdict stable.</td></tr>
+    <tr><td>Causal</td><td>A computation for bar <em>t</em> that uses only bars up to and including <em>t</em>. Every detector in the system is causal, and the test suite enforces it.</td></tr>
+    <tr><td>dev_z</td><td>Deviation of price from its 20-day exponential moving average, divided by that deviation’s own trailing volatility. The unit in which all thresholds are set.</td></tr>
+    <tr><td>Divest signal</td><td>A Sell or Short verdict on a name the book holds. Moves the slice back to {{ bench }}; never opens a short.</td></tr>
+    <tr><td>Frozen target</td><td>The trend value recorded at detection. A Buy slice exits when the close touches it; the value is translated across corporate actions but never re-estimated.</td></tr>
+    <tr><td>Left matrix profile</td><td>For each 10-day pattern, the distance to its most similar pattern strictly earlier in the series. It cannot match against the future by construction.</td></tr>
+    <tr><td>Materiality gate</td><td>The minimum absolute distance from trend ({{ materiality }}%) before a statistical anomaly may become a trade call.</td></tr>
+    <tr><td>Provenance</td><td>Whether a verdict was produced by the walk-forward simulation over history or by a scheduled run on a new bar. Reported separately, always.</td></tr>
+    <tr><td>Slice</td><td>The fixed dollar amount moved from {{ bench }} into a security on a Buy signal.</td></tr>
+    <tr><td>Time stop</td><td>The maximum holding period, {{ max_hold }} trading sessions, after which a slice returns to {{ bench }} regardless of price.</td></tr>
+    <tr><td>Walk-forward</td><td>A simulation that advances one bar at a time, producing at each step only what a live run that evening would have produced.</td></tr>
+    <tr><td>Watermark</td><td>Per-security high-water mark of scored bars. Only bars beyond it are persisted, so a verdict is written exactly once.</td></tr>
+  </table></div>
+</section>
+
+<!-- ===================================================== APPENDIX D -->
+<section class="sec" id="appD">
+  <div class="sec-head"><span class="no">D</span><h1>Data provenance and reproduction<span class="pgmark">§APPD§</span></h1></div>
+  <p>This document was generated on {{ generated_iso }} from repository commit <span class="tk">{{ commit }}</span>, whose most recent scheduled run is dated {{ run_date }} with the latest bar at {{ as_of }}. The following files were read; nothing else contributed a number.</p>
+  <div class="tbl-wrap"><table class="terms compact">
+    <tr><td><span class="tk">docs/index.html</span></td><td>The rendered dashboard: daily equity and benchmark series, drawdown series and the trade ledger of the walk-forward backtest</td></tr>
+    <tr><td><span class="tk">data/ledger/signals.jsonl</span></td><td>The append-only signal ledger ({{ n_signals }} rows): signal type, bar date, detection date, provenance, confidence and the frozen rationale</td></tr>
+    <tr><td><span class="tk">data/history/run_{{ run_date }}.json</span></td><td>Run summary: observations scored, ledger row counts, backtest totals, fetch report</td></tr>
+    <tr><td><span class="tk">data/run_health.json</span></td><td>Coverage, fetch failures, stale feeds, price-basis breaks</td></tr>
+    <tr><td><span class="tk">data/alerts.json</span></td><td>Run block and per-security status for the latest run</td></tr>
+    <tr><td><span class="tk">anomaly_detection/config.py</span></td><td>Universe registry, category labels, protocol parameters</td></tr>
+    <tr><td><span class="tk">HOW_IT_WORKS.md</span></td><td>The split-half robustness study (Section 10), transcribed</td></tr>
+  </table></div>
+  <h3>To reproduce</h3>
+  <p class="small">From the repository root, after any scheduled run has committed: <span class="tk">python reports/prospectus/build_prospectus.py --pdf</span>. The HTML is self-contained apart from web fonts; the PDF is rendered by headless Chromium via <span class="tk">reports/prospectus/render_pdf.cjs</span>. To reproduce the backtest itself: <span class="tk">python -m anomaly_detection</span> rebuilds the store from the ledger, re-fetches prices, re-scores, and re-runs the walk-forward simulation; because scoring is causal and the ledger is frozen, the trade list is invariant to when it is run.</p>
+  <h3>Signal ledger composition</h3>
+  <div class="tbl-wrap"><table class="compact" style="max-width:24rem">
+    <thead><tr><th>Signal</th><th class="r">Rows</th></tr></thead>
+    <tbody>{% for k, v in sig_by_type %}<tr><td>{{ k }}</td><td class="r">{{ v }}</td></tr>{% endfor %}
+    <tr class="total"><td>Total</td><td class="r">{{ n_signals }}</td></tr></tbody>
+  </table></div>
+  <div class="colophon">
+    {{ house }} · {{ author }} · The Signal, model version {{ model_version }} · Generated {{ generated_iso }} · Confidential.
+  </div>
+</section>
+
+</div>
+
+<script>
+(function () {
+  var data = {{ hover_data }};
+  var wrap = document.getElementById('growth');
+  if (!wrap) return;
+  var svg = wrap.querySelector('svg'), g = svg.querySelector('.hover');
+  if (!g) return;
+  var hit = g.querySelector('.hit'), xh = g.querySelector('.xhair');
+  var d1 = g.querySelector('.xdot.s1'), d2 = g.querySelector('.xdot.s2');
+  var tip = document.getElementById('growth-tip');
+  var L = +g.dataset.l, pw = +g.dataset.pw, T = +g.dataset.t, ph = +g.dataset.ph, lo = +g.dataset.lo, hi = +g.dataset.hi;
+  var n = data.dates.length;
+  function money(v) { return '$' + Math.round(v).toLocaleString('en-US'); }
+  function move(ev) {
+    var pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    var p = pt.matrixTransform(svg.getScreenCTM().inverse());
+    var i = Math.max(0, Math.min(n - 1, Math.round((p.x - L) / pw * (n - 1))));
+    var x = L + pw * i / (n - 1);
+    var y1 = T + ph * (1 - (data.pf[i] - lo) / (hi - lo)), y2 = T + ph * (1 - (data.bm[i] - lo) / (hi - lo));
+    xh.setAttribute('x1', x); xh.setAttribute('x2', x); xh.style.display = '';
+    d1.setAttribute('cx', x); d1.setAttribute('cy', y1); d1.style.display = '';
+    d2.setAttribute('cx', x); d2.setAttribute('cy', y2); d2.style.display = '';
+    var diff = data.pf[i] - data.bm[i];
+    tip.innerHTML = '<b>' + data.dates[i] + '</b><i class="s1"></i>Signal ' + money(data.pf[i]) + '<br><i class="s2"></i>' + data.bench + ' ' + money(data.bm[i]) + '<br>Overlay ' + (diff >= 0 ? '+' : '−') + money(Math.abs(diff));
+    var r = wrap.getBoundingClientRect();
+    var left = ev.clientX - r.left + 14, top = ev.clientY - r.top - 10;
+    if (left + 170 > r.width) left = ev.clientX - r.left - 184;
+    tip.style.left = left + 'px'; tip.style.top = top + 'px'; tip.style.display = 'block';
+  }
+  function leave() { xh.style.display = 'none'; d1.style.display = 'none'; d2.style.display = 'none'; tip.style.display = 'none'; }
+  hit.addEventListener('mousemove', move); hit.addEventListener('mouseleave', leave);
+})();
+</script>
+</body>
+</html>

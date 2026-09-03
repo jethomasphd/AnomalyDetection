@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Signal Prospectus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Libre+Franklin:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --paper: #FFFFFF;
+    --ground: #E4E8ED;
+    --ink: #14202E;
+    --ink-2: #4E5B6B;
+    --ink-3: #7C8794;
+    --rule: #D5DBE2;
+    --rule-2: #EDF0F3;
+    --tint: #F3F5F8;
+    --navy: #0F2340;
+    --brass: #A67C2E;
+    --s1: #2B5797;
+    --s2: #A67C2E;
+    --pos: #1F9D8B;
+    --neg: #B23A3A;
+    --neg-text: #8C2F2F;
+    --muted-bar: #C5CDD6;
+    --band: rgba(15, 35, 64, 0.05);
+    --serif: 'EB Garamond', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+    --sans: 'Libre Franklin', 'Franklin Gothic Medium', 'Helvetica Neue', Arial, sans-serif;
+    --mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --ground: #171B21; }
+  }
+  :root[data-theme="dark"] { --ground: #171B21; }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: var(--sans); font-size: 10.5pt; line-height: 1.55;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  .doc {
+    background: var(--paper); color: var(--ink);
+    max-width: 8.5in; margin: 0 auto; padding: 0.85in 0.9in 1in;
+    box-shadow: 0 1px 0 rgba(20,32,46,0.06), 0 12px 40px rgba(20,32,46,0.12);
+  }
+  @media (max-width: 700px) { .doc { padding: 1.4rem 1.1rem; } }
+
+  h1, h2, h3, h4 { font-weight: 500; margin: 0; text-wrap: balance; }
+  h1 { font-family: var(--serif); font-size: 26pt; line-height: 1.15; color: var(--navy); letter-spacing: -0.005em; }
+  h2 { font-family: var(--serif); font-size: 15.5pt; line-height: 1.25; color: var(--navy); margin-top: 1.6rem; margin-bottom: 0.45rem; }
+  h3 { font-family: var(--sans); font-size: 9.5pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); margin-top: 1.1rem; margin-bottom: 0.3rem; }
+  p { margin: 0 0 0.75rem; max-width: 66ch; }
+  p.lead { font-family: var(--serif); font-size: 13.5pt; line-height: 1.45; color: var(--ink); max-width: 60ch; }
+  em { font-style: italic; }
+  strong { font-weight: 600; }
+  a { color: var(--s1); text-decoration: none; }
+  a:hover, a:focus-visible { text-decoration: underline; outline: none; }
+  ul, ol { margin: 0 0 0.85rem; padding-left: 1.2rem; max-width: 66ch; }
+  li { margin-bottom: 0.3rem; }
+  li::marker { color: var(--ink-3); }
+  small, .small { font-size: 8.5pt; color: var(--ink-2); }
+  .tk { font-family: var(--mono); font-size: 0.92em; letter-spacing: 0.01em; }
+  .neg { color: var(--neg-text); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .eyebrow { font-family: var(--sans); font-size: 8pt; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); margin-bottom: 0.5rem; }
+  .sec { break-before: page; page-break-before: always; padding-top: 0.2rem; }
+  .sec-head { display: flex; align-items: baseline; gap: 1rem; border-bottom: 1px solid var(--ink); padding-bottom: 0.6rem; margin-bottom: 1.1rem; }
+  .sec-head .no { font-family: var(--serif); font-size: 26pt; color: var(--brass); font-variant-numeric: lining-nums; min-width: 1.6em; }
+  .sec-head h1 { flex: 1; }
+  .sec-head .pgmark { font-size: 1px; color: var(--paper); position: absolute; }
+
+  /* Cover */
+  .cover { height: 9.3in; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover .top { display: flex; justify-content: space-between; align-items: flex-start; border-top: 3px solid var(--navy); padding-top: 0.6rem; }
+  .cover .house { font-size: 8pt; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
+  .cover .title { margin-top: 2.2in; }
+  .cover .title .name { font-family: var(--serif); font-size: 64pt; line-height: 0.95; color: var(--navy); font-weight: 500; letter-spacing: -0.01em; }
+  .cover .title .sub { font-family: var(--serif); font-size: 17pt; color: var(--ink-2); margin-top: 0.8rem; font-style: italic; max-width: 26em; }
+  .cover .rule { width: 2.2in; border-top: 1px solid var(--brass); margin: 1.4rem 0 1.2rem; }
+  .cover .kind { font-size: 9.5pt; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink); }
+  .cover .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem 2rem; border-top: 1px solid var(--rule); padding-top: 0.9rem; }
+  .cover .meta div { display: grid; grid-template-columns: 9em 1fr; gap: 0.8rem; font-size: 9pt; }
+  .cover .meta dt { color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.08em; font-size: 7.5pt; font-weight: 600; padding-top: 2px; }
+  .cover .meta dd { margin: 0; color: var(--ink); }
+  .cover .epigraph { font-family: var(--serif); font-style: italic; font-size: 12pt; color: var(--ink-2); max-width: 30em; }
+
+  /* Notice */
+  .notice p { font-size: 8.8pt; line-height: 1.5; color: var(--ink-2); max-width: none; }
+  .notice p strong { color: var(--ink); }
+
+  /* TOC */
+  .toc { list-style: none; padding: 0; margin: 0; max-width: none; }
+  .toc li { display: grid; grid-template-columns: 2.2em 1fr auto; gap: 0.6rem; align-items: baseline; padding: 0.42rem 0; border-bottom: 1px solid var(--rule-2); margin: 0; }
+  .toc li.appendix { grid-template-columns: 2.2em 1fr auto; }
+  .toc .n { font-family: var(--serif); color: var(--brass); font-size: 12pt; }
+  .toc .t { font-family: var(--serif); font-size: 12.5pt; color: var(--ink); }
+  .toc .d { display: block; font-family: var(--sans); font-size: 8.5pt; color: var(--ink-3); margin-top: 1px; }
+  .toc .pg { font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 9.5pt; min-width: 2em; text-align: right; }
+  .toc .pg:empty::before { content: ""; }
+  @media screen { .toc .pg { display: none; } }
+
+  /* Figures (stat row) */
+  .figs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin: 1rem 0 1.2rem; }
+  .figs.three { grid-template-columns: repeat(3, 1fr); }
+  .fig { border-top: 1px solid var(--brass); padding-top: 0.45rem; }
+  .fig .v { font-size: 20pt; font-weight: 600; line-height: 1.1; color: var(--navy); letter-spacing: -0.01em; }
+  .fig .v.neg { color: var(--neg-text); }
+  .fig .l { font-size: 7.6pt; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); margin-top: 0.3rem; }
+  .fig .c { font-size: 8.6pt; color: var(--ink-2); margin-top: 0.15rem; font-variant-numeric: tabular-nums; }
+  @media (max-width: 700px) { .figs, .figs.three { grid-template-columns: 1fr 1fr; } }
+
+  /* Callout */
+  .callout { border-left: 3px solid var(--navy); background: var(--tint); padding: 0.8rem 1rem 0.6rem; margin: 1rem 0 1.1rem; }
+  .callout .eyebrow { margin-bottom: 0.25rem; }
+  .callout p { max-width: none; margin-bottom: 0.4rem; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* Tables */
+  .tbl-wrap { overflow-x: auto; margin: 0.5rem 0 1rem; }
+  table { border-collapse: collapse; width: 100%; font-size: 9pt; line-height: 1.35; }
+  th, td { padding: 0.36rem 0.5rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--rule-2); }
+  thead th { font-size: 7.4pt; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--ink); padding-bottom: 0.3rem; }
+  th.r, td.r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.k { color: var(--ink-2); }
+  tr.total td { border-top: 1px solid var(--ink); border-bottom: none; font-weight: 600; }
+  tr.group td { background: var(--tint); font-weight: 600; font-size: 8pt; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+  tr.dim td { color: var(--ink-3); }
+  table.terms td:first-child { width: 32%; color: var(--ink-2); font-weight: 500; }
+  table.terms td { border-bottom: 1px solid var(--rule-2); padding: 0.42rem 0.5rem; }
+  table.compact { font-size: 8.2pt; }
+  table.compact th, table.compact td { padding: 0.24rem 0.4rem; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2rem; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* Charts */
+  figure { margin: 0.9rem 0 1.1rem; }
+  figcaption { font-size: 8.4pt; color: var(--ink-2); margin-top: 0.4rem; max-width: 70ch; }
+  figcaption strong { color: var(--ink); }
+  .legend { display: flex; gap: 1.2rem; font-size: 8.4pt; color: var(--ink-2); margin-bottom: 0.3rem; }
+  .legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .legend i { display: inline-block; width: 18px; height: 0; border-top: 2px solid; border-radius: 2px; }
+  .legend i.s1 { border-color: var(--s1); }
+  .legend i.s2 { border-color: var(--s2); }
+  .legend b { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+  .legend b.pos { background: var(--pos); }
+  .legend b.neg { background: var(--neg); }
+  .chart { width: 100%; height: auto; display: block; overflow: visible; }
+  .chart .grid { stroke: var(--rule); stroke-width: 1; }
+  .chart .grid.zero { stroke: var(--ink-3); }
+  .chart .tick { font-family: var(--sans); font-size: 10px; fill: var(--ink-3); }
+  .chart .val { font-family: var(--sans); font-size: 10px; font-weight: 500; fill: var(--ink); }
+  .chart .end-label { font-family: var(--sans); font-size: 11px; font-weight: 600; fill: var(--ink); }
+  .chart .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .chart .line.s1 { stroke: var(--s1); }
+  .chart .line.s2 { stroke: var(--s2); }
+  .chart .dot { stroke: var(--paper); stroke-width: 2; }
+  .chart .dot.s1 { fill: var(--s1); }
+  .chart .dot.s2 { fill: var(--s2); }
+  .chart .area.s1 { fill: var(--s1); fill-opacity: 0.1; stroke: none; }
+  .chart .bar { stroke: none; }
+  .chart .bar.pos { fill: var(--pos); }
+  .chart .bar.neg { fill: var(--neg); }
+  .chart .bar.s1 { fill: var(--s1); }
+  .chart .bar.muted { fill: var(--muted-bar); }
+  .chart .band { fill: var(--band); }
+  .chart .band-label { font-family: var(--sans); font-size: 9px; fill: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
+  .chart .marker { stroke: var(--ink-3); stroke-width: 1; }
+  .chart .xhair { stroke: var(--ink-2); stroke-width: 1; }
+  .chart .xdot.s1 { fill: var(--s1); stroke: var(--paper); stroke-width: 2; }
+  .chart .xdot.s2 { fill: var(--s2); stroke: var(--paper); stroke-width: 2; }
+  .chart .hit { cursor: crosshair; }
+  .tooltip { position: absolute; pointer-events: none; background: var(--navy); color: #fff; font-size: 8.5pt; line-height: 1.4; padding: 0.4rem 0.6rem; border-radius: 3px; white-space: nowrap; display: none; z-index: 5; font-variant-numeric: tabular-nums; }
+  .tooltip b { color: #fff; font-weight: 600; display: block; margin-bottom: 1px; }
+  .tooltip i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; }
+  .tooltip i.s1 { background: var(--s1); } .tooltip i.s2 { background: var(--s2); }
+  .chart-wrap { position: relative; }
+
+  /* Process diagram */
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.6rem; margin: 0.8rem 0 1rem; }
+  .flow .step { border: 1px solid var(--rule); padding: 0.55rem 0.7rem; font-size: 8.6pt; line-height: 1.4; background: var(--paper); }
+  .flow .step .t { font-weight: 600; color: var(--navy); display: block; margin-bottom: 0.15rem; }
+  .flow .step .q { font-family: var(--serif); font-style: italic; color: var(--ink-2); display: block; margin-bottom: 0.25rem; }
+  @media (max-width: 700px) { .flow { grid-template-columns: 1fr 1fr; } }
+  .rules { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 1.4rem; margin: 0.6rem 0 1rem; }
+  .rules .rule-box { border-top: 1px solid var(--rule); padding-top: 0.45rem; font-size: 9pt; }
+  .rules .rule-box .t { font-weight: 600; color: var(--navy); }
+
+  /* Risk factors */
+  .risk h3 { margin-top: 0.9rem; text-transform: none; letter-spacing: 0; font-family: var(--serif); font-size: 12pt; font-weight: 500; color: var(--navy); }
+  .risk p { max-width: none; font-size: 9.6pt; }
+
+  /* Footer / colophon */
+  .colophon { margin-top: 2rem; border-top: 1px solid var(--rule); padding-top: 0.6rem; font-size: 8pt; color: var(--ink-3); }
+  .avoid { break-inside: avoid; page-break-inside: avoid; }
+  tr { break-inside: avoid; page-break-inside: avoid; }
+  h2, h3 { break-after: avoid; page-break-after: avoid; }
+
+  @media print {
+    body { background: #fff; font-size: 10pt; }
+    .doc { max-width: none; margin: 0; padding: 0; box-shadow: none; }
+    .cover { height: 9.35in; }
+    .tooltip, .hover { display: none !important; }
+    a { color: inherit; }
+    .figs { gap: 1rem; }
+  }
+  @page { size: Letter; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="doc">
+
+<!-- ===================================================== COVER -->
+<section class="cover" id="cover">
+  <div class="top">
+    <div class="house">Results Generation</div>
+    <div class="house">Strictly private &amp; confidential</div>
+  </div>
+  <div class="title">
+    <div class="name">The Signal</div>
+    <div class="sub">A systematic washout-reversion overlay on the S&amp;P&nbsp;500, built on four causal anomaly detectors and an append-only audit trail.</div>
+    <div class="rule"></div>
+    <div class="kind">Investment prospectus &amp; proposal for corporate capital</div>
+  </div>
+  <div>
+    <p class="epigraph">“The noise is what they sell you. The signal is what we extract.”</p>
+    <div class="meta">
+      <div><dt>Prepared for</dt><dd>The Office of the Chief Executive</dd></div>
+      <div><dt>Prepared by</dt><dd>Jacob E. Thomas, PhD · Results Generation</dd></div>
+      <div><dt>Document date</dt><dd>2 September 2026</dd></div>
+      <div><dt>Data as of</dt><dd>Close of 1 September 2026</dd></div>
+      <div><dt>Model version</dt><dd><span class="tk">2.0.0</span> · causal regime · commit <span class="tk">6c66783</span></dd></div>
+      <div><dt>Record</dt><dd>1 November 2024 – 1 September 2026 (458 sessions)</dd></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================== NOTICE -->
+<section class="sec notice" id="notice">
+  <div class="eyebrow">Important information</div>
+  <h1>Notice to the reader</h1>
+  <p style="margin-top:0.8rem"><strong>Purpose.</strong> This document describes an internal, systematic equity strategy (“The Signal”) and proposes a framework under which company capital could be allocated to it. It is prepared for the Office of the Chief Executive and the board or committee responsible for treasury policy. It is not an offer to sell, or a solicitation of an offer to buy, any security, and it is not investment, legal, tax or accounting advice. Any allocation decision remains solely with the company’s governing bodies.</p>
+  <p><strong>Hypothetical performance.</strong> The performance presented in Sections 5 to 8 is a <em>walk-forward simulation</em>: the detection engine is causal (every verdict for a trading day uses only data available at that day’s close, a property enforced by the system’s test suite), and the simulation fills every trade at the close of the session <em>after</em> the signal existed, after transaction costs of 5 basis points per side. It is nonetheless a simulation. It does not reflect actual trading, market impact, financing, taxes, or the behaviour of a human operator under stress. Hypothetical results have inherent limitations, including that they are generally prepared with the benefit of hindsight in the choice of universe and parameters. <strong>Past performance, simulated or real, is not a reliable indicator of future results.</strong></p>
+  <p><strong>Live record.</strong> Verdicts produced by scheduled runs on unseen data since 12 June 2026 are reported separately as the out-of-sample record (Section 6). That record is short and should be weighed accordingly.</p>
+  <p><strong>Sources.</strong> Every figure in this document is computed from files committed to the strategy’s repository as of the run dated 2026-09-01 (commit <span class="tk">6c66783</span>): the append-only signal ledger, the run history, the run-health report and the walk-forward backtest rendered to the operational dashboard. The document is regenerated by <span class="tk">reports/prospectus/build_prospectus.py</span>; no number in it is typed by hand. Price data are sourced from Yahoo Finance via the <span class="tk">yfinance</span> library and are subject to vendor revision.</p>
+  <p><strong>Risk.</strong> The strategy is fully invested in US-listed equities at all times and carries the full market risk of the S&amp;P&nbsp;500 in addition to single-name risk. An investor could lose a substantial portion of the capital allocated. Section 9 sets out the principal risk factors and should be read in full before any decision is taken.</p>
+  <p><strong>Confidentiality.</strong> This document contains proprietary methodology and is intended solely for its addressees. It should not be reproduced or distributed, in whole or in part, without the written consent of Results Generation.</p>
+</section>
+
+<!-- ===================================================== CONTENTS -->
+<section class="sec" id="contents">
+  <div class="eyebrow">Contents</div>
+  <h1>Table of contents</h1>
+  <ol class="toc" style="margin-top:1rem">
+    <li><span class="n">1</span><span class="t"><a href="#s1">Executive summary</a><span class="d">The proposition, the record, and the recommendation in two pages</span></span><span class="pg">5</span></li>
+    <li><span class="n">2</span><span class="t"><a href="#s2">Investment thesis</a><span class="d">Why washouts revert, why the default position is the market, why the evidence can be trusted</span></span><span class="pg">7</span></li>
+    <li><span class="n">3</span><span class="t"><a href="#s3">Strategy and process</a><span class="d">Four causal detectors, the signal rules, and the invest/divest capital model</span></span><span class="pg">9</span></li>
+    <li><span class="n">4</span><span class="t"><a href="#s4">Investment universe</a><span class="d">130 securities across 12 categories</span></span><span class="pg">11</span></li>
+    <li><span class="n">5</span><span class="t"><a href="#s5">Performance record</a><span class="d">Growth of $100,000, risk statistics, drawdowns, monthly and calendar-year returns</span></span><span class="pg">13</span></li>
+    <li><span class="n">6</span><span class="t"><a href="#s6">The live record</a><span class="d">Out-of-sample trades since 12 June 2026</span></span><span class="pg">17</span></li>
+    <li><span class="n">7</span><span class="t"><a href="#s7">Trade analytics</a><span class="d">Where the return came from: exits, methods, categories, winners and losers</span></span><span class="pg">19</span></li>
+    <li><span class="n">8</span><span class="t"><a href="#s8">Capacity and scaling</a><span class="d">The 60 signals the $100,000 book could not fund, and what a larger book changes</span></span><span class="pg">22</span></li>
+    <li><span class="n">9</span><span class="t"><a href="#s9">Risk factors</a><span class="d">What can go wrong, stated plainly</span></span><span class="pg">24</span></li>
+    <li><span class="n">10</span><span class="t"><a href="#s10">Validation, controls and infrastructure</a><span class="d">Causality, fixed thresholds, the split-half study, data integrity, the audit trail</span></span><span class="pg">26</span></li>
+    <li><span class="n">11</span><span class="t"><a href="#s11">Proposed allocation of company capital</a><span class="d">Tiers, conditions precedent, guardrails, governance and reporting</span></span><span class="pg">28</span></li>
+    <li><span class="n">12</span><span class="t"><a href="#s12">Summary of key terms</a><span class="d">The strategy on one page</span></span><span class="pg">30</span></li>
+    <li class="appendix"><span class="n">A</span><span class="t"><a href="#appA">Complete trade ledger</a></span><span class="pg">31</span></li>
+    <li class="appendix"><span class="n">B</span><span class="t"><a href="#appB">The universe in full</a></span><span class="pg">36</span></li>
+    <li class="appendix"><span class="n">C</span><span class="t"><a href="#appC">Methodology notes and glossary</a></span><span class="pg">38</span></li>
+    <li class="appendix"><span class="n">D</span><span class="t"><a href="#appD">Data provenance and reproduction</a></span><span class="pg">40</span></li>
+  </ol>
+</section>
+
+<!-- ===================================================== 1 EXECUTIVE SUMMARY -->
+<section class="sec" id="s1">
+  <div class="sec-head"><span class="no">1</span><h1>Executive summary<span class="pgmark">§S01§</span></h1></div>
+  <p class="lead">The Signal is a long-only overlay on a passive S&amp;P&nbsp;500 position. The book holds SPY by default and moves 10% slices into individual large-cap securities only when the detection engine identifies a statistically extreme washout. It never shorts, never borrows, and never holds a derivative.</p>
+  <div class="figs">
+    <div class="fig"><div class="v">+50.5%</div><div class="l">Total return</div><div class="c">SPY alone +36.1% · 1.83 years</div></div>
+    <div class="fig"><div class="v">+14.3 pp</div><div class="l">Excess over SPY</div><div class="c">+$14,339 on $100,000</div></div>
+    <div class="fig"><div class="v">1.28</div><div class="l">Sharpe ratio</div><div class="c">SPY 1.09 · beta 1.05</div></div>
+    <div class="fig"><div class="v">−18.6%</div><div class="l">Maximum drawdown</div><div class="c">SPY −18.8% over the same window</div></div>
+  </div>
+  <h2>The proposition</h2>
+  <p>A security that closes more than 2.5 standard deviations below its own 20-day trend, on a move confirmed by at least two of four independent detection methods and larger than 1.0% in absolute terms, has historically been a washout rather than the start of a decline. The Signal buys those washouts with capital drawn from SPY, and returns the capital to SPY when price recovers to the trend line that was frozen at detection, when a bearish signal fires on the same name, or after 30 trading sessions, whichever comes first. Because idle capital is never cash, the strategy’s return is the index return plus whatever the overlay adds or subtracts, and nothing else.</p>
+  <h2>The record</h2>
+  <p>Over the walk-forward record from 1 November 2024 to 1 September 2026, a $100,000 book following the Signal grew to <strong>$150,482</strong> (+50.5%) against <strong>$136,143</strong> (+36.1%) for the same capital left entirely in SPY. The overlay added +$14,339. It did so with a beta of 1.05 to the index, a correlation of 0.93, and a maximum drawdown (−18.6%) fractionally shallower than the index’s own (−18.8%) through the same episode. The overlay funded 72 round trips in 45 names; 63% of the 70 closed trades were profitable, the average winner (+$770) exceeded the average loser (−$660), and the profit factor was 1.97.</p>
+  <p>Since the system went live on 12 June 2026, every verdict has been produced by a scheduled run on data the model had never seen. The live book has funded 7 trades, 6 of them profitable, for +$3,920 (Section 6). That record is encouraging and short; it is presented separately for that reason.</p>
+  <h2>Why this is different from most systematic proposals</h2>
+  <ul>
+    <li><strong>The backtest is honest by construction.</strong> Every score for a trading day uses only data through that day; the test suite fails if appending future data changes any past verdict. The historical backfill is therefore the same machine as live operation, advanced one bar at a time.</li>
+    <li><strong>The benchmark is the strategy’s own idle asset.</strong> Strategy and benchmark start from the same dollar on the same day; the gap between them is exactly the overlay’s contribution.</li>
+    <li><strong>The record cannot be quietly rewritten.</strong> Verdicts are appended to a ledger committed to version control on every run; 642 signals and 1,944 anomaly verdicts are on the record today, each with its provenance.</li>
+    <li><strong>The rules were fixed before the live record began.</strong> Thresholds are sigma cut-offs, never percentiles of the run’s own output; the entry set (washouts only) was chosen by a split-half study documented in Section 10.</li>
+  </ul>
+  <div class="callout avoid">
+    <div class="eyebrow">Proposed action</div>
+    <p><strong>Fund a segregated pilot book of $250,000</strong> (ten slices of $25,000), mirroring the validated structure at 2.5× scale, subject to the conditions precedent in Section 11. Review at 90 days against the published guardrails. Scale to $500,000 and then $1,000,000 only on passing each review gate. At every tier the book remains fully invested in SPY except for the slices the Signal moves, so the company’s market exposure is the same as holding the index; what is being underwritten is the overlay.</p>
+  </div>
+</section>
+
+<!-- ===================================================== 2 THESIS -->
+<section class="sec" id="s2">
+  <div class="sec-head"><span class="no">2</span><h1>Investment thesis<span class="pgmark">§S02§</span></h1></div>
+  <h2>Short-term overreaction in large caps is persistent, and it is measurable</h2>
+  <p>The tendency of a security to rebound after an abrupt, statistically extreme decline is one of the oldest documented regularities in equity markets: the short-term reversal effect described by De Bondt and Thaler (1985), Jegadeesh (1990) and Lehmann (1990) among others. Forced selling, index and factor rebalancing, and the mechanical de-risking of leveraged holders push prices past the point that new information justifies; liquidity providers are compensated for absorbing that flow.</p>
+  <p>The effect was measured directly on this universe before any rule was set. Bars stretched more than roughly 3.5 standard deviations <em>below</em> trend rebounded +2.3% on average (+3.3% median) over the following ten sessions, while equally extreme stretches <em>above</em> trend drifted approximately nowhere. That asymmetry is the whole thesis: the Signal buys capitulations and treats blow-offs as exit information rather than as something to short. Across the 132 washout signals on the record, the average entry was -4.2 standard deviations and −11.0% below trend.</p>
+  <h2>The default position is the market</h2>
+  <p>Most systematic strategies hold cash between trades and are judged on absolute return. The Signal holds SPY between trades. That choice does three things. It means the company is never paying an opportunity cost for the overlay’s patience; over the record, +$33,481 of the +$50,482 gain came from the baseline itself. It makes the benchmark comparison exact rather than a matter of convention. And it bounds the question the board has to answer: not “should we own equities?” but “does this overlay add to the equities we would own anyway?”</p>
+  <h2>The evidence is causal, separated by provenance, and audited</h2>
+  <p>A backtest is only as good as its leakage discipline. Here the discipline is a property of the code rather than of the analyst: every detector standardises against its own trailing history, the pattern-matching method uses a left-only matrix profile that cannot see forward, the machine-learning component is refit walk-forward on blocks it never scores, and the causality invariant is executed by the test suite before every scheduled run. Signals produced on new bars by scheduled runs are tagged <em>live</em> and reported separately from the walk-forward history. Every verdict is an appended line in a version-controlled ledger; changing history would be visible in the commit log.</p>
+  <h2>What the company is being asked to underwrite</h2>
+  <p>Not a view on the market, and not a black box. The proposal is to let a documented, tested, and independently auditable rule move a bounded fraction of an index position into oversold large caps for a few weeks at a time, and to judge it against the index it draws from. The relevant question for the pilot is whether the live record continues to look like the walk-forward record; Section 11 sets out how that will be measured and what happens if it does not.</p>
+</section>
+
+<!-- ===================================================== 3 STRATEGY -->
+<section class="sec" id="s3">
+  <div class="sec-head"><span class="no">3</span><h1>Strategy and process<span class="pgmark">§S03§</span></h1></div>
+  <h2>Four independent detectors, one scale</h2>
+  <p>Each trading day, four methods score every security in the universe. Each answers a different question, and each is standardised against the security’s own trailing history so that a 3-sigma event means the same thing for a Treasury-bill fund as for a semiconductor stock. Scores share one fixed scale: 0.5 is two standard deviations, 0.625 is two and a half, 1.0 is four or more. Detectors observe 60 bars plus 20 standardisation bars before they may flag anything.</p>
+  <div class="flow">
+    <div class="step"><span class="t">Fourier transform</span><span class="q">Has the rhythm changed?</span>Divergence between the frequency spectrum of the trailing 60 bars and the expanding baseline up to the same day. Weight 20%.</div>
+    <div class="step"><span class="t">Matrix profile</span><span class="q">Has this ever happened before?</span>Distance from the latest 10-day pattern to its nearest neighbour strictly in the past (STUMPY left profile). Weight 25%.</div>
+    <div class="step"><span class="t">Statistical ensemble</span><span class="q">Do independent tests agree?</span>Return z-score (40%), one-sided seasonal residual (30%), walk-forward isolation forest (30%). Weight 30%.</div>
+    <div class="step"><span class="t">EWMA trend</span><span class="q">Is momentum abnormal for this name?</span>Deviation from the 20-day exponential average, divided by that deviation’s own trailing volatility. Weight 25%.</div>
+  </div>
+  <h2>From anomaly to signal</h2>
+  <p>A day is anomalous when two or more methods flag it, or when the weighted consensus exceeds the sensitivity cut-off (medium: 0.625, the 2.5-sigma equivalent). The signal that follows depends on how far price sits from trend in units of its own volatility (<span class="tk">dev_z</span>) and on what the stretch is doing. A trade call additionally requires two methods in agreement and a move of at least 1.0% in absolute terms, so a genuinely unusual but economically trivial wiggle in a T-bill fund stays informational.</p>
+  <div class="rules">
+    <div class="rule-box"><span class="t">Buy</span> — stretch at or beyond −2.5σ and either climactic (breakout) or already fading. <em>The only signal that invests capital.</em></div>
+    <div class="rule-box"><span class="t">Sell</span> — stretch at or beyond +2.5σ, climactic or fading. Divests any slice held in the name.</div>
+    <div class="rule-box"><span class="t">Long / Short</span> — stretch beyond ±1.5σ and still building. Informational momentum flags; Short also divests.</div>
+    <div class="rule-box"><span class="t">Reduce / Watch</span> — structural regime change (Fourier and matrix profile agree), or an anomaly with no tradable set-up. Informational.</div>
+  </div>
+  <h2>The capital model</h2>
+  <p>The backtest, and the proposed live operation, follow one conserved pool of capital; nothing is notional.</p>
+  <ol>
+    <li><strong>Baseline.</strong> The book starts 100% in SPY. Every dollar is either in SPY or in a signal position.</li>
+    <li><strong>Invest.</strong> A Buy signal moves one slice ($10,000 on a $100,000 book, i.e. 10%) from SPY into the security at the close of the first session <em>strictly after</em> the signal existed. If the baseline holds less than half a slice, the signal is skipped and counted; capital is never invented.</li>
+    <li><strong>Divest.</strong> The slice returns to SPY at the earliest of: the close touching the trend value frozen at detection; the first Sell or Short signal on the name; the 30-session time stop. Positions still open are marked at the last close.</li>
+    <li><strong>Costs.</strong> 5 basis points per side on every stock transaction. The SPY leg is treated as frictionless.</li>
+    <li><strong>Benchmark.</strong> The identical capital left 100% in SPY on the same calendar.</li>
+  </ol>
+  <h3>Protocol parameters</h3>
+  <div class="tbl-wrap"><table class="terms compact">
+    <tr><td>Anchor date</td><td>2024-11-01 (fixed; detection and backtest run forward from here)</td></tr>
+    <tr><td>Sensitivity</td><td>medium — reversion threshold 2.5σ, momentum threshold 1.5σ</td></tr>
+    <tr><td>Materiality gate</td><td>|deviation from trend| ≥ 1.0%</td></tr>
+    <tr><td>Entry set</td><td>BUY only (LONG informational; fixed by the split-half study, Section 10)</td></tr>
+    <tr><td>Slice / capital</td><td>$10,000 / $100,000 (10%)</td></tr>
+    <tr><td>Time stop</td><td>30 trading sessions</td></tr>
+    <tr><td>Transaction cost</td><td>5 bps per side</td></tr>
+    <tr><td>Model version</td><td><span class="tk">2.0.0</span> — part of every ledger row’s primary key</td></tr>
+  </table></div>
+</section>
+
+<!-- ===================================================== 4 UNIVERSE -->
+<section class="sec" id="s4">
+  <div class="sec-head"><span class="no">4</span><h1>Investment universe<span class="pgmark">§S04§</span></h1></div>
+  <p class="lead">130 securities in 12 categories: the full top 100 US-listed tickers by market capitalisation, the index and sector funds Wall Street sells, and a curated set of thematic names. All are liquid, US-listed, and priced daily.</p>
+  <p>The universe is a registry in code (<span class="tk">config.TICKER_REGISTRY</span>): ticker, display name, category, sector, fund flag. Adding a name triggers a walk-forward backfill of its history on the next run without touching any other security’s record. 14 entries are funds, including three mutual funds (DVRUX, QGRPX, BNUEX) held for comparison; the operational implications of trading those are addressed in Section 9.</p>
+  <figure class="avoid">
+    <h3 style="margin-top:0">Composition by sector</h3>
+    <svg class="chart" viewBox="0 0 720 210" role="img" aria-label="Universe composition by sector">
+<text x="160" y="21" class="tick" text-anchor="end">Technology</text>
+<path d="M170 10 H656.0 Q660.0 10 660.0 14 V20 Q660.0 24 656.0 24 H170 Z" class="bar s1"/>
+<text x="668.0" y="21" class="val">36 <tspan class="tick">(28%)</tspan></text>
+<text x="160" y="43" class="tick" text-anchor="end">Financials</text>
+<path d="M170 32 H411.0 Q415.0 32 415.0 36 V42 Q415.0 46 411.0 46 H170 Z" class="bar s1"/>
+<text x="423.0" y="43" class="val">18 <tspan class="tick">(14%)</tspan></text>
+<text x="160" y="65" class="tick" text-anchor="end">Healthcare</text>
+<path d="M170 54 H397.4 Q401.4 54 401.4 58 V64 Q401.4 68 397.4 68 H170 Z" class="bar s1"/>
+<text x="409.4" y="65" class="val">17 <tspan class="tick">(13%)</tspan></text>
+<text x="160" y="87" class="tick" text-anchor="end">Consumer Staples</text>
+<path d="M170 76 H302.1 Q306.1 76 306.1 80 V86 Q306.1 90 302.1 90 H170 Z" class="bar s1"/>
+<text x="314.1" y="87" class="val">10 <tspan class="tick">(8%)</tspan></text>
+<text x="160" y="109" class="tick" text-anchor="end">Consumer Discretionary</text>
+<path d="M170 98 H288.5 Q292.5 98 292.5 102 V108 Q292.5 112 288.5 112 H170 Z" class="bar s1"/>
+<text x="300.5" y="109" class="val">9 <tspan class="tick">(7%)</tspan></text>
+<text x="160" y="131" class="tick" text-anchor="end">Industrials</text>
+<path d="M170 120 H274.9 Q278.9 120 278.9 124 V130 Q278.9 134 274.9 134 H170 Z" class="bar s1"/>
+<text x="286.9" y="131" class="val">8 <tspan class="tick">(6%)</tspan></text>
+<text x="160" y="153" class="tick" text-anchor="end">Energy</text>
+<path d="M170 142 H274.9 Q278.9 142 278.9 146 V152 Q278.9 156 274.9 156 H170 Z" class="bar s1"/>
+<text x="286.9" y="153" class="val">8 <tspan class="tick">(6%)</tspan></text>
+<text x="160" y="175" class="tick" text-anchor="end">Communication Services</text>
+<path d="M170 164 H247.7 Q251.7 164 251.7 168 V174 Q251.7 178 247.7 178 H170 Z" class="bar s1"/>
+<text x="259.7" y="175" class="val">6 <tspan class="tick">(5%)</tspan></text>
+<text x="160" y="197" class="tick" text-anchor="end">Other</text>
+<path d="M170 186 H411.0 Q415.0 186 415.0 190 V196 Q415.0 200 411.0 200 H170 Z" class="bar s1"/>
+<text x="423.0" y="197" class="val">18 <tspan class="tick">(14%)</tspan></text>
+</svg>
+    <figcaption>Number of securities per sector, 130 in total. Technology is the largest single sector by construction of the mega-cap set; the Signal’s per-name slice cap, not sector weights, governs exposure.</figcaption>
+  </figure>
+  <h3>Categories</h3>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>Category</th><th class="r">Names</th><th>Examples</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Engines of the Republic</strong></td><td class="r">15</td><td class="tk">CAT, DE, HON, LMT, GE, WMT …</td></tr>
+      <tr><td><strong>Critical Choke Points</strong></td><td class="r">14</td><td class="tk">NEE, D, KMI, WMB, V, MA …</td></tr>
+      <tr><td><strong>Big Tech</strong></td><td class="r">8</td><td class="tk">AAPL, NVDA, META, TSLA, NFLX, CRM …</td></tr>
+      <tr><td><strong>Consumer Leaders</strong></td><td class="r">8</td><td class="tk">PG, KO, PEP, MCD, NKE, SBUX …</td></tr>
+      <tr><td><strong>Financial Titans</strong></td><td class="r">6</td><td class="tk">GS, MS, BAC, C, WFC, BLK</td></tr>
+      <tr><td><strong>Healthcare & Pharma</strong></td><td class="r">5</td><td class="tk">LLY, ABBV, MRK, AMGN, BMY</td></tr>
+      <tr><td><strong>Energy & Commodities</strong></td><td class="r">3</td><td class="tk">XOM, CVX, COP</td></tr>
+      <tr><td><strong>Wall Street's Darlings</strong></td><td class="r">10</td><td class="tk">SPY, QQQ, DIA, IWM, VTI, VOO …</td></tr>
+      <tr><td><strong>The Mega-Cap 100</strong></td><td class="r">55</td><td class="tk">TSM, AVGO, MU, ASML, INTC, CSCO …</td></tr>
+      <tr><td><strong>The Clergy House</strong><br><span class="small">A Priest's bespoke collection.</span></td><td class="r">2</td><td class="tk">ASTS, STM</td></tr>
+      <tr><td><strong>Reserve</strong></td><td class="r">1</td><td class="tk">BIL</td></tr>
+      <tr><td><strong>UBS Funds</strong></td><td class="r">3</td><td class="tk">DVRUX, QGRPX, BNUEX</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">The complete membership is listed in Appendix B.</p>
+</section>
+
+<!-- ===================================================== 5 PERFORMANCE -->
+<section class="sec" id="s5">
+  <div class="sec-head"><span class="no">5</span><h1>Performance record<span class="pgmark">§S05§</span></h1></div>
+  <p>All figures are computed from the daily mark-to-market value of the $100,000 book (a real capital base, so daily returns are well defined) over 458 sessions from 1 November 2024 to 1 September 2026. The first signal could not fire until 4 February 2025, when the detectors had accumulated their warm-up history; before that date the book was identical to SPY, and the shaded band on the chart marks the period.</p>
+  <figure class="avoid">
+    <h3 style="margin-top:0">Growth of $100,000</h3>
+    <div class="legend"><span><i class="s1"></i>The Signal</span><span><i class="s2"></i>SPY baseline, no signals</span></div>
+    <div class="chart-wrap" id="growth"><svg class="chart" viewBox="0 0 720 320" role="img" aria-label="Growth of $100,000: strategy versus SPY baseline">
+<rect x="56" y="28" width="77.1" height="258" class="band"/>
+<text x="62" y="278" class="band-label">Detector warm-up · overlay inactive</text>
+<line x1="56" y1="286.0" x2="624" y2="286.0" class="grid"/>
+<text x="48" y="289.5" class="tick" text-anchor="end">$80k</text>
+<line x1="56" y1="221.5" x2="624" y2="221.5" class="grid"/>
+<text x="48" y="225.0" class="tick" text-anchor="end">$100k</text>
+<line x1="56" y1="157.0" x2="624" y2="157.0" class="grid"/>
+<text x="48" y="160.5" class="tick" text-anchor="end">$120k</text>
+<line x1="56" y1="92.5" x2="624" y2="92.5" class="grid"/>
+<text x="48" y="96.0" class="tick" text-anchor="end">$140k</text>
+<line x1="56" y1="28.0" x2="624" y2="28.0" class="grid"/>
+<text x="48" y="31.5" class="tick" text-anchor="end">$160k</text>
+<text x="107.0" y="302" class="tick" text-anchor="middle">Jan 2025</text>
+<text x="181.5" y="302" class="tick" text-anchor="middle">Apr 2025</text>
+<text x="258.6" y="302" class="tick" text-anchor="middle">Jul 2025</text>
+<text x="338.1" y="302" class="tick" text-anchor="middle">Oct 2025</text>
+<text x="417.7" y="302" class="tick" text-anchor="middle">Jan 2026</text>
+<text x="493.5" y="302" class="tick" text-anchor="middle">Apr 2026</text>
+<text x="570.6" y="302" class="tick" text-anchor="middle">Jul 2026</text>
+<line x1="555.6" y1="28" x2="555.6" y2="286" class="marker"/>
+<text x="550.6" y="40" class="band-label" text-anchor="end">Live record begins</text>
+<path d="M56.0 221.5 L57.2 222.2 L58.5 218.3 L59.7 210.2 L61.0 207.6 L62.2 206.2 L63.5 205.8 L64.7 206.9 L65.9 206.7 L67.2 208.9 L68.4 213.2 L69.7 211.8 L70.9 210.6 L72.2 210.5 L73.4 208.7 L74.6 207.7 L75.9 206.5 L77.1 204.8 L78.4 205.8 L79.6 203.7 L80.9 203.1 L82.1 202.9 L83.3 200.8 L84.6 201.4 L85.8 200.7 L87.1 202.5 L88.3 203.6 L89.6 200.9 L90.8 202.7 L92.0 202.8 L93.3 201.3 L94.5 202.7 L95.8 212.9 L97.0 213.0 L98.3 209.0 L99.5 207.0 L100.7 203.3 L102.0 203.2 L103.2 206.8 L104.5 210.7 L105.7 211.9 L107.0 212.7 L108.2 208.6 L109.4 206.6 L110.7 210.4 L111.9 210.0 L113.2 215.1 L114.4 214.5 L115.7 214.1 L116.9 208.1 L118.1 208.7 L119.4 205.4 L120.6 202.3 L121.9 200.4 L123.1 198.5 L124.4 199.5 L125.6 204.4 L126.8 201.4 L128.1 203.0 L129.3 201.1 L130.6 203.0 L131.8 205.3 L133.1 203.0 L134.3 201.6 L135.5 200.4 L136.8 203.6 L138.0 201.3 L139.3 201.0 L140.5 202.1 L141.8 198.5 L143.0 198.5 L144.2 197.5 L145.5 196.7 L146.7 198.1 L148.0 204.0 L149.2 205.6 L150.5 207.3 L151.7 207.1 L152.9 212.5 L154.2 207.3 L155.4 213.2 L156.7 217.1 L157.9 213.6 L159.2 219.5 L160.4 217.6 L161.6 226.3 L162.9 229.0 L164.1 227.3 L165.4 231.5 L166.6 225.1 L167.9 222.6 L169.1 226.1 L170.3 222.6 L171.6 223.6 L172.8 223.5 L174.1 217.7 L175.3 216.9 L176.6 220.8 L177.8 221.7 L179.0 228.2 L180.3 226.1 L181.5 225.2 L182.8 223.1 L184.0 239.0 L185.3 256.8 L186.5 257.3 L187.7 261.8 L189.0 232.2 L190.2 245.8 L191.5 240.5 L192.7 237.6 L194.0 238.4 L195.2 245.2 L196.4 244.8 L197.7 251.9 L198.9 244.3 L200.2 239.7 L201.4 233.3 L202.7 231.0 L203.9 230.9 L205.1 228.9 L206.4 228.8 L207.6 226.6 L208.9 221.9 L210.1 223.7 L211.4 226.4 L212.6 225.1 L213.8 222.8 L215.1 223.2 L216.3 212.6 L217.6 210.5 L218.8 210.0 L220.1 208.4 L221.3 206.3 L222.5 205.9 L223.8 207.0 L225.0 212.7 L226.3 212.6 L227.5 214.9 L228.8 208.0 L230.0 210.0 L231.2 208.6 L232.5 209.0 L233.7 207.1 L235.0 205.2 L236.2 205.3 L237.5 206.9 L238.7 203.5 L239.9 203.2 L241.2 201.2 L242.4 202.2 L243.7 200.9 L244.9 204.7 L246.2 201.5 L247.4 204.4 L248.6 204.4 L249.9 205.2 L251.1 201.9 L252.4 198.1 L253.6 197.9 L254.9 195.2 L256.1 193.5 L257.3 191.8 L258.6 191.9 L259.8 190.3 L261.1 187.5 L262.3 190.2 L263.6 190.4 L264.8 188.3 L266.0 187.3 L267.3 188.5 L268.5 187.8 L269.8 189.4 L271.0 188.2 L272.3 186.0 L273.5 186.3 L274.7 185.6 L276.0 185.5 L277.2 182.5 L278.5 182.4 L279.7 180.8 L281.0 180.9 L282.2 181.9 L283.4 182.3 L284.7 183.7 L285.9 189.6 L287.2 184.2 L288.4 186.0 L289.7 183.3 L290.9 183.6 L292.1 180.8 L293.4 181.5 L294.6 177.6 L295.9 176.4 L297.1 176.3 L298.4 177.2 L299.6 177.3 L300.8 179.3 L302.1 180.2 L303.3 181.7 L304.6 176.1 L305.8 177.8 L307.1 176.2 L308.3 175.4 L309.5 174.1 L310.8 176.3 L312.0 179.0 L313.3 177.0 L314.5 174.0 L315.8 175.0 L317.0 174.1 L318.2 173.3 L319.5 172.2 L320.7 169.1 L322.0 169.2 L323.2 167.3 L324.5 167.8 L325.7 168.2 L326.9 166.5 L328.2 164.6 L329.4 162.8 L330.7 164.9 L331.9 166.1 L333.2 167.8 L334.4 165.7 L335.6 164.6 L336.9 163.2 L338.1 161.9 L339.4 161.5 L340.6 161.5 L341.9 160.1 L343.1 161.5 L344.4 159.2 L345.6 160.3 L346.8 170.7 L348.1 165.0 L349.3 165.5 L350.6 163.8 L351.8 166.4 L353.1 164.2 L354.3 160.3 L355.5 160.3 L356.8 162.3 L358.0 160.0 L359.3 156.9 L360.5 152.3 L361.8 151.3 L363.0 151.1 L364.2 155.4 L365.5 154.1 L366.7 153.4 L368.0 158.0 L369.2 156.7 L370.5 160.8 L371.7 160.5 L372.9 154.5 L374.2 153.6 L375.4 153.4 L376.7 159.8 L377.9 159.9 L379.2 163.5 L380.4 166.7 L381.6 165.2 L382.9 171.0 L384.1 167.3 L385.4 161.7 L386.6 158.1 L387.9 155.5 L389.1 153.4 L390.3 155.1 L391.6 154.4 L392.8 153.1 L394.1 152.8 L395.3 152.0 L396.6 153.2 L397.8 153.6 L399.0 151.0 L400.3 150.1 L401.5 154.3 L402.8 154.9 L404.0 155.9 L405.3 160.2 L406.5 157.3 L407.7 153.8 L409.0 151.4 L410.2 149.6 L411.5 148.2 L412.7 148.2 L414.0 149.6 L415.2 150.1 L416.4 153.0 L417.7 152.3 L418.9 149.7 L420.2 147.4 L421.4 148.7 L422.7 148.7 L423.9 146.1 L425.1 145.5 L426.4 146.3 L427.6 148.2 L428.9 147.1 L430.1 147.5 L431.4 155.5 L432.6 151.1 L433.8 149.0 L435.1 148.9 L436.3 146.8 L437.6 145.3 L438.8 145.3 L440.1 146.1 L441.3 147.3 L442.5 145.3 L443.8 148.7 L445.0 150.6 L446.3 155.5 L447.5 148.1 L448.8 146.1 L450.0 147.2 L451.2 147.3 L452.5 153.4 L453.7 153.1 L455.0 152.5 L456.2 150.5 L457.5 151.6 L458.7 148.7 L459.9 152.8 L461.2 149.9 L462.4 146.6 L463.7 148.8 L464.9 150.7 L466.2 150.5 L467.4 154.0 L468.6 151.2 L469.9 153.4 L471.1 158.5 L472.4 155.1 L473.6 155.8 L474.9 156.3 L476.1 162.1 L477.3 164.3 L478.6 160.4 L479.8 159.4 L481.1 164.8 L482.3 165.7 L483.6 171.2 L484.8 167.2 L486.0 168.5 L487.3 166.4 L488.5 173.2 L489.8 179.5 L491.0 180.7 L492.3 170.1 L493.5 167.3 L494.7 167.0 L496.0 165.2 L497.2 165.0 L498.5 155.4 L499.7 153.1 L501.0 153.4 L502.2 149.6 L503.4 144.8 L504.7 141.6 L505.9 140.6 L507.2 135.8 L508.4 136.6 L509.7 139.2 L510.9 135.1 L512.1 136.7 L513.4 133.6 L514.6 132.9 L515.9 134.9 L517.1 134.9 L518.4 130.9 L519.6 129.7 L520.8 131.2 L522.1 127.9 L523.3 122.1 L524.6 123.4 L525.8 120.0 L527.1 119.0 L528.3 119.6 L529.5 117.3 L530.8 113.9 L532.0 119.1 L533.3 119.4 L534.5 122.2 L535.8 117.9 L537.0 117.0 L538.2 115.3 L539.5 112.5 L540.7 112.6 L542.0 110.2 L543.2 109.1 L544.5 107.9 L545.7 107.3 L546.9 110.4 L548.2 108.8 L549.4 120.0 L550.7 119.0 L551.9 120.3 L553.2 127.0 L554.4 119.9 L555.6 117.6 L556.9 110.1 L558.1 112.7 L559.4 118.0 L560.6 113.6 L561.9 115.0 L563.1 121.2 L564.3 121.4 L565.6 120.8 L566.8 123.8 L568.1 116.9 L569.3 113.6 L570.6 114.2 L571.8 114.7 L573.0 111.0 L574.3 113.0 L575.5 114.4 L576.8 110.7 L578.0 108.9 L579.3 112.2 L580.5 110.7 L581.7 109.0 L583.0 111.3 L584.2 115.6 L585.5 116.3 L586.7 112.7 L588.0 113.2 L589.2 118.5 L590.4 118.1 L591.7 118.0 L592.9 117.0 L594.2 123.6 L595.4 116.5 L596.7 113.4 L597.9 107.3 L599.1 99.4 L600.4 100.3 L601.6 101.0 L602.9 98.3 L604.1 98.5 L605.4 99.9 L606.6 98.8 L607.8 95.7 L609.1 96.5 L610.3 98.7 L611.6 101.7 L612.8 100.7 L614.1 104.5 L615.3 102.7 L616.5 104.0 L617.8 102.6 L619.0 102.5 L620.3 99.6 L621.5 100.6 L622.8 101.9 L624.0 104.9" class="line s2"/>
+<path d="M56.0 221.5 L57.2 222.2 L58.5 218.3 L59.7 210.2 L61.0 207.6 L62.2 206.2 L63.5 205.8 L64.7 206.9 L65.9 206.7 L67.2 208.9 L68.4 213.2 L69.7 211.8 L70.9 210.6 L72.2 210.5 L73.4 208.7 L74.6 207.7 L75.9 206.5 L77.1 204.8 L78.4 205.8 L79.6 203.7 L80.9 203.1 L82.1 202.9 L83.3 200.8 L84.6 201.4 L85.8 200.7 L87.1 202.5 L88.3 203.6 L89.6 200.9 L90.8 202.7 L92.0 202.8 L93.3 201.3 L94.5 202.7 L95.8 212.9 L97.0 213.0 L98.3 209.0 L99.5 207.0 L100.7 203.3 L102.0 203.2 L103.2 206.8 L104.5 210.7 L105.7 211.9 L107.0 212.7 L108.2 208.6 L109.4 206.6 L110.7 210.4 L111.9 210.0 L113.2 215.1 L114.4 214.5 L115.7 214.1 L116.9 208.1 L118.1 208.7 L119.4 205.4 L120.6 202.3 L121.9 200.4 L123.1 198.5 L124.4 199.5 L125.6 204.4 L126.8 201.4 L128.1 203.0 L129.3 201.1 L130.6 203.0 L131.8 205.3 L133.1 203.0 L134.3 201.6 L135.5 201.1 L136.8 204.3 L138.0 202.5 L139.3 202.2 L140.5 203.5 L141.8 200.7 L143.0 201.2 L144.2 200.2 L145.5 198.6 L146.7 199.2 L148.0 203.9 L149.2 204.7 L150.5 206.1 L151.7 206.7 L152.9 211.1 L154.2 205.9 L155.4 210.9 L156.7 214.6 L157.9 211.2 L159.2 216.3 L160.4 214.5 L161.6 222.0 L162.9 223.9 L164.1 221.2 L165.4 226.3 L166.6 219.9 L167.9 217.0 L169.1 219.0 L170.3 215.1 L171.6 215.6 L172.8 216.0 L174.1 208.0 L175.3 208.2 L176.6 211.9 L177.8 212.6 L179.0 221.8 L180.3 220.0 L181.5 219.5 L182.8 215.2 L184.0 244.2 L185.3 259.3 L186.5 256.7 L187.7 262.8 L189.0 227.0 L190.2 245.6 L191.5 240.9 L192.7 237.0 L194.0 236.8 L195.2 244.4 L196.4 240.7 L197.7 247.2 L198.9 240.1 L200.2 233.4 L201.4 225.6 L202.7 224.6 L203.9 224.6 L205.1 223.5 L206.4 223.9 L207.6 222.6 L208.9 217.6 L210.1 219.5 L211.4 222.2 L212.6 216.8 L213.8 215.2 L215.1 216.2 L216.3 205.0 L217.6 207.9 L218.8 208.1 L220.1 206.3 L221.3 204.0 L222.5 204.2 L223.8 205.4 L225.0 211.1 L226.3 210.9 L227.5 213.2 L228.8 206.3 L230.0 208.3 L231.2 207.0 L232.5 207.3 L233.7 205.4 L235.0 203.5 L236.2 203.6 L237.5 205.3 L238.7 201.8 L239.9 201.5 L241.2 199.5 L242.4 200.5 L243.7 199.1 L244.9 203.0 L246.2 199.7 L247.4 202.7 L248.6 202.7 L249.9 203.5 L251.1 200.2 L252.4 196.4 L253.6 196.2 L254.9 193.5 L256.1 191.7 L257.3 190.0 L258.6 190.2 L259.8 188.6 L261.1 185.8 L262.3 188.4 L263.6 188.6 L264.8 186.5 L266.0 185.5 L267.3 186.7 L268.5 186.1 L269.8 187.6 L271.0 186.4 L272.3 184.2 L273.5 184.5 L274.7 183.7 L276.0 183.3 L277.2 180.5 L278.5 180.4 L279.7 179.1 L281.0 178.0 L282.2 178.1 L283.4 179.3 L284.7 184.4 L285.9 185.9 L287.2 182.1 L288.4 184.5 L289.7 184.6 L290.9 181.6 L292.1 177.2 L293.4 179.1 L294.6 173.3 L295.9 168.8 L297.1 168.2 L298.4 165.1 L299.6 162.4 L300.8 159.8 L302.1 157.5 L303.3 156.3 L304.6 148.6 L305.8 151.3 L307.1 149.7 L308.3 147.5 L309.5 146.4 L310.8 148.0 L312.0 150.3 L313.3 150.3 L314.5 149.6 L315.8 150.2 L317.0 150.0 L318.2 149.0 L319.5 149.2 L320.7 146.7 L322.0 146.9 L323.2 146.7 L324.5 146.3 L325.7 146.8 L326.9 144.9 L328.2 142.9 L329.4 140.7 L330.7 142.5 L331.9 144.0 L333.2 146.1 L334.4 143.8 L335.6 142.9 L336.9 140.9 L338.1 140.3 L339.4 139.5 L340.6 138.8 L341.9 137.7 L343.1 139.7 L344.4 137.1 L345.6 138.5 L346.8 148.7 L348.1 143.5 L349.3 143.2 L350.6 141.9 L351.8 144.1 L353.1 141.9 L354.3 138.3 L355.5 138.4 L356.8 141.0 L358.0 140.0 L359.3 136.3 L360.5 131.6 L361.8 130.4 L363.0 130.9 L364.2 135.7 L365.5 134.3 L366.7 133.9 L368.0 137.9 L369.2 136.3 L370.5 140.4 L371.7 139.0 L372.9 134.2 L374.2 132.4 L375.4 132.2 L376.7 136.8 L377.9 137.9 L379.2 141.8 L380.4 144.7 L381.6 144.1 L382.9 149.3 L384.1 144.7 L385.4 143.0 L386.6 137.5 L387.9 134.9 L389.1 130.7 L390.3 133.7 L391.6 133.0 L392.8 130.0 L394.1 129.2 L395.3 128.0 L396.6 130.6 L397.8 131.8 L399.0 129.2 L400.3 126.9 L401.5 128.1 L402.8 128.7 L404.0 128.3 L405.3 133.3 L406.5 130.5 L407.7 127.6 L409.0 124.8 L410.2 122.8 L411.5 121.6 L412.7 121.1 L414.0 123.0 L415.2 123.5 L416.4 126.9 L417.7 126.0 L418.9 124.7 L420.2 121.1 L421.4 121.7 L422.7 122.8 L423.9 119.1 L425.1 117.8 L426.4 118.3 L427.6 121.6 L428.9 120.3 L430.1 119.8 L431.4 129.6 L432.6 125.5 L433.8 123.8 L435.1 123.1 L436.3 120.4 L437.6 118.6 L438.8 119.9 L440.1 120.9 L441.3 120.0 L442.5 118.0 L443.8 124.5 L445.0 127.9 L446.3 135.0 L447.5 125.6 L448.8 115.5 L450.0 115.8 L451.2 119.5 L452.5 123.7 L453.7 117.3 L455.0 121.9 L456.2 121.1 L457.5 121.8 L458.7 124.5 L459.9 134.7 L461.2 134.7 L462.4 124.1 L463.7 118.2 L464.9 121.5 L466.2 117.9 L467.4 116.8 L468.6 111.4 L469.9 109.1 L471.1 110.5 L472.4 108.3 L473.6 113.5 L474.9 114.4 L476.1 120.2 L477.3 122.5 L478.6 117.2 L479.8 114.1 L481.1 121.2 L482.3 121.6 L483.6 129.2 L484.8 124.3 L486.0 126.0 L487.3 123.7 L488.5 129.2 L489.8 136.6 L491.0 136.9 L492.3 125.5 L493.5 123.6 L494.7 123.3 L496.0 122.9 L497.2 123.9 L498.5 114.0 L499.7 111.4 L501.0 113.4 L502.2 109.3 L503.4 102.7 L504.7 99.3 L505.9 99.0 L507.2 93.7 L508.4 95.0 L509.7 97.3 L510.9 94.7 L512.1 96.8 L513.4 94.2 L514.6 93.4 L515.9 95.4 L517.1 94.9 L518.4 89.9 L519.6 89.6 L520.8 92.1 L522.1 88.7 L523.3 82.2 L524.6 83.2 L525.8 79.8 L527.1 80.1 L528.3 80.8 L529.5 78.6 L530.8 75.9 L532.0 81.5 L533.3 80.4 L534.5 83.1 L535.8 78.2 L537.0 78.0 L538.2 76.4 L539.5 74.3 L540.7 75.7 L542.0 73.0 L543.2 72.8 L544.5 72.9 L545.7 73.5 L546.9 75.0 L548.2 72.4 L549.4 82.4 L550.7 81.5 L551.9 82.3 L553.2 89.2 L554.4 82.5 L555.6 80.3 L556.9 72.9 L558.1 75.3 L559.4 82.2 L560.6 78.0 L561.9 79.5 L563.1 84.8 L564.3 85.2 L565.6 85.6 L566.8 87.7 L568.1 81.4 L569.3 79.0 L570.6 81.1 L571.8 79.5 L573.0 78.1 L574.3 77.8 L575.5 78.5 L576.8 75.4 L578.0 72.9 L579.3 74.2 L580.5 73.8 L581.7 71.0 L583.0 70.9 L584.2 75.2 L585.5 76.1 L586.7 72.6 L588.0 72.4 L589.2 77.9 L590.4 75.1 L591.7 74.0 L592.9 71.2 L594.2 78.9 L595.4 73.6 L596.7 70.8 L597.9 62.2 L599.1 55.6 L600.4 56.0 L601.6 55.7 L602.9 53.3 L604.1 51.8 L605.4 52.3 L606.6 52.4 L607.8 48.6 L609.1 49.8 L610.3 53.1 L611.6 54.9 L612.8 53.4 L614.1 59.0 L615.3 56.2 L616.5 57.8 L617.8 57.1 L619.0 57.3 L620.3 55.7 L621.5 55.0 L622.8 55.9 L624.0 58.7" class="line s1"/>
+<circle cx="624.0" cy="58.7" r="4" class="dot s1"/>
+<text x="633.0" y="62.2" class="end-label">$150,482</text>
+<circle cx="624.0" cy="104.9" r="4" class="dot s2"/>
+<text x="633.0" y="108.4" class="end-label">$136,143</text>
+<g class="hover" data-l="56" data-pw="568" data-t="28" data-ph="258" data-lo="80000" data-hi="160000"><line class="xhair" x1="0" y1="28" x2="0" y2="286" style="display:none"/><circle class="xdot s1" r="4" style="display:none"/><circle class="xdot s2" r="4" style="display:none"/><rect class="hit" x="56" y="28" width="568" height="258" fill="transparent"/></g>
+</svg><div class="tooltip" id="growth-tip"></div></div>
+    <figcaption>Daily portfolio value. Both series start from the same dollar on 2024-11-01; the gap at any date is the cumulative contribution of the overlay. The live record (Section 6) begins at the vertical marker.</figcaption>
+  </figure>
+  <h3>Summary statistics</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Full record, 2024-11-01 – 2026-09-01</th><th class="r">The Signal</th><th class="r">SPY baseline</th><th class="r">Difference</th></tr></thead>
+    <tbody>
+      <tr><td class="k">Ending value of $100,000</td><td class="r">$150,482</td><td class="r">$136,143</td><td class="r">+$14,339</td></tr>
+      <tr><td class="k">Total return</td><td class="r">+50.5%</td><td class="r">+36.1%</td><td class="r">+14.3 pp</td></tr>
+      <tr><td class="k">Compound annual growth rate</td><td class="r">25.0%</td><td class="r">18.3%</td><td class="r"></td></tr>
+      <tr><td class="k">Annualised volatility</td><td class="r">19.1%</td><td class="r">17.0%</td><td class="r"></td></tr>
+      <tr><td class="k">Sharpe ratio (0% risk-free)</td><td class="r">1.28</td><td class="r">1.09</td><td class="r"></td></tr>
+      <tr><td class="k">Sortino ratio</td><td class="r">1.92</td><td class="r">1.63</td><td class="r"></td></tr>
+      <tr><td class="k">Maximum drawdown (peak to trough)</td><td class="r neg">−18.6%</td><td class="r neg">−18.8%</td><td class="r"></td></tr>
+      <tr><td class="k">Calmar ratio</td><td class="r">1.34</td><td class="r">0.98</td><td class="r"></td></tr>
+      <tr><td class="k">Best / worst day</td><td class="r">+12.7% / <span class="neg">−8.8%</span></td><td class="r">+10.5% / <span class="neg">−5.9%</span></td><td class="r"></td></tr>
+      <tr class="group"><td colspan="4">Relative to SPY</td></tr>
+      <tr><td class="k">Beta / correlation</td><td class="r">1.05 / 0.93</td><td class="r">1.00 / 1.00</td><td class="r"></td></tr>
+      <tr><td class="k">Annualised alpha (CAPM, 0% risk-free)</td><td class="r">+5.0%</td><td class="r"></td><td class="r"></td></tr>
+      <tr><td class="k">Tracking error / information ratio</td><td class="r">6.8% / 0.86</td><td class="r"></td><td class="r"></td></tr>
+      <tr><td class="k">Up-market / down-market capture</td><td class="r">100% / 92%</td><td class="r"></td><td class="r"></td></tr>
+      <tr class="group"><td colspan="4">Overlay active only, 5 February 2025 – 1 September 2026</td></tr>
+      <tr><td class="k">Total return</td><td class="r">+41.7%</td><td class="r">+28.2%</td><td class="r">+13.5 pp</td></tr>
+      <tr><td class="k">CAGR / Sharpe</td><td class="r">24.9% / 1.22</td><td class="r">17.2% / 0.99</td><td class="r"></td></tr>
+      <tr><td class="k">Tracking error / information ratio</td><td class="r">7.4% / 0.93</td><td class="r"></td><td class="r"></td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Sharpe and Sortino use daily returns annualised by √252 with a 0% risk-free rate, the convention used on the operational dashboard. Maximum drawdown is measured peak to trough on the daily series; see Appendix C on why this differs from the dashboard’s drawdown tile.</p>
+
+  <h2>Drawdowns</h2>
+  <figure class="avoid">
+    <div class="legend"><span><i class="s1"></i>The Signal</span><span><i class="s2"></i>SPY baseline</span></div>
+    <svg class="chart" viewBox="0 0 720 200" role="img" aria-label="Drawdown from peak: strategy versus SPY">
+<line x1="56" y1="170.0" x2="624" y2="170.0" class="grid"/>
+<text x="48" y="173.5" class="tick" text-anchor="end">−25%</text>
+<line x1="56" y1="138.8" x2="624" y2="138.8" class="grid"/>
+<text x="48" y="142.3" class="tick" text-anchor="end">−20%</text>
+<line x1="56" y1="107.6" x2="624" y2="107.6" class="grid"/>
+<text x="48" y="111.1" class="tick" text-anchor="end">−15%</text>
+<line x1="56" y1="76.4" x2="624" y2="76.4" class="grid"/>
+<text x="48" y="79.9" class="tick" text-anchor="end">−10%</text>
+<line x1="56" y1="45.2" x2="624" y2="45.2" class="grid"/>
+<text x="48" y="48.7" class="tick" text-anchor="end">−5%</text>
+<line x1="56" y1="14.0" x2="624" y2="14.0" class="grid"/>
+<text x="48" y="17.5" class="tick" text-anchor="end">0%</text>
+<text x="107.0" y="186" class="tick" text-anchor="middle">Jan 2025</text>
+<text x="181.5" y="186" class="tick" text-anchor="middle">Apr 2025</text>
+<text x="258.6" y="186" class="tick" text-anchor="middle">Jul 2025</text>
+<text x="338.1" y="186" class="tick" text-anchor="middle">Oct 2025</text>
+<text x="417.7" y="186" class="tick" text-anchor="middle">Jan 2026</text>
+<text x="493.5" y="186" class="tick" text-anchor="middle">Apr 2026</text>
+<text x="570.6" y="186" class="tick" text-anchor="middle">Jul 2026</text>
+<path d="M56.0 14.0 L57.2 15.3 L58.5 14.0 L59.7 14.0 L61.0 14.0 L62.2 14.0 L63.5 14.0 L64.7 15.9 L65.9 15.6 L67.2 19.6 L68.4 27.6 L69.7 25.1 L70.9 22.8 L72.2 22.6 L73.4 19.3 L74.6 17.4 L75.9 15.3 L77.1 14.0 L78.4 15.9 L79.6 14.0 L80.9 14.0 L82.1 14.0 L83.3 14.0 L84.6 15.0 L85.8 14.0 L87.1 17.2 L88.3 19.1 L89.6 14.4 L90.8 17.6 L92.0 17.7 L93.3 15.0 L94.5 17.6 L95.8 36.1 L97.0 36.3 L98.3 29.1 L99.5 25.4 L100.7 18.6 L102.0 18.6 L103.2 25.1 L104.5 32.1 L105.7 34.3 L107.0 35.8 L108.2 28.2 L109.4 24.7 L110.7 31.7 L111.9 30.8 L113.2 40.0 L114.4 39.1 L115.7 38.3 L116.9 27.4 L118.1 28.6 L119.4 22.4 L120.6 16.8 L121.9 14.0 L123.1 14.0 L124.4 15.8 L125.6 24.6 L126.8 19.4 L128.1 22.1 L129.3 18.8 L130.6 22.1 L131.8 26.3 L133.1 22.2 L134.3 19.7 L135.5 18.8 L136.8 24.4 L138.0 21.2 L139.3 20.7 L140.5 23.1 L141.8 18.0 L143.0 18.9 L144.2 17.1 L145.5 14.3 L146.7 15.3 L148.0 23.8 L149.2 25.1 L150.5 27.8 L151.7 28.8 L152.9 36.9 L154.2 27.3 L155.4 36.4 L156.7 43.2 L157.9 37.0 L159.2 46.2 L160.4 42.9 L161.6 56.5 L162.9 59.9 L164.1 55.0 L165.4 64.2 L166.6 52.6 L167.9 47.4 L169.1 51.1 L170.3 44.0 L171.6 45.0 L172.8 45.6 L174.1 31.2 L175.3 31.5 L176.6 38.2 L177.8 39.4 L179.0 56.0 L180.3 52.8 L181.5 51.9 L182.8 44.2 L184.0 96.6 L185.3 123.9 L186.5 119.1 L187.7 130.1 L189.0 65.5 L190.2 99.2 L191.5 90.6 L192.7 83.5 L194.0 83.3 L195.2 97.0 L196.4 90.3 L197.7 102.0 L198.9 89.2 L200.2 77.1 L201.4 62.9 L202.7 61.1 L203.9 61.2 L205.1 59.1 L206.4 59.8 L207.6 57.6 L208.9 48.6 L210.1 51.9 L211.4 56.9 L212.6 47.1 L213.8 44.1 L215.1 46.0 L216.3 25.8 L217.6 31.0 L218.8 31.4 L220.1 28.1 L221.3 23.9 L222.5 24.4 L223.8 26.4 L225.0 36.7 L226.3 36.5 L227.5 40.6 L228.8 28.2 L230.0 31.7 L231.2 29.3 L232.5 30.0 L233.7 26.6 L235.0 23.1 L236.2 23.3 L237.5 26.2 L238.7 19.9 L239.9 19.4 L241.2 15.9 L242.4 17.7 L243.7 15.2 L244.9 22.2 L246.2 16.3 L247.4 21.6 L248.6 21.7 L249.9 23.1 L251.1 17.1 L252.4 14.0 L253.6 14.0 L254.9 14.0 L256.1 14.0 L257.3 14.0 L258.6 14.2 L259.8 14.0 L261.1 14.0 L262.3 18.7 L263.6 19.0 L264.8 15.3 L266.0 14.0 L267.3 16.2 L268.5 15.0 L269.8 17.7 L271.0 15.6 L272.3 14.0 L273.5 14.5 L274.7 14.0 L276.0 14.0 L277.2 14.0 L278.5 14.0 L279.7 14.0 L281.0 14.0 L282.2 14.2 L283.4 16.3 L284.7 24.9 L285.9 27.5 L287.2 21.0 L288.4 25.1 L289.7 25.3 L290.9 20.2 L292.1 14.0 L293.4 17.3 L294.6 14.0 L295.9 14.0 L297.1 14.0 L298.4 14.0 L299.6 14.0 L300.8 14.0 L302.1 14.0 L303.3 14.0 L304.6 14.0 L305.8 18.3 L307.1 15.7 L308.3 14.0 L309.5 14.0 L310.8 16.4 L312.0 20.1 L313.3 20.0 L314.5 19.0 L315.8 19.9 L317.0 19.6 L318.2 18.0 L319.5 18.3 L320.7 14.4 L322.0 14.8 L323.2 14.4 L324.5 14.0 L325.7 14.8 L326.9 14.0 L328.2 14.0 L329.4 14.0 L330.7 16.8 L331.9 19.0 L333.2 22.3 L334.4 18.7 L335.6 17.3 L336.9 14.3 L338.1 14.0 L339.4 14.0 L340.6 14.0 L341.9 14.0 L343.1 17.1 L344.4 14.0 L345.6 16.3 L346.8 31.9 L348.1 23.9 L349.3 23.5 L350.6 21.4 L351.8 24.8 L353.1 21.3 L354.3 15.9 L355.5 16.0 L356.8 20.0 L358.0 18.6 L359.3 14.0 L360.5 14.0 L361.8 14.0 L363.0 14.8 L364.2 22.0 L365.5 20.0 L366.7 19.4 L368.0 25.3 L369.2 22.9 L370.5 29.1 L371.7 27.1 L372.9 19.7 L374.2 17.1 L375.4 16.8 L376.7 23.7 L377.9 25.3 L379.2 31.3 L380.4 35.6 L381.6 34.8 L382.9 42.6 L384.1 35.6 L385.4 33.0 L386.6 24.8 L387.9 20.8 L389.1 14.5 L390.3 19.1 L391.6 18.0 L392.8 14.0 L394.1 14.0 L395.3 14.0 L396.6 17.8 L397.8 19.6 L399.0 15.7 L400.3 14.0 L401.5 15.9 L402.8 16.8 L404.0 16.1 L405.3 23.6 L406.5 19.5 L407.7 15.0 L409.0 14.0 L410.2 14.0 L411.5 14.0 L412.7 14.0 L414.0 16.8 L415.2 17.5 L416.4 22.5 L417.7 21.3 L418.9 19.3 L420.2 14.0 L421.4 15.0 L422.7 16.6 L423.9 14.0 L425.1 14.0 L426.4 14.8 L427.6 19.7 L428.9 17.7 L430.1 17.0 L431.4 31.3 L432.6 25.3 L433.8 22.8 L435.1 21.9 L436.3 17.8 L437.6 15.2 L438.8 17.2 L440.1 18.6 L441.3 17.3 L442.5 14.4 L443.8 23.8 L445.0 28.8 L446.3 39.2 L447.5 25.4 L448.8 14.0 L450.0 14.4 L451.2 19.8 L452.5 25.9 L453.7 16.6 L455.0 23.3 L456.2 22.1 L457.5 23.1 L458.7 27.1 L459.9 41.9 L461.2 41.9 L462.4 26.5 L463.7 17.9 L464.9 22.7 L466.2 17.4 L467.4 15.8 L468.6 14.0 L469.9 14.0 L471.1 15.9 L472.4 14.0 L473.6 21.4 L474.9 22.8 L476.1 31.1 L477.3 34.4 L478.6 26.7 L479.8 22.3 L481.1 32.5 L482.3 33.1 L483.6 44.0 L484.8 36.9 L486.0 39.4 L487.3 36.0 L488.5 43.9 L489.8 54.5 L491.0 55.0 L492.3 38.6 L493.5 36.0 L494.7 35.6 L496.0 34.9 L497.2 36.3 L498.5 22.2 L499.7 18.5 L501.0 21.3 L502.2 15.5 L503.4 14.0 L504.7 14.0 L505.9 14.0 L507.2 14.0 L508.4 15.7 L509.7 18.9 L510.9 15.3 L512.1 18.2 L513.4 14.7 L514.6 14.0 L515.9 16.6 L517.1 16.0 L518.4 14.0 L519.6 14.0 L520.8 17.4 L522.1 14.0 L523.3 14.0 L524.6 15.3 L525.8 14.0 L527.1 14.4 L528.3 15.3 L529.5 14.0 L530.8 14.0 L532.0 21.3 L533.3 19.9 L534.5 23.5 L535.8 17.0 L537.0 16.7 L538.2 14.7 L539.5 14.0 L540.7 15.9 L542.0 14.0 L543.2 14.0 L544.5 14.2 L545.7 15.0 L546.9 16.9 L548.2 14.0 L549.4 27.2 L550.7 26.0 L551.9 27.1 L553.2 36.3 L554.4 27.4 L555.6 24.6 L556.9 14.7 L558.1 17.8 L559.4 27.0 L560.6 21.4 L561.9 23.5 L563.1 30.4 L564.3 30.9 L565.6 31.6 L566.8 34.3 L568.1 25.9 L569.3 22.8 L570.6 25.5 L571.8 23.5 L573.0 21.6 L574.3 21.2 L575.5 22.1 L576.8 18.1 L578.0 14.7 L579.3 16.4 L580.5 15.9 L581.7 14.0 L583.0 14.0 L584.2 19.6 L585.5 20.8 L586.7 16.2 L588.0 15.9 L589.2 23.2 L590.4 19.5 L591.7 18.1 L592.9 14.4 L594.2 24.5 L595.4 17.6 L596.7 14.0 L597.9 14.0 L599.1 14.0 L600.4 14.5 L601.6 14.1 L602.9 14.0 L604.1 14.0 L605.4 14.8 L606.6 14.8 L607.8 14.0 L609.1 15.5 L610.3 19.6 L611.6 21.9 L612.8 20.0 L614.1 27.1 L615.3 23.6 L616.5 25.5 L617.8 24.7 L619.0 24.9 L620.3 22.9 L621.5 22.0 L622.8 23.2 L624.0 26.7 L624.0 14.0 L56.0 14.0 Z" class="area s1"/>
+<path d="M56.0 14.0 L57.2 15.3 L58.5 14.0 L59.7 14.0 L61.0 14.0 L62.2 14.0 L63.5 14.0 L64.7 15.9 L65.9 15.6 L67.2 19.6 L68.4 27.6 L69.7 25.1 L70.9 22.8 L72.2 22.6 L73.4 19.3 L74.6 17.4 L75.9 15.3 L77.1 14.0 L78.4 15.9 L79.6 14.0 L80.9 14.0 L82.1 14.0 L83.3 14.0 L84.6 15.0 L85.8 14.0 L87.1 17.2 L88.3 19.1 L89.6 14.4 L90.8 17.6 L92.0 17.7 L93.3 15.0 L94.5 17.6 L95.8 36.1 L97.0 36.3 L98.3 29.1 L99.5 25.4 L100.7 18.6 L102.0 18.6 L103.2 25.1 L104.5 32.1 L105.7 34.3 L107.0 35.8 L108.2 28.2 L109.4 24.7 L110.7 31.7 L111.9 30.8 L113.2 40.0 L114.4 39.1 L115.7 38.3 L116.9 27.4 L118.1 28.6 L119.4 22.4 L120.6 16.8 L121.9 14.0 L123.1 14.0 L124.4 15.8 L125.6 24.6 L126.8 19.4 L128.1 22.1 L129.3 18.8 L130.6 22.1 L131.8 26.3 L133.1 22.2 L134.3 19.7 L135.5 17.5 L136.8 23.2 L138.0 19.0 L139.3 18.5 L140.5 20.5 L141.8 14.0 L143.0 14.1 L144.2 14.0 L145.5 14.0 L146.7 16.6 L148.0 27.2 L149.2 30.0 L150.5 33.0 L151.7 32.7 L152.9 42.4 L154.2 33.1 L155.4 43.7 L156.7 50.7 L157.9 44.4 L159.2 54.9 L160.4 51.7 L161.6 67.3 L162.9 72.0 L164.1 69.0 L165.4 76.6 L166.6 65.0 L167.9 60.6 L169.1 66.8 L170.3 60.6 L171.6 62.3 L172.8 62.1 L174.1 51.8 L175.3 50.4 L176.6 57.4 L177.8 58.9 L179.0 70.6 L180.3 66.8 L181.5 65.2 L182.8 61.6 L184.0 90.0 L185.3 122.0 L186.5 123.0 L187.7 131.0 L189.0 77.8 L190.2 102.3 L191.5 92.8 L192.7 87.5 L194.0 89.0 L195.2 101.2 L196.4 100.5 L197.7 113.3 L198.9 99.6 L200.2 91.3 L201.4 79.8 L202.7 75.7 L203.9 75.5 L205.1 72.0 L206.4 71.7 L207.6 67.7 L208.9 59.3 L210.1 62.6 L211.4 67.4 L212.6 65.0 L213.8 61.0 L215.1 61.7 L216.3 42.7 L217.6 38.8 L218.8 38.0 L220.1 35.1 L221.3 31.2 L222.5 30.6 L223.8 32.6 L225.0 42.8 L226.3 42.6 L227.5 46.7 L228.8 34.4 L230.0 37.9 L231.2 35.5 L232.5 36.2 L233.7 32.8 L235.0 29.3 L236.2 29.5 L237.5 32.4 L238.7 26.2 L239.9 25.7 L241.2 22.2 L242.4 23.9 L243.7 21.5 L244.9 28.4 L246.2 22.6 L247.4 27.8 L248.6 27.9 L249.9 29.4 L251.1 23.4 L252.4 16.6 L253.6 16.2 L254.9 14.0 L256.1 14.0 L257.3 14.0 L258.6 14.2 L259.8 14.0 L261.1 14.0 L262.3 18.6 L263.6 19.0 L264.8 15.3 L266.0 14.0 L267.3 16.2 L268.5 15.0 L269.8 17.7 L271.0 15.6 L272.3 14.0 L273.5 14.5 L274.7 14.0 L276.0 14.0 L277.2 14.0 L278.5 14.0 L279.7 14.0 L281.0 14.2 L282.2 15.8 L283.4 16.6 L284.7 18.9 L285.9 29.1 L287.2 19.8 L288.4 22.9 L289.7 18.2 L290.9 18.8 L292.1 14.0 L293.4 15.2 L294.6 14.0 L295.9 14.0 L297.1 14.0 L298.4 15.5 L299.6 15.6 L300.8 19.0 L302.1 20.6 L303.3 23.1 L304.6 14.0 L305.8 16.7 L307.1 14.1 L308.3 14.0 L309.5 14.0 L310.8 17.7 L312.0 22.3 L313.3 19.0 L314.5 14.0 L315.8 15.8 L317.0 14.3 L318.2 14.0 L319.5 14.0 L320.7 14.0 L322.0 14.2 L323.2 14.0 L324.5 14.9 L325.7 15.6 L326.9 14.0 L328.2 14.0 L329.4 14.0 L330.7 17.4 L331.9 19.4 L333.2 22.2 L334.4 18.7 L335.6 17.0 L336.9 14.6 L338.1 14.0 L339.4 14.0 L340.6 14.0 L341.9 14.0 L343.1 16.3 L344.4 14.0 L345.6 15.8 L346.8 32.6 L348.1 23.3 L349.3 24.1 L350.6 21.4 L351.8 25.6 L353.1 22.1 L354.3 15.7 L355.5 15.7 L356.8 18.9 L358.0 15.3 L359.3 14.0 L360.5 14.0 L361.8 14.0 L363.0 14.0 L364.2 20.9 L365.5 18.8 L366.7 17.7 L368.0 25.0 L369.2 22.9 L370.5 29.5 L371.7 28.9 L372.9 19.4 L374.2 18.0 L375.4 17.6 L376.7 27.9 L377.9 28.0 L379.2 33.7 L380.4 38.8 L381.6 36.5 L382.9 45.6 L384.1 39.7 L385.4 30.9 L386.6 25.2 L387.9 21.0 L389.1 17.6 L390.3 20.5 L391.6 19.3 L392.8 17.2 L394.1 16.7 L395.3 15.5 L396.6 17.4 L397.8 17.9 L399.0 14.0 L400.3 14.0 L401.5 20.7 L402.8 21.6 L404.0 23.3 L405.3 30.1 L406.5 25.5 L407.7 19.9 L409.0 16.1 L410.2 14.0 L411.5 14.0 L412.7 14.1 L414.0 16.3 L415.2 17.0 L416.4 21.6 L417.7 20.5 L418.9 16.4 L420.2 14.0 L421.4 16.0 L422.7 16.1 L423.9 14.0 L425.1 14.0 L426.4 15.2 L427.6 18.3 L428.9 16.6 L430.1 17.1 L431.4 29.8 L432.6 22.8 L433.8 19.5 L435.1 19.3 L436.3 16.2 L437.6 14.0 L438.8 14.1 L440.1 15.3 L441.3 17.2 L442.5 14.1 L443.8 19.3 L445.0 22.3 L446.3 30.0 L447.5 18.4 L448.8 15.4 L450.0 17.0 L451.2 17.2 L452.5 26.8 L453.7 26.3 L455.0 25.3 L456.2 22.3 L457.5 23.9 L458.7 19.4 L459.9 25.8 L461.2 21.3 L462.4 16.1 L463.7 19.6 L464.9 22.5 L466.2 22.2 L467.4 27.6 L468.6 23.3 L469.9 26.7 L471.1 34.7 L472.4 29.4 L473.6 30.4 L474.9 31.2 L476.1 40.4 L477.3 43.8 L478.6 37.7 L479.8 36.2 L481.1 44.6 L482.3 46.0 L483.6 54.5 L484.8 48.4 L486.0 50.4 L487.3 47.1 L488.5 57.6 L489.8 67.5 L491.0 69.4 L492.3 52.9 L493.5 48.5 L494.7 48.0 L496.0 45.2 L497.2 44.9 L498.5 29.8 L499.7 26.3 L501.0 26.7 L502.2 20.7 L503.4 14.0 L504.7 14.0 L505.9 14.0 L507.2 14.0 L508.4 15.2 L509.7 19.3 L510.9 14.0 L512.1 16.4 L513.4 14.0 L514.6 14.0 L515.9 17.0 L517.1 17.1 L518.4 14.0 L519.6 14.0 L520.8 16.3 L522.1 14.0 L523.3 14.0 L524.6 15.9 L525.8 14.0 L527.1 14.0 L528.3 14.9 L529.5 14.0 L530.8 14.0 L532.0 21.5 L533.3 21.9 L534.5 26.0 L535.8 19.8 L537.0 18.5 L538.2 16.1 L539.5 14.0 L540.7 14.1 L542.0 14.0 L543.2 14.0 L544.5 14.0 L545.7 14.0 L546.9 18.4 L548.2 16.0 L549.4 32.1 L550.7 30.7 L551.9 32.5 L553.2 42.0 L554.4 31.9 L555.6 28.6 L556.9 17.9 L558.1 21.6 L559.4 29.3 L560.6 23.0 L561.9 24.9 L563.1 33.8 L564.3 34.1 L565.6 33.2 L566.8 37.6 L568.1 27.7 L569.3 22.9 L570.6 23.8 L571.8 24.6 L573.0 19.2 L574.3 22.2 L575.5 24.1 L576.8 18.9 L578.0 16.2 L579.3 21.0 L580.5 18.8 L581.7 16.3 L583.0 19.7 L584.2 25.8 L585.5 26.8 L586.7 21.7 L588.0 22.4 L589.2 30.0 L590.4 29.4 L591.7 29.3 L592.9 27.8 L594.2 37.2 L595.4 27.1 L596.7 22.7 L597.9 14.0 L599.1 14.0 L600.4 15.2 L601.6 16.2 L602.9 14.0 L604.1 14.2 L605.4 16.2 L606.6 14.6 L607.8 14.0 L609.1 15.2 L610.3 18.2 L611.6 22.4 L612.8 21.1 L614.1 26.3 L615.3 23.8 L616.5 25.6 L617.8 23.6 L619.0 23.5 L620.3 19.4 L621.5 20.8 L622.8 22.7 L624.0 26.9" class="line s2"/>
+<path d="M56.0 14.0 L57.2 15.3 L58.5 14.0 L59.7 14.0 L61.0 14.0 L62.2 14.0 L63.5 14.0 L64.7 15.9 L65.9 15.6 L67.2 19.6 L68.4 27.6 L69.7 25.1 L70.9 22.8 L72.2 22.6 L73.4 19.3 L74.6 17.4 L75.9 15.3 L77.1 14.0 L78.4 15.9 L79.6 14.0 L80.9 14.0 L82.1 14.0 L83.3 14.0 L84.6 15.0 L85.8 14.0 L87.1 17.2 L88.3 19.1 L89.6 14.4 L90.8 17.6 L92.0 17.7 L93.3 15.0 L94.5 17.6 L95.8 36.1 L97.0 36.3 L98.3 29.1 L99.5 25.4 L100.7 18.6 L102.0 18.6 L103.2 25.1 L104.5 32.1 L105.7 34.3 L107.0 35.8 L108.2 28.2 L109.4 24.7 L110.7 31.7 L111.9 30.8 L113.2 40.0 L114.4 39.1 L115.7 38.3 L116.9 27.4 L118.1 28.6 L119.4 22.4 L120.6 16.8 L121.9 14.0 L123.1 14.0 L124.4 15.8 L125.6 24.6 L126.8 19.4 L128.1 22.1 L129.3 18.8 L130.6 22.1 L131.8 26.3 L133.1 22.2 L134.3 19.7 L135.5 18.8 L136.8 24.4 L138.0 21.2 L139.3 20.7 L140.5 23.1 L141.8 18.0 L143.0 18.9 L144.2 17.1 L145.5 14.3 L146.7 15.3 L148.0 23.8 L149.2 25.1 L150.5 27.8 L151.7 28.8 L152.9 36.9 L154.2 27.3 L155.4 36.4 L156.7 43.2 L157.9 37.0 L159.2 46.2 L160.4 42.9 L161.6 56.5 L162.9 59.9 L164.1 55.0 L165.4 64.2 L166.6 52.6 L167.9 47.4 L169.1 51.1 L170.3 44.0 L171.6 45.0 L172.8 45.6 L174.1 31.2 L175.3 31.5 L176.6 38.2 L177.8 39.4 L179.0 56.0 L180.3 52.8 L181.5 51.9 L182.8 44.2 L184.0 96.6 L185.3 123.9 L186.5 119.1 L187.7 130.1 L189.0 65.5 L190.2 99.2 L191.5 90.6 L192.7 83.5 L194.0 83.3 L195.2 97.0 L196.4 90.3 L197.7 102.0 L198.9 89.2 L200.2 77.1 L201.4 62.9 L202.7 61.1 L203.9 61.2 L205.1 59.1 L206.4 59.8 L207.6 57.6 L208.9 48.6 L210.1 51.9 L211.4 56.9 L212.6 47.1 L213.8 44.1 L215.1 46.0 L216.3 25.8 L217.6 31.0 L218.8 31.4 L220.1 28.1 L221.3 23.9 L222.5 24.4 L223.8 26.4 L225.0 36.7 L226.3 36.5 L227.5 40.6 L228.8 28.2 L230.0 31.7 L231.2 29.3 L232.5 30.0 L233.7 26.6 L235.0 23.1 L236.2 23.3 L237.5 26.2 L238.7 19.9 L239.9 19.4 L241.2 15.9 L242.4 17.7 L243.7 15.2 L244.9 22.2 L246.2 16.3 L247.4 21.6 L248.6 21.7 L249.9 23.1 L251.1 17.1 L252.4 14.0 L253.6 14.0 L254.9 14.0 L256.1 14.0 L257.3 14.0 L258.6 14.2 L259.8 14.0 L261.1 14.0 L262.3 18.7 L263.6 19.0 L264.8 15.3 L266.0 14.0 L267.3 16.2 L268.5 15.0 L269.8 17.7 L271.0 15.6 L272.3 14.0 L273.5 14.5 L274.7 14.0 L276.0 14.0 L277.2 14.0 L278.5 14.0 L279.7 14.0 L281.0 14.0 L282.2 14.2 L283.4 16.3 L284.7 24.9 L285.9 27.5 L287.2 21.0 L288.4 25.1 L289.7 25.3 L290.9 20.2 L292.1 14.0 L293.4 17.3 L294.6 14.0 L295.9 14.0 L297.1 14.0 L298.4 14.0 L299.6 14.0 L300.8 14.0 L302.1 14.0 L303.3 14.0 L304.6 14.0 L305.8 18.3 L307.1 15.7 L308.3 14.0 L309.5 14.0 L310.8 16.4 L312.0 20.1 L313.3 20.0 L314.5 19.0 L315.8 19.9 L317.0 19.6 L318.2 18.0 L319.5 18.3 L320.7 14.4 L322.0 14.8 L323.2 14.4 L324.5 14.0 L325.7 14.8 L326.9 14.0 L328.2 14.0 L329.4 14.0 L330.7 16.8 L331.9 19.0 L333.2 22.3 L334.4 18.7 L335.6 17.3 L336.9 14.3 L338.1 14.0 L339.4 14.0 L340.6 14.0 L341.9 14.0 L343.1 17.1 L344.4 14.0 L345.6 16.3 L346.8 31.9 L348.1 23.9 L349.3 23.5 L350.6 21.4 L351.8 24.8 L353.1 21.3 L354.3 15.9 L355.5 16.0 L356.8 20.0 L358.0 18.6 L359.3 14.0 L360.5 14.0 L361.8 14.0 L363.0 14.8 L364.2 22.0 L365.5 20.0 L366.7 19.4 L368.0 25.3 L369.2 22.9 L370.5 29.1 L371.7 27.1 L372.9 19.7 L374.2 17.1 L375.4 16.8 L376.7 23.7 L377.9 25.3 L379.2 31.3 L380.4 35.6 L381.6 34.8 L382.9 42.6 L384.1 35.6 L385.4 33.0 L386.6 24.8 L387.9 20.8 L389.1 14.5 L390.3 19.1 L391.6 18.0 L392.8 14.0 L394.1 14.0 L395.3 14.0 L396.6 17.8 L397.8 19.6 L399.0 15.7 L400.3 14.0 L401.5 15.9 L402.8 16.8 L404.0 16.1 L405.3 23.6 L406.5 19.5 L407.7 15.0 L409.0 14.0 L410.2 14.0 L411.5 14.0 L412.7 14.0 L414.0 16.8 L415.2 17.5 L416.4 22.5 L417.7 21.3 L418.9 19.3 L420.2 14.0 L421.4 15.0 L422.7 16.6 L423.9 14.0 L425.1 14.0 L426.4 14.8 L427.6 19.7 L428.9 17.7 L430.1 17.0 L431.4 31.3 L432.6 25.3 L433.8 22.8 L435.1 21.9 L436.3 17.8 L437.6 15.2 L438.8 17.2 L440.1 18.6 L441.3 17.3 L442.5 14.4 L443.8 23.8 L445.0 28.8 L446.3 39.2 L447.5 25.4 L448.8 14.0 L450.0 14.4 L451.2 19.8 L452.5 25.9 L453.7 16.6 L455.0 23.3 L456.2 22.1 L457.5 23.1 L458.7 27.1 L459.9 41.9 L461.2 41.9 L462.4 26.5 L463.7 17.9 L464.9 22.7 L466.2 17.4 L467.4 15.8 L468.6 14.0 L469.9 14.0 L471.1 15.9 L472.4 14.0 L473.6 21.4 L474.9 22.8 L476.1 31.1 L477.3 34.4 L478.6 26.7 L479.8 22.3 L481.1 32.5 L482.3 33.1 L483.6 44.0 L484.8 36.9 L486.0 39.4 L487.3 36.0 L488.5 43.9 L489.8 54.5 L491.0 55.0 L492.3 38.6 L493.5 36.0 L494.7 35.6 L496.0 34.9 L497.2 36.3 L498.5 22.2 L499.7 18.5 L501.0 21.3 L502.2 15.5 L503.4 14.0 L504.7 14.0 L505.9 14.0 L507.2 14.0 L508.4 15.7 L509.7 18.9 L510.9 15.3 L512.1 18.2 L513.4 14.7 L514.6 14.0 L515.9 16.6 L517.1 16.0 L518.4 14.0 L519.6 14.0 L520.8 17.4 L522.1 14.0 L523.3 14.0 L524.6 15.3 L525.8 14.0 L527.1 14.4 L528.3 15.3 L529.5 14.0 L530.8 14.0 L532.0 21.3 L533.3 19.9 L534.5 23.5 L535.8 17.0 L537.0 16.7 L538.2 14.7 L539.5 14.0 L540.7 15.9 L542.0 14.0 L543.2 14.0 L544.5 14.2 L545.7 15.0 L546.9 16.9 L548.2 14.0 L549.4 27.2 L550.7 26.0 L551.9 27.1 L553.2 36.3 L554.4 27.4 L555.6 24.6 L556.9 14.7 L558.1 17.8 L559.4 27.0 L560.6 21.4 L561.9 23.5 L563.1 30.4 L564.3 30.9 L565.6 31.6 L566.8 34.3 L568.1 25.9 L569.3 22.8 L570.6 25.5 L571.8 23.5 L573.0 21.6 L574.3 21.2 L575.5 22.1 L576.8 18.1 L578.0 14.7 L579.3 16.4 L580.5 15.9 L581.7 14.0 L583.0 14.0 L584.2 19.6 L585.5 20.8 L586.7 16.2 L588.0 15.9 L589.2 23.2 L590.4 19.5 L591.7 18.1 L592.9 14.4 L594.2 24.5 L595.4 17.6 L596.7 14.0 L597.9 14.0 L599.1 14.0 L600.4 14.5 L601.6 14.1 L602.9 14.0 L604.1 14.0 L605.4 14.8 L606.6 14.8 L607.8 14.0 L609.1 15.5 L610.3 19.6 L611.6 21.9 L612.8 20.0 L614.1 27.1 L615.3 23.6 L616.5 25.5 L617.8 24.7 L619.0 24.9 L620.3 22.9 L621.5 22.0 L622.8 23.2 L624.0 26.7" class="line s1"/>
+<circle cx="187.7" cy="130.1" r="4" class="dot s1"/>
+<text x="195.7" y="134.1" class="end-label">−18.6% · 8 Apr 2025</text>
+</svg>
+    <figcaption>Decline from the running peak. The Signal’s deepest drawdown (−18.6%, −$19,940) ran from 23 Jan 2025 to 8 Apr 2025 and was recovered by 24 Jun 2025; SPY fell −18.8% through the same episode. The overlay neither deepened nor materially shortened the index’s own drawdown.</figcaption>
+  </figure>
+  <p>The deepest drawdown on the record ran from 23 Jan 2025 to 8 Apr 2025. The book was fully deployed into washouts through that decline: the Mar 2025 entries were the worst monthly cohort on the record (−$5,284 on 9 slices) and the Apr 2025 entries the best (+$5,515 on 6 slices). The strategy recovered its peak 77 days after the trough, 2 sessions ahead of the index. The best single day for the book (+12.7%, 9 Apr 2025) and for the index were the same session.</p>
+
+  <h2>Monthly and calendar-year returns</h2>
+  <figure class="avoid">
+    <div class="legend"><span><b class="pos"></b>Signal ahead of SPY</span><span><b class="neg"></b>Signal behind SPY</span></div>
+    <svg class="chart" viewBox="0 0 720 220" role="img" aria-label="Monthly excess return of the strategy over the baseline">
+<line x1="56" y1="190.0" x2="704" y2="190.0" class="grid"/>
+<text x="48" y="193.5" class="tick" text-anchor="end">−2%</text>
+<line x1="56" y1="155.2" x2="704" y2="155.2" class="grid zero"/>
+<text x="48" y="158.7" class="tick" text-anchor="end">0%</text>
+<line x1="56" y1="120.4" x2="704" y2="120.4" class="grid"/>
+<text x="48" y="123.9" class="tick" text-anchor="end">+2%</text>
+<line x1="56" y1="85.6" x2="704" y2="85.6" class="grid"/>
+<text x="48" y="89.1" class="tick" text-anchor="end">+5%</text>
+<line x1="56" y1="50.8" x2="704" y2="50.8" class="grid"/>
+<text x="48" y="54.3" class="tick" text-anchor="end">+8%</text>
+<line x1="56" y1="16.0" x2="704" y2="16.0" class="grid"/>
+<text x="48" y="19.5" class="tick" text-anchor="end">+10%</text>
+<path d="M60.2 155.2 V155.2 Q60.2 155.2 60.2 155.2 H79.9 Q79.9 155.2 79.9 155.2 V155.2 Z" class="bar pos"/>
+<path d="M88.4 155.2 V155.2 Q88.4 155.2 88.4 155.2 H108.1 Q108.1 155.2 108.1 155.2 V155.2 Z" class="bar pos"/>
+<path d="M116.6 155.2 V155.2 Q116.6 155.2 116.6 155.2 H136.3 Q136.3 155.2 136.3 155.2 V155.2 Z" class="bar pos"/>
+<path d="M144.7 155.2 V152.2 Q144.7 149.3 147.7 149.3 H161.5 Q164.5 149.3 164.5 152.2 V155.2 Z" class="bar pos"/>
+<path d="M172.9 155.2 V139.7 Q172.9 135.7 176.9 135.7 H188.6 Q192.6 135.7 192.6 139.7 V155.2 Z" class="bar pos"/>
+<path d="M201.1 155.2 V157.5 Q201.1 159.9 203.4 159.9 H218.5 Q220.8 159.9 220.8 157.5 V155.2 Z" class="bar neg"/>
+<path d="M229.3 155.2 V166.8 Q229.3 170.8 233.3 170.8 H245.0 Q249.0 170.8 249.0 166.8 V155.2 Z" class="bar neg"/>
+<path d="M257.4 155.2 V155.2 Q257.4 155.2 257.4 155.2 H277.2 Q277.2 155.2 277.2 155.2 V155.2 Z" class="bar pos"/>
+<path d="M285.6 155.2 V161.1 Q285.6 165.1 289.6 165.1 H301.3 Q305.3 165.1 305.3 161.1 V155.2 Z" class="bar neg"/>
+<path d="M313.8 155.2 V46.7 Q313.8 42.7 317.8 42.7 H329.5 Q333.5 42.7 333.5 46.7 V155.2 Z" class="bar pos"/>
+<text x="323.7" y="37.7" class="val" text-anchor="middle">+8.1 pp</text>
+<path d="M342.0 155.2 V175.9 Q342.0 179.9 346.0 179.9 H357.7 Q361.7 179.9 361.7 175.9 V155.2 Z" class="bar neg"/>
+<path d="M370.1 155.2 V161.7 Q370.1 165.7 374.1 165.7 H385.9 Q389.9 165.7 389.9 161.7 V155.2 Z" class="bar neg"/>
+<path d="M398.3 155.2 V149.5 Q398.3 145.5 402.3 145.5 H414.0 Q418.0 145.5 418.0 149.5 V155.2 Z" class="bar pos"/>
+<path d="M426.5 155.2 V147.5 Q426.5 143.5 430.5 143.5 H442.2 Q446.2 143.5 446.2 147.5 V155.2 Z" class="bar pos"/>
+<path d="M454.7 155.2 V154.0 Q454.7 152.7 455.9 152.7 H473.2 Q474.4 152.7 474.4 154.0 V155.2 Z" class="bar pos"/>
+<path d="M482.8 155.2 V151.7 Q482.8 148.1 486.4 148.1 H499.0 Q502.6 148.1 502.6 151.7 V155.2 Z" class="bar pos"/>
+<path d="M511.0 155.2 V103.5 Q511.0 99.5 515.0 99.5 H526.7 Q530.7 99.5 530.7 103.5 V155.2 Z" class="bar pos"/>
+<text x="520.9" y="94.5" class="val" text-anchor="middle">+4.0 pp</text>
+<path d="M539.2 155.2 V179.2 Q539.2 183.2 543.2 183.2 H554.9 Q558.9 183.2 558.9 179.2 V155.2 Z" class="bar neg"/>
+<text x="549.0" y="194.2" class="val" text-anchor="middle">−2.0 pp</text>
+<path d="M567.4 155.2 V171.9 Q567.4 175.9 571.4 175.9 H583.1 Q587.1 175.9 587.1 171.9 V155.2 Z" class="bar neg"/>
+<path d="M595.5 155.2 V157.3 Q595.5 159.3 597.6 159.3 H613.2 Q615.3 159.3 615.3 157.3 V155.2 Z" class="bar neg"/>
+<path d="M623.7 155.2 V135.0 Q623.7 131.0 627.7 131.0 H639.4 Q643.4 131.0 643.4 135.0 V155.2 Z" class="bar pos"/>
+<path d="M651.9 155.2 V152.0 Q651.9 148.7 655.1 148.7 H668.4 Q671.6 148.7 671.6 152.0 V155.2 Z" class="bar pos"/>
+<path d="M680.1 155.2 V154.4 Q680.1 153.6 680.9 153.6 H699.0 Q699.8 153.6 699.8 154.4 V155.2 Z" class="bar pos"/>
+<text x="70.1" y="206" class="tick" text-anchor="middle">Nov 2024</text>
+<text x="154.6" y="206" class="tick" text-anchor="middle">Feb 2025</text>
+<text x="239.1" y="206" class="tick" text-anchor="middle">May 2025</text>
+<text x="323.7" y="206" class="tick" text-anchor="middle">Aug 2025</text>
+<text x="408.2" y="206" class="tick" text-anchor="middle">Nov 2025</text>
+<text x="492.7" y="206" class="tick" text-anchor="middle">Feb 2026</text>
+<text x="577.2" y="206" class="tick" text-anchor="middle">May 2026</text>
+<text x="661.7" y="206" class="tick" text-anchor="middle">Aug 2026</text>
+</svg>
+    <figcaption>Monthly return of the Signal minus the monthly return of SPY, in percentage points. Of the 20 months with the overlay active, the Signal finished ahead in 12 and behind in 8. Best relative month Aug 2025 (+8.1 pp); worst Apr 2026 (−2.0 pp).</figcaption>
+  </figure>
+  <div class="two-col avoid">
+    <div class="tbl-wrap"><table class="compact">
+      <thead><tr><th>Month</th><th class="r">Signal</th><th class="r">SPY</th><th class="r">Excess</th></tr></thead>
+      <tbody>
+        <tr class="dim"><td>Nov 2024</td><td class="r">+5.5%</td><td class="r">+5.5%</td><td class="r">—</td></tr>
+        <tr class="dim"><td>Dec 2024</td><td class="r neg">−2.4%</td><td class="r neg">−2.4%</td><td class="r">—</td></tr>
+        <tr class="dim"><td>Jan 2025</td><td class="r">+2.7%</td><td class="r">+2.7%</td><td class="r">—</td></tr>
+        <tr><td>Feb 2025</td><td class="r neg">−0.8%</td><td class="r neg">−1.3%</td><td class="r">+0.4 pp</td></tr>
+        <tr><td>Mar 2025</td><td class="r neg">−4.2%</td><td class="r neg">−5.6%</td><td class="r">+1.4 pp</td></tr>
+        <tr><td>Apr 2025</td><td class="r neg">−1.2%</td><td class="r neg">−0.9%</td><td class="r neg">−0.3 pp</td></tr>
+        <tr><td>May 2025</td><td class="r">+5.2%</td><td class="r">+6.3%</td><td class="r neg">−1.1 pp</td></tr>
+        <tr><td>Jun 2025</td><td class="r">+5.1%</td><td class="r">+5.1%</td><td class="r">+0.0 pp</td></tr>
+        <tr><td>Jul 2025</td><td class="r">+1.6%</td><td class="r">+2.3%</td><td class="r neg">−0.7 pp</td></tr>
+        <tr><td>Aug 2025</td><td class="r">+10.1%</td><td class="r">+2.1%</td><td class="r">+8.1 pp</td></tr>
+        <tr><td>Sep 2025</td><td class="r">+1.8%</td><td class="r">+3.6%</td><td class="r neg">−1.8 pp</td></tr>
+        <tr><td>Oct 2025</td><td class="r">+1.6%</td><td class="r">+2.4%</td><td class="r neg">−0.8 pp</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tbl-wrap"><table class="compact">
+      <thead><tr><th>Month</th><th class="r">Signal</th><th class="r">SPY</th><th class="r">Excess</th></tr></thead>
+      <tbody>
+        <tr><td>Nov 2025</td><td class="r">+0.9%</td><td class="r">+0.2%</td><td class="r">+0.7 pp</td></tr>
+        <tr><td>Dec 2025</td><td class="r">+0.9%</td><td class="r">+0.1%</td><td class="r">+0.8 pp</td></tr>
+        <tr><td>Jan 2026</td><td class="r">+1.7%</td><td class="r">+1.5%</td><td class="r">+0.2 pp</td></tr>
+        <tr><td>Feb 2026</td><td class="r neg">−0.4%</td><td class="r neg">−0.9%</td><td class="r">+0.5 pp</td></tr>
+        <tr><td>Mar 2026</td><td class="r neg">−0.9%</td><td class="r neg">−4.9%</td><td class="r">+4.0 pp</td></tr>
+        <tr><td>Apr 2026</td><td class="r">+8.5%</td><td class="r">+10.5%</td><td class="r neg">−2.0 pp</td></tr>
+        <tr><td>May 2026</td><td class="r">+3.8%</td><td class="r">+5.3%</td><td class="r neg">−1.5 pp</td></tr>
+        <tr><td>Jun 2026</td><td class="r neg">−1.3%</td><td class="r neg">−1.0%</td><td class="r neg">−0.3 pp</td></tr>
+        <tr><td>Jul 2026</td><td class="r">+1.8%</td><td class="r">+0.0%</td><td class="r">+1.7 pp</td></tr>
+        <tr><td>Aug 2026</td><td class="r">+3.1%</td><td class="r">+2.7%</td><td class="r">+0.5 pp</td></tr>
+        <tr><td>Sep 2026</td><td class="r neg">−0.6%</td><td class="r neg">−0.7%</td><td class="r">+0.1 pp</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="tbl-wrap avoid"><table class="compact">
+    <thead><tr><th>Calendar year</th><th>Span</th><th class="r">Signal</th><th class="r">SPY</th><th class="r">Excess</th></tr></thead>
+    <tbody>
+      <tr><td>2024 (partial)</td><td class="small">1 Nov 2024 – 31 Dec 2024</td><td class="r">+3.0%</td><td class="r">+3.0%</td><td class="r">+0.0 pp</td></tr>
+      <tr><td>2025</td><td class="small">2 Jan 2025 – 31 Dec 2025</td><td class="r">+25.6%</td><td class="r">+17.7%</td><td class="r">+7.9 pp</td></tr>
+      <tr><td>2026 (partial)</td><td class="small">2 Jan 2026 – 1 Sep 2026</td><td class="r">+16.3%</td><td class="r">+12.3%</td><td class="r">+4.0 pp</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Dimmed months precede the first funded trade; the book was identical to SPY. Monthly figures are from month-end portfolio values.</p>
+</section>
+
+<!-- ===================================================== 6 LIVE RECORD -->
+<section class="sec" id="s6">
+  <div class="sec-head"><span class="no">6</span><h1>The live record<span class="pgmark">§S06§</span></h1></div>
+  <p class="lead">Since 12 June 2026 the system has run on a schedule, scoring each new session once and freezing the verdict. Trades below were entered on signals the model produced without any knowledge of what followed.</p>
+  <div class="figs">
+    <div class="fig"><div class="v">7</div><div class="l">Live trades funded</div><div class="c">5 closed · 2 open</div></div>
+    <div class="fig"><div class="v">6 of 7</div><div class="l">Profitable</div><div class="c">including open positions at mark</div></div>
+    <div class="fig"><div class="v">+$3,920</div><div class="l">Live overlay P&amp;L</div><div class="c">on $10,000 slices</div></div>
+    <div class="fig"><div class="v">+1.7 pp</div><div class="l">Book vs SPY</div><div class="c">+4.7% vs +3.0% over 56 sessions</div></div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Security</th><th>Signal</th><th>Filled</th><th>Exit</th><th class="r">Entry</th><th class="r">Exit / mark</th><th class="r">P&amp;L</th><th class="r">Return</th><th>Exit reason</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Pfizer</strong> <span class="tk">PFE</span></td><td>2026-06-24</td><td>2026-06-25</td><td>2026-07-28</td><td class="r">$23.26</td><td class="r">$25.25</td><td class="r">+$843</td><td class="r">+8.5%</td><td class="small">target hit</td></tr>
+      <tr><td><strong>Verizon</strong> <span class="tk">VZ</span></td><td>2026-06-30</td><td>2026-07-01</td><td>2026-07-24</td><td class="r">$41.29</td><td class="r">$46.38</td><td class="r">+$1,223</td><td class="r">+12.3%</td><td class="small">target hit</td></tr>
+      <tr><td><strong>AT&T</strong> <span class="tk">T</span></td><td>2026-06-30</td><td>2026-07-01</td><td>2026-07-22</td><td class="r">$20.21</td><td class="r">$23.04</td><td class="r">+$1,389</td><td class="r">+14.0%</td><td class="small">target hit</td></tr>
+      <tr><td><strong>Intuitive Surgical</strong> <span class="tk">ISRG</span></td><td>2026-07-17</td><td>2026-07-20</td><td>2026-08-31</td><td class="r">$353.17</td><td class="r">$376.86</td><td class="r">+$660</td><td class="r">+6.7%</td><td class="small">time stop</td></tr>
+      <tr><td><strong>Tesla</strong> <span class="tk">TSLA</span></td><td>2026-07-23</td><td>2026-07-24</td><td>2026-07-29</td><td class="r">$313.03</td><td class="r">$298.32</td><td class="r neg">−$479</td><td class="r neg">−4.7%</td><td class="small">divest signal</td></tr>
+      <tr><td><strong>T-Mobile US</strong> <span class="tk">TMUS</span></td><td>2026-07-23</td><td>2026-07-24</td><td>open</td><td class="r">$179.06</td><td class="r">$182.16</td><td class="r">+$163</td><td class="r">+1.7%</td><td class="small">still open</td></tr>
+      <tr><td><strong>Linde</strong> <span class="tk">LIN</span></td><td>2026-07-31</td><td>2026-08-03</td><td>open</td><td class="r">$480.46</td><td class="r">$486.76</td><td class="r">+$121</td><td class="r">+1.3%</td><td class="small">still open</td></tr>
+    </tbody>
+  </table></div>
+  <p>The live signal ledger holds 62 signals of all types over the period, of which the washout entries above were the only ones to invest capital. Two things should be read from this table. First, the mechanics work as documented: fills occur at the close after the signal, exits follow the frozen target or the time stop, and the one losing trade was cut by a bearish divest signal rather than allowed to run. Second, 7 trades over 56 sessions is not statistical evidence of edge; it is evidence that the live machine behaves like the walk-forward machine, which is the specific claim the pilot is designed to test at scale.</p>
+  <h3>Provenance split of the full record</h3>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>Provenance</th><th>Meaning</th><th class="r">Signals</th><th class="r">Trades funded</th><th class="r">Overlay P&amp;L</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Walk-forward</strong></td><td>Simulated on history by the causal engine; detected_at = bar date</td><td class="r">580</td><td class="r">65</td><td class="r">+$13,081</td></tr>
+      <tr><td><strong>Live</strong></td><td>Produced by a scheduled run on a new bar; detected_at = run date</td><td class="r">62</td><td class="r">7</td><td class="r">+$3,920</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===================================================== 7 TRADE ANALYTICS -->
+<section class="sec" id="s7">
+  <div class="sec-head"><span class="no">7</span><h1>Trade analytics<span class="pgmark">§S07§</span></h1></div>
+  <div class="figs">
+    <div class="fig"><div class="v">72</div><div class="l">Round trips</div><div class="c">70 closed · 2 open · 45 names</div></div>
+    <div class="fig"><div class="v">63%</div><div class="l">Win rate, closed</div><div class="c">median trade +2.1%</div></div>
+    <div class="fig"><div class="v">1.97</div><div class="l">Profit factor</div><div class="c">avg win +$770 · avg loss −$660</div></div>
+    <div class="fig"><div class="v">32d</div><div class="l">Average hold, calendar</div><div class="c">up to 13 names held at once</div></div>
+  </div>
+  <figure class="avoid">
+    <h3 style="margin-top:0">Every funded trade, ranked</h3>
+    <svg class="chart" viewBox="0 0 720 200" role="img" aria-label="Profit and loss of every funded trade, sorted">
+<line x1="56" y1="170.0" x2="704" y2="170.0" class="grid"/>
+<text x="48" y="173.5" class="tick" text-anchor="end">−$4k</text>
+<line x1="56" y1="131.5" x2="704" y2="131.5" class="grid"/>
+<text x="48" y="135.0" class="tick" text-anchor="end">−$2k</text>
+<line x1="56" y1="93.0" x2="704" y2="93.0" class="grid zero"/>
+<text x="48" y="96.5" class="tick" text-anchor="end">$0</text>
+<line x1="56" y1="54.5" x2="704" y2="54.5" class="grid"/>
+<text x="48" y="58.0" class="tick" text-anchor="end">$2k</text>
+<line x1="56" y1="16.0" x2="704" y2="16.0" class="grid"/>
+<text x="48" y="19.5" class="tick" text-anchor="end">$4k</text>
+<path d="M57.4 93.0 V34.4 Q57.4 30.4 61.4 30.4 H59.6 Q63.6 30.4 63.6 34.4 V93.0 Z" class="bar pos"/>
+<text x="57.4" y="25.4" class="val" text-anchor="start">+$3,250</text>
+<path d="M66.3 93.0 V53.9 Q66.3 49.9 70.3 49.9 H68.6 Q72.6 49.9 72.6 53.9 V93.0 Z" class="bar pos"/>
+<path d="M75.3 93.0 V54.5 Q75.3 50.5 79.3 50.5 H77.6 Q81.6 50.5 81.6 54.5 V93.0 Z" class="bar pos"/>
+<path d="M84.3 93.0 V55.5 Q84.3 51.5 88.3 51.5 H86.6 Q90.6 51.5 90.6 55.5 V93.0 Z" class="bar pos"/>
+<path d="M93.3 93.0 V62.8 Q93.3 58.8 97.3 58.8 H95.6 Q99.6 58.8 99.6 62.8 V93.0 Z" class="bar pos"/>
+<path d="M102.3 93.0 V66.6 Q102.3 62.6 106.3 62.6 H104.6 Q108.6 62.6 108.6 66.6 V93.0 Z" class="bar pos"/>
+<path d="M111.3 93.0 V69.9 Q111.3 65.9 115.3 65.9 H113.6 Q117.6 65.9 117.6 69.9 V93.0 Z" class="bar pos"/>
+<path d="M120.3 93.0 V70.0 Q120.3 66.0 124.3 66.0 H122.6 Q126.6 66.0 126.6 70.0 V93.0 Z" class="bar pos"/>
+<path d="M129.3 93.0 V70.3 Q129.3 66.3 133.3 66.3 H131.7 Q135.7 66.3 135.7 70.3 V93.0 Z" class="bar pos"/>
+<path d="M138.3 93.0 V73.5 Q138.3 69.5 142.3 69.5 H140.7 Q144.7 69.5 144.7 73.5 V93.0 Z" class="bar pos"/>
+<path d="M147.3 93.0 V77.2 Q147.3 73.2 151.3 73.2 H149.7 Q153.7 73.2 153.7 77.2 V93.0 Z" class="bar pos"/>
+<path d="M156.3 93.0 V78.4 Q156.3 74.4 160.3 74.4 H158.7 Q162.7 74.4 162.7 78.4 V93.0 Z" class="bar pos"/>
+<path d="M165.3 93.0 V78.5 Q165.3 74.5 169.3 74.5 H167.7 Q171.7 74.5 171.7 78.5 V93.0 Z" class="bar pos"/>
+<path d="M174.3 93.0 V80.1 Q174.3 76.1 178.3 76.1 H176.7 Q180.7 76.1 180.7 80.1 V93.0 Z" class="bar pos"/>
+<path d="M183.3 93.0 V80.8 Q183.3 76.8 187.3 76.8 H185.7 Q189.7 76.8 189.7 80.8 V93.0 Z" class="bar pos"/>
+<path d="M192.3 93.0 V81.0 Q192.3 77.0 196.3 77.0 H194.7 Q198.7 77.0 198.7 81.0 V93.0 Z" class="bar pos"/>
+<path d="M201.3 93.0 V81.1 Q201.3 77.1 205.3 77.1 H203.7 Q207.7 77.1 207.7 81.1 V93.0 Z" class="bar pos"/>
+<path d="M210.3 93.0 V84.1 Q210.3 80.1 214.3 80.1 H212.7 Q216.7 80.1 216.7 84.1 V93.0 Z" class="bar pos"/>
+<path d="M219.3 93.0 V84.3 Q219.3 80.3 223.3 80.3 H221.7 Q225.7 80.3 225.7 84.3 V93.0 Z" class="bar pos"/>
+<path d="M228.3 93.0 V84.6 Q228.3 80.6 232.3 80.6 H230.7 Q234.7 80.6 234.7 84.6 V93.0 Z" class="bar pos"/>
+<path d="M237.3 93.0 V85.6 Q237.3 81.6 241.3 81.6 H239.7 Q243.7 81.6 243.7 85.6 V93.0 Z" class="bar pos"/>
+<path d="M246.3 93.0 V85.9 Q246.3 81.9 250.3 81.9 H248.7 Q252.7 81.9 252.7 85.9 V93.0 Z" class="bar pos"/>
+<path d="M255.3 93.0 V86.4 Q255.3 82.4 259.4 82.4 H257.6 Q261.6 82.4 261.6 86.4 V93.0 Z" class="bar pos"/>
+<path d="M264.4 93.0 V87.8 Q264.4 83.8 268.4 83.8 H266.7 Q270.7 83.8 270.7 87.8 V93.0 Z" class="bar pos"/>
+<path d="M273.4 93.0 V87.9 Q273.4 83.9 277.4 83.9 H275.7 Q279.7 83.9 279.7 87.9 V93.0 Z" class="bar pos"/>
+<path d="M282.4 93.0 V88.3 Q282.4 84.3 286.4 84.3 H284.7 Q288.7 84.3 288.7 88.3 V93.0 Z" class="bar pos"/>
+<path d="M291.4 93.0 V89.0 Q291.4 85.0 295.3 85.0 H293.7 Q297.7 85.0 297.7 89.0 V93.0 Z" class="bar pos"/>
+<path d="M300.4 93.0 V89.7 Q300.4 86.4 303.7 86.4 H303.3 Q306.7 86.4 306.7 89.7 V93.0 Z" class="bar pos"/>
+<path d="M309.4 93.0 V89.7 Q309.4 86.4 312.7 86.4 H312.3 Q315.7 86.4 315.7 89.7 V93.0 Z" class="bar pos"/>
+<path d="M318.4 93.0 V90.0 Q318.4 87.0 321.3 87.0 H321.7 Q324.7 87.0 324.7 90.0 V93.0 Z" class="bar pos"/>
+<path d="M327.4 93.0 V90.1 Q327.4 87.2 330.3 87.2 H330.7 Q333.7 87.2 333.7 90.1 V93.0 Z" class="bar pos"/>
+<path d="M336.4 93.0 V90.1 Q336.4 87.2 339.3 87.2 H339.7 Q342.7 87.2 342.7 90.1 V93.0 Z" class="bar pos"/>
+<path d="M345.4 93.0 V90.4 Q345.4 87.8 348.0 87.8 H349.0 Q351.7 87.8 351.7 90.4 V93.0 Z" class="bar pos"/>
+<path d="M354.4 93.0 V91.0 Q354.4 89.0 356.4 89.0 H358.6 Q360.7 89.0 360.7 91.0 V93.0 Z" class="bar pos"/>
+<path d="M363.4 93.0 V91.0 Q363.4 89.0 365.4 89.0 H367.6 Q369.7 89.0 369.7 91.0 V93.0 Z" class="bar pos"/>
+<path d="M372.4 93.0 V91.2 Q372.4 89.4 374.2 89.4 H376.8 Q378.7 89.4 378.7 91.2 V93.0 Z" class="bar pos"/>
+<path d="M381.4 93.0 V91.2 Q381.4 89.5 383.1 89.5 H385.9 Q387.7 89.5 387.7 91.2 V93.0 Z" class="bar pos"/>
+<path d="M390.4 93.0 V91.4 Q390.4 89.9 391.9 89.9 H395.1 Q396.7 89.9 396.7 91.4 V93.0 Z" class="bar pos"/>
+<path d="M399.4 93.0 V91.5 Q399.4 90.0 400.8 90.0 H404.2 Q405.7 90.0 405.7 91.5 V93.0 Z" class="bar pos"/>
+<path d="M408.4 93.0 V91.7 Q408.4 90.4 409.7 90.4 H413.3 Q414.7 90.4 414.7 91.7 V93.0 Z" class="bar pos"/>
+<path d="M417.4 93.0 V91.7 Q417.4 90.5 418.6 90.5 H422.4 Q423.7 90.5 423.7 91.7 V93.0 Z" class="bar pos"/>
+<path d="M426.4 93.0 V91.8 Q426.4 90.7 427.5 90.7 H431.5 Q432.7 90.7 432.7 91.8 V93.0 Z" class="bar pos"/>
+<path d="M435.4 93.0 V92.0 Q435.4 91.1 436.3 91.1 H440.7 Q441.7 91.1 441.7 92.0 V93.0 Z" class="bar pos"/>
+<path d="M444.4 93.0 V92.1 Q444.4 91.2 445.2 91.2 H449.8 Q450.7 91.2 450.7 92.1 V93.0 Z" class="bar pos"/>
+<path d="M453.4 93.0 V92.3 Q453.4 91.6 454.1 91.6 H458.9 Q459.7 91.6 459.7 92.3 V93.0 Z" class="bar pos"/>
+<path d="M462.4 93.0 V92.4 Q462.4 91.8 463.0 91.8 H468.0 Q468.7 91.8 468.7 92.4 V93.0 Z" class="bar pos"/>
+<path d="M471.4 93.0 V93.7 Q471.4 94.3 472.0 94.3 H477.0 Q477.7 94.3 477.7 93.7 V93.0 Z" class="bar neg"/>
+<path d="M480.4 93.0 V94.1 Q480.4 95.3 481.5 95.3 H485.5 Q486.7 95.3 486.7 94.1 V93.0 Z" class="bar neg"/>
+<path d="M489.4 93.0 V94.2 Q489.4 95.4 490.6 95.4 H494.4 Q495.7 95.4 495.7 94.2 V93.0 Z" class="bar neg"/>
+<path d="M498.4 93.0 V94.9 Q498.4 96.8 500.2 96.8 H502.8 Q504.7 96.8 504.7 94.9 V93.0 Z" class="bar neg"/>
+<path d="M507.4 93.0 V95.7 Q507.4 98.4 510.1 98.4 H510.9 Q513.6 98.4 513.6 95.7 V93.0 Z" class="bar neg"/>
+<path d="M516.4 93.0 V95.7 Q516.4 98.5 519.1 98.5 H519.9 Q522.6 98.5 522.6 95.7 V93.0 Z" class="bar neg"/>
+<path d="M525.4 93.0 V95.8 Q525.4 98.5 528.1 98.5 H528.9 Q531.6 98.5 531.6 95.8 V93.0 Z" class="bar neg"/>
+<path d="M534.4 93.0 V97.5 Q534.4 101.5 538.4 101.5 H536.6 Q540.6 101.5 540.6 97.5 V93.0 Z" class="bar neg"/>
+<path d="M543.4 93.0 V97.6 Q543.4 101.6 547.4 101.6 H545.6 Q549.6 101.6 549.6 97.6 V93.0 Z" class="bar neg"/>
+<path d="M552.4 93.0 V97.7 Q552.4 101.7 556.4 101.7 H554.6 Q558.6 101.7 558.6 97.7 V93.0 Z" class="bar neg"/>
+<path d="M561.4 93.0 V98.2 Q561.4 102.2 565.4 102.2 H563.6 Q567.6 102.2 567.6 98.2 V93.0 Z" class="bar neg"/>
+<path d="M570.4 93.0 V98.4 Q570.4 102.4 574.4 102.4 H572.6 Q576.6 102.4 576.6 98.4 V93.0 Z" class="bar neg"/>
+<path d="M579.4 93.0 V99.2 Q579.4 103.2 583.4 103.2 H581.6 Q585.6 103.2 585.6 99.2 V93.0 Z" class="bar neg"/>
+<path d="M588.4 93.0 V99.2 Q588.4 103.2 592.4 103.2 H590.6 Q594.6 103.2 594.6 99.2 V93.0 Z" class="bar neg"/>
+<path d="M597.4 93.0 V100.5 Q597.4 104.5 601.4 104.5 H599.6 Q603.6 104.5 603.6 100.5 V93.0 Z" class="bar neg"/>
+<path d="M606.4 93.0 V100.7 Q606.4 104.7 610.4 104.7 H608.6 Q612.6 104.7 612.6 100.7 V93.0 Z" class="bar neg"/>
+<path d="M615.4 93.0 V102.3 Q615.4 106.3 619.4 106.3 H617.6 Q621.6 106.3 621.6 102.3 V93.0 Z" class="bar neg"/>
+<path d="M624.4 93.0 V103.3 Q624.4 107.3 628.4 107.3 H626.6 Q630.6 107.3 630.6 103.3 V93.0 Z" class="bar neg"/>
+<path d="M633.4 93.0 V103.5 Q633.4 107.5 637.4 107.5 H635.6 Q639.6 107.5 639.6 103.5 V93.0 Z" class="bar neg"/>
+<path d="M642.4 93.0 V104.7 Q642.4 108.7 646.4 108.7 H644.6 Q648.6 108.7 648.6 104.7 V93.0 Z" class="bar neg"/>
+<path d="M651.4 93.0 V105.3 Q651.4 109.3 655.4 109.3 H653.6 Q657.6 109.3 657.6 105.3 V93.0 Z" class="bar neg"/>
+<path d="M660.4 93.0 V106.2 Q660.4 110.2 664.4 110.2 H662.6 Q666.6 110.2 666.6 106.2 V93.0 Z" class="bar neg"/>
+<path d="M669.4 93.0 V108.3 Q669.4 112.3 673.4 112.3 H671.6 Q675.6 112.3 675.6 108.3 V93.0 Z" class="bar neg"/>
+<path d="M678.4 93.0 V111.2 Q678.4 115.2 682.4 115.2 H680.6 Q684.6 115.2 684.6 111.2 V93.0 Z" class="bar neg"/>
+<path d="M687.4 93.0 V124.1 Q687.4 128.1 691.4 128.1 H689.6 Q693.6 128.1 693.6 124.1 V93.0 Z" class="bar neg"/>
+<path d="M696.4 93.0 V136.9 Q696.4 140.9 700.4 140.9 H698.6 Q702.6 140.9 702.6 136.9 V93.0 Z" class="bar neg"/>
+<text x="702.6" y="151.9" class="val" text-anchor="end">−$2,489</text>
+</svg>
+    <figcaption>Dollar profit or loss of each of the 72 slices, sorted. The overlay’s +$17,001 is the sum of these bars (+$16,717 realised, +$284 unrealised); the balance of the book’s gain, +$33,481, is the SPY baseline itself.</figcaption>
+  </figure>
+  <h2>How trades ended</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Exit</th><th class="r">Trades</th><th class="r">Winners</th><th class="r">Win rate</th><th class="r">Avg return</th><th class="r">Avg P&amp;L</th><th class="r">Total P&amp;L</th></tr></thead>
+    <tbody>
+      <tr><td>Trend target reached</td><td class="r">21</td><td class="r">21</td><td class="r">100%</td><td class="r">+10.7%</td><td class="r">+$1,046</td><td class="r">+$21,968</td></tr>
+      <tr><td>30-bar time stop</td><td class="r">39</td><td class="r">23</td><td class="r">59%</td><td class="r">+1.1%</td><td class="r">+$94</td><td class="r">+$3,647</td></tr>
+      <tr><td>Bearish signal — divested</td><td class="r">10</td><td class="r">0</td><td class="r">0%</td><td class="r neg">−9.1%</td><td class="r neg">−$890</td><td class="r neg">−$8,898</td></tr>
+      <tr><td>Still open</td><td class="r">2</td><td class="r">2</td><td class="r">100%</td><td class="r">+1.5%</td><td class="r">+$142</td><td class="r">+$284</td></tr>
+    </tbody>
+  </table></div>
+  <p>The exit table is the clearest description of the strategy’s character. Every trade that reached its frozen trend target was profitable by construction, and those exits carried the bulk of the return. Trades closed by a bearish signal were uniformly losses: the divest rule is the strategy’s stop-loss, and the table shows it doing that job at a bounded average cost. The time stop is the mixed bucket: 59% of the 39 time-stopped slices were winners, at a small average result of +$94. The strategy therefore earns its excess return from the tail of large recoveries and pays for it with a larger number of small, capped outcomes.</p>
+  <div class="two-col">
+    <div>
+      <h3>By number of methods in agreement</h3>
+      <div class="tbl-wrap"><table class="compact">
+        <thead><tr><th>Methods</th><th class="r">Closed</th><th class="r">Win rate</th><th class="r">Avg P&amp;L</th></tr></thead>
+        <tbody>
+          <tr><td>2 of 4</td><td class="r">20</td><td class="r">65%</td><td class="r">+$310</td></tr>
+          <tr><td>3 of 4</td><td class="r">39</td><td class="r">64%</td><td class="r">+$238</td></tr>
+          <tr><td>4 of 4</td><td class="r">11</td><td class="r">55%</td><td class="r">+$111</td></tr>
+        </tbody>
+      </table></div>
+      <p class="small">More agreement did not mean better trades on this sample; the two-method minimum is doing the work. Sub-samples are small and should not be over-read.</p>
+    </div>
+    <div>
+      <h3>By category</h3>
+      <div class="tbl-wrap"><table class="compact">
+        <thead><tr><th>Category</th><th class="r">Trades</th><th class="r">Wins</th><th class="r">Total P&amp;L</th></tr></thead>
+        <tbody>
+          <tr><td>The Mega-Cap 100</td><td class="r">36</td><td class="r">23</td><td class="r">+$14,538</td></tr>
+          <tr><td>Healthcare & Pharma</td><td class="r">3</td><td class="r">3</td><td class="r">+$2,973</td></tr>
+          <tr><td>UBS Funds</td><td class="r">5</td><td class="r">4</td><td class="r">+$2,307</td></tr>
+          <tr><td>Engines of the Republic</td><td class="r">5</td><td class="r">4</td><td class="r">+$1,815</td></tr>
+          <tr><td>Wall Street's Darlings</td><td class="r">2</td><td class="r">2</td><td class="r">+$273</td></tr>
+          <tr><td>Big Tech</td><td class="r">3</td><td class="r">2</td><td class="r">+$134</td></tr>
+          <tr><td>The Clergy House</td><td class="r">1</td><td class="r">1</td><td class="r">+$100</td></tr>
+          <tr><td>Consumer Leaders</td><td class="r">5</td><td class="r">2</td><td class="r neg">−$791</td></tr>
+          <tr><td>Financial Titans</td><td class="r">2</td><td class="r">1</td><td class="r neg">−$946</td></tr>
+          <tr><td>Critical Choke Points</td><td class="r">10</td><td class="r">4</td><td class="r neg">−$3,400</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="two-col avoid">
+    <div>
+      <h3>Largest winners</h3>
+      <div class="tbl-wrap"><table class="compact">
+        <thead><tr><th>Security</th><th>Filled</th><th class="r">P&amp;L</th><th class="r">Return</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tk">DELL</span> Dell Technologies</td><td>2025-04-04</td><td class="r">+$3,250</td><td class="r">+32.6%</td></tr>
+          <tr><td><span class="tk">LLY</span> Eli Lilly</td><td>2025-08-08</td><td class="r">+$2,237</td><td class="r">+22.5%</td></tr>
+          <tr><td><span class="tk">DIS</span> Walt Disney</td><td>2025-04-04</td><td class="r">+$2,210</td><td class="r">+22.2%</td></tr>
+          <tr><td><span class="tk">CRWD</span> CrowdStrike</td><td>2026-02-24</td><td class="r">+$2,155</td><td class="r">+21.7%</td></tr>
+          <tr><td><span class="tk">NVO</span> Novo Nordisk</td><td>2025-07-31</td><td class="r">+$1,777</td><td class="r">+17.9%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div>
+      <h3>Largest losers</h3>
+      <div class="tbl-wrap"><table class="compact">
+        <thead><tr><th>Security</th><th>Filled</th><th class="r">P&amp;L</th><th class="r">Return</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tk">UNH</span> UnitedHealth Group</td><td>2025-04-21</td><td class="r neg">−$2,489</td><td class="r neg">−27.6%</td></tr>
+          <tr><td><span class="tk">BAC</span> Bank of America</td><td>2025-03-05</td><td class="r neg">−$1,825</td><td class="r neg">−18.2%</td></tr>
+          <tr><td><span class="tk">CRWD</span> CrowdStrike</td><td>2026-02-06</td><td class="r neg">−$1,151</td><td class="r neg">−11.4%</td></tr>
+          <tr><td><span class="tk">DELL</span> Dell Technologies</td><td>2025-03-07</td><td class="r neg">−$1,001</td><td class="r neg">−9.9%</td></tr>
+          <tr><td><span class="tk">DIS</span> Walt Disney</td><td>2025-03-12</td><td class="r neg">−$895</td><td class="r neg">−8.9%</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <p class="small">The full ledger of 72 trades, with entry and exit prices, exit reasons and the methods that flagged each signal, is Appendix A.</p>
+</section>
+
+<!-- ===================================================== 8 CAPACITY -->
+<section class="sec" id="s8">
+  <div class="sec-head"><span class="no">8</span><h1>Capacity and scaling<span class="pgmark">§S08§</span></h1></div>
+  <p class="lead">The $100,000 book was too small for its own signals. Of 132 eligible washout signals on the record, 72 were funded and 60 (45%) were skipped because every slice was already deployed. This is the single most important fact for a capital decision.</p>
+  <figure class="avoid">
+    <svg class="chart" viewBox="0 0 720 220" role="img" aria-label="BUY signals per month: funded versus skipped for lack of capital">
+<line x1="40" y1="190.0" x2="704" y2="190.0" class="grid"/>
+<text x="32" y="193.5" class="tick" text-anchor="end">0</text>
+<line x1="40" y1="138.8" x2="704" y2="138.8" class="grid"/>
+<text x="32" y="142.3" class="tick" text-anchor="end">20</text>
+<line x1="40" y1="87.6" x2="704" y2="87.6" class="grid"/>
+<text x="32" y="91.1" class="tick" text-anchor="end">40</text>
+<line x1="40" y1="36.4" x2="704" y2="36.4" class="grid"/>
+<text x="32" y="39.9" class="tick" text-anchor="end">60</text>
+<rect x="45.0" y="187.4" width="23.2" height="2.6" class="bar s1"/>
+<rect x="78.2" y="167.0" width="23.2" height="23.0" class="bar s1"/>
+<rect x="111.4" y="174.6" width="23.2" height="15.4" class="bar s1"/>
+<rect x="111.4" y="36.4" width="23.2" height="136.2" rx="3" class="bar muted"/>
+<rect x="211.0" y="172.1" width="23.2" height="17.9" class="bar s1"/>
+<rect x="244.2" y="182.3" width="23.2" height="7.7" class="bar s1"/>
+<rect x="277.4" y="187.4" width="23.2" height="2.6" class="bar s1"/>
+<rect x="310.6" y="179.8" width="23.2" height="10.2" class="bar s1"/>
+<rect x="343.8" y="174.6" width="23.2" height="15.4" class="bar s1"/>
+<rect x="377.0" y="184.9" width="23.2" height="5.1" class="bar s1"/>
+<rect x="410.2" y="169.5" width="23.2" height="20.5" class="bar s1"/>
+<rect x="443.4" y="161.8" width="23.2" height="28.2" class="bar s1"/>
+<rect x="443.4" y="149.0" width="23.2" height="10.8" rx="3" class="bar muted"/>
+<rect x="476.6" y="179.8" width="23.2" height="10.2" class="bar s1"/>
+<rect x="476.6" y="177.2" width="23.2" height="0.6" rx="3" class="bar muted"/>
+<rect x="509.8" y="187.4" width="23.2" height="2.6" class="bar s1"/>
+<rect x="543.0" y="184.9" width="23.2" height="5.1" class="bar s1"/>
+<rect x="576.2" y="182.3" width="23.2" height="7.7" class="bar s1"/>
+<rect x="609.4" y="179.8" width="23.2" height="10.2" class="bar s1"/>
+<text x="56.6" y="206" class="tick" text-anchor="middle">Feb 2025</text>
+<text x="156.2" y="206" class="tick" text-anchor="middle">May 2025</text>
+<text x="255.8" y="206" class="tick" text-anchor="middle">Aug 2025</text>
+<text x="355.4" y="206" class="tick" text-anchor="middle">Nov 2025</text>
+<text x="455.0" y="206" class="tick" text-anchor="middle">Feb 2026</text>
+<text x="554.6" y="206" class="tick" text-anchor="middle">May 2026</text>
+<text x="654.2" y="206" class="tick" text-anchor="middle">Aug 2026</text>
+<text x="141.6" y="40.4" class="val" text-anchor="start">60 signals · 6 funded</text>
+<g class="legend" transform="translate(40,6)"><rect x="0" y="0" width="10" height="10" class="bar s1"/><text x="14" y="9" class="tick">Funded</text><rect x="120" y="0" width="10" height="10" rx="2" class="bar muted"/><text x="134" y="9" class="tick">Skipped — book fully deployed</text></g>
+</svg>
+    <figcaption>Washout (Buy) signals per month, split into those the book funded and those it had to skip. In Apr 2025 the engine produced 60 washout signals and the book could fund 6.</figcaption>
+  </figure>
+  <p>Washout signals cluster in exactly the episodes the strategy is designed for. A ten-slice book is exhausted within days of a broad sell-off, and every subsequent signal in the cluster goes unfunded until a slice returns. The skipped signals are not a random sample of the record: they are concentrated in the sell-off months. In Apr 2025 the 6 slices the book could fund returned +$5,515 in aggregate, the best monthly cohort on the record, while 54 further signals went unfunded. A larger book is therefore expected to capture more of the effect rather than merely more of the same, subject to the study below.</p>
+  <h2>Two ways to scale</h2>
+  <div class="rules">
+    <div class="rule-box"><span class="t">Proportional (validated)</span><br>The slice stays at 10% of capital. The book behaves exactly as the record shows, scaled linearly; concentration, drawdown and turnover are unchanged. Skipped signals remain skipped.</div>
+    <div class="rule-box"><span class="t">Fixed slice (untested)</span><br>The slice stays near $10,000 and the additional capital funds signals the small book skipped. More names held at once; single-name weight falls; the equity curve has not been simulated at this configuration.</div>
+  </div>
+  <h3>Pro forma illustration, proportional scaling</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Tier</th><th class="r">Capital</th><th class="r">Slice</th><th class="r">Ending value</th><th class="r">SPY alone</th><th class="r">Overlay contribution</th><th class="r">Deepest drawdown</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Pilot</strong></td><td class="r">$250,000</td><td class="r">$25,000</td><td class="r">$376,205</td><td class="r">$340,357</td><td class="r">+$35,848</td><td class="r neg">−$49,850</td></tr>
+      <tr><td><strong>Core</strong></td><td class="r">$500,000</td><td class="r">$50,000</td><td class="r">$752,410</td><td class="r">$680,714</td><td class="r">+$71,696</td><td class="r neg">−$99,701</td></tr>
+      <tr><td><strong>Scale</strong></td><td class="r">$1,000,000</td><td class="r">$100,000</td><td class="r">$1,504,820</td><td class="r">$1,361,427</td><td class="r">+$143,392</td><td class="r neg">−$199,402</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small"><strong>Hypothetical.</strong> The table multiplies the $100,000 record by the capital ratio. It assumes the same 72 trades at the same prices with no market impact, which is reasonable for slices of this size in mega-cap names but is an assumption, not a result. It is an illustration of scale, not a forecast.</p>
+  <div class="callout avoid">
+    <div class="eyebrow">Condition precedent</div>
+    <p>Before any capital is committed, the walk-forward backtest is to be re-run at the proposed capital and slice size under both policies using <span class="tk">reports/prospectus/capacity_study.py</span>, which drives the production backtest engine with the same ledger and the same fills. The fixed-slice configuration is funded only if that study shows excess return positive in both halves of the window, the acceptance bar already applied to the entry-set decision (Section 10).</p>
+  </div>
+</section>
+
+<!-- ===================================================== 9 RISK FACTORS -->
+<section class="sec risk" id="s9">
+  <div class="sec-head"><span class="no">9</span><h1>Risk factors<span class="pgmark">§S09§</span></h1></div>
+  <p class="lead">An allocation to the Signal is an allocation to US large-cap equities with an active overlay. The following factors are material and are stated in the order a treasury committee is likely to weigh them.</p>
+  <h3>Simulated performance and a short live record</h3>
+  <p>The overlay has been active for 20 months in simulation and 56 sessions live. The record spans a single macro regime, a sharp sell-off in early 2025 followed by a strong recovery, which is a favourable environment for washout buying. Reversal strategies can underperform for extended periods, particularly in a persistent bear market where oversold names keep falling; the March 2025 cohort, the worst on the record, is the small-scale example. There is no assurance that the live record will resemble the walk-forward record.</p>
+  <h3>Full equity market risk</h3>
+  <p>The book is always approximately 100% invested in US equities. Its beta to SPY over the record was 1.05 and its deepest drawdown (−18.6%) was the index’s own. The overlay does not hedge, does not raise cash in a decline, and cannot protect capital in a market fall. The company should size the allocation as it would size an index position.</p>
+  <h3>Concentration and clustering</h3>
+  <p>Signals cluster in sell-offs, so the book is most exposed to single names precisely when markets are most stressed. Up to 13 names were held at once; each slice is 10% of capital. The universe is tilted toward technology by construction of the mega-cap set. Individual losses can be large: the largest single loss on the record was a −27.6% decline in a slice closed by a divest signal.</p>
+  <h3>Execution assumptions</h3>
+  <p>The simulation fills at the official close of the session after the signal and charges 5 basis points per side. Live execution with market-on-close orders in mega-cap names should approximate this, but slippage, partial fills, halts and the operator’s own latency are not modelled. Dividends enter only through adjusted closes. Three names in the universe are open-end mutual funds (DVRUX, QGRPX, BNUEX), which settle at net asset value and commonly carry short-term redemption fees or frequent-trading restrictions; 5 funded trades on the record were in these funds. The pilot should either exclude them or confirm terms with the fund sponsor.</p>
+  <h3>Data dependency</h3>
+  <p>All prices come from one free vendor via <span class="tk">yfinance</span>. Vendor outages, retroactive adjustments and symbol changes are real; the system mitigates them with retry, a coverage report, a stale-feed watchdog that quarantines flat-lined series, and price-basis reconciliation across corporate actions (3 names carry a basis break today: CRWD, HON, KLAC). A professional data feed is a reasonable upgrade at the Core tier.</p>
+  <h3>Model and parameter risk</h3>
+  <p>Thresholds, weights, the 30-session time stop and the washout-only entry set were chosen by the model owner using this universe and this window. The split-half study is a robustness check, not a fresh out-of-sample test. Parameters are fixed and versioned, and the proposal treats any change to them as an event that re-opens validation (Section 11), but the risk that the rules are tuned to the past cannot be eliminated by any test on the past.</p>
+  <h3>Capacity</h3>
+  <p>Only the $100,000 / $10,000 configuration has been simulated. Scaling the slice with capital preserves the record’s behaviour; scaling the number of slices does not, and is untested until the capacity study is run.</p>
+  <h3>Operational and key-person risk</h3>
+  <p>The pipeline runs on GitHub-hosted infrastructure on a schedule; a failed or late run means no signal for that session. One individual currently maintains the code, the universe and the parameters. The proposal assigns an execution owner separate from the model owner and requires that the ledger and the daily health report, not the model owner’s account of them, be the basis of oversight.</p>
+  <h3>Tax, accounting and policy</h3>
+  <p>Average holding periods of about a month mean gains will be short-term. Corporate treasury policy, liquidity needs and any covenant restrictions on marketable-securities holdings should be confirmed before funding. Nothing in this document is tax or legal advice.</p>
+</section>
+
+<!-- ===================================================== 10 VALIDATION -->
+<section class="sec" id="s10">
+  <div class="sec-head"><span class="no">10</span><h1>Validation, controls and infrastructure<span class="pgmark">§S10§</span></h1></div>
+  <h2>The causality invariant</h2>
+  <p>Every score computed for a bar uses only that bar and earlier ones. This is not a modelling convention but a test: <span class="tk">test_causality.py</span> appends future data to a series and fails if any historical verdict changes, for every detector at every sensitivity. The test suite runs before every scheduled detection run. The consequence is that the walk-forward backfill and live operation are literally the same code path, so the historical record is a legitimate out-of-sample-style simulation rather than a fit.</p>
+  <h2>Fixed thresholds and the materiality gate</h2>
+  <p>Signals fire on fixed sigma cut-offs of each security’s own standardised deviation. Nothing is a percentile of the run’s own output, so a quiet market produces a quiet report and the number of signals is not forced. A trade call needs two methods in agreement and a move of at least 1.0%, which keeps statistically real but economically trivial anomalies in money-market funds out of the trade ledger.</p>
+  <h2>The split-half study that fixed the entry set</h2>
+  <p>Four candidate configurations were run through the production engine on the complete ledger. The acceptance bar was that excess return over the baseline be positive in <em>both</em> halves of the window. Adding momentum (Long) entries roughly doubled the trade count, added no excess return, and turned the first half negative; washout-only entries passed under both baselines. The Long signal remains an informational flag.</p>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>Variant</th><th class="r">Trades</th><th class="r">Strategy</th><th class="r">Baseline</th><th class="r">Excess</th><th class="r">First half</th><th class="r">Second half</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>BUY + LONG entries, SPY baseline</td><td class="r">118</td><td class="r">+41.5%</td><td class="r">+29.6%</td><td class="r">+11.9 pp</td><td class="r neg">−0.7 pp</td><td class="r">+9.8 pp</td><td>fails first half</td></tr>
+      <tr><td><strong>BUY-only entries, SPY baseline</strong></td><td class="r">65</td><td class="r">+41.1%</td><td class="r">+29.6%</td><td class="r">+11.5 pp</td><td class="r">+7.2 pp</td><td class="r">+1.7 pp</td><td><strong>accepted</strong></td></tr>
+      <tr><td>BUY + LONG entries, BIL baseline</td><td class="r">112</td><td class="r">+18.6%</td><td class="r">+6.5%</td><td class="r">+12.1 pp</td><td class="r neg">−1.7 pp</td><td class="r">+13.0 pp</td><td>fails first half</td></tr>
+      <tr><td>BUY-only entries, BIL baseline</td><td class="r">63</td><td class="r">+19.5%</td><td class="r">+6.5%</td><td class="r">+12.9 pp</td><td class="r">+9.6 pp</td><td class="r">+2.5 pp</td><td>passes (reference)</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Source: <span class="tk">HOW_IT_WORKS.md</span>, regenerated whenever the rules change. The study predates the current run; trade counts have since grown with the live record. The BIL rows show the cash-parked view reaches the same entry-set decision.</p>
+  <h2>Data integrity</h2>
+  <ul>
+    <li><strong>Price-basis reconciliation.</strong> The vendor rescales an entire history after a split; ledger rows keep the basis of the fetch that wrote them. Each run compares frozen closes with the current fetch per bar, translates frozen trade targets into the current basis exactly, and flags affected names. The ledger itself is never rewritten.</li>
+    <li><strong>Stale-feed watchdog.</strong> A series printing identical closes for five sessions is treated as a dead feed: its bars stay out of the frozen record until it moves again, so a vendor outage cannot mint permanent verdicts.</li>
+    <li><strong>Proof of run.</strong> Every run stamps bars scored and the latest bar date, so a day with no signals is verifiably a quiet market rather than a job that failed. Coverage on the latest run: 100% of 130 securities in 4.3 minutes.</li>
+  </ul>
+  <h2>The audit trail</h2>
+  <p>The durable record is two append-only files under <span class="tk">data/ledger/</span>, committed by every run: 642 signal rows and 1,944 anomaly verdicts today, across 59,537 scored bar-observations. Each row carries the bar date, the date the verdict existed, its provenance and the model version. Because the files are in version control, every verdict ever recorded is a visible line in a commit; an auditor can reconstruct the backtest from the repository alone. The operational dashboard is generated from the same files and published after each run.</p>
+  <h2>Infrastructure</h2>
+  <p>A GitHub Actions workflow runs every weekday at 22:00 UTC, after the US close. It installs dependencies, runs the test suite including the causality invariant, executes the seven-stage pipeline, commits the ledger, health report and run history, and deploys the dashboard. There are no servers to maintain and no credentials beyond the repository’s own. The run is idempotent: a re-run on the same day writes nothing new.</p>
+</section>
+
+<!-- ===================================================== 11 ALLOCATION -->
+<section class="sec" id="s11">
+  <div class="sec-head"><span class="no">11</span><h1>Proposed allocation of company capital<span class="pgmark">§S11§</span></h1></div>
+  <p class="lead">A staged programme that funds the validated structure first, measures the live record against explicit guardrails, and scales only on evidence.</p>
+  <h2>Tiers</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Tier</th><th class="r">Capital</th><th class="r">Slice</th><th>Sizing policy</th><th>Entry gate</th></tr></thead>
+    <tbody>
+      <tr><td><strong>I · Pilot</strong></td><td class="r">$250,000</td><td class="r">$25,000</td><td>Proportional; ten-slice book identical in behaviour to the record</td><td>Conditions precedent below</td></tr>
+      <tr><td><strong>II · Core</strong></td><td class="r">$500,000</td><td class="r">$50,000</td><td>Proportional, or fixed-slice if the capacity study passes</td><td>90-day review gate passed</td></tr>
+      <tr><td><strong>III · Scale</strong></td><td class="r">$1,000,000</td><td class="r">$50,000–$100,000</td><td>Per the capacity study; professional data feed in place</td><td>Second review gate passed; 12 months live</td></tr>
+    </tbody>
+  </table></div>
+  <h2>Conditions precedent to funding Tier I</h2>
+  <ul>
+    <li>Board or treasury-committee approval of the allocation and of this document’s guardrails as policy.</li>
+    <li>A segregated brokerage sub-account funded in SPY, with authority limited to the universe in Appendix B, long-only, no margin, no options.</li>
+    <li>The capacity study run at $250,000 / $25,000, confirming the proportional configuration reproduces the record.</li>
+    <li>An execution owner named, distinct from the model owner, with a written daily procedure: read the dashboard after the 22:00 UTC run, place market-on-close orders for that day’s entries and exits on the next session.</li>
+    <li>Mutual funds in the universe either excluded from live trading or cleared with the sponsor.</li>
+    <li>Baseline reporting in place: the daily dashboard link, and this document regenerated monthly.</li>
+  </ul>
+  <h2>Implementation timeline</h2>
+  <ol>
+    <li><strong>Weeks 0–2 · Approval and set-up.</strong> Policy amendment, account opening, execution procedure, capacity study, mutual-fund decision.</li>
+    <li><strong>Months 1–3 · Pilot.</strong> Tier I funded. Daily execution. Monthly one-page memo generated from the ledger. No parameter changes.</li>
+    <li><strong>Month 3 · First review gate.</strong> Live record measured against the guardrails. Proceed to Tier II, hold, or wind down.</li>
+    <li><strong>Months 4–12 · Core.</strong> Tier II funded. Quarterly review. Data-feed upgrade evaluated.</li>
+    <li><strong>Month 12 · Second review gate.</strong> Twelve months of live record. Tier III decision.</li>
+  </ol>
+  <h2>Guardrails</h2>
+  <p>Each rule is measured from the committed ledger and the daily portfolio value, not from anyone’s judgement, and each names its consequence.</p>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>Trigger</th><th>Measured as</th><th>Consequence</th></tr></thead>
+    <tbody>
+      <tr><td>Book drawdown exceeds 20% from peak</td><td>Daily portfolio value</td><td>No new entries; open slices run to their exits; committee review before resumption</td></tr>
+      <tr><td>Overlay lags SPY by more than 8 percentage points over a trailing 6 months</td><td>Book value vs baseline value</td><td>Halt new entries; model owner reports; committee decides</td></tr>
+      <tr><td>Trailing 30 closed live trades: profit factor below 1.0 or win rate below 45%</td><td>Signals ledger, live provenance</td><td>Halt new entries pending review</td></tr>
+      <tr><td>Fetch coverage below 95% on three consecutive runs, or a stale-feed flag on a held name</td><td><span class="tk">run_health.json</span></td><td>No new entries until coverage recovers; held names exit by rule</td></tr>
+      <tr><td>Any change to parameters, thresholds, universe membership or model version</td><td>Repository diff</td><td>Trading pauses until the split-half study and capacity study are re-run and approved</td></tr>
+      <tr><td>Scheduled run fails or is late</td><td>Workflow status</td><td>No trades that session; exits by rule on the next successful run</td></tr>
+    </tbody>
+  </table></div>
+  <h2>Governance and reporting</h2>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>Role</th><th>Holder</th><th>Responsibility</th></tr></thead>
+    <tbody>
+      <tr><td>Allocation owner</td><td>Chief Executive / treasury committee</td><td>Approves tiers, gates and any resumption after a guardrail</td></tr>
+      <tr><td>Model owner</td><td>Jacob E. Thomas, PhD</td><td>Maintains code, universe and parameters; may not execute trades</td></tr>
+      <tr><td>Execution owner</td><td>Treasury / finance designee</td><td>Places and confirms orders; reconciles fills against the ledger</td></tr>
+      <tr><td>Oversight</td><td>Finance or internal audit</td><td>Reads the ledger and health report directly; certifies the monthly memo</td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Reporting cadence.</strong> Daily: the dashboard, published automatically. Monthly: this document regenerated from the ledger, with the live section current. Quarterly: committee review of guardrails, capacity and data quality. Ad hoc: any guardrail breach, reported the same day.</p>
+</section>
+
+<!-- ===================================================== 12 KEY TERMS -->
+<section class="sec" id="s12">
+  <div class="sec-head"><span class="no">12</span><h1>Summary of key terms<span class="pgmark">§S12§</span></h1></div>
+  <div class="tbl-wrap"><table class="terms">
+    <tr><td>Strategy</td><td>The Signal — systematic washout-reversion overlay on an S&amp;P&nbsp;500 position</td></tr>
+    <tr><td>Manager / model owner</td><td>Jacob E. Thomas, PhD, Results Generation</td></tr>
+    <tr><td>Vehicle</td><td>Segregated internal brokerage sub-account; no external investors, no fees</td></tr>
+    <tr><td>Objective</td><td>Outperform SPY held passively, with the same market exposure</td></tr>
+    <tr><td>Base currency</td><td>US dollars</td></tr>
+    <tr><td>Baseline asset</td><td>SPY (SPDR S&amp;P 500 ETF); all idle capital</td></tr>
+    <tr><td>Universe</td><td>130 US-listed securities (Appendix B); registry in code</td></tr>
+    <tr><td>Entry rule</td><td>Buy signal: ≤ −2.5σ from 20-day trend, 2+ methods agree, |move| ≥ 1.0%; fill at next session’s close</td></tr>
+    <tr><td>Exit rules</td><td>Frozen trend target, first bearish signal on the name, or 30-session time stop, whichever first</td></tr>
+    <tr><td>Position size</td><td>10% of capital per slice; maximum ten concurrent slices at inception capital</td></tr>
+    <tr><td>Leverage / shorting / derivatives</td><td>None / none / none</td></tr>
+    <tr><td>Liquidity</td><td>Daily; every holding is an exchange-listed security or a daily-NAV fund</td></tr>
+    <tr><td>Valuation</td><td>Daily at official closes; ledger and dashboard refreshed each weekday at 22:00 UTC</td></tr>
+    <tr><td>Record</td><td>Walk-forward from 2024-11-01; live since 2026-06-12; model version 2.0.0</td></tr>
+    <tr><td>Performance to date</td><td>$100,000 → $150,482 (+50.5%) vs $136,143 (+36.1%) in SPY; Sharpe 1.28; max drawdown −18.6%</td></tr>
+    <tr><td>Proposed capital</td><td>$250,000 pilot → $500,000 → $1,000,000, gated (Section 11)</td></tr>
+    <tr><td>Guardrails</td><td>Drawdown, relative-performance, hit-rate, data-coverage and change-control halts (Section 11)</td></tr>
+    <tr><td>Reporting</td><td>Daily dashboard; monthly regenerated prospectus; quarterly committee review</td></tr>
+    <tr><td>Audit trail</td><td>Append-only ledger in version control; every verdict reproducible from the repository</td></tr>
+    <tr><td>Data</td><td>Yahoo Finance via <span class="tk">yfinance</span>; coverage and health reported per run</td></tr>
+  </table></div>
+</section>
+
+<!-- ===================================================== APPENDIX A -->
+<section class="sec" id="appA">
+  <div class="sec-head"><span class="no">A</span><h1>Complete trade ledger<span class="pgmark">§APPA§</span></h1></div>
+  <p class="small">All 72 funded slices in order of fill, exactly as the walk-forward backtest records them. Provenance: W = walk-forward, L = live. Prices are in the current adjusted basis; CRWD rows were basis-translated across a 4:1 split. Methods list the detectors that flagged the signal bar.</p>
+  <div class="tbl-wrap"><table class="compact">
+    <thead><tr><th>#</th><th>Ticker</th><th>P</th><th>Signal</th><th>Filled</th><th>Exit</th><th class="r">Entry</th><th class="r">Exit / mark</th><th class="r">P&amp;L</th><th class="r">Return</th><th>Exit reason</th><th>Methods</th></tr></thead>
+    <tbody>
+      <tr><td class="small">1</td><td class="tk">MRK</td><td class="small">B</td><td>2025-02-04</td><td>2025-02-05</td><td>2025-03-20</td><td class="r">$85.17</td><td class="r">$90.76</td><td class="r">+$645</td><td class="r">+6.6%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">2</td><td class="tk">BAC</td><td class="small">B</td><td>2025-03-04</td><td>2025-03-05</td><td>2025-04-04</td><td class="r">$40.89</td><td class="r">$33.46</td><td class="r neg">−$1,825</td><td class="r neg">−18.2%</td><td class="small">divest signal</td><td class="small">Fourier, Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">3</td><td class="tk">DELL</td><td class="small">B</td><td>2025-03-06</td><td>2025-03-07</td><td>2025-04-21</td><td class="r">$89.37</td><td class="r">$80.51</td><td class="r neg">−$1,001</td><td class="r neg">−9.9%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">4</td><td class="tk">QGRPX</td><td class="small">B</td><td>2025-03-10</td><td>2025-03-11</td><td>2025-04-23</td><td class="r">$15.13</td><td class="r">$14.46</td><td class="r neg">−$451</td><td class="r neg">−4.4%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">5</td><td class="tk">ISRG</td><td class="small">B</td><td>2025-03-10</td><td>2025-03-11</td><td>2025-04-23</td><td class="r">$493.72</td><td class="r">$487.93</td><td class="r neg">−$127</td><td class="r neg">−1.2%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">6</td><td class="tk">AXP</td><td class="small">B</td><td>2025-03-10</td><td>2025-03-11</td><td>2025-04-23</td><td class="r">$251.22</td><td class="r">$256.74</td><td class="r">+$210</td><td class="r">+2.2%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">7</td><td class="tk">RY</td><td class="small">B</td><td>2025-03-11</td><td>2025-03-12</td><td>2025-03-25</td><td class="r">$107.95</td><td class="r">$113.16</td><td class="r">+$472</td><td class="r">+4.8%</td><td class="small">target hit</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">8</td><td class="tk">DIS</td><td class="small">B</td><td>2025-03-11</td><td>2025-03-12</td><td>2025-04-24</td><td class="r">$96.94</td><td class="r">$88.35</td><td class="r neg">−$895</td><td class="r neg">−8.9%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">9</td><td class="tk">TGT</td><td class="small">B</td><td>2025-03-12</td><td>2025-03-13</td><td>2025-04-04</td><td class="r">$98.23</td><td class="r">$89.98</td><td class="r neg">−$849</td><td class="r neg">−8.4%</td><td class="small">divest signal</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">10</td><td class="tk">TGT</td><td class="small">B</td><td>2025-03-13</td><td>2025-03-14</td><td>2025-04-04</td><td class="r">$98.42</td><td class="r">$89.98</td><td class="r neg">−$818</td><td class="r neg">−8.6%</td><td class="small">divest signal</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">11</td><td class="tk">QGRPX</td><td class="small">B</td><td>2025-04-03</td><td>2025-04-04</td><td>2025-05-02</td><td class="r">$13.65</td><td class="r">$15.58</td><td class="r">+$1,401</td><td class="r">+14.1%</td><td class="small">target hit</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">12</td><td class="tk">NKE</td><td class="small">B</td><td>2025-04-03</td><td>2025-04-04</td><td>2025-05-19</td><td class="r">$55.35</td><td class="r">$60.02</td><td class="r">+$833</td><td class="r">+8.4%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">13</td><td class="tk">DIS</td><td class="small">B</td><td>2025-04-03</td><td>2025-04-04</td><td>2025-05-07</td><td class="r">$81.99</td><td class="r">$100.21</td><td class="r">+$2,210</td><td class="r">+22.2%</td><td class="small">target hit</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">14</td><td class="tk">DELL</td><td class="small">B</td><td>2025-04-03</td><td>2025-04-04</td><td>2025-04-24</td><td class="r">$69.99</td><td class="r">$92.83</td><td class="r">+$3,250</td><td class="r">+32.6%</td><td class="small">target hit</td><td class="small">Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">15</td><td class="tk">AAPL</td><td class="small">B</td><td>2025-04-08</td><td>2025-04-09</td><td>2025-04-29</td><td class="r">$197.63</td><td class="r">$209.92</td><td class="r">+$310</td><td class="r">+6.2%</td><td class="small">target hit</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">16</td><td class="tk">UNH</td><td class="small">B</td><td>2025-04-17</td><td>2025-04-21</td><td>2025-05-14</td><td class="r">$411.32</td><td class="r">$297.86</td><td class="r neg">−$2,489</td><td class="r neg">−27.6%</td><td class="small">divest signal</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">17</td><td class="tk">ABT</td><td class="small">B</td><td>2025-07-17</td><td>2025-07-18</td><td>2025-08-07</td><td class="r">$120.88</td><td class="r">$129.08</td><td class="r">+$668</td><td class="r">+6.8%</td><td class="small">target hit</td><td class="small">Fourier, Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">18</td><td class="tk">LMT</td><td class="small">B</td><td>2025-07-22</td><td>2025-07-23</td><td>2025-09-04</td><td class="r">$408.38</td><td class="r">$448.10</td><td class="r">+$962</td><td class="r">+9.7%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">19</td><td class="tk">TXN</td><td class="small">B</td><td>2025-07-23</td><td>2025-07-24</td><td>2025-09-05</td><td class="r">$179.70</td><td class="r">$183.19</td><td class="r">+$184</td><td class="r">+1.9%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">20</td><td class="tk">STM</td><td class="small">B</td><td>2025-07-24</td><td>2025-07-25</td><td>2025-09-08</td><td class="r">$26.04</td><td class="r">$26.33</td><td class="r">+$100</td><td class="r">+1.1%</td><td class="small">time stop</td><td class="small">Fourier, Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">21</td><td class="tk">NVO</td><td class="small">B</td><td>2025-07-29</td><td>2025-07-30</td><td>2025-09-11</td><td class="r">$47.12</td><td class="r">$51.72</td><td class="r">+$965</td><td class="r">+9.8%</td><td class="small">time stop</td><td class="small">Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">22</td><td class="tk">NVO</td><td class="small">B</td><td>2025-07-30</td><td>2025-07-31</td><td>2025-09-12</td><td class="r">$44.33</td><td class="r">$52.26</td><td class="r">+$1,777</td><td class="r">+17.9%</td><td class="small">time stop</td><td class="small">Fourier, Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">23</td><td class="tk">PANW</td><td class="small">B</td><td>2025-07-31</td><td>2025-08-01</td><td>2025-09-08</td><td class="r">$172.88</td><td class="r">$197.38</td><td class="r">+$1,406</td><td class="r">+14.2%</td><td class="small">target hit</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">24</td><td class="tk">BRK-B</td><td class="small">B</td><td>2025-08-04</td><td>2025-08-05</td><td>2025-08-13</td><td class="r">$464.19</td><td class="r">$477.31</td><td class="r">+$272</td><td class="r">+2.8%</td><td class="small">target hit</td><td class="small">Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">25</td><td class="tk">MCK</td><td class="small">B</td><td>2025-08-07</td><td>2025-08-08</td><td>2025-08-21</td><td class="r">$665.87</td><td class="r">$703.14</td><td class="r">+$549</td><td class="r">+5.6%</td><td class="small">target hit</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">26</td><td class="tk">LLY</td><td class="small">B</td><td>2025-08-07</td><td>2025-08-08</td><td>2025-09-16</td><td class="r">$620.37</td><td class="r">$759.92</td><td class="r">+$2,237</td><td class="r">+22.5%</td><td class="small">target hit</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">27</td><td class="tk">ISRG</td><td class="small">B</td><td>2025-09-03</td><td>2025-09-04</td><td>2025-10-16</td><td class="r">$454.52</td><td class="r">$434.62</td><td class="r neg">−$447</td><td class="r neg">−4.4%</td><td class="small">time stop</td><td class="small">Fourier, Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">28</td><td class="tk">T</td><td class="small">B</td><td>2025-10-06</td><td>2025-10-07</td><td>2025-11-18</td><td class="r">$24.98</td><td class="r">$24.71</td><td class="r neg">−$119</td><td class="r neg">−1.1%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">29</td><td class="tk">XLF</td><td class="small">B</td><td>2025-10-16</td><td>2025-10-17</td><td>2025-10-27</td><td class="r">$51.55</td><td class="r">$52.69</td><td class="r">+$210</td><td class="r">+2.2%</td><td class="small">target hit</td><td class="small">Fourier, Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">30</td><td class="tk">META</td><td class="small">B</td><td>2025-10-31</td><td>2025-11-03</td><td>2025-12-16</td><td class="r">$636.06</td><td class="r">$655.98</td><td class="r">+$303</td><td class="r">+3.1%</td><td class="small">time stop</td><td class="small">Fourier, Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">31</td><td class="tk">LIN</td><td class="small">B</td><td>2025-10-31</td><td>2025-11-03</td><td>2025-12-16</td><td class="r">$408.00</td><td class="r">$420.76</td><td class="r">+$302</td><td class="r">+3.1%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">32</td><td class="tk">LIN</td><td class="small">B</td><td>2025-11-03</td><td>2025-11-04</td><td>2025-12-17</td><td class="r">$413.70</td><td class="r">$419.60</td><td class="r">+$132</td><td class="r">+1.4%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">33</td><td class="tk">HD</td><td class="small">B</td><td>2025-11-18</td><td>2025-11-19</td><td>2026-01-05</td><td class="r">$327.69</td><td class="r">$339.26</td><td class="r">+$343</td><td class="r">+3.5%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">34</td><td class="tk">UBER</td><td class="small">B</td><td>2025-11-20</td><td>2025-11-21</td><td>2025-12-08</td><td class="r">$83.87</td><td class="r">$92.57</td><td class="r">+$1,026</td><td class="r">+10.4%</td><td class="small">target hit</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">35</td><td class="tk">PANW</td><td class="small">B</td><td>2025-11-20</td><td>2025-11-21</td><td>2026-01-07</td><td class="r">$182.90</td><td class="r">$193.90</td><td class="r">+$591</td><td class="r">+6.0%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">36</td><td class="tk">ETN</td><td class="small">B</td><td>2025-11-20</td><td>2025-11-21</td><td>2026-01-07</td><td class="r">$328.96</td><td class="r">$319.99</td><td class="r neg">−$282</td><td class="r neg">−2.7%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">37</td><td class="tk">BNUEX</td><td class="small">B</td><td>2025-11-20</td><td>2025-11-21</td><td>2025-11-25</td><td class="r">$11.91</td><td class="r">$12.15</td><td class="r">+$187</td><td class="r">+2.0%</td><td class="small">target hit</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">38</td><td class="tk">PG</td><td class="small">B</td><td>2025-12-08</td><td>2025-12-09</td><td>2025-12-17</td><td class="r">$136.59</td><td class="r">$144.59</td><td class="r">+$575</td><td class="r">+5.9%</td><td class="small">target hit</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">39</td><td class="tk">AVGO</td><td class="small">B</td><td>2025-12-15</td><td>2025-12-16</td><td>2026-01-30</td><td class="r">$339.40</td><td class="r">$330.08</td><td class="r neg">−$284</td><td class="r neg">−2.7%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">40</td><td class="tk">MSFT</td><td class="small">B</td><td>2026-01-21</td><td>2026-01-22</td><td>2026-01-26</td><td class="r">$448.30</td><td class="r">$467.32</td><td class="r">+$414</td><td class="r">+4.2%</td><td class="small">target hit</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">41</td><td class="tk">ABT</td><td class="small">B</td><td>2026-01-22</td><td>2026-01-23</td><td>2026-03-09</td><td class="r">$105.99</td><td class="r">$111.15</td><td class="r">+$476</td><td class="r">+4.9%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">42</td><td class="tk">ABT</td><td class="small">B</td><td>2026-01-23</td><td>2026-01-26</td><td>2026-03-10</td><td class="r">$107.33</td><td class="r">$109.08</td><td class="r">+$153</td><td class="r">+1.6%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">43</td><td class="tk">UNH</td><td class="small">B</td><td>2026-01-27</td><td>2026-01-28</td><td>2026-01-29</td><td class="r">$290.10</td><td class="r">$288.39</td><td class="r neg">−$69</td><td class="r neg">−0.6%</td><td class="small">divest signal</td><td class="small">Fourier, Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">44</td><td class="tk">SAP</td><td class="small">B</td><td>2026-01-29</td><td>2026-01-30</td><td>2026-02-03</td><td class="r">$197.60</td><td class="r">$193.92</td><td class="r neg">−$196</td><td class="r neg">−1.9%</td><td class="small">divest signal</td><td class="small">Fourier, Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">45</td><td class="tk">MSFT</td><td class="small">B</td><td>2026-01-29</td><td>2026-01-30</td><td>2026-03-16</td><td class="r">$427.58</td><td class="r">$398.34</td><td class="r neg">−$693</td><td class="r neg">−6.8%</td><td class="small">time stop</td><td class="small">Fourier, Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">46</td><td class="tk">UNH</td><td class="small">B</td><td>2026-01-30</td><td>2026-02-02</td><td>2026-03-17</td><td class="r">$281.78</td><td class="r">$285.94</td><td class="r">+$137</td><td class="r">+1.5%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">47</td><td class="tk">SAP</td><td class="small">B</td><td>2026-01-30</td><td>2026-02-02</td><td>2026-02-03</td><td class="r">$203.69</td><td class="r">$193.92</td><td class="r neg">−$489</td><td class="r neg">−4.8%</td><td class="small">divest signal</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">48</td><td class="tk">UNH</td><td class="small">B</td><td>2026-02-02</td><td>2026-02-03</td><td>2026-03-18</td><td class="r">$280.39</td><td class="r">$282.72</td><td class="r">+$73</td><td class="r">+0.8%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">49</td><td class="tk">SAP</td><td class="small">B</td><td>2026-02-03</td><td>2026-02-04</td><td>2026-03-19</td><td class="r">$196.27</td><td class="r">$181.85</td><td class="r neg">−$744</td><td class="r neg">−7.3%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">50</td><td class="tk">MSFT</td><td class="small">B</td><td>2026-02-03</td><td>2026-02-04</td><td>2026-03-19</td><td class="r">$411.58</td><td class="r">$387.45</td><td class="r neg">−$596</td><td class="r neg">−5.9%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">51</td><td class="tk">PLTR</td><td class="small">B</td><td>2026-02-04</td><td>2026-02-05</td><td>2026-03-20</td><td class="r">$130.01</td><td class="r">$150.68</td><td class="r">+$1,578</td><td class="r">+15.9%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">52</td><td class="tk">MSFT</td><td class="small">B</td><td>2026-02-04</td><td>2026-02-05</td><td>2026-03-20</td><td class="r">$391.19</td><td class="r">$380.33</td><td class="r neg">−$287</td><td class="r neg">−2.8%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">53</td><td class="tk">PANW</td><td class="small">B</td><td>2026-02-05</td><td>2026-02-06</td><td>2026-02-19</td><td class="r">$159.32</td><td class="r">$150.99</td><td class="r neg">−$532</td><td class="r neg">−5.2%</td><td class="small">divest signal</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">54</td><td class="tk">MSFT</td><td class="small">B</td><td>2026-02-05</td><td>2026-02-06</td><td>2026-03-23</td><td class="r">$398.61</td><td class="r">$381.45</td><td class="r neg">−$440</td><td class="r neg">−4.3%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">55</td><td class="tk">CRWD</td><td class="small">B</td><td>2026-02-05</td><td>2026-02-06</td><td>2026-02-23</td><td class="r">$98.88</td><td class="r">$87.58</td><td class="r neg">−$1,151</td><td class="r neg">−11.4%</td><td class="small">divest signal</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">56</td><td class="tk">ARKK</td><td class="small">B</td><td>2026-02-05</td><td>2026-02-06</td><td>2026-03-23</td><td class="r">$70.41</td><td class="r">$70.92</td><td class="r">+$62</td><td class="r">+0.7%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">57</td><td class="tk">IBM</td><td class="small">B</td><td>2026-02-23</td><td>2026-02-24</td><td>2026-04-08</td><td class="r">$226.02</td><td class="r">$238.26</td><td class="r">+$450</td><td class="r">+5.4%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">58</td><td class="tk">CRWD</td><td class="small">B</td><td>2026-02-23</td><td>2026-02-24</td><td>2026-03-05</td><td class="r">$87.56</td><td class="r">$106.54</td><td class="r">+$2,155</td><td class="r">+21.7%</td><td class="small">target hit</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">59</td><td class="tk">BLK</td><td class="small">B</td><td>2026-03-06</td><td>2026-03-09</td><td>2026-04-21</td><td class="r">$952.30</td><td class="r">$1,037.01</td><td class="r">+$879</td><td class="r">+8.9%</td><td class="small">time stop</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">60</td><td class="tk">DVRUX</td><td class="small">B</td><td>2026-03-12</td><td>2026-03-13</td><td>2026-04-09</td><td class="r">$16.89</td><td class="r">$17.49</td><td class="r">+$345</td><td class="r">+3.5%</td><td class="small">target hit</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">61</td><td class="tk">ABBV</td><td class="small">B</td><td>2026-03-18</td><td>2026-03-19</td><td>2026-05-01</td><td class="r">$203.09</td><td class="r">$205.14</td><td class="r">+$91</td><td class="r">+1.0%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">62</td><td class="tk">QGRPX</td><td class="small">B</td><td>2026-03-27</td><td>2026-03-30</td><td>2026-04-08</td><td class="r">$16.05</td><td class="r">$17.39</td><td class="r">+$824</td><td class="r">+8.3%</td><td class="small">target hit</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">63</td><td class="tk">NKE</td><td class="small">B</td><td>2026-04-01</td><td>2026-04-02</td><td>2026-05-15</td><td class="r">$43.80</td><td class="r">$41.51</td><td class="r neg">−$532</td><td class="r neg">−5.2%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">64</td><td class="tk">ISRG</td><td class="small">B</td><td>2026-05-11</td><td>2026-05-12</td><td>2026-06-25</td><td class="r">$431.87</td><td class="r">$399.69</td><td class="r neg">−$754</td><td class="r neg">−7.5%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">65</td><td class="tk">WMT</td><td class="small">B</td><td>2026-05-21</td><td>2026-05-22</td><td>2026-07-08</td><td class="r">$119.98</td><td class="r">$112.83</td><td class="r neg">−$606</td><td class="r neg">−6.0%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">66</td><td class="tk">PFE</td><td class="small">L</td><td>2026-06-24</td><td>2026-06-25</td><td>2026-07-28</td><td class="r">$23.26</td><td class="r">$25.25</td><td class="r">+$843</td><td class="r">+8.5%</td><td class="small">target hit</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">67</td><td class="tk">VZ</td><td class="small">L</td><td>2026-06-30</td><td>2026-07-01</td><td>2026-07-24</td><td class="r">$41.29</td><td class="r">$46.38</td><td class="r">+$1,223</td><td class="r">+12.3%</td><td class="small">target hit</td><td class="small">Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">68</td><td class="tk">T</td><td class="small">L</td><td>2026-06-30</td><td>2026-07-01</td><td>2026-07-22</td><td class="r">$20.21</td><td class="r">$23.04</td><td class="r">+$1,389</td><td class="r">+14.0%</td><td class="small">target hit</td><td class="small">Fourier, Matrix profile, Ensemble, EWMA</td></tr>
+      <tr><td class="small">69</td><td class="tk">ISRG</td><td class="small">L</td><td>2026-07-17</td><td>2026-07-20</td><td>2026-08-31</td><td class="r">$353.17</td><td class="r">$376.86</td><td class="r">+$660</td><td class="r">+6.7%</td><td class="small">time stop</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">70</td><td class="tk">TSLA</td><td class="small">L</td><td>2026-07-23</td><td>2026-07-24</td><td>2026-07-29</td><td class="r">$313.03</td><td class="r">$298.32</td><td class="r neg">−$479</td><td class="r neg">−4.7%</td><td class="small">divest signal</td><td class="small">Fourier, Ensemble, EWMA</td></tr>
+      <tr><td class="small">71</td><td class="tk">TMUS</td><td class="small">L</td><td>2026-07-23</td><td>2026-07-24</td><td>open</td><td class="r">$179.06</td><td class="r">$182.16</td><td class="r">+$163</td><td class="r">+1.7%</td><td class="small">still open</td><td class="small">Ensemble, EWMA</td></tr>
+      <tr><td class="small">72</td><td class="tk">LIN</td><td class="small">L</td><td>2026-07-31</td><td>2026-08-03</td><td>open</td><td class="r">$480.46</td><td class="r">$486.76</td><td class="r">+$121</td><td class="r">+1.3%</td><td class="small">still open</td><td class="small">Matrix profile, Ensemble, EWMA</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ===================================================== APPENDIX B -->
+<section class="sec" id="appB">
+  <div class="sec-head"><span class="no">B</span><h1>The universe in full<span class="pgmark">§APPB§</span></h1></div>
+  <div class="avoid">
+    <h3>Engines of the Republic <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 15 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">CAT</span> Caterpillar &nbsp;·&nbsp; <span class="tk">DE</span> Deere & Company &nbsp;·&nbsp; <span class="tk">HON</span> Honeywell &nbsp;·&nbsp; <span class="tk">LMT</span> Lockheed Martin &nbsp;·&nbsp; <span class="tk">GE</span> GE Aerospace &nbsp;·&nbsp; <span class="tk">WMT</span> Walmart &nbsp;·&nbsp; <span class="tk">COST</span> Costco &nbsp;·&nbsp; <span class="tk">HD</span> Home Depot &nbsp;·&nbsp; <span class="tk">JNJ</span> Johnson & Johnson &nbsp;·&nbsp; <span class="tk">PFE</span> Pfizer &nbsp;·&nbsp; <span class="tk">ADM</span> Archer-Daniels-Midland &nbsp;·&nbsp; <span class="tk">BG</span> Bunge Global &nbsp;·&nbsp; <span class="tk">TSN</span> Tyson Foods &nbsp;·&nbsp; <span class="tk">SCHW</span> Charles Schwab &nbsp;·&nbsp; <span class="tk">BRK-B</span> Berkshire Hathaway B</p>
+  </div>
+  <div class="avoid">
+    <h3>Critical Choke Points <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 14 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">NEE</span> NextEra Energy &nbsp;·&nbsp; <span class="tk">D</span> Dominion Energy &nbsp;·&nbsp; <span class="tk">KMI</span> Kinder Morgan &nbsp;·&nbsp; <span class="tk">WMB</span> Williams Companies &nbsp;·&nbsp; <span class="tk">V</span> Visa &nbsp;·&nbsp; <span class="tk">MA</span> Mastercard &nbsp;·&nbsp; <span class="tk">JPM</span> JPMorgan Chase &nbsp;·&nbsp; <span class="tk">MSFT</span> Microsoft &nbsp;·&nbsp; <span class="tk">AMZN</span> Amazon &nbsp;·&nbsp; <span class="tk">GOOGL</span> Alphabet &nbsp;·&nbsp; <span class="tk">UNP</span> Union Pacific &nbsp;·&nbsp; <span class="tk">NSC</span> Norfolk Southern &nbsp;·&nbsp; <span class="tk">MCK</span> McKesson &nbsp;·&nbsp; <span class="tk">UNH</span> UnitedHealth Group</p>
+  </div>
+  <div class="avoid">
+    <h3>Big Tech <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 8 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">AAPL</span> Apple &nbsp;·&nbsp; <span class="tk">NVDA</span> NVIDIA &nbsp;·&nbsp; <span class="tk">META</span> Meta Platforms &nbsp;·&nbsp; <span class="tk">TSLA</span> Tesla &nbsp;·&nbsp; <span class="tk">NFLX</span> Netflix &nbsp;·&nbsp; <span class="tk">CRM</span> Salesforce &nbsp;·&nbsp; <span class="tk">AMD</span> AMD &nbsp;·&nbsp; <span class="tk">ORCL</span> Oracle</p>
+  </div>
+  <div class="avoid">
+    <h3>Consumer Leaders <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 8 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">PG</span> Procter & Gamble &nbsp;·&nbsp; <span class="tk">KO</span> Coca-Cola &nbsp;·&nbsp; <span class="tk">PEP</span> PepsiCo &nbsp;·&nbsp; <span class="tk">MCD</span> McDonald's &nbsp;·&nbsp; <span class="tk">NKE</span> Nike &nbsp;·&nbsp; <span class="tk">SBUX</span> Starbucks &nbsp;·&nbsp; <span class="tk">TGT</span> Target &nbsp;·&nbsp; <span class="tk">LOW</span> Lowe's</p>
+  </div>
+  <div class="avoid">
+    <h3>Financial Titans <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 6 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">GS</span> Goldman Sachs &nbsp;·&nbsp; <span class="tk">MS</span> Morgan Stanley &nbsp;·&nbsp; <span class="tk">BAC</span> Bank of America &nbsp;·&nbsp; <span class="tk">C</span> Citigroup &nbsp;·&nbsp; <span class="tk">WFC</span> Wells Fargo &nbsp;·&nbsp; <span class="tk">BLK</span> BlackRock</p>
+  </div>
+  <div class="avoid">
+    <h3>Healthcare & Pharma <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 5 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">LLY</span> Eli Lilly &nbsp;·&nbsp; <span class="tk">ABBV</span> AbbVie &nbsp;·&nbsp; <span class="tk">MRK</span> Merck &nbsp;·&nbsp; <span class="tk">AMGN</span> Amgen &nbsp;·&nbsp; <span class="tk">BMY</span> Bristol-Myers Squibb</p>
+  </div>
+  <div class="avoid">
+    <h3>Energy & Commodities <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 3 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">XOM</span> ExxonMobil &nbsp;·&nbsp; <span class="tk">CVX</span> Chevron &nbsp;·&nbsp; <span class="tk">COP</span> ConocoPhillips</p>
+  </div>
+  <div class="avoid">
+    <h3>Wall Street's Darlings <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 10 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">SPY</span> SPDR S&P 500 ETF &nbsp;·&nbsp; <span class="tk">QQQ</span> Invesco QQQ (Nasdaq 100) &nbsp;·&nbsp; <span class="tk">DIA</span> SPDR Dow Jones ETF &nbsp;·&nbsp; <span class="tk">IWM</span> iShares Russell 2000 &nbsp;·&nbsp; <span class="tk">VTI</span> Vanguard Total Stock Market &nbsp;·&nbsp; <span class="tk">VOO</span> Vanguard S&P 500 &nbsp;·&nbsp; <span class="tk">ARKK</span> ARK Innovation ETF &nbsp;·&nbsp; <span class="tk">VGT</span> Vanguard Info Tech ETF &nbsp;·&nbsp; <span class="tk">XLF</span> Financial Select SPDR &nbsp;·&nbsp; <span class="tk">XLE</span> Energy Select SPDR</p>
+  </div>
+  <div class="avoid">
+    <h3>The Mega-Cap 100 <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 55 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">TSM</span> Taiwan Semiconductor (ADR) &nbsp;·&nbsp; <span class="tk">AVGO</span> Broadcom &nbsp;·&nbsp; <span class="tk">MU</span> Micron Technology &nbsp;·&nbsp; <span class="tk">ASML</span> ASML Holding (ADR) &nbsp;·&nbsp; <span class="tk">INTC</span> Intel &nbsp;·&nbsp; <span class="tk">CSCO</span> Cisco Systems &nbsp;·&nbsp; <span class="tk">LRCX</span> Lam Research &nbsp;·&nbsp; <span class="tk">AMAT</span> Applied Materials &nbsp;·&nbsp; <span class="tk">ARM</span> Arm Holdings (ADR) &nbsp;·&nbsp; <span class="tk">PLTR</span> Palantir &nbsp;·&nbsp; <span class="tk">HSBC</span> HSBC Holdings (ADR) &nbsp;·&nbsp; <span class="tk">PM</span> Philip Morris &nbsp;·&nbsp; <span class="tk">NVS</span> Novartis (ADR) &nbsp;·&nbsp; <span class="tk">KLAC</span> KLA Corporation &nbsp;·&nbsp; <span class="tk">AZN</span> AstraZeneca (ADR) &nbsp;·&nbsp; <span class="tk">BABA</span> Alibaba (ADR) &nbsp;·&nbsp; <span class="tk">RY</span> Royal Bank of Canada &nbsp;·&nbsp; <span class="tk">TXN</span> Texas Instruments &nbsp;·&nbsp; <span class="tk">IBM</span> IBM &nbsp;·&nbsp; <span class="tk">DELL</span> Dell Technologies &nbsp;·&nbsp; <span class="tk">RTX</span> RTX Corporation &nbsp;·&nbsp; <span class="tk">SHEL</span> Shell (ADR) &nbsp;·&nbsp; <span class="tk">LIN</span> Linde &nbsp;·&nbsp; <span class="tk">GEV</span> GE Vernova &nbsp;·&nbsp; <span class="tk">TM</span> Toyota Motor (ADR) &nbsp;·&nbsp; <span class="tk">MRVL</span> Marvell Technology &nbsp;·&nbsp; <span class="tk">PANW</span> Palo Alto Networks &nbsp;·&nbsp; <span class="tk">AXP</span> American Express &nbsp;·&nbsp; <span class="tk">QCOM</span> Qualcomm &nbsp;·&nbsp; <span class="tk">TMUS</span> T-Mobile US &nbsp;·&nbsp; <span class="tk">SAP</span> SAP (ADR) &nbsp;·&nbsp; <span class="tk">TTE</span> TotalEnergies (ADR) &nbsp;·&nbsp; <span class="tk">VZ</span> Verizon &nbsp;·&nbsp; <span class="tk">ADI</span> Analog Devices &nbsp;·&nbsp; <span class="tk">ANET</span> Arista Networks &nbsp;·&nbsp; <span class="tk">NVO</span> Novo Nordisk (ADR) &nbsp;·&nbsp; <span class="tk">TD</span> Toronto-Dominion Bank &nbsp;·&nbsp; <span class="tk">TJX</span> TJX Companies &nbsp;·&nbsp; <span class="tk">APH</span> Amphenol &nbsp;·&nbsp; <span class="tk">TMO</span> Thermo Fisher Scientific &nbsp;·&nbsp; <span class="tk">DIS</span> Walt Disney &nbsp;·&nbsp; <span class="tk">APP</span> AppLovin &nbsp;·&nbsp; <span class="tk">CRWD</span> CrowdStrike &nbsp;·&nbsp; <span class="tk">T</span> AT&T &nbsp;·&nbsp; <span class="tk">ABT</span> Abbott Laboratories &nbsp;·&nbsp; <span class="tk">GILD</span> Gilead Sciences &nbsp;·&nbsp; <span class="tk">WELL</span> Welltower &nbsp;·&nbsp; <span class="tk">ISRG</span> Intuitive Surgical &nbsp;·&nbsp; <span class="tk">ETN</span> Eaton &nbsp;·&nbsp; <span class="tk">BX</span> Blackstone &nbsp;·&nbsp; <span class="tk">SHOP</span> Shopify &nbsp;·&nbsp; <span class="tk">UBER</span> Uber Technologies &nbsp;·&nbsp; <span class="tk">PLD</span> Prologis &nbsp;·&nbsp; <span class="tk">DHR</span> Danaher &nbsp;·&nbsp; <span class="tk">CB</span> Chubb</p>
+  </div>
+  <div class="avoid">
+    <h3>The Clergy House <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 2 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">ASTS</span> AST SpaceMobile &nbsp;·&nbsp; <span class="tk">STM</span> STMicroelectronics</p>
+  </div>
+  <div class="avoid">
+    <h3>Reserve <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 1 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">BIL</span> SPDR Bloomberg 1-3 Month T-Bill</p>
+  </div>
+  <div class="avoid">
+    <h3>UBS Funds <span class="small" style="text-transform:none;letter-spacing:0;font-weight:400">· 3 names</span></h3>
+    <p class="small" style="max-width:none;line-height:1.7"><span class="tk">DVRUX</span> UBS US Dividend Ruler P &nbsp;·&nbsp; <span class="tk">QGRPX</span> UBS US Quality Growth P &nbsp;·&nbsp; <span class="tk">BNUEX</span> UBS Intl Sustainable Equity P</p>
+  </div>
+</section>
+
+<!-- ===================================================== APPENDIX C -->
+<section class="sec" id="appC">
+  <div class="sec-head"><span class="no">C</span><h1>Methodology notes and glossary<span class="pgmark">§APPC§</span></h1></div>
+  <h3>Computation of statistics</h3>
+  <ul>
+    <li><strong>Daily returns</strong> are computed from the daily mark-to-market value of the book (baseline shares at the SPY close plus open slices at their closes), as the backtest records it.</li>
+    <li><strong>CAGR</strong> compounds the total return over the calendar span in years (1.83). <strong>Volatility</strong> is the standard deviation of daily returns × √252.</li>
+    <li><strong>Sharpe</strong> = mean daily return ÷ standard deviation × √252, risk-free rate 0%, matching the dashboard. <strong>Sortino</strong> uses the downside deviation (negative days only, over all days) in the denominator.</li>
+    <li><strong>Maximum drawdown</strong> is the largest peak-to-trough decline of the daily series, divided by the value at that peak. The operational dashboard’s drawdown tile divides the same dollar decline by the series’ all-time high, which understates the figure (it shows 13.0% where the peak-to-trough measure is 18.6%); this document uses the conventional measure and the dashboard tile should be read accordingly.</li>
+    <li><strong>Beta, correlation and alpha</strong> are from daily returns against SPY; alpha is annualised (× 252). <strong>Tracking error</strong> is the standard deviation of daily active return × √252; the <strong>information ratio</strong> is annualised active return ÷ tracking error. <strong>Capture ratios</strong> sum the book’s returns on the index’s up (down) days over the index’s own.</li>
+    <li><strong>Trade statistics</strong> use closed round trips only, except where marked. <strong>Profit factor</strong> is gross profit ÷ gross loss. Holding periods are calendar days between fill and exit; the dashboard reports trading sessions.</li>
+    <li><strong>Monthly returns</strong> use month-end portfolio values; the first month runs from the anchor date.</li>
+  </ul>
+  <h3>Glossary</h3>
+  <div class="tbl-wrap"><table class="terms compact">
+    <tr><td>Anchor date</td><td>The fixed start of the analysis window. Detection and the backtest run forward from it; anchoring rather than sliding keeps every historical verdict stable.</td></tr>
+    <tr><td>Causal</td><td>A computation for bar <em>t</em> that uses only bars up to and including <em>t</em>. Every detector in the system is causal, and the test suite enforces it.</td></tr>
+    <tr><td>dev_z</td><td>Deviation of price from its 20-day exponential moving average, divided by that deviation’s own trailing volatility. The unit in which all thresholds are set.</td></tr>
+    <tr><td>Divest signal</td><td>A Sell or Short verdict on a name the book holds. Moves the slice back to SPY; never opens a short.</td></tr>
+    <tr><td>Frozen target</td><td>The trend value recorded at detection. A Buy slice exits when the close touches it; the value is translated across corporate actions but never re-estimated.</td></tr>
+    <tr><td>Left matrix profile</td><td>For each 10-day pattern, the distance to its most similar pattern strictly earlier in the series. It cannot match against the future by construction.</td></tr>
+    <tr><td>Materiality gate</td><td>The minimum absolute distance from trend (1.0%) before a statistical anomaly may become a trade call.</td></tr>
+    <tr><td>Provenance</td><td>Whether a verdict was produced by the walk-forward simulation over history or by a scheduled run on a new bar. Reported separately, always.</td></tr>
+    <tr><td>Slice</td><td>The fixed dollar amount moved from SPY into a security on a Buy signal.</td></tr>
+    <tr><td>Time stop</td><td>The maximum holding period, 30 trading sessions, after which a slice returns to SPY regardless of price.</td></tr>
+    <tr><td>Walk-forward</td><td>A simulation that advances one bar at a time, producing at each step only what a live run that evening would have produced.</td></tr>
+    <tr><td>Watermark</td><td>Per-security high-water mark of scored bars. Only bars beyond it are persisted, so a verdict is written exactly once.</td></tr>
+  </table></div>
+</section>
+
+<!-- ===================================================== APPENDIX D -->
+<section class="sec" id="appD">
+  <div class="sec-head"><span class="no">D</span><h1>Data provenance and reproduction<span class="pgmark">§APPD§</span></h1></div>
+  <p>This document was generated on 2026-09-02 17:37 UTC from repository commit <span class="tk">6c66783</span>, whose most recent scheduled run is dated 2026-09-01 with the latest bar at 2026-09-01. The following files were read; nothing else contributed a number.</p>
+  <div class="tbl-wrap"><table class="terms compact">
+    <tr><td><span class="tk">docs/index.html</span></td><td>The rendered dashboard: daily equity and benchmark series, drawdown series and the trade ledger of the walk-forward backtest</td></tr>
+    <tr><td><span class="tk">data/ledger/signals.jsonl</span></td><td>The append-only signal ledger (642 rows): signal type, bar date, detection date, provenance, confidence and the frozen rationale</td></tr>
+    <tr><td><span class="tk">data/history/run_2026-09-01.json</span></td><td>Run summary: observations scored, ledger row counts, backtest totals, fetch report</td></tr>
+    <tr><td><span class="tk">data/run_health.json</span></td><td>Coverage, fetch failures, stale feeds, price-basis breaks</td></tr>
+    <tr><td><span class="tk">data/alerts.json</span></td><td>Run block and per-security status for the latest run</td></tr>
+    <tr><td><span class="tk">anomaly_detection/config.py</span></td><td>Universe registry, category labels, protocol parameters</td></tr>
+    <tr><td><span class="tk">HOW_IT_WORKS.md</span></td><td>The split-half robustness study (Section 10), transcribed</td></tr>
+  </table></div>
+  <h3>To reproduce</h3>
+  <p class="small">From the repository root, after any scheduled run has committed: <span class="tk">python reports/prospectus/build_prospectus.py --pdf</span>. The HTML is self-contained apart from web fonts; the PDF is rendered by headless Chromium via <span class="tk">reports/prospectus/render_pdf.cjs</span>. To reproduce the backtest itself: <span class="tk">python -m anomaly_detection</span> rebuilds the store from the ledger, re-fetches prices, re-scores, and re-runs the walk-forward simulation; because scoring is causal and the ledger is frozen, the trade list is invariant to when it is run.</p>
+  <h3>Signal ledger composition</h3>
+  <div class="tbl-wrap"><table class="compact" style="max-width:24rem">
+    <thead><tr><th>Signal</th><th class="r">Rows</th></tr></thead>
+    <tbody><tr><td>BUY</td><td class="r">133</td></tr><tr><td>SELL</td><td class="r">184</td></tr><tr><td>LONG</td><td class="r">113</td></tr><tr><td>SHORT</td><td class="r">169</td></tr><tr><td>REDUCE</td><td class="r">10</td></tr><tr><td>WATCH</td><td class="r">33</td></tr>    <tr class="total"><td>Total</td><td class="r">642</td></tr></tbody>
+  </table></div>
+  <div class="colophon">
+    Results Generation · Jacob E. Thomas, PhD · The Signal, model version 2.0.0 · Generated 2026-09-02 17:37 UTC · Confidential.
+  </div>
+</section>
+
+</div>
+
+<script>
+(function () {
+  var data = {"dates": ["2024-11-01", "2024-11-04", "2024-11-05", "2024-11-06", "2024-11-07", "2024-11-08", "2024-11-11", "2024-11-12", "2024-11-13", "2024-11-14", "2024-11-15", "2024-11-18", "2024-11-19", "2024-11-20", "2024-11-21", "2024-11-22", "2024-11-25", "2024-11-26", "2024-11-27", "2024-11-29", "2024-12-02", "2024-12-03", "2024-12-04", "2024-12-05", "2024-12-06", "2024-12-09", "2024-12-10", "2024-12-11", "2024-12-12", "2024-12-13", "2024-12-16", "2024-12-17", "2024-12-18", "2024-12-19", "2024-12-20", "2024-12-23", "2024-12-24", "2024-12-26", "2024-12-27", "2024-12-30", "2024-12-31", "2025-01-02", "2025-01-03", "2025-01-06", "2025-01-07", "2025-01-08", "2025-01-10", "2025-01-13", "2025-01-14", "2025-01-15", "2025-01-16", "2025-01-17", "2025-01-21", "2025-01-22", "2025-01-23", "2025-01-24", "2025-01-27", "2025-01-28", "2025-01-29", "2025-01-30", "2025-01-31", "2025-02-03", "2025-02-04", "2025-02-05", "2025-02-06", "2025-02-07", "2025-02-10", "2025-02-11", "2025-02-12", "2025-02-13", "2025-02-14", "2025-02-18", "2025-02-19", "2025-02-20", "2025-02-21", "2025-02-24", "2025-02-25", "2025-02-26", "2025-02-27", "2025-02-28", "2025-03-03", "2025-03-04", "2025-03-05", "2025-03-06", "2025-03-07", "2025-03-10", "2025-03-11", "2025-03-12", "2025-03-13", "2025-03-14", "2025-03-17", "2025-03-18", "2025-03-19", "2025-03-20", "2025-03-21", "2025-03-24", "2025-03-25", "2025-03-26", "2025-03-27", "2025-03-28", "2025-03-31", "2025-04-01", "2025-04-02", "2025-04-03", "2025-04-04", "2025-04-07", "2025-04-08", "2025-04-09", "2025-04-10", "2025-04-11", "2025-04-14", "2025-04-15", "2025-04-16", "2025-04-17", "2025-04-21", "2025-04-22", "2025-04-23", "2025-04-24", "2025-04-25", "2025-04-28", "2025-04-29", "2025-04-30", "2025-05-01", "2025-05-02", "2025-05-05", "2025-05-06", "2025-05-07", "2025-05-08", "2025-05-09", "2025-05-12", "2025-05-13", "2025-05-14", "2025-05-15", "2025-05-16", "2025-05-19", "2025-05-20", "2025-05-21", "2025-05-22", "2025-05-23", "2025-05-27", "2025-05-28", "2025-05-29", "2025-05-30", "2025-06-02", "2025-06-03", "2025-06-04", "2025-06-05", "2025-06-06", "2025-06-09", "2025-06-10", "2025-06-11", "2025-06-12", "2025-06-13", "2025-06-16", "2025-06-17", "2025-06-18", "2025-06-20", "2025-06-23", "2025-06-24", "2025-06-25", "2025-06-26", "2025-06-27", "2025-06-30", "2025-07-01", "2025-07-02", "2025-07-03", "2025-07-07", "2025-07-08", "2025-07-09", "2025-07-10", "2025-07-11", "2025-07-14", "2025-07-15", "2025-07-16", "2025-07-17", "2025-07-18", "2025-07-21", "2025-07-22", "2025-07-23", "2025-07-24", "2025-07-25", "2025-07-28", "2025-07-29", "2025-07-30", "2025-07-31", "2025-08-01", "2025-08-04", "2025-08-05", "2025-08-06", "2025-08-07", "2025-08-08", "2025-08-11", "2025-08-12", "2025-08-13", "2025-08-14", "2025-08-15", "2025-08-18", "2025-08-19", "2025-08-20", "2025-08-21", "2025-08-22", "2025-08-25", "2025-08-26", "2025-08-27", "2025-08-28", "2025-08-29", "2025-09-02", "2025-09-03", "2025-09-04", "2025-09-05", "2025-09-08", "2025-09-09", "2025-09-10", "2025-09-11", "2025-09-12", "2025-09-15", "2025-09-16", "2025-09-17", "2025-09-18", "2025-09-19", "2025-09-22", "2025-09-23", "2025-09-24", "2025-09-25", "2025-09-26", "2025-09-29", "2025-09-30", "2025-10-01", "2025-10-02", "2025-10-03", "2025-10-06", "2025-10-07", "2025-10-08", "2025-10-09", "2025-10-10", "2025-10-13", "2025-10-14", "2025-10-15", "2025-10-16", "2025-10-17", "2025-10-20", "2025-10-21", "2025-10-22", "2025-10-23", "2025-10-24", "2025-10-27", "2025-10-28", "2025-10-29", "2025-10-30", "2025-10-31", "2025-11-03", "2025-11-04", "2025-11-05", "2025-11-06", "2025-11-07", "2025-11-10", "2025-11-11", "2025-11-12", "2025-11-13", "2025-11-14", "2025-11-17", "2025-11-18", "2025-11-19", "2025-11-20", "2025-11-21", "2025-11-24", "2025-11-25", "2025-11-26", "2025-11-28", "2025-12-01", "2025-12-02", "2025-12-03", "2025-12-04", "2025-12-05", "2025-12-08", "2025-12-09", "2025-12-10", "2025-12-11", "2025-12-12", "2025-12-15", "2025-12-16", "2025-12-17", "2025-12-18", "2025-12-19", "2025-12-22", "2025-12-23", "2025-12-24", "2025-12-26", "2025-12-29", "2025-12-30", "2025-12-31", "2026-01-02", "2026-01-05", "2026-01-06", "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-12", "2026-01-13", "2026-01-14", "2026-01-15", "2026-01-16", "2026-01-20", "2026-01-21", "2026-01-22", "2026-01-23", "2026-01-26", "2026-01-27", "2026-01-28", "2026-01-29", "2026-01-30", "2026-02-02", "2026-02-03", "2026-02-04", "2026-02-05", "2026-02-06", "2026-02-09", "2026-02-10", "2026-02-11", "2026-02-12", "2026-02-13", "2026-02-17", "2026-02-18", "2026-02-19", "2026-02-20", "2026-02-23", "2026-02-24", "2026-02-25", "2026-02-26", "2026-02-27", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05", "2026-03-06", "2026-03-09", "2026-03-10", "2026-03-11", "2026-03-12", "2026-03-13", "2026-03-16", "2026-03-17", "2026-03-18", "2026-03-19", "2026-03-20", "2026-03-23", "2026-03-24", "2026-03-25", "2026-03-26", "2026-03-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-02", "2026-04-06", "2026-04-07", "2026-04-08", "2026-04-09", "2026-04-10", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16", "2026-04-17", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-27", "2026-04-28", "2026-04-29", "2026-04-30", "2026-05-01", "2026-05-04", "2026-05-05", "2026-05-06", "2026-05-07", "2026-05-08", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-05-18", "2026-05-19", "2026-05-20", "2026-05-21", "2026-05-22", "2026-05-26", "2026-05-27", "2026-05-28", "2026-05-29", "2026-06-01", "2026-06-02", "2026-06-03", "2026-06-04", "2026-06-05", "2026-06-08", "2026-06-09", "2026-06-10", "2026-06-11", "2026-06-12", "2026-06-15", "2026-06-16", "2026-06-17", "2026-06-18", "2026-06-22", "2026-06-23", "2026-06-24", "2026-06-25", "2026-06-26", "2026-06-29", "2026-06-30", "2026-07-01", "2026-07-02", "2026-07-06", "2026-07-07", "2026-07-08", "2026-07-09", "2026-07-10", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17", "2026-07-20", "2026-07-21", "2026-07-22", "2026-07-23", "2026-07-24", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31", "2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-07", "2026-08-10", "2026-08-11", "2026-08-12", "2026-08-13", "2026-08-14", "2026-08-17", "2026-08-18", "2026-08-19", "2026-08-20", "2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01"], "pf": [100000, 99785, 100991, 103502, 104303, 104754, 104854, 104529, 104579, 103907, 102576, 102996, 103373, 103408, 103963, 104285, 104639, 105185, 104867, 105518, 105707, 105756, 106413, 106238, 106439, 105891, 105562, 106378, 105830, 105809, 106260, 105823, 102669, 102637, 103870, 104492, 105653, 105661, 104548, 103355, 102979, 102726, 104011, 104610, 103427, 103578, 101997, 102155, 102296, 104156, 103956, 105000, 105961, 106557, 107138, 106825, 105314, 106219, 105743, 106311, 105745, 105033, 105738, 106162, 106315, 105346, 105897, 105986, 105579, 106453, 106291, 106608, 107094, 106920, 105461, 105224, 104769, 104589, 103212, 104851, 103295, 102129, 103181, 101605, 102176, 99833, 99264, 100103, 98515, 100506, 101398, 100771, 101984, 101815, 101710, 104178, 104135, 102979, 102775, 99919, 100477, 100629, 101949, 92961, 88273, 89086, 87198, 98297, 92514, 93995, 95207, 95242, 92895, 94046, 92023, 94225, 96308, 98734, 99046, 99027, 99395, 99267, 99647, 101203, 100635, 99776, 101456, 101968, 101652, 105116, 104227, 104148, 104721, 105439, 105357, 105003, 103234, 103275, 102570, 104702, 104096, 104507, 104390, 104978, 105577, 105549, 105039, 106117, 106213, 106815, 106510, 106934, 105738, 106744, 105832, 105816, 105568, 106610, 107788, 107849, 108692, 109232, 109755, 109719, 110216, 111085, 110257, 110197, 110858, 111170, 110780, 110991, 110517, 110886, 111565, 111478, 111731, 111851, 112720, 112758, 113151, 113492, 113462, 113081, 111501, 111037, 112217, 111478, 111441, 112366, 113749, 113142, 114943, 116354, 116519, 117497, 118337, 119128, 119858, 120229, 122606, 121757, 122271, 122961, 123272, 122804, 122069, 122077, 122292, 122107, 122163, 122488, 122420, 123187, 123124, 123202, 123332, 123172, 123750, 124379, 125050, 124493, 124046, 123389, 124107, 124387, 124995, 125186, 125428, 125632, 125988, 125360, 126182, 125721, 122564, 124173, 124268, 124692, 124000, 124696, 125807, 125775, 124975, 125260, 126434, 127878, 128258, 128098, 126618, 127030, 127155, 125934, 126430, 125161, 125573, 127080, 127630, 127688, 126272, 125937, 124704, 123815, 123986, 122385, 123808, 124354, 126043, 126856, 128158, 127216, 127436, 128369, 128609, 128978, 128196, 127819, 128634, 129345, 128949, 128762, 128900, 127355, 128213, 129130, 129998, 130593, 130984, 131126, 130545, 130398, 129339, 129600, 130013, 131146, 130932, 130596, 131762, 132165, 131992, 130963, 131384, 131537, 128509, 129768, 130293, 130497, 131361, 131907, 131494, 131181, 131473, 132084, 130086, 129024, 126824, 129743, 132855, 132780, 131630, 130317, 132296, 130868, 131125, 130927, 130073, 126925, 126918, 130192, 132032, 131004, 132136, 132468, 134132, 134846, 134427, 135102, 133493, 133196, 131402, 130691, 132344, 133301, 131100, 130972, 128613, 130150, 129607, 130335, 128631, 126333, 126220, 129773, 130347, 130435, 130574, 130276, 133319, 134138, 133517, 134776, 136846, 137892, 137994, 139613, 139231, 138510, 139319, 138675, 139465, 139708, 139115, 139255, 140798, 140904, 140129, 141168, 143180, 142892, 143927, 143836, 143619, 144320, 145135, 143426, 143767, 142915, 144448, 144500, 144984, 145637, 145194, 146035, 146112, 146074, 145888, 145430, 146244, 143142, 143421, 143164, 141023, 143100, 143771, 146069, 145345, 143191, 144508, 144025, 142402, 142279, 142130, 141498, 143445, 144174, 143542, 144026, 144468, 144562, 144336, 145295, 146080, 145672, 145797, 146653, 146690, 145364, 145097, 146171, 146238, 144534, 145392, 145736, 146604, 144222, 145845, 146730, 149403, 151440, 151319, 151426, 152151, 152635, 152450, 152443, 153610, 153229, 152221, 151663, 152129, 150398, 151242, 150768, 150987, 150928, 151414, 151642, 151345, 150482], "bm": [100000, 99785, 100991, 103502, 104303, 104754, 104854, 104529, 104579, 103907, 102576, 102996, 103373, 103408, 103963, 104285, 104639, 105185, 104867, 105518, 105707, 105756, 106413, 106238, 106439, 105891, 105562, 106378, 105830, 105809, 106260, 105823, 102669, 102637, 103870, 104492, 105653, 105661, 104548, 103355, 102979, 102726, 104011, 104610, 103427, 103578, 101997, 102155, 102296, 104156, 103956, 105000, 105961, 106557, 107138, 106825, 105314, 106219, 105743, 106311, 105745, 105033, 105738, 106167, 106536, 105560, 106277, 106358, 106015, 107135, 107129, 107444, 107697, 107249, 105415, 104935, 104413, 104466, 102798, 104402, 102573, 101359, 102449, 100630, 101194, 98499, 97680, 98198, 96889, 98890, 99653, 98576, 99650, 99361, 99394, 101174, 101417, 100207, 99941, 97928, 98585, 98864, 99489, 94586, 89049, 88890, 87498, 96687, 92450, 94100, 95013, 94747, 92641, 92773, 90565, 92921, 94361, 96347, 97043, 97080, 97692, 97730, 98423, 99884, 99311, 98481, 98895, 99584, 99458, 102744, 103423, 103555, 104061, 104720, 104835, 104482, 102722, 102762, 102061, 104183, 103580, 103989, 103872, 104457, 105053, 105025, 104517, 105591, 105686, 106285, 105982, 106403, 105214, 106215, 105307, 105291, 105044, 106081, 107253, 107313, 108153, 108690, 109210, 109175, 109670, 110534, 109710, 109650, 110308, 110619, 110230, 110440, 109968, 110336, 111011, 110930, 111140, 111156, 112102, 112139, 112613, 112584, 112287, 112146, 111725, 109894, 111564, 110999, 111849, 111755, 112627, 112404, 113601, 113989, 114000, 113733, 113708, 113092, 112791, 112339, 114064, 113562, 114037, 114297, 114702, 114018, 113173, 113786, 114737, 114405, 114686, 114951, 115283, 116241, 116202, 116821, 116660, 116515, 117060, 117640, 118196, 117553, 117179, 116638, 117306, 117636, 118079, 118481, 118618, 118616, 119042, 118600, 119307, 118962, 115747, 117523, 117379, 117900, 117097, 117762, 118987, 118985, 118366, 119068, 120041, 121457, 121780, 121839, 120499, 120894, 121121, 119685, 120100, 118811, 118928, 120784, 121060, 121128, 119118, 119098, 117989, 116998, 117450, 115660, 116812, 118531, 119646, 120472, 121130, 120577, 120800, 121218, 121307, 121537, 121172, 121068, 121870, 122154, 120841, 120658, 120328, 119004, 119903, 120990, 121743, 122300, 122730, 122718, 122280, 122131, 121226, 121448, 122257, 122984, 122588, 122575, 123386, 123580, 123333, 122727, 123061, 122958, 120455, 121845, 122481, 122526, 123148, 123639, 123626, 123381, 123013, 123624, 122579, 121985, 120462, 122773, 123365, 123039, 123011, 121111, 121196, 121391, 122003, 121681, 122561, 121310, 122191, 123223, 122538, 121950, 122019, 120944, 121797, 121118, 119530, 120577, 120384, 120232, 118407, 117737, 118935, 119248, 117584, 117294, 115612, 116826, 116434, 117083, 114992, 113031, 112653, 115928, 116801, 116907, 117459, 117511, 120504, 121199, 121119, 122302, 123793, 124769, 125076, 126588, 126335, 125507, 126778, 126286, 127265, 127484, 126864, 126844, 128106, 128461, 127991, 129017, 130811, 130410, 131486, 131786, 131586, 132322, 133367, 131762, 131670, 130793, 132133, 132395, 132916, 133798, 133775, 134513, 134848, 135215, 135399, 134449, 134957, 131474, 131771, 131385, 129313, 131511, 132222, 134554, 133752, 132082, 133455, 133035, 131103, 131042, 131232, 130283, 132429, 133460, 133280, 133105, 134266, 133628, 133215, 134343, 134922, 133889, 134364, 134897, 134166, 132838, 132624, 133730, 133575, 131925, 132059, 132088, 132404, 130367, 132552, 133507, 135408, 137849, 137574, 137354, 138194, 138153, 137712, 138057, 139020, 138745, 138089, 137156, 137444, 136289, 136847, 136445, 136881, 136911, 137808, 137496, 137085, 136143], "bench": "SPY"};
+  var wrap = document.getElementById('growth');
+  if (!wrap) return;
+  var svg = wrap.querySelector('svg'), g = svg.querySelector('.hover');
+  if (!g) return;
+  var hit = g.querySelector('.hit'), xh = g.querySelector('.xhair');
+  var d1 = g.querySelector('.xdot.s1'), d2 = g.querySelector('.xdot.s2');
+  var tip = document.getElementById('growth-tip');
+  var L = +g.dataset.l, pw = +g.dataset.pw, T = +g.dataset.t, ph = +g.dataset.ph, lo = +g.dataset.lo, hi = +g.dataset.hi;
+  var n = data.dates.length;
+  function money(v) { return '$' + Math.round(v).toLocaleString('en-US'); }
+  function move(ev) {
+    var pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    var p = pt.matrixTransform(svg.getScreenCTM().inverse());
+    var i = Math.max(0, Math.min(n - 1, Math.round((p.x - L) / pw * (n - 1))));
+    var x = L + pw * i / (n - 1);
+    var y1 = T + ph * (1 - (data.pf[i] - lo) / (hi - lo)), y2 = T + ph * (1 - (data.bm[i] - lo) / (hi - lo));
+    xh.setAttribute('x1', x); xh.setAttribute('x2', x); xh.style.display = '';
+    d1.setAttribute('cx', x); d1.setAttribute('cy', y1); d1.style.display = '';
+    d2.setAttribute('cx', x); d2.setAttribute('cy', y2); d2.style.display = '';
+    var diff = data.pf[i] - data.bm[i];
+    tip.innerHTML = '<b>' + data.dates[i] + '</b><i class="s1"></i>Signal ' + money(data.pf[i]) + '<br><i class="s2"></i>' + data.bench + ' ' + money(data.bm[i]) + '<br>Overlay ' + (diff >= 0 ? '+' : '−') + money(Math.abs(diff));
+    var r = wrap.getBoundingClientRect();
+    var left = ev.clientX - r.left + 14, top = ev.clientY - r.top - 10;
+    if (left + 170 > r.width) left = ev.clientX - r.left - 184;
+    tip.style.left = left + 'px'; tip.style.top = top + 'px'; tip.style.display = 'block';
+  }
+  function leave() { xh.style.display = 'none'; d1.style.display = 'none'; d2.style.display = 'none'; tip.style.display = 'none'; }
+  hit.addEventListener('mousemove', move); hit.addEventListener('mouseleave', leave);
+})();
+</script>
+</body>
+</html>
