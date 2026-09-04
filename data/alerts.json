@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T01:13:11.236633Z",
+  "generated_at": "2026-09-04T01:55:02.641633Z",
   "run": {
     "run_date": "2026-09-04",
     "new_bars_scored": 0,
@@ -11,53 +11,53 @@
   "new_signals": 0,
   "ticker_status": {
     "AAPL": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 324.96,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "ABBV": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 261.72,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "ABT": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 110.47,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "ADI": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 355.71,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "ADM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 85.38,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "AMAT": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 438.46,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "AMD": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 457.06,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "AMGN": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 442.84,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "AMZN": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 254.98,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "ANET": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 186.1,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "APH": {
@@ -72,73 +72,73 @@
       }
     },
     "APP": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 319.05,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "ARKK": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 83.39,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "ARM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 234.86,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "ASML": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 1682.3,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "ASTS": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 62.4,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "AVGO": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 367.24,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "AXP": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 329.98,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "AZN": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 161.63,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "BABA": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 111.81,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "BAC": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 62.6,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "BG": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 122.86,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "BIL": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 91.4,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "BLK": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 1107.08,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "BMY": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 67.66,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "BNUEX": {
@@ -147,48 +147,48 @@
       "stale_feed": false
     },
     "BRK-B": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 505.24,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "BX": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 136.82,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "C": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 134.34,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "CAT": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 792.28,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "CB": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 339.42,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "COP": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 137.2,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "COST": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 928.48,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "CRM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 256.93,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "CRWD": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 203.42,
+      "last_date": "2026-09-02",
       "stale_feed": false,
       "price_basis": {
         "factor": 4.0,
@@ -198,43 +198,43 @@
       }
     },
     "CSCO": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 109.46,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "CVX": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 211.78,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "D": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 66.05,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "DE": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 698.37,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "DELL": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 492.2,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "DHR": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 209.91,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "DIA": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 530.62,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "DIS": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 107.98,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "DVRUX": {
@@ -243,43 +243,43 @@
       "stale_feed": false
     },
     "ETN": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 390.85,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "GE": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 329.5,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "GEV": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 921.94,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "GILD": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 149.61,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "GOOGL": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 337.12,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "GS": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 1004.42,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "HD": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 318.51,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "HON": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 206.07,
+      "last_date": "2026-09-02",
       "stale_feed": false,
       "price_basis": {
         "factor": 0.9564,
@@ -289,43 +289,43 @@
       }
     },
     "HSBC": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 104.94,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "IBM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 231.7,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "INTC": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 90.05,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "ISRG": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 371.88,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "IWM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 294.01,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "JNJ": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 275.21,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "JPM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 356.22,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "KLAC": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 172.26,
+      "last_date": "2026-09-02",
       "stale_feed": false,
       "price_basis": {
         "factor": 10.0113,
@@ -335,163 +335,163 @@
       }
     },
     "KMI": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 31.97,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "KO": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 88.24,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "LIN": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 487.45,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "LLY": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 1160.08,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "LMT": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 531.55,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "LOW": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 199.84,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "LRCX": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 288.32,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "MA": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 588.14,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "MCD": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 260.95,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "MCK": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 924.78,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "META": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 592.85,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "MRK": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 151.64,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "MRVL": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 206.48,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "MS": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 211.82,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "MSFT": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 496.82,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "MU": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 956.08,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "NEE": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 83.1,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "NFLX": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 82.73,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "NKE": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 38.24,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "NSC": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 330.06,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "NVDA": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 224.41,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "NVO": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 46.77,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "NVS": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 162.46,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "ORCL": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 145.75,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "PANW": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 328.48,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "PEP": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 140.52,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "PFE": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 29.02,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "PG": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 147.64,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "PLD": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 136.59,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "PLTR": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 169.46,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "PM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 187.94,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "QCOM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 169.96,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "QGRPX": {
@@ -500,33 +500,33 @@
       "stale_feed": false
     },
     "QQQ": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 709.24,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "RTX": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 200.78,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "RY": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 207.86,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "SAP": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 209.69,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "SBUX": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 106.72,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "SCHW": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 108.24,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "SHEL": {
@@ -535,153 +535,153 @@
       "stale_feed": false
     },
     "SHOP": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 141.87,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "SPY": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 765.16,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "STM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 50.71,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "T": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 25.95,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "TD": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 121.47,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "TGT": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 163.36,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "TJX": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 131.31,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "TM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 198.3,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "TMO": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 608.54,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "TMUS": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 187.3,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "TSLA": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 357.01,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "TSM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 415.5,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "TSN": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 55.81,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "TTE": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 90.22,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "TXN": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 254.8,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "UBER": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 76.45,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "UNH": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 399.66,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "UNP": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 289.73,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "V": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 378.4,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "VGT": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 119.13,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "VOO": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 703.41,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "VTI": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 376.88,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "VZ": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 50.22,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "WELL": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 238.59,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "WFC": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 89.27,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "WMB": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 75.16,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "WMT": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 106.09,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "XLE": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 65.1,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "XLF": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 57.66,
+      "last_date": "2026-09-02",
       "stale_feed": false
     },
     "XOM": {
-      "last_close": NaN,
-      "last_date": "2026-09-03",
+      "last_close": 164.15,
+      "last_date": "2026-09-02",
       "stale_feed": false
     }
   },
