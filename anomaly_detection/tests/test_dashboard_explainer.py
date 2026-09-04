@@ -18,6 +18,9 @@ def test_explainer_reads_protocol_parameters_without_a_record():
     assert ctx["materiality_pct"] == TRADE_MIN_ABS_DEVIATION_PCT
     assert ctx["max_hold"] == BACKTEST_MAX_HOLD_TRADING_DAYS
     assert ctx["unit_pct"] == 10
+    assert ctx["momentum_z"] == 1.5
+    assert ctx["ewma_span"] == 20 and ctx["mp_len"] == 10
+    assert sum(ctx["weights"].values()) == 100
     assert ctx["has_record"] is False
     assert ctx["live_n"] == 0
 

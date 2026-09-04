@@ -11,12 +11,18 @@ from jinja2 import Environment, FileSystemLoader
 from ..adjustments import bar_basis_factor
 from ..config import (
     BACKTEST_BASELINE_TICKER,
+    BACKTEST_COST_BPS_PER_SIDE,
     BACKTEST_MAX_HOLD_TRADING_DAYS,
     BACKTEST_UNIT_DOLLARS,
     CATEGORY_LABELS,
     CATEGORY_ORDER,
+    CAUSAL_WARMUP_BARS,
     DOCS_DIR,
+    EWMA_SPAN,
+    FOURIER_WINDOW,
+    METHOD_WEIGHTS,
     MODEL_VERSION,
+    MP_SUBSEQUENCE_LENGTH,
     PORTFOLIO_CAPITAL,
     PRICE_BASIS_TOLERANCE,
     SENSITIVITY_PRESETS,
@@ -27,6 +33,7 @@ from ..config import (
     ticker_display,
     tickers_by_category,
 )
+from ..alerts import derivation_thresholds
 from ..backtest import compute_backtest
 from ..storage import get_frozen_bar_closes, get_signals_for_backtest
 from .charts import (
@@ -156,10 +163,18 @@ def explainer_context(backtest: dict | None, sensitivity: str = "medium") -> dic
     n_winning = int(bt.get("n_winning") or 0)
     final_value = bt.get("final_value")
     benchmark_pct = stats.get("benchmark_return_pct")
+    thresholds = derivation_thresholds(str(sensitivity).lower() if str(sensitivity).lower() in SENSITIVITY_PRESETS else "medium")
     return {
         "z_threshold": preset["z_threshold"],
+        "momentum_z": thresholds["momentum_z"],
         "materiality_pct": TRADE_MIN_ABS_DEVIATION_PCT,
         "max_hold": int(bt.get("max_hold_days") or BACKTEST_MAX_HOLD_TRADING_DAYS),
+        "cost_bps": int(round(float(bt.get("cost_bps_per_side") or BACKTEST_COST_BPS_PER_SIDE))),
+        "ewma_span": EWMA_SPAN,
+        "mp_len": MP_SUBSEQUENCE_LENGTH,
+        "fourier_window": FOURIER_WINDOW,
+        "warmup": CAUSAL_WARMUP_BARS,
+        "weights": {k: int(round(v * 100)) for k, v in METHOD_WEIGHTS.items()},
         "baseline": bt.get("baseline_ticker") or BACKTEST_BASELINE_TICKER,
         "unit_pct": int(round(unit / capital * 100)) if capital else 0,
         "capital": capital,
