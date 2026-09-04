@@ -333,3 +333,22 @@ def test_target_untouched_when_basis_matches():
     assert trade["exit_reason"] == "target"
     assert trade["exit_date"] == d[5]
     assert trade["exit_price"] == 101.0
+
+
+def test_open_position_is_marked_at_last_real_close_when_latest_bar_is_empty():
+    """2026-09-04: the vendor returned the latest bar with a NaN close for every
+    ticker. An open slice marked at NaN made the equity curve — and Sharpe,
+    drawdown, unrealised and total P&L — NaN. A bar without a price must be
+    ignored, not multiplied."""
+    import math
+    closes = [100, 101, 102, 103, 104, 105, 106, 107, 108, float("nan")]
+    res = _results_frame({"AAA": closes})
+    d = _dates(res)
+    bt = compute_backtest(res, [_signal("AAA", d[2], "BUY", target=10_000.0)])
+    assert bt["n_trades"] == 1
+    trade = bt["signal_ledger"][0]
+    assert trade["status"] == "OPEN"
+    assert trade["exit_price"] == 108.0, "marked at the last bar that has a real close"
+    assert math.isfinite(bt["final_value"]) and math.isfinite(bt["unrealized_gain"])
+    assert all(math.isfinite(x) for x in bt["equity_curve"]["equity"])
+    assert bt["stats"]["sharpe"] is not None

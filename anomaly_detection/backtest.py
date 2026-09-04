@@ -69,7 +69,11 @@ def _build_price_index(results: pd.DataFrame) -> dict[str, dict]:
     """Per-ticker sorted price arrays with O(log n) date lookup."""
     out: dict[str, dict] = {}
     for ticker, grp in results.groupby("Ticker"):
-        g = grp[["Date", "Close"]].sort_values("Date").reset_index(drop=True)
+        g = grp[["Date", "Close"]].sort_values("Date")
+        # A bar without a usable close is not a price: it can neither fill
+        # nor mark a position. (Belt and braces — the fetch already drops
+        # such rows; a stray NaN here would poison every statistic.)
+        g = g[pd.to_numeric(g["Close"], errors="coerce").notna()].reset_index(drop=True)
         if g.empty:
             continue
         date_strs = pd.to_datetime(g["Date"]).dt.strftime("%Y-%m-%d").tolist()
