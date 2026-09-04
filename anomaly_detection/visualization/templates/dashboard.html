@@ -1725,13 +1725,10 @@
 
     <script>
         // === CINEMATIC INTRO ===
+        // The intro is the front door and plays on every visit by design;
+        // "skip" and "Enter" are always one click away.
         (function() {
-            const INTRO_KEY = 'the_signal_intro_seen';
             const overlay = document.getElementById('intro-overlay');
-            if (localStorage.getItem(INTRO_KEY)) {
-                overlay.remove();
-                return;
-            }
             const lines = [
                 "They spend billions making sure",
                 "you never see what moves the market.",
@@ -1768,15 +1765,15 @@
             }
             setTimeout(typeNext, 800);
             window.dismissIntro = function() {
-                localStorage.setItem(INTRO_KEY, '1');
                 overlay.classList.add('fade-out');
                 setTimeout(() => overlay.remove(), 700);
             };
         })();
 
         // === "WHAT AM I LOOKING AT?" EXPLAINER ===
-        // Open on first visit; a reader who collapses it stays collapsed on
-        // later visits (per browser), and the hero CTA always reopens it.
+        // Collapsed by default — one header line under the hero. A reader who
+        // expands it stays expanded on later visits (per browser), and the
+        // hero CTA always opens it.
         (function() {
             const KEY = 'the_signal_explainer_collapsed';
             const card = document.getElementById('explainer-card');
@@ -1792,7 +1789,7 @@
             }
             let stored = null;
             try { stored = localStorage.getItem(KEY); } catch (e) { /* storage unavailable */ }
-            if (stored === '1') card.classList.add('collapsed');
+            if (stored !== '0') card.classList.add('collapsed');
             render();
             window.toggleExplainer = function() { setCollapsed(!card.classList.contains('collapsed')); };
             window.openExplainer = function(ev) {

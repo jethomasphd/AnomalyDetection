@@ -26,6 +26,7 @@ are handed the factor they need to interpret them correctly.
 
 import logging
 
+import numpy as np
 import pandas as pd
 
 from .config import PRICE_BASIS_TOLERANCE, STALE_FEED_EXEMPT, STALE_FEED_MIN_BARS
@@ -273,10 +274,14 @@ def compute_ticker_status(
     stale_feeds = stale_feeds or {}
     for ticker, grp in results.groupby("Ticker"):
         g = grp.sort_values("Date")
-        last = g.iloc[-1]
+        # "Now" means the last bar with a real close — a vendor row that
+        # arrived empty must not be reported as a $nan price.
+        valid = g[pd.to_numeric(g["Close"], errors="coerce").notna()]
+        last = (valid if not valid.empty else g).iloc[-1]
+        close = float(last["Close"])
         t = str(ticker)
         entry = {
-            "last_close": round(float(last["Close"]), 2),
+            "last_close": round(close, 2) if np.isfinite(close) else None,
             "last_date": pd.to_datetime(last["Date"]).strftime("%Y-%m-%d"),
             "stale_feed": t in stale_feeds,
         }

@@ -47,6 +47,31 @@ def drop_partial_intraday_bar(df: pd.DataFrame, now_utc: Optional[datetime] = No
     return df
 
 
+def drop_empty_bars(df: Optional[pd.DataFrame], ticker: str = "") -> Optional[pd.DataFrame]:
+    """Drop bars the vendor returned without a usable close.
+
+    Yahoo occasionally publishes a session row whose prices are all NaN
+    (2026-09-03: every ticker's latest bar came back empty on the next day's
+    fetch). Such a row is not a price. It must never reach the features, the
+    detectors, the frozen record, or the backtest — one open position marked
+    at NaN turns the whole equity curve, and every statistic on it, into NaN.
+    """
+    if df is None or len(df) == 0 or "Close" not in df.columns:
+        return df
+    close = df["Close"]
+    if isinstance(close, pd.DataFrame):  # un-flattened yfinance MultiIndex columns
+        close = close.iloc[:, 0]
+    close = pd.to_numeric(close, errors="coerce")
+    ok = (close.notna() & (close > 0)).to_numpy()
+    n_bad = int((~ok).sum())
+    if n_bad:
+        bad_dates = [pd.to_datetime(d).strftime("%Y-%m-%d") for d in df.index[~ok][-3:]]
+        logger.warning("%s: dropped %d bar(s) with no usable close (latest: %s)",
+                       ticker or "?", n_bad, ", ".join(bad_dates))
+        df = df.loc[ok]
+    return df
+
+
 def fetch_ticker(
     ticker: str,
     start_date: str = SIGNAL_START_DATE,
@@ -85,6 +110,12 @@ def fetch_ticker(
 
     df = drop_partial_intraday_bar(df)
 
+    # Flatten multi-level columns if present (yfinance >= 0.2 returns them
+    # even for a single ticker), then discard any bar without a real close.
+    if df is not None and isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+    df = drop_empty_bars(df, ticker)
+
     if df is None or len(df) < MIN_DATA_POINTS:
         logger.warning(
             "Insufficient data for %s (%d rows, need %d)",
@@ -93,10 +124,6 @@ def fetch_ticker(
             MIN_DATA_POINTS,
         )
         return None
-
-    # Flatten multi-level columns if present
-    if isinstance(df.columns, pd.MultiIndex):
-        df.columns = df.columns.get_level_values(0)
 
     # yfinance >=1.4 leaves the datetime index unnamed, so reset_index() yields
     # an "index" column instead of "Date". Name it so the column check below

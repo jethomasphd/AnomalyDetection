@@ -294,3 +294,14 @@ def test_new_alerts_freeze_the_detection_basis_close():
     })
     alerts = generate_alerts(pd.DataFrame([row]), provenance="live")
     assert alerts[0]["details"]["close"] == 782.17
+
+
+def test_ticker_status_reports_last_real_close_not_nan():
+    import numpy as np
+    import pandas as pd
+    from anomaly_detection.adjustments import compute_ticker_status
+    dates = pd.bdate_range("2026-08-31", periods=4)
+    res = pd.DataFrame({"Ticker": "AAA", "Date": dates, "Close": [10.0, 11.0, 12.0, np.nan]})
+    status = compute_ticker_status(res)
+    assert status["AAA"]["last_close"] == 12.0
+    assert status["AAA"]["last_date"] == "2026-09-02"
