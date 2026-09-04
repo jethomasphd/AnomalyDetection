@@ -19,12 +19,6 @@
       "n_bars_checked": 5,
       "last_affected_date": "2026-01-15"
     },
-    "APH": {
-      "factor": 2.003,
-      "n_bars_affected": 6,
-      "n_bars_checked": 6,
-      "last_affected_date": "2026-09-02"
-    },
     "CRWD": {
       "factor": 4.0,
       "n_bars_affected": 6,
@@ -32,8 +26,8 @@
       "last_affected_date": "2026-06-01"
     }
   },
-  "latest_bar_date": "2026-09-03",
-  "new_bars_scored": 0,
-  "duration_seconds": 264.2,
+  "latest_bar_date": "2026-09-04",
+  "new_bars_scored": 130,
+  "duration_seconds": 347.8,
   "model_version": "2.0.0"
 }
