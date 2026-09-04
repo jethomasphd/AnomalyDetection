@@ -82,9 +82,7 @@
         .container { max-width: 1340px; margin: 0 auto; padding: 1rem 2rem 3rem; }
 
         /* === "WHAT AM I LOOKING AT?" EXPLAINER === */
-        .hero-cta {
-            float: right; margin: 0 0 0.6rem 1.2rem;
-        }
+        .hero-cta { float: right; margin: 0 0 0.6rem 1.2rem; }
         .btn-cta {
             display: inline-flex; align-items: center; gap: 0.45rem;
             padding: 0.55rem 1rem; border-radius: 6px; border: 1px solid var(--green);
@@ -100,45 +98,94 @@
         .explainer-card {
             background: var(--surface); border: 1px solid rgba(0,230,118,0.35);
             border-radius: var(--radius); box-shadow: var(--glow-green); overflow: hidden;
+            border-left: 3px solid var(--green);
         }
         .explainer-head {
             display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-            padding: 0.85rem 1.3rem; cursor: pointer; user-select: none;
-            border-left: 3px solid var(--green);
+            padding: 0.95rem 1.4rem; cursor: pointer; user-select: none;
         }
         .explainer-head:hover { background: rgba(0,230,118,0.04); }
         .explainer-title {
-            font-family: var(--mono); font-size: 0.95rem; font-weight: 700;
-            color: var(--green); letter-spacing: 0.06em; text-transform: uppercase;
+            font-family: var(--mono); font-size: 1rem; font-weight: 700;
+            color: var(--text); letter-spacing: 0.06em; text-transform: uppercase;
         }
-        .explainer-title .q { color: var(--text); }
-        .explainer-toggle { font-family: var(--mono); font-size: 0.66rem; color: var(--muted); letter-spacing: 0.04em; }
-        .explainer-body {
-            padding: 0.2rem 1.3rem 1.2rem calc(1.3rem + 3px);
-            display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 1.4rem;
+        .explainer-title .sub {
+            display: block; font-size: 0.68rem; font-weight: 400; color: var(--muted);
+            text-transform: none; letter-spacing: 0.02em; margin-top: 0.15rem;
         }
-        .explainer-card.collapsed .explainer-body,
-        .explainer-card.collapsed .explainer-record { display: none; }
-        .explainer-body p { font-size: 0.9rem; line-height: 1.7; color: var(--text); }
-        .explainer-body p + p { margin-top: 0.6rem; }
-        .explainer-body strong { color: var(--green); font-weight: 600; }
+        .explainer-toggle { font-family: var(--mono); font-size: 0.66rem; color: var(--muted); letter-spacing: 0.04em; white-space: nowrap; }
+        .explainer-card.collapsed .explainer-inner { display: none; }
+        .explainer-inner { padding: 0 1.4rem 0.4rem; }
+        .explainer-row { padding: 1.1rem 0 1.25rem; border-top: 1px solid var(--border); }
+        .explainer-row:first-child { border-top: none; padding-top: 0.2rem; }
         .explainer-label {
-            font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.08em;
-            text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem;
+            font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--green); margin-bottom: 0.55rem;
         }
-        .explainer-record {
-            border-top: 1px solid var(--border); margin: 0 1.3rem 0 calc(1.3rem + 3px);
-            padding: 0.9rem 0 1.2rem; display: flex; flex-wrap: wrap; align-items: flex-end;
-            gap: 1.6rem 2.2rem;
+        .explainer-label .n { color: var(--dim); margin-right: 0.4rem; }
+        .explainer-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.6rem; }
+        .explainer-inner p { font-size: 0.9rem; line-height: 1.7; color: var(--text); }
+        .explainer-inner p + p { margin-top: 0.55rem; }
+        .explainer-inner strong { color: var(--green); font-weight: 600; }
+        .explainer-inner .k { color: var(--cyan); font-family: var(--mono); font-size: 0.85em; }
+        .explainer-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem; }
+        .step {
+            position: relative; background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 6px; padding: 0.8rem 0.9rem 0.85rem; font-size: 0.8rem; line-height: 1.55; color: var(--text);
         }
-        .explainer-stat .num { font-family: var(--mono); font-size: 1.15rem; font-weight: 700; line-height: 1.2; }
+        .step .step-n {
+            font-family: var(--mono); font-size: 0.62rem; color: var(--dim); letter-spacing: 0.08em;
+        }
+        .step .step-t {
+            font-family: var(--mono); font-size: 0.82rem; font-weight: 700; color: var(--green);
+            text-transform: uppercase; letter-spacing: 0.05em; margin: 0.1rem 0 0.3rem;
+        }
+        .step::after {
+            content: '\2192'; position: absolute; right: -0.62rem; top: 0.95rem;
+            color: var(--dim); font-family: var(--mono); font-size: 0.8rem;
+        }
+        .step:last-child::after { content: none; }
+        .explainer-methods { display: grid; gap: 0.45rem; }
+        .method {
+            display: grid; grid-template-columns: 8.2rem minmax(0, 1fr) 2.6rem; gap: 0.7rem; align-items: baseline;
+            font-size: 0.78rem; line-height: 1.5; padding: 0.35rem 0; border-top: 1px solid var(--border);
+        }
+        .method:first-child { border-top: none; padding-top: 0; }
+        .method .m-name { font-family: var(--mono); font-weight: 700; color: var(--text); font-size: 0.75rem; }
+        .method .m-q { color: var(--cyan); font-style: italic; display: block; }
+        .method .m-how { color: var(--muted); }
+        .method .m-w { font-family: var(--mono); color: var(--dim); text-align: right; font-size: 0.7rem; }
+        .explainer-signals { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem 1.2rem; }
+        .sig { display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); gap: 0.6rem; align-items: baseline; font-size: 0.78rem; line-height: 1.5; color: var(--muted); padding: 0.2rem 0; }
+        .sig .signal-pill { text-align: center; }
+        .sig strong { color: var(--text); font-weight: 600; }
+        .explainer-conf { margin-top: 0.7rem; font-size: 0.76rem; color: var(--muted); font-family: var(--mono); }
+        .explainer-conf .dots { color: var(--green); letter-spacing: 0.12em; }
+        .explainer-map { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.7rem; }
+        .map-link {
+            display: block; padding: 0.75rem 0.9rem; border: 1px solid var(--border); border-radius: 6px;
+            background: var(--surface2); text-decoration: none; color: var(--text);
+            font-size: 0.76rem; line-height: 1.5; transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .map-link:hover { border-color: var(--green); box-shadow: var(--glow-green); }
+        .map-link .map-n { font-family: var(--mono); font-size: 0.62rem; color: var(--green); letter-spacing: 0.08em; }
+        .map-link .map-t { font-family: var(--mono); font-weight: 700; font-size: 0.8rem; color: var(--text); margin: 0.1rem 0 0.25rem; }
+        .map-link .map-d { color: var(--muted); }
+        .explainer-record { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1.4rem 2.2rem; }
+        .explainer-stat .num { font-family: var(--mono); font-size: 1.2rem; font-weight: 700; line-height: 1.2; }
         .explainer-stat .lbl {
             font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em;
             text-transform: uppercase; color: var(--muted); margin-top: 0.15rem;
         }
-        .explainer-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-left: auto; }
-        @media (max-width: 820px) {
-            .explainer-body { grid-template-columns: 1fr; }
+        .explainer-actions { margin-left: auto; }
+        .explainer-trust { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; margin-top: 1rem; }
+        .trust { font-size: 0.76rem; line-height: 1.5; color: var(--muted); padding-left: 0.8rem; border-left: 2px solid rgba(0,230,118,0.45); }
+        .trust strong { color: var(--text); font-weight: 600; }
+        .explainer-disclaimer { margin-top: 1rem; font-family: var(--mono); font-size: 0.66rem; color: var(--dim); line-height: 1.6; }
+        @media (max-width: 900px) {
+            .explainer-two, .explainer-signals, .explainer-trust { grid-template-columns: 1fr; }
+            .explainer-steps, .explainer-map { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .step::after { content: none; }
             .hero-cta { float: none; display: inline-flex; margin: 0.6rem 0 0; }
             .explainer-actions { margin-left: 0; }
         }
@@ -613,75 +660,201 @@
         </div>
     </div>
 
-    <!-- "What am I looking at?" — the strategy in two paragraphs, every number
-         read from the protocol parameters and the walk-forward backtest. -->
+    <!-- "What am I looking at?" — a self-contained explanation of the strategy,
+         the rules, and how to read this page. Every number in the copy is read
+         from the protocol parameters and the walk-forward backtest (see
+         dashboard.explainer_context), never typed in. -->
     <div class="explainer" id="explainer">
         <div class="explainer-card" id="explainer-card">
             <div class="explainer-head" onclick="toggleExplainer()">
-                <div class="explainer-title"><span class="q">What am I looking at?</span> &mdash; THE SIGNAL in two paragraphs</div>
+                <div class="explainer-title">What am I looking at?
+                    <span class="sub">The strategy, the rules, and how to read this page &mdash; in about a minute. Every number below is read from the live configuration and record.</span>
+                </div>
                 <div class="explainer-toggle" id="explainer-toggle">[ collapse ]</div>
             </div>
-            <div class="explainer-body">
-                <div>
-                    <div class="explainer-label">In one breath</div>
-                    <p>
-                        <strong>THE SIGNAL is a long-only overlay on a passive S&amp;P&nbsp;500 position.</strong>
-                        The book holds {{ explainer.baseline }} by default and moves {{ explainer.unit_pct }}% slices into
-                        individual large-cap securities only when the detection engine identifies a statistically
-                        extreme washout. It never shorts, never borrows, and never holds a derivative.
-                    </p>
-                    <p style="color:var(--muted); font-size:0.82rem;">
-                        Everything below is that machine at work: the <em>Attention Queue</em> is where it is looking,
-                        the <em>Trading Signals</em> table is what it concluded, the <em>Deep Dive</em> is its reasoning per
-                        ticker, and <em>Signal Performance</em> is the proof &mdash; a walk-forward record that never
-                        peeks at the future, with live out-of-sample results reported separately.
-                    </p>
+            <div class="explainer-inner">
+
+                <div class="explainer-row explainer-two">
+                    <div>
+                        <div class="explainer-label">In one breath</div>
+                        <p>
+                            <strong>THE SIGNAL is a long-only overlay on a passive S&amp;P&nbsp;500 position.</strong>
+                            The book holds {{ explainer.baseline }} by default and moves {{ explainer.unit_pct }}% slices into
+                            individual large-cap securities only when the detection engine identifies a statistically
+                            extreme washout. It never shorts, never borrows, and never holds a derivative.
+                        </p>
+                        <p style="color:var(--muted); font-size:0.84rem;">
+                            It watches {{ n_tickers }} tickers, scores each one after every US close, and publishes the
+                            verdicts here. The pages below are that machine at work: where it is looking, what it concluded,
+                            why, and whether following it would have paid.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="explainer-label">The proposition</div>
+                        <p>
+                            A security that closes more than <strong>{{ explainer.z_threshold }} standard deviations</strong>
+                            below its own {{ explainer.ewma_span }}-day trend, on a move confirmed by at least
+                            <strong>two of four</strong> independent detection methods and larger than
+                            {{ explainer.materiality_pct|round(1) }}% in absolute terms, has historically been a washout rather
+                            than the start of a decline. THE SIGNAL buys those washouts with capital drawn from
+                            {{ explainer.baseline }}, and returns the capital to {{ explainer.baseline }} when price recovers to
+                            the trend line frozen at detection, when a bearish signal fires on the same name, or after
+                            {{ explainer.max_hold }} trading sessions, whichever comes first. Because idle capital is never cash,
+                            the strategy's return is the index return plus whatever the overlay adds or subtracts, and nothing else.
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <div class="explainer-label">The proposition</div>
-                    <p>
-                        A security that closes more than <strong>{{ explainer.z_threshold }} standard deviations</strong>
-                        below its own 20-day trend, on a move confirmed by at least <strong>two of four</strong> independent
-                        detection methods and larger than {{ explainer.materiality_pct|round(1) }}% in absolute terms, has
-                        historically been a washout rather than the start of a decline. THE SIGNAL buys those washouts
-                        with capital drawn from {{ explainer.baseline }}, and returns the capital to {{ explainer.baseline }}
-                        when price recovers to the trend line frozen at detection, when a bearish signal fires on the same
-                        name, or after {{ explainer.max_hold }} trading sessions, whichever comes first. Because idle capital
-                        is never cash, the strategy's return is the index return plus whatever the overlay adds or
-                        subtracts, and nothing else.
-                    </p>
+
+                <div class="explainer-row">
+                    <div class="explainer-label">How a signal becomes a trade</div>
+                    <div class="explainer-steps">
+                        <div class="step">
+                            <div class="step-n">01</div>
+                            <div class="step-t">Score</div>
+                            Every session, four independent detectors score each ticker against <em>its own</em> history,
+                            on one shared scale: <span class="k">0.5 = 2&sigma;</span>, <span class="k">1.0 = 4&sigma;+</span>.
+                            A detector says nothing until it has seen {{ explainer.warmup }} sessions.
+                        </div>
+                        <div class="step">
+                            <div class="step-n">02</div>
+                            <div class="step-t">Confirm</div>
+                            A washout call needs at least <strong>two detectors</strong> in agreement, price at least
+                            <strong>{{ explainer.z_threshold }}&sigma;</strong> below its {{ explainer.ewma_span }}-day trend, and a move of at least
+                            {{ explainer.materiality_pct|round(1) }}%. Anything less stays a Watch.
+                        </div>
+                        <div class="step">
+                            <div class="step-n">03</div>
+                            <div class="step-t">Invest</div>
+                            A <strong>{{ explainer.unit_pct }}% slice</strong> moves from {{ explainer.baseline }} into the name at the
+                            <em>next</em> session's close &mdash; never the same bar, never a backdated price. No shorts, no leverage;
+                            if every slice is already deployed, the signal is skipped.
+                        </div>
+                        <div class="step">
+                            <div class="step-n">04</div>
+                            <div class="step-t">Return</div>
+                            The slice goes back to {{ explainer.baseline }} when price reaches the trend line frozen at detection,
+                            when a bearish signal fires on the name, or after <strong>{{ explainer.max_hold }} sessions</strong>.
+                            {{ explainer.cost_bps }} bps of cost on every buy and sell.
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="explainer-record">
-                {% if explainer.has_record %}
-                <div class="explainer-stat">
-                    <div class="num" style="color:var(--green)">${{ "{:,.0f}".format(explainer.capital) }} &rarr; ${{ "{:,.0f}".format(explainer.final_value) }}</div>
-                    <div class="lbl">Following THE SIGNAL, {{ explainer.start_date }} &ndash; {{ explainer.end_date }} ({{ "%+.1f"|format(explainer.strategy_pct) }}%)</div>
+
+                <div class="explainer-row explainer-two">
+                    <div>
+                        <div class="explainer-label">The four detectors</div>
+                        <div class="explainer-methods">
+                            <div class="method">
+                                <div class="m-name">Fourier<span class="m-q">Has the rhythm changed?</span></div>
+                                <div class="m-how">The frequency spectrum of the last {{ explainer.fourier_window }} sessions against the ticker's whole history to date. Catches regime shifts.</div>
+                                <div class="m-w">{{ explainer.weights.fourier }}%</div>
+                            </div>
+                            <div class="method">
+                                <div class="m-name">Matrix profile<span class="m-q">Has this ever happened before?</span></div>
+                                <div class="m-how">The latest {{ explainer.mp_len }}-day price pattern against its nearest match strictly in the past. Catches the unprecedented.</div>
+                                <div class="m-w">{{ explainer.weights.matrix_profile }}%</div>
+                            </div>
+                            <div class="method">
+                                <div class="m-name">Ensemble<span class="m-q">Do independent tests agree?</span></div>
+                                <div class="m-how">A return z-score, a seasonal residual, and an isolation forest over return, volatility, volume and range, blended.</div>
+                                <div class="m-w">{{ explainer.weights.ensemble }}%</div>
+                            </div>
+                            <div class="method">
+                                <div class="m-name">EWMA trend<span class="m-q">Is momentum abnormal for this name?</span></div>
+                                <div class="m-how">Distance from the {{ explainer.ewma_span }}-day trend, in units of that distance's own volatility. Sets the direction of every call.</div>
+                                <div class="m-w">{{ explainer.weights.ewma }}%</div>
+                            </div>
+                        </div>
+                        <p style="margin-top:0.6rem; font-size:0.74rem; color:var(--dim); font-family:var(--mono);">
+                            Weights build the consensus score. A day is anomalous when two or more detectors flag it, or the consensus crosses the cut-off.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="explainer-label">Reading the signals</div>
+                        <div class="explainer-signals">
+                            <div class="sig"><span class="signal-pill signal-buy">BUY</span><span><strong>Washout.</strong> &ge;{{ explainer.z_threshold }}&sigma; below trend, climactic or already fading. The only signal that invests.</span></div>
+                            <div class="sig"><span class="signal-pill signal-sell">SELL</span><span><strong>Blow-off.</strong> &ge;{{ explainer.z_threshold }}&sigma; above trend. Take profits; any held slice is returned.</span></div>
+                            <div class="sig"><span class="signal-pill signal-long">LONG</span><span><strong>Momentum up.</strong> &ge;{{ explainer.momentum_z }}&sigma; above trend and still building. Informational; never invests.</span></div>
+                            <div class="sig"><span class="signal-pill signal-short">SHORT</span><span><strong>Momentum down.</strong> &ge;{{ explainer.momentum_z }}&sigma; below trend and still building. Returns any held slice; never opens a short.</span></div>
+                            <div class="sig"><span class="signal-pill signal-reduce">REDUCE</span><span><strong>Regime change.</strong> Fourier and matrix profile both flag a structural break. Cut size until it clarifies.</span></div>
+                            <div class="sig"><span class="signal-pill signal-watch">WATCH</span><span><strong>Unusual, not tradable.</strong> An anomaly without a set-up, or a move too small to matter.</span></div>
+                        </div>
+                        <div class="explainer-conf">
+                            <span class="dots">&#9679;&#9679;&#9679;&#9675;</span> Confidence = detectors in agreement:
+                            <strong style="color:var(--text)">Strong</strong> 3&ndash;4 &middot;
+                            <strong style="color:var(--text)">Moderate</strong> 2 &middot;
+                            <strong style="color:var(--text)">Developing</strong> 1
+                        </div>
+                    </div>
                 </div>
-                <div class="explainer-stat">
-                    <div class="num" style="color:var(--muted)">${{ "{:,.0f}".format(explainer.benchmark_value) }}</div>
-                    <div class="lbl">Same capital left in {{ explainer.baseline }} ({{ "%+.1f"|format(explainer.benchmark_pct) }}%)</div>
+
+                <div class="explainer-row">
+                    <div class="explainer-label">Where to look on this page</div>
+                    <div class="explainer-map">
+                        <a class="map-link" href="#attention-queue">
+                            <div class="map-n">01</div>
+                            <div class="map-t">Attention Queue</div>
+                            <div class="map-d">Where the engine is looking: every ticker's last 14 sessions as a heat map, hottest first.</div>
+                        </a>
+                        <a class="map-link" href="#trading-signals">
+                            <div class="map-n">02</div>
+                            <div class="map-t">Trading Signals</div>
+                            <div class="map-d">What it concluded, newest first. <span class="new-badge" style="animation:none">NEW</span> marks the latest run; each row says what to do and why.</div>
+                        </a>
+                        <a class="map-link" href="#deep-dive">
+                            <div class="map-n">03</div>
+                            <div class="map-t">Ticker Deep Dive</div>
+                            <div class="map-d">The reasoning: price against trend with every signal marked, and one panel per detector.</div>
+                        </a>
+                        <a class="map-link" href="#backtest">
+                            <div class="map-n">04</div>
+                            <div class="map-t">Signal Performance</div>
+                            <div class="map-d">The proof: a walk-forward simulation that never sees the future, with live out-of-sample trades reported separately.</div>
+                        </a>
+                    </div>
                 </div>
-                <div class="explainer-stat">
-                    <div class="num" style="color:{% if explainer.excess_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">${{ "{:+,.0f}".format(explainer.excess_gain) }}</div>
-                    <div class="lbl">What the overlay {% if explainer.excess_gain >= 0 %}added{% else %}cost{% endif %} &bull; {{ explainer.n_trades }} round trips{% if explainer.win_rate_pct is not none %}, {{ "%.0f"|format(explainer.win_rate_pct) }}% winners{% endif %}</div>
+
+                <div class="explainer-row">
+                    <div class="explainer-label">The record so far</div>
+                    <div class="explainer-record">
+                        {% if explainer.has_record %}
+                        <div class="explainer-stat">
+                            <div class="num" style="color:var(--green)">${{ "{:,.0f}".format(explainer.capital) }} &rarr; ${{ "{:,.0f}".format(explainer.final_value) }}</div>
+                            <div class="lbl">Following THE SIGNAL, {{ explainer.start_date }} &ndash; {{ explainer.end_date }} ({{ "%+.1f"|format(explainer.strategy_pct) }}%)</div>
+                        </div>
+                        <div class="explainer-stat">
+                            <div class="num" style="color:var(--muted)">${{ "{:,.0f}".format(explainer.benchmark_value) }}</div>
+                            <div class="lbl">Same capital left in {{ explainer.baseline }} ({{ "%+.1f"|format(explainer.benchmark_pct) }}%)</div>
+                        </div>
+                        <div class="explainer-stat">
+                            <div class="num" style="color:{% if explainer.excess_gain >= 0 %}var(--green){% else %}var(--red){% endif %}">${{ "{:+,.0f}".format(explainer.excess_gain) }}</div>
+                            <div class="lbl">What the overlay {% if explainer.excess_gain >= 0 %}added{% else %}cost{% endif %} &bull; {{ explainer.n_trades }} round trips{% if explainer.win_rate_pct is not none %}, {{ "%.0f"|format(explainer.win_rate_pct) }}% winners{% endif %}</div>
+                        </div>
+                        {% if explainer.live_n > 0 %}
+                        <div class="explainer-stat">
+                            <div class="num" style="color:{% if explainer.live_pnl >= 0 %}var(--green){% else %}var(--red){% endif %}">${{ "{:+,.0f}".format(explainer.live_pnl) }}</div>
+                            <div class="lbl">Live, out-of-sample &bull; {{ explainer.live_n }} trade{% if explainer.live_n != 1 %}s{% endif %}</div>
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <div class="explainer-stat">
+                            <div class="num" style="color:var(--muted); font-size:0.9rem;">No trades on the record yet</div>
+                            <div class="lbl">The record appears here after the first walk-forward run</div>
+                        </div>
+                        {% endif %}
+                        <div class="explainer-actions">
+                            <a class="btn-cta" href="#backtest">See the proof &darr;</a>
+                        </div>
+                    </div>
+                    <div class="explainer-trust">
+                        <div class="trust"><strong>Causal by test.</strong> Every verdict uses only data through its own day. The test suite fails if appending the future changes any past verdict, so the historical record is the same machine as live operation.</div>
+                        <div class="trust"><strong>Frozen ledger.</strong> Verdicts are appended to a version-controlled ledger and never revised. "Walk-forward" rows were simulated on history; "live" rows were produced on days the model had never seen.</div>
+                        <div class="trust"><strong>Honest benchmark.</strong> The dashed line in Signal Performance is the same dollars left entirely in {{ explainer.baseline }}. The gap between the lines is exactly what the overlay did.</div>
+                    </div>
+                    <div class="explainer-disclaimer">
+                        A research tool and an educational simulation, not investment advice. Simulated fills at official closes with {{ explainer.cost_bps }} bps of cost per side; no slippage or market impact modelled. Past performance, simulated or live, does not predict future results.
+                    </div>
                 </div>
-                {% if explainer.live_n > 0 %}
-                <div class="explainer-stat">
-                    <div class="num" style="color:{% if explainer.live_pnl >= 0 %}var(--green){% else %}var(--red){% endif %}">${{ "{:+,.0f}".format(explainer.live_pnl) }}</div>
-                    <div class="lbl">Live, out-of-sample &bull; {{ explainer.live_n }} trade{% if explainer.live_n != 1 %}s{% endif %}</div>
-                </div>
-                {% endif %}
-                {% else %}
-                <div class="explainer-stat">
-                    <div class="num" style="color:var(--muted); font-size:0.9rem;">No trades on the record yet</div>
-                    <div class="lbl">The record appears here after the first walk-forward run</div>
-                </div>
-                {% endif %}
-                <div class="explainer-actions">
-                    <a class="btn-cta" href="#backtest">See the proof &darr;</a>
-                    <a class="btn-cta" href="https://github.com/jethomasphd/AnomalyDetection/blob/main/reports/prospectus/The_Signal_Prospectus.pdf" target="_blank" rel="noopener">Read the prospectus &nearr;</a>
-                </div>
+
             </div>
         </div>
     </div>
