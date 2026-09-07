@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-09-04T23:36:53.498239Z",
+  "generated_at": "2026-09-07T23:56:46.214660Z",
   "run": {
-    "run_date": "2026-09-04",
-    "new_bars_scored": 130,
+    "run_date": "2026-09-07",
+    "new_bars_scored": 3,
     "latest_bar_date": "2026-09-04",
     "tickers_scored": 130,
-    "new_signals": 1
+    "new_signals": 0
   },
   "total_signals": 200,
-  "new_signals": 1,
+  "new_signals": 0,
   "ticker_status": {
     "AAPL": {
       "last_close": 319.97,
@@ -63,7 +63,13 @@
     "APH": {
       "last_close": 82.78,
       "last_date": "2026-09-04",
-      "stale_feed": false
+      "stale_feed": false,
+      "price_basis": {
+        "factor": 2.003,
+        "n_bars_affected": 6,
+        "n_bars_checked": 7,
+        "last_affected_date": "2026-09-02"
+      }
     },
     "APP": {
       "last_close": 320.56,
@@ -91,7 +97,7 @@
       "stale_feed": false
     },
     "AVGO": {
-      "last_close": 357.89,
+      "last_close": 357.9,
       "last_date": "2026-09-04",
       "stale_feed": false
     },
@@ -136,8 +142,8 @@
       "stale_feed": false
     },
     "BNUEX": {
-      "last_close": 14.34,
-      "last_date": "2026-09-03",
+      "last_close": 14.31,
+      "last_date": "2026-09-04",
       "stale_feed": false
     },
     "BRK-B": {
@@ -232,8 +238,8 @@
       "stale_feed": false
     },
     "DVRUX": {
-      "last_close": 18.96,
-      "last_date": "2026-09-03",
+      "last_close": 18.95,
+      "last_date": "2026-09-04",
       "stale_feed": false
     },
     "ETN": {
@@ -252,7 +258,7 @@
       "stale_feed": false
     },
     "GILD": {
-      "last_close": 150.99,
+      "last_close": 151.0,
       "last_date": "2026-09-04",
       "stale_feed": false
     },
@@ -489,8 +495,8 @@
       "stale_feed": false
     },
     "QGRPX": {
-      "last_close": 19.35,
-      "last_date": "2026-09-03",
+      "last_close": 19.31,
+      "last_date": "2026-09-04",
       "stale_feed": false
     },
     "QQQ": {
@@ -694,7 +700,7 @@
       "consensus_score": 0.55,
       "description": "Amphenol (APH) is trading 46.0% below its 20-day trend ($153.30) \u2014 a 9.8-sigma stretch for this ticker. A capitulation-grade washout: the stretch is at breakout extremes. Extreme downside stretches of this size historically rebound toward trend. 2 of 4 methods agree. Consider a mean-reversion long targeting the $153.30 trend line.",
       "run_date": "2026-09-04",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-09-04",
       "detected_at": "2026-09-04",
       "provenance": "live",
