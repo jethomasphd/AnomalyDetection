@@ -1,68 +1,68 @@
 {
-  "generated_at": "2026-10-01T01:00:16.566352Z",
+  "generated_at": "2026-10-02T01:17:25.236241Z",
   "run": {
-    "run_date": "2026-10-01",
-    "new_bars_scored": 129,
-    "latest_bar_date": "2026-09-29",
+    "run_date": "2026-10-02",
+    "new_bars_scored": 131,
+    "latest_bar_date": "2026-10-01",
     "tickers_scored": 130,
-    "new_signals": 0
+    "new_signals": 1
   },
   "total_signals": 200,
-  "new_signals": 0,
+  "new_signals": 1,
   "ticker_status": {
     "AAPL": {
-      "last_close": 329.4,
-      "last_date": "2026-09-29",
+      "last_close": 333.02,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ABBV": {
-      "last_close": 263.29,
-      "last_date": "2026-09-29",
+      "last_close": 261.59,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ABT": {
-      "last_close": 100.95,
-      "last_date": "2026-09-29",
+      "last_close": 98.83,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ADI": {
-      "last_close": 398.22,
-      "last_date": "2026-09-29",
+      "last_close": 396.71,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ADM": {
-      "last_close": 79.4,
-      "last_date": "2026-09-29",
+      "last_close": 79.38,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "AMAT": {
-      "last_close": 512.01,
-      "last_date": "2026-09-29",
+      "last_close": 511.38,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "AMD": {
-      "last_close": 607.57,
-      "last_date": "2026-09-29",
+      "last_close": 611.76,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "AMGN": {
-      "last_close": 423.64,
-      "last_date": "2026-09-29",
+      "last_close": 421.51,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "AMZN": {
-      "last_close": 246.67,
-      "last_date": "2026-09-29",
+      "last_close": 249.15,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ANET": {
-      "last_close": 202.86,
-      "last_date": "2026-09-29",
+      "last_close": 203.59,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "APH": {
-      "last_close": 84.34,
-      "last_date": "2026-09-29",
+      "last_close": 84.3,
+      "last_date": "2026-09-30",
       "stale_feed": false,
       "price_basis": {
         "factor": 2.0061,
@@ -72,123 +72,123 @@
       }
     },
     "APP": {
-      "last_close": 305.66,
-      "last_date": "2026-09-29",
+      "last_close": 290.43,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ARKK": {
-      "last_close": 89.45,
-      "last_date": "2026-09-29",
+      "last_close": 89.1,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ARM": {
-      "last_close": 293.67,
-      "last_date": "2026-09-29",
+      "last_close": 289.66,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ASML": {
-      "last_close": 1834.39,
-      "last_date": "2026-09-29",
+      "last_close": 1811.67,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ASTS": {
-      "last_close": 59.4,
-      "last_date": "2026-09-29",
+      "last_close": 58.86,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "AVGO": {
-      "last_close": 355.1,
-      "last_date": "2026-09-29",
+      "last_close": 351.19,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "AXP": {
-      "last_close": 305.4,
-      "last_date": "2026-09-29",
+      "last_close": 304.1,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "AZN": {
-      "last_close": 164.21,
-      "last_date": "2026-09-29",
+      "last_close": 161.47,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "BABA": {
-      "last_close": 107.74,
-      "last_date": "2026-09-29",
+      "last_close": 107.54,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "BAC": {
-      "last_close": 54.96,
-      "last_date": "2026-09-29",
+      "last_close": 54.43,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "BG": {
-      "last_close": 108.14,
-      "last_date": "2026-09-29",
+      "last_close": 106.95,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "BIL": {
-      "last_close": 91.65,
-      "last_date": "2026-09-29",
+      "last_close": 91.64,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "BLK": {
-      "last_close": 1067.94,
-      "last_date": "2026-09-29",
+      "last_close": 1058.29,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "BMY": {
-      "last_close": 62.86,
-      "last_date": "2026-09-29",
+      "last_close": 62.4,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "BNUEX": {
-      "last_close": 13.85,
-      "last_date": "2026-09-29",
+      "last_close": 13.78,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "BRK-B": {
-      "last_close": 502.35,
-      "last_date": "2026-09-29",
+      "last_close": 497.95,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "BX": {
-      "last_close": 114.0,
-      "last_date": "2026-09-29",
+      "last_close": 112.09,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "C": {
-      "last_close": 130.8,
-      "last_date": "2026-09-29",
+      "last_close": 129.48,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "CAT": {
-      "last_close": 826.64,
-      "last_date": "2026-09-29",
+      "last_close": 810.79,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "CB": {
-      "last_close": 332.08,
-      "last_date": "2026-09-29",
+      "last_close": 325.25,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "COP": {
-      "last_close": 125.44,
-      "last_date": "2026-09-29",
+      "last_close": 125.15,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "COST": {
-      "last_close": 924.59,
-      "last_date": "2026-09-29",
+      "last_close": 910.34,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "CRM": {
-      "last_close": 225.31,
-      "last_date": "2026-09-29",
+      "last_close": 229.57,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "CRWD": {
-      "last_close": 262.74,
-      "last_date": "2026-09-29",
+      "last_close": 264.75,
+      "last_date": "2026-09-30",
       "stale_feed": false,
       "price_basis": {
         "factor": 4.0,
@@ -198,88 +198,88 @@
       }
     },
     "CSCO": {
-      "last_close": 106.94,
-      "last_date": "2026-09-29",
+      "last_close": 107.63,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "CVX": {
-      "last_close": 204.38,
-      "last_date": "2026-09-29",
+      "last_close": 204.21,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "D": {
-      "last_close": 60.64,
-      "last_date": "2026-09-29",
+      "last_close": 60.52,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "DE": {
-      "last_close": 680.5,
-      "last_date": "2026-09-29",
+      "last_close": 671.55,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "DELL": {
-      "last_close": 539.59,
-      "last_date": "2026-09-29",
+      "last_close": 537.95,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "DHR": {
-      "last_close": 226.11,
-      "last_date": "2026-09-29",
+      "last_close": 221.55,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "DIA": {
-      "last_close": 512.88,
-      "last_date": "2026-09-29",
+      "last_close": 508.55,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "DIS": {
-      "last_close": 105.41,
-      "last_date": "2026-09-29",
+      "last_close": 104.9,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "DVRUX": {
-      "last_close": 18.56,
-      "last_date": "2026-09-29",
+      "last_close": 18.46,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ETN": {
-      "last_close": 433.27,
-      "last_date": "2026-09-29",
+      "last_close": 429.71,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "GE": {
-      "last_close": 317.89,
-      "last_date": "2026-09-29",
+      "last_close": 312.29,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "GEV": {
-      "last_close": 962.49,
-      "last_date": "2026-09-29",
+      "last_close": 950.49,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "GILD": {
-      "last_close": 151.28,
-      "last_date": "2026-09-29",
+      "last_close": 149.05,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "GOOGL": {
-      "last_close": 340.92,
-      "last_date": "2026-09-29",
+      "last_close": 344.08,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "GS": {
-      "last_close": 916.24,
-      "last_date": "2026-09-29",
+      "last_close": 900.36,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "HD": {
-      "last_close": 288.04,
-      "last_date": "2026-09-29",
+      "last_close": 284.49,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "HON": {
-      "last_close": 210.13,
-      "last_date": "2026-09-29",
+      "last_close": 210.94,
+      "last_date": "2026-09-30",
       "stale_feed": false,
       "price_basis": {
         "factor": 0.9564,
@@ -289,43 +289,43 @@
       }
     },
     "HSBC": {
-      "last_close": 100.72,
-      "last_date": "2026-09-29",
+      "last_close": 99.31,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "IBM": {
-      "last_close": 219.99,
-      "last_date": "2026-09-29",
+      "last_close": 219.93,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "INTC": {
-      "last_close": 115.93,
-      "last_date": "2026-09-29",
+      "last_close": 120.23,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ISRG": {
-      "last_close": 412.18,
-      "last_date": "2026-09-29",
+      "last_close": 406.63,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "IWM": {
-      "last_close": 279.01,
-      "last_date": "2026-09-29",
+      "last_close": 277.89,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "JNJ": {
-      "last_close": 267.57,
-      "last_date": "2026-09-29",
+      "last_close": 264.74,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "JPM": {
-      "last_close": 334.98,
-      "last_date": "2026-09-29",
+      "last_close": 330.83,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "KLAC": {
-      "last_close": 196.53,
-      "last_date": "2026-09-29",
+      "last_close": 194.93,
+      "last_date": "2026-09-30",
       "stale_feed": false,
       "price_basis": {
         "factor": 10.0113,
@@ -335,357 +335,387 @@
       }
     },
     "KMI": {
-      "last_close": 30.45,
-      "last_date": "2026-09-29",
+      "last_close": 30.15,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "KO": {
-      "last_close": 86.84,
-      "last_date": "2026-09-29",
+      "last_close": 86.08,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "LIN": {
-      "last_close": 473.37,
-      "last_date": "2026-09-29",
+      "last_close": 474.65,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "LLY": {
-      "last_close": 1184.63,
-      "last_date": "2026-09-29",
+      "last_close": 1157.08,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "LMT": {
-      "last_close": 512.21,
-      "last_date": "2026-09-29",
+      "last_close": 509.25,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "LOW": {
-      "last_close": 187.26,
-      "last_date": "2026-09-29",
+      "last_close": 184.29,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "LRCX": {
-      "last_close": 323.86,
-      "last_date": "2026-09-29",
+      "last_close": 328.51,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "MA": {
-      "last_close": 563.58,
-      "last_date": "2026-09-29",
+      "last_close": 551.47,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "MCD": {
-      "last_close": 233.98,
-      "last_date": "2026-09-29",
+      "last_close": 230.94,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "MCK": {
-      "last_close": 864.82,
-      "last_date": "2026-09-29",
+      "last_close": 853.81,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "META": {
-      "last_close": 738.79,
-      "last_date": "2026-09-29",
+      "last_close": 725.18,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "MRK": {
-      "last_close": 149.28,
-      "last_date": "2026-09-29",
+      "last_close": 145.31,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "MRVL": {
-      "last_close": 263.27,
-      "last_date": "2026-09-29",
+      "last_close": 264.21,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "MS": {
-      "last_close": 192.76,
-      "last_date": "2026-09-29",
+      "last_close": 188.08,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "MSFT": {
-      "last_close": 508.96,
-      "last_date": "2026-09-29",
+      "last_close": 512.9,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "MU": {
-      "last_close": 1065.08,
-      "last_date": "2026-09-29",
+      "last_close": 1065.11,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "NEE": {
-      "last_close": 75.89,
-      "last_date": "2026-09-29",
+      "last_close": 75.74,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "NFLX": {
-      "last_close": 70.3,
-      "last_date": "2026-09-29",
+      "last_close": 69.58,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "NKE": {
-      "last_close": 35.84,
-      "last_date": "2026-09-29",
+      "last_close": 35.4,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "NSC": {
-      "last_close": 313.0,
-      "last_date": "2026-09-29",
+      "last_close": 309.0,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "NVDA": {
-      "last_close": 227.21,
-      "last_date": "2026-09-29",
+      "last_close": 228.38,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "NVO": {
-      "last_close": 38.31,
-      "last_date": "2026-09-29",
+      "last_close": 37.91,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "NVS": {
-      "last_close": 145.71,
-      "last_date": "2026-09-29",
+      "last_close": 142.57,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "ORCL": {
-      "last_close": 137.79,
-      "last_date": "2026-09-29",
+      "last_close": 137.3,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "PANW": {
-      "last_close": 388.41,
-      "last_date": "2026-09-29",
+      "last_close": 397.31,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "PEP": {
-      "last_close": 128.69,
-      "last_date": "2026-09-29",
+      "last_close": 126.72,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "PFE": {
-      "last_close": 28.72,
-      "last_date": "2026-09-29",
+      "last_close": 28.52,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "PG": {
-      "last_close": 148.32,
-      "last_date": "2026-09-29",
+      "last_close": 145.28,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "PLD": {
-      "last_close": 132.61,
-      "last_date": "2026-09-29",
+      "last_close": 129.84,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "PLTR": {
-      "last_close": 186.97,
-      "last_date": "2026-09-29",
+      "last_close": 187.05,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "PM": {
-      "last_close": 193.9,
-      "last_date": "2026-09-29",
+      "last_close": 190.82,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "QCOM": {
-      "last_close": 184.1,
-      "last_date": "2026-09-29",
+      "last_close": 184.04,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "QGRPX": {
-      "last_close": 19.69,
-      "last_date": "2026-09-29",
+      "last_close": 19.67,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "QQQ": {
-      "last_close": 737.93,
-      "last_date": "2026-09-29",
+      "last_close": 739.77,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "RTX": {
-      "last_close": 186.94,
-      "last_date": "2026-09-29",
+      "last_close": 185.65,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "RY": {
-      "last_close": 199.8,
-      "last_date": "2026-09-29",
+      "last_close": 196.59,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "SAP": {
-      "last_close": 210.85,
-      "last_date": "2026-09-29",
+      "last_close": 208.48,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "SBUX": {
-      "last_close": 95.43,
-      "last_date": "2026-09-29",
+      "last_close": 93.96,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "SCHW": {
-      "last_close": 99.1,
-      "last_date": "2026-09-29",
+      "last_close": 97.74,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "SHEL": {
-      "last_close": 95.14,
-      "last_date": "2026-09-29",
+      "last_close": 95.61,
+      "last_date": "2026-10-01",
       "stale_feed": false
     },
     "SHOP": {
-      "last_close": 148.26,
-      "last_date": "2026-09-29",
+      "last_close": 148.3,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "SPY": {
-      "last_close": 764.2,
-      "last_date": "2026-09-29",
+      "last_close": 762.63,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "STM": {
-      "last_close": 53.24,
-      "last_date": "2026-09-29",
+      "last_close": 53.36,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "T": {
-      "last_close": 24.48,
-      "last_date": "2026-09-29",
+      "last_close": 24.4,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "TD": {
-      "last_close": 119.0,
-      "last_date": "2026-09-29",
+      "last_close": 117.53,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "TGT": {
-      "last_close": 156.43,
-      "last_date": "2026-09-29",
+      "last_close": 156.69,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "TJX": {
-      "last_close": 133.8,
-      "last_date": "2026-09-29",
+      "last_close": 132.31,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "TM": {
-      "last_close": 186.71,
-      "last_date": "2026-09-29",
+      "last_close": 183.1,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "TMO": {
-      "last_close": 679.61,
-      "last_date": "2026-09-29",
+      "last_close": 675.05,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "TMUS": {
-      "last_close": 162.98,
-      "last_date": "2026-09-29",
+      "last_close": 163.08,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "TSLA": {
-      "last_close": 352.84,
-      "last_date": "2026-09-29",
+      "last_close": 354.81,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "TSM": {
-      "last_close": 456.94,
-      "last_date": "2026-09-29",
+      "last_close": 456.19,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "TSN": {
-      "last_close": 50.98,
-      "last_date": "2026-09-29",
+      "last_close": 50.53,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "TTE": {
-      "last_close": 87.71,
-      "last_date": "2026-09-29",
+      "last_close": 85.5,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "TXN": {
-      "last_close": 281.69,
-      "last_date": "2026-09-29",
+      "last_close": 280.09,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "UBER": {
-      "last_close": 69.36,
-      "last_date": "2026-09-29",
+      "last_close": 68.51,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "UNH": {
-      "last_close": 374.94,
-      "last_date": "2026-09-29",
+      "last_close": 367.08,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "UNP": {
-      "last_close": 274.15,
-      "last_date": "2026-09-29",
+      "last_close": 272.13,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "V": {
-      "last_close": 365.88,
-      "last_date": "2026-09-29",
+      "last_close": 359.33,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "VGT": {
-      "last_close": 124.85,
-      "last_date": "2026-09-29",
+      "last_close": 125.67,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "VOO": {
-      "last_close": 702.46,
-      "last_date": "2026-09-29",
+      "last_close": 700.86,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "VTI": {
-      "last_close": 375.26,
-      "last_date": "2026-09-29",
+      "last_close": 374.24,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "VZ": {
-      "last_close": 45.98,
-      "last_date": "2026-09-29",
+      "last_close": 45.87,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "WELL": {
-      "last_close": 232.9,
-      "last_date": "2026-09-29",
+      "last_close": 230.24,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "WFC": {
-      "last_close": 80.48,
-      "last_date": "2026-09-29",
+      "last_close": 80.05,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "WMB": {
-      "last_close": 68.63,
-      "last_date": "2026-09-29",
+      "last_close": 67.97,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "WMT": {
-      "last_close": 106.8,
-      "last_date": "2026-09-29",
+      "last_close": 103.92,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "XLE": {
-      "last_close": 61.54,
-      "last_date": "2026-09-29",
+      "last_close": 61.5,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "XLF": {
-      "last_close": 54.01,
-      "last_date": "2026-09-29",
+      "last_close": 53.4,
+      "last_date": "2026-09-30",
       "stale_feed": false
     },
     "XOM": {
-      "last_close": 161.35,
-      "last_date": "2026-09-29",
+      "last_close": 162.75,
+      "last_date": "2026-09-30",
       "stale_feed": false
     }
   },
   "signals": [
+    {
+      "ticker": "BIL",
+      "ticker_name": "SPDR Bloomberg 1-3 Month T-Bill",
+      "display": "SPDR Bloomberg 1-3 Month T-Bill (BIL)",
+      "date": "2026-09-30",
+      "close": 91.64,
+      "signal": "WATCH",
+      "signal_label": "Watch",
+      "signal_color": "#42A5F5",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.519,
+      "description": "SPDR Bloomberg 1-3 Month T-Bill (BIL) is near its 20-day trend ($91.53). Flagged because its price pattern is novel and its trend deviation is abnormal, but there is no tradable directional setup. The move is below the 1% materiality threshold, so no trade call is made. Monitor for follow-through before taking a position.",
+      "run_date": "2026-10-02",
+      "is_new": true,
+      "first_detected": "2026-10-02",
+      "detected_at": "2026-10-02",
+      "provenance": "live",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.638,
+        "ensemble_score": 0.3651,
+        "ewma_score": 1.0,
+        "trajectory": "breakout",
+        "deviation_pct": 0.12,
+        "dev_z": 13.26,
+        "ewma_value": 91.53,
+        "close": 91.64
+      }
+    },
     {
       "ticker": "MCD",
       "ticker_name": "McDonald's",
@@ -6504,35 +6534,6 @@
         "deviation_pct": 8.18,
         "dev_z": 4.34,
         "ewma_value": 187.32
-      }
-    },
-    {
-      "ticker": "TMUS",
-      "ticker_name": "T-Mobile US",
-      "display": "T-Mobile US (TMUS)",
-      "date": "2026-02-11",
-      "close": 207.41,
-      "signal": "LONG",
-      "signal_label": "Long",
-      "signal_color": "#00897B",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.4668,
-      "description": "T-Mobile US (TMUS) is trading 6.6% above its 20-day trend ($194.54) \u2014 a 2.8-sigma stretch for this ticker. Upward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a momentum long with a trailing stop below the trend line.",
-      "run_date": "2026-02-11",
-      "is_new": false,
-      "first_detected": "2026-02-11",
-      "detected_at": "2026-02-11",
-      "provenance": "backfill",
-      "details": {
-        "fourier_score": 0.0,
-        "mp_score": 0.1255,
-        "ensemble_score": 0.8744,
-        "ewma_score": 0.6923,
-        "trajectory": "extending",
-        "deviation_pct": 6.62,
-        "dev_z": 2.77,
-        "ewma_value": 194.54
       }
     }
   ]
