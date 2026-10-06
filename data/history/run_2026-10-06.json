@@ -1,10 +1,30 @@
 {
   "run_date": "2026-10-06",
-  "status": "ok",
-  "coverage_pct": 100.0,
-  "tickers_requested": 130,
-  "tickers_fetched": 130,
-  "fetch_failures": [],
+  "started_at": "2026-10-06T01:59:21.788439Z",
+  "finished_at": "2026-10-06T02:05:46.572956Z",
+  "duration_seconds": 384.8,
+  "tickers_analyzed": 130,
+  "total_observations": 62529,
+  "anomalies_detected": 654,
+  "new_bars_scored": 259,
+  "new_signals": 1,
+  "actionable_signals": 185,
+  "total_signals_view": 200,
+  "ledger_signal_rows": 657,
+  "ledger_anomaly_rows": 1990,
+  "backtest_total_gain": 53691.31,
+  "backtest_n_trades": 76,
+  "sensitivity": "medium",
+  "start_date": "2024-11-01",
+  "model_version": "2.0.0",
+  "fetch": {
+    "requested": 130,
+    "fetched": 130,
+    "failed": [],
+    "coverage_pct": 100.0
+  },
+  "validation_failures": [],
+  "latest_bar_date": "2026-10-05",
   "stale_feeds": {},
   "price_basis_breaks": {
     "HON": {
@@ -37,9 +57,5 @@
       "n_bars_checked": 6,
       "last_affected_date": "2026-06-01"
     }
-  },
-  "latest_bar_date": "2026-10-05",
-  "new_bars_scored": 259,
-  "duration_seconds": 384.8,
-  "model_version": "2.0.0"
+  }
 }
