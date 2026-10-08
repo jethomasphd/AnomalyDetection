@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-10-07T01:09:15.571535Z",
+  "generated_at": "2026-10-08T01:31:58.851132Z",
   "run": {
-    "run_date": "2026-10-07",
-    "new_bars_scored": 114,
+    "run_date": "2026-10-08",
+    "new_bars_scored": 17,
     "latest_bar_date": "2026-10-06",
     "tickers_scored": 130,
     "new_signals": 0
@@ -16,8 +16,8 @@
       "stale_feed": false
     },
     "ABBV": {
-      "last_close": 265.76,
-      "last_date": "2026-10-05",
+      "last_close": 266.69,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "ABT": {
@@ -56,8 +56,8 @@
       "stale_feed": false
     },
     "ANET": {
-      "last_close": 206.9,
-      "last_date": "2026-10-05",
+      "last_close": 215.36,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "APH": {
@@ -72,18 +72,18 @@
       }
     },
     "APP": {
-      "last_close": 281.97,
-      "last_date": "2026-10-05",
+      "last_close": 278.78,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "ARKK": {
-      "last_close": 92.78,
-      "last_date": "2026-10-05",
+      "last_close": 90.49,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "ARM": {
-      "last_close": 302.9,
-      "last_date": "2026-10-05",
+      "last_close": 302.56,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "ASML": {
@@ -92,8 +92,8 @@
       "stale_feed": false
     },
     "ASTS": {
-      "last_close": 58.44,
-      "last_date": "2026-10-05",
+      "last_close": 63.12,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "AVGO": {
@@ -112,8 +112,8 @@
       "stale_feed": false
     },
     "BABA": {
-      "last_close": 110.8,
-      "last_date": "2026-10-05",
+      "last_close": 109.26,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "BAC": {
@@ -193,8 +193,8 @@
       "stale_feed": false
     },
     "CRWD": {
-      "last_close": 272.67,
-      "last_date": "2026-10-05",
+      "last_close": 278.86,
+      "last_date": "2026-10-06",
       "stale_feed": false,
       "price_basis": {
         "factor": 4.0,
@@ -224,8 +224,8 @@
       "stale_feed": false
     },
     "DELL": {
-      "last_close": 552.29,
-      "last_date": "2026-10-05",
+      "last_close": 574.0,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "DHR": {
@@ -244,8 +244,8 @@
       "stale_feed": false
     },
     "DVRUX": {
-      "last_close": 18.8,
-      "last_date": "2026-10-05",
+      "last_close": 18.99,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "ETN": {
@@ -259,8 +259,8 @@
       "stale_feed": false
     },
     "GEV": {
-      "last_close": 990.0,
-      "last_date": "2026-10-05",
+      "last_close": 1029.21,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "GILD": {
@@ -391,8 +391,8 @@
       "stale_feed": false
     },
     "META": {
-      "last_close": 741.9,
-      "last_date": "2026-10-05",
+      "last_close": 738.88,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "MRK": {
@@ -461,8 +461,8 @@
       "stale_feed": false
     },
     "PANW": {
-      "last_close": 406.76,
-      "last_date": "2026-10-05",
+      "last_close": 419.91,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "PEP": {
@@ -486,8 +486,8 @@
       "stale_feed": false
     },
     "PLTR": {
-      "last_close": 189.4,
-      "last_date": "2026-10-05",
+      "last_close": 192.07,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "PM": {
@@ -501,8 +501,8 @@
       "stale_feed": false
     },
     "QGRPX": {
-      "last_close": 20.14,
-      "last_date": "2026-10-05",
+      "last_close": 20.33,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "QQQ": {
@@ -541,8 +541,8 @@
       "stale_feed": false
     },
     "SHOP": {
-      "last_close": 160.11,
-      "last_date": "2026-10-05",
+      "last_close": 164.44,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "SPY": {
@@ -616,8 +616,8 @@
       "stale_feed": false
     },
     "UBER": {
-      "last_close": 69.48,
-      "last_date": "2026-10-05",
+      "last_close": 69.08,
+      "last_date": "2026-10-06",
       "stale_feed": false
     },
     "UNH": {
