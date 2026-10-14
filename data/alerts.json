@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-10-13T02:53:53.381976Z",
+  "generated_at": "2026-10-14T00:50:36.025587Z",
   "run": {
-    "run_date": "2026-10-13",
-    "new_bars_scored": 258,
+    "run_date": "2026-10-14",
+    "new_bars_scored": 1,
     "latest_bar_date": "2026-10-12",
     "tickers_scored": 130,
-    "new_signals": 3
+    "new_signals": 0
   },
   "total_signals": 200,
-  "new_signals": 3,
+  "new_signals": 0,
   "ticker_status": {
     "AAPL": {
       "last_close": 340.97,
@@ -536,8 +536,8 @@
       "stale_feed": false
     },
     "SHEL": {
-      "last_close": 100.18,
-      "last_date": "2026-10-09",
+      "last_close": 101.59,
+      "last_date": "2026-10-12",
       "stale_feed": false
     },
     "SHOP": {
@@ -562,7 +562,7 @@
       "price_basis": {
         "factor": 1.0248,
         "n_bars_affected": 6,
-        "n_bars_checked": 8,
+        "n_bars_checked": 9,
         "last_affected_date": "2026-06-30"
       }
     },
@@ -663,7 +663,7 @@
       "price_basis": {
         "factor": 1.0328,
         "n_bars_affected": 8,
-        "n_bars_checked": 9,
+        "n_bars_checked": 10,
         "last_affected_date": "2026-06-30"
       }
     },
@@ -718,7 +718,7 @@
       "consensus_score": 0.6772,
       "description": "AT&T (T) is trading 9.1% below its 20-day trend ($24.39) \u2014 a 2.9-sigma stretch for this ticker. Downward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a short position or protective puts; stops above the recent high.",
       "run_date": "2026-10-13",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-10-13",
       "detected_at": "2026-10-13",
       "provenance": "live",
@@ -748,7 +748,7 @@
       "consensus_score": 0.5836,
       "description": "T-Mobile US (TMUS) is trading 10.9% below its 20-day trend ($166.77) \u2014 a 3.5-sigma stretch for this ticker. A capitulation-grade washout: the stretch is at breakout extremes. Extreme downside stretches of this size historically rebound toward trend. 2 of 4 methods agree. Consider a mean-reversion long targeting the $166.77 trend line.",
       "run_date": "2026-10-13",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-10-13",
       "detected_at": "2026-10-13",
       "provenance": "live",
@@ -778,7 +778,7 @@
       "consensus_score": 0.5336,
       "description": "Verizon (VZ) is trading 9.2% below its 20-day trend ($45.89) \u2014 a 2.8-sigma stretch for this ticker. Downward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a short position or protective puts; stops above the recent high.",
       "run_date": "2026-10-13",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-10-13",
       "detected_at": "2026-10-13",
       "provenance": "live",

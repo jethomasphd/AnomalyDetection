@@ -1,5 +1,5 @@
 {
-  "run_date": "2026-10-13",
+  "run_date": "2026-10-14",
   "status": "ok",
   "coverage_pct": 100.0,
   "tickers_requested": 130,
@@ -10,7 +10,7 @@
     "VZ": {
       "factor": 1.0328,
       "n_bars_affected": 8,
-      "n_bars_checked": 9,
+      "n_bars_checked": 10,
       "last_affected_date": "2026-06-30"
     },
     "HON": {
@@ -46,12 +46,12 @@
     "T": {
       "factor": 1.0248,
       "n_bars_affected": 6,
-      "n_bars_checked": 8,
+      "n_bars_checked": 9,
       "last_affected_date": "2026-06-30"
     }
   },
   "latest_bar_date": "2026-10-12",
-  "new_bars_scored": 258,
-  "duration_seconds": 420.2,
+  "new_bars_scored": 1,
+  "duration_seconds": 393.6,
   "model_version": "2.0.0"
 }
