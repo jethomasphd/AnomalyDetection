@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-10-16T00:05:26.873011Z",
+  "generated_at": "2026-10-17T00:08:31.849356Z",
   "run": {
-    "run_date": "2026-10-16",
-    "new_bars_scored": 257,
+    "run_date": "2026-10-17",
+    "new_bars_scored": 3,
     "latest_bar_date": "2026-10-15",
     "tickers_scored": 130,
-    "new_signals": 4
+    "new_signals": 0
   },
   "total_signals": 200,
-  "new_signals": 4,
+  "new_signals": 0,
   "ticker_status": {
     "AAPL": {
       "last_close": 342.0,
@@ -148,8 +148,8 @@
       }
     },
     "BNUEX": {
-      "last_close": 13.78,
-      "last_date": "2026-10-14",
+      "last_close": 13.87,
+      "last_date": "2026-10-15",
       "stale_feed": false
     },
     "BRK-B": {
@@ -244,8 +244,8 @@
       "stale_feed": false
     },
     "DVRUX": {
-      "last_close": 18.79,
-      "last_date": "2026-10-14",
+      "last_close": 18.84,
+      "last_date": "2026-10-15",
       "stale_feed": false
     },
     "ETN": {
@@ -501,8 +501,8 @@
       "stale_feed": false
     },
     "QGRPX": {
-      "last_close": 19.76,
-      "last_date": "2026-10-14",
+      "last_close": 19.74,
+      "last_date": "2026-10-15",
       "stale_feed": false
     },
     "QQQ": {
@@ -718,7 +718,7 @@
       "consensus_score": 0.4531,
       "description": "Caterpillar (CAT) is trading 8.0% below its 20-day trend ($799.74) \u2014 a 2.6-sigma stretch for this ticker. Downward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a short position or protective puts; stops above the recent high.",
       "run_date": "2026-10-16",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-10-16",
       "detected_at": "2026-10-16",
       "provenance": "live",
@@ -748,7 +748,7 @@
       "consensus_score": 0.4311,
       "description": "UnitedHealth Group (UNH) is trading 6.5% above its 20-day trend ($381.69) \u2014 a 3.8-sigma stretch for this ticker. A blowoff-grade extreme: the stretch is at breakout extremes. Stretches this far above trend historically stall or revert. 2 of 4 methods agree. Consider taking profits or tightening stops; trend value near $381.69.",
       "run_date": "2026-10-16",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-10-16",
       "detected_at": "2026-10-16",
       "provenance": "live",
@@ -778,7 +778,7 @@
       "consensus_score": 0.4421,
       "description": "McKesson (MCK) is trading 6.7% above its 20-day trend ($915.56) \u2014 a 2.6-sigma stretch for this ticker. Upward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a momentum long with a trailing stop below the trend line.",
       "run_date": "2026-10-16",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-10-16",
       "detected_at": "2026-10-16",
       "provenance": "live",
@@ -808,7 +808,7 @@
       "consensus_score": 0.3847,
       "description": "UnitedHealth Group (UNH) is trading 4.4% above its 20-day trend ($379.06) \u2014 a 2.6-sigma stretch for this ticker. Upward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a momentum long with a trailing stop below the trend line.",
       "run_date": "2026-10-16",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-10-16",
       "detected_at": "2026-10-16",
       "provenance": "live",
