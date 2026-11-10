@@ -1,5 +1,5 @@
 {
-  "run_date": "2026-11-07",
+  "run_date": "2026-11-10",
   "status": "ok",
   "coverage_pct": 100.0,
   "tickers_requested": 130,
@@ -22,13 +22,25 @@
     "KLAC": {
       "factor": 10.0113,
       "n_bars_affected": 2,
-      "n_bars_checked": 5,
+      "n_bars_checked": 6,
       "last_affected_date": "2026-01-15"
+    },
+    "PFE": {
+      "factor": 1.0324,
+      "n_bars_affected": 6,
+      "n_bars_checked": 7,
+      "last_affected_date": "2026-06-24"
+    },
+    "BMY": {
+      "factor": 1.0218,
+      "n_bars_affected": 4,
+      "n_bars_checked": 4,
+      "last_affected_date": "2026-06-01"
     },
     "APH": {
       "factor": 2.0061,
       "n_bars_affected": 6,
-      "n_bars_checked": 8,
+      "n_bars_checked": 9,
       "last_affected_date": "2026-09-02"
     },
     "CRWD": {
@@ -44,8 +56,8 @@
       "last_affected_date": "2026-06-30"
     }
   },
-  "latest_bar_date": "2026-11-05",
-  "new_bars_scored": 130,
-  "duration_seconds": 198.0,
+  "latest_bar_date": "2026-11-09",
+  "new_bars_scored": 260,
+  "duration_seconds": 213.0,
   "model_version": "2.0.0"
 }
