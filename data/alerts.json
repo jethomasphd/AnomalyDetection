@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-11-12T02:42:34.560389Z",
+  "generated_at": "2026-11-13T02:19:14.513368Z",
   "run": {
-    "run_date": "2026-11-12",
-    "new_bars_scored": 148,
+    "run_date": "2026-11-13",
+    "new_bars_scored": 0,
     "latest_bar_date": "2026-11-11",
     "tickers_scored": 130,
-    "new_signals": 2
+    "new_signals": 0
   },
   "total_signals": 200,
-  "new_signals": 2,
+  "new_signals": 0,
   "ticker_status": {
     "AAPL": {
       "last_close": 355.63,
@@ -724,7 +724,7 @@
       "consensus_score": 0.4464,
       "description": "AbbVie (ABBV) is trading 2.7% above its 20-day trend ($287.27) \u2014 a 1.4-sigma stretch for this ticker. Both frequency analysis and pattern matching detect a structural change: the stock's recent behavior has no precedent in its own history. Reduce position size until the new regime clarifies. Avoid new entries.",
       "run_date": "2026-11-12",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-11-12",
       "detected_at": "2026-11-12",
       "provenance": "live",
@@ -814,7 +814,7 @@
       "consensus_score": 0.436,
       "description": "AbbVie (ABBV) is trading 2.6% above its 20-day trend ($286.46) \u2014 a 1.4-sigma stretch for this ticker. Both frequency analysis and pattern matching detect a structural change: the stock's recent behavior has no precedent in its own history. Reduce position size until the new regime clarifies. Avoid new entries.",
       "run_date": "2026-11-12",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-11-12",
       "detected_at": "2026-11-12",
       "provenance": "live",
