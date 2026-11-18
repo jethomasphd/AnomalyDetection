@@ -5867,5 +5867,84 @@
         "last_affected_date": "2026-06-30"
       }
     }
+  },
+  {
+    "run_date": "2026-11-18",
+    "started_at": "2026-11-18T03:12:14.455949Z",
+    "finished_at": "2026-11-18T03:15:57.164041Z",
+    "duration_seconds": 222.7,
+    "tickers_analyzed": 130,
+    "total_observations": 66560,
+    "anomalies_detected": 740,
+    "new_bars_scored": 130,
+    "new_signals": 1,
+    "actionable_signals": 185,
+    "total_signals_view": 200,
+    "ledger_signal_rows": 748,
+    "ledger_anomaly_rows": 2266,
+    "backtest_total_gain": 44791.18,
+    "backtest_n_trades": 94,
+    "sensitivity": "medium",
+    "start_date": "2024-11-01",
+    "model_version": "2.0.0",
+    "fetch": {
+      "requested": 130,
+      "fetched": 130,
+      "failed": [],
+      "coverage_pct": 100.0
+    },
+    "validation_failures": [],
+    "latest_bar_date": "2026-11-17",
+    "stale_feeds": {},
+    "price_basis_breaks": {
+      "VZ": {
+        "factor": 1.0328,
+        "n_bars_affected": 8,
+        "n_bars_checked": 10,
+        "last_affected_date": "2026-06-30"
+      },
+      "HON": {
+        "factor": 0.9594,
+        "n_bars_affected": 5,
+        "n_bars_checked": 5,
+        "last_affected_date": "2025-10-23"
+      },
+      "KLAC": {
+        "factor": 10.0264,
+        "n_bars_affected": 2,
+        "n_bars_checked": 6,
+        "last_affected_date": "2026-01-15"
+      },
+      "PFE": {
+        "factor": 1.0324,
+        "n_bars_affected": 6,
+        "n_bars_checked": 7,
+        "last_affected_date": "2026-06-24"
+      },
+      "BMY": {
+        "factor": 1.0218,
+        "n_bars_affected": 4,
+        "n_bars_checked": 4,
+        "last_affected_date": "2026-06-01"
+      },
+      "APH": {
+        "factor": 2.0061,
+        "n_bars_affected": 6,
+        "n_bars_checked": 9,
+        "last_affected_date": "2026-09-02"
+      },
+      "CRWD": {
+        "factor": 4.0,
+        "n_bars_affected": 6,
+        "n_bars_checked": 6,
+        "last_affected_date": "2026-06-01"
+      },
+      "T": {
+        "factor": 1.0248,
+        "n_bars_affected": 6,
+        "n_bars_checked": 11,
+        "last_affected_date": "2026-06-30"
+      }
+    }
   }
 ]
