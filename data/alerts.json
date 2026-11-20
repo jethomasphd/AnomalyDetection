@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-11-19T02:55:59.848914Z",
+  "generated_at": "2026-11-20T02:50:45.490956Z",
   "run": {
-    "run_date": "2026-11-19",
-    "new_bars_scored": 130,
-    "latest_bar_date": "2026-11-18",
+    "run_date": "2026-11-20",
+    "new_bars_scored": 112,
+    "latest_bar_date": "2026-11-19",
     "tickers_scored": 130,
-    "new_signals": 2
+    "new_signals": 6
   },
   "total_signals": 200,
-  "new_signals": 2,
+  "new_signals": 6,
   "ticker_status": {
     "AAPL": {
-      "last_close": 352.45,
-      "last_date": "2026-11-18",
+      "last_close": 349.21,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "ABBV": {
@@ -21,38 +21,38 @@
       "stale_feed": false
     },
     "ABT": {
-      "last_close": 104.48,
-      "last_date": "2026-11-18",
+      "last_close": 103.87,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "ADI": {
-      "last_close": 381.98,
-      "last_date": "2026-11-18",
+      "last_close": 377.44,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "ADM": {
-      "last_close": 67.78,
-      "last_date": "2026-11-18",
+      "last_close": 67.13,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "AMAT": {
-      "last_close": 352.3,
-      "last_date": "2026-11-18",
+      "last_close": 338.93,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "AMD": {
-      "last_close": 530.14,
-      "last_date": "2026-11-18",
+      "last_close": 489.19,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "AMGN": {
-      "last_close": 443.89,
-      "last_date": "2026-11-18",
+      "last_close": 438.82,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "AMZN": {
-      "last_close": 267.74,
-      "last_date": "2026-11-18",
+      "last_close": 257.37,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "ANET": {
@@ -61,8 +61,8 @@
       "stale_feed": false
     },
     "APH": {
-      "last_close": 76.33,
-      "last_date": "2026-11-18",
+      "last_close": 75.61,
+      "last_date": "2026-11-19",
       "stale_feed": false,
       "price_basis": {
         "factor": 2.0061,
@@ -87,8 +87,8 @@
       "stale_feed": false
     },
     "ASML": {
-      "last_close": 1395.27,
-      "last_date": "2026-11-18",
+      "last_close": 1356.2,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "ASTS": {
@@ -97,18 +97,18 @@
       "stale_feed": false
     },
     "AVGO": {
-      "last_close": 354.05,
-      "last_date": "2026-11-18",
+      "last_close": 346.65,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "AXP": {
-      "last_close": 315.4,
-      "last_date": "2026-11-18",
+      "last_close": 311.11,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "AZN": {
-      "last_close": 178.76,
-      "last_date": "2026-11-18",
+      "last_close": 175.41,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "BABA": {
@@ -117,28 +117,28 @@
       "stale_feed": false
     },
     "BAC": {
-      "last_close": 48.91,
-      "last_date": "2026-11-18",
+      "last_close": 48.57,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "BG": {
-      "last_close": 93.19,
-      "last_date": "2026-11-18",
+      "last_close": 91.75,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "BIL": {
-      "last_close": 91.56,
-      "last_date": "2026-11-18",
+      "last_close": 91.57,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "BLK": {
-      "last_close": 1169.21,
-      "last_date": "2026-11-18",
+      "last_close": 1135.81,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "BMY": {
-      "last_close": 59.56,
-      "last_date": "2026-11-18",
+      "last_close": 58.34,
+      "last_date": "2026-11-19",
       "stale_feed": false,
       "price_basis": {
         "factor": 1.0218,
@@ -148,48 +148,48 @@
       }
     },
     "BNUEX": {
-      "last_close": 13.65,
-      "last_date": "2026-11-18",
+      "last_close": 13.43,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "BRK-B": {
-      "last_close": 574.62,
-      "last_date": "2026-11-18",
+      "last_close": 572.04,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "BX": {
-      "last_close": 115.71,
-      "last_date": "2026-11-18",
+      "last_close": 115.99,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "C": {
-      "last_close": 117.34,
-      "last_date": "2026-11-18",
+      "last_close": 115.28,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "CAT": {
-      "last_close": 558.77,
-      "last_date": "2026-11-18",
+      "last_close": 537.37,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "CB": {
-      "last_close": 371.02,
-      "last_date": "2026-11-18",
+      "last_close": 370.11,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "COP": {
-      "last_close": 134.4,
-      "last_date": "2026-11-18",
+      "last_close": 134.99,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "COST": {
-      "last_close": 1096.62,
-      "last_date": "2026-11-18",
+      "last_close": 1093.83,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "CRM": {
-      "last_close": 190.4,
-      "last_date": "2026-11-18",
+      "last_close": 183.31,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "CRWD": {
@@ -204,23 +204,23 @@
       }
     },
     "CSCO": {
-      "last_close": 97.18,
-      "last_date": "2026-11-18",
+      "last_close": 94.7,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "CVX": {
-      "last_close": 205.88,
-      "last_date": "2026-11-18",
+      "last_close": 206.5,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "D": {
-      "last_close": 67.39,
-      "last_date": "2026-11-18",
+      "last_close": 66.65,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "DE": {
-      "last_close": 644.75,
-      "last_date": "2026-11-18",
+      "last_close": 624.89,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "DELL": {
@@ -229,18 +229,18 @@
       "stale_feed": false
     },
     "DHR": {
-      "last_close": 228.58,
-      "last_date": "2026-11-18",
+      "last_close": 227.56,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "DIA": {
-      "last_close": 501.73,
-      "last_date": "2026-11-18",
+      "last_close": 490.79,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "DIS": {
-      "last_close": 122.36,
-      "last_date": "2026-11-18",
+      "last_close": 120.25,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "DVRUX": {
@@ -249,13 +249,13 @@
       "stale_feed": false
     },
     "ETN": {
-      "last_close": 338.34,
-      "last_date": "2026-11-18",
+      "last_close": 330.57,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "GE": {
-      "last_close": 328.1,
-      "last_date": "2026-11-18",
+      "last_close": 318.88,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "GEV": {
@@ -264,28 +264,28 @@
       "stale_feed": false
     },
     "GILD": {
-      "last_close": 168.98,
-      "last_date": "2026-11-18",
+      "last_close": 166.53,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "GOOGL": {
-      "last_close": 282.44,
-      "last_date": "2026-11-18",
+      "last_close": 272.66,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "GS": {
-      "last_close": 873.18,
-      "last_date": "2026-11-18",
+      "last_close": 847.53,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "HD": {
-      "last_close": 337.64,
-      "last_date": "2026-11-18",
+      "last_close": 336.68,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "HON": {
-      "last_close": 222.7,
-      "last_date": "2026-11-18",
+      "last_close": 217.84,
+      "last_date": "2026-11-19",
       "stale_feed": false,
       "price_basis": {
         "factor": 0.9594,
@@ -295,43 +295,43 @@
       }
     },
     "HSBC": {
-      "last_close": 84.66,
-      "last_date": "2026-11-18",
+      "last_close": 83.35,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "IBM": {
-      "last_close": 228.53,
-      "last_date": "2026-11-18",
+      "last_close": 223.88,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "INTC": {
-      "last_close": 54.67,
-      "last_date": "2026-11-18",
+      "last_close": 55.72,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "ISRG": {
-      "last_close": 420.95,
-      "last_date": "2026-11-18",
+      "last_close": 407.24,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "IWM": {
-      "last_close": 270.12,
-      "last_date": "2026-11-18",
+      "last_close": 264.22,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "JNJ": {
-      "last_close": 272.7,
-      "last_date": "2026-11-18",
+      "last_close": 267.14,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "JPM": {
-      "last_close": 324.11,
-      "last_date": "2026-11-18",
+      "last_close": 320.22,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "KLAC": {
-      "last_close": 144.88,
-      "last_date": "2026-11-18",
+      "last_close": 141.48,
+      "last_date": "2026-11-19",
       "stale_feed": false,
       "price_basis": {
         "factor": 10.0264,
@@ -341,53 +341,53 @@
       }
     },
     "KMI": {
-      "last_close": 31.36,
-      "last_date": "2026-11-18",
+      "last_close": 31.09,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "KO": {
-      "last_close": 98.09,
-      "last_date": "2026-11-18",
+      "last_close": 96.09,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "LIN": {
-      "last_close": 512.16,
-      "last_date": "2026-11-18",
+      "last_close": 510.21,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "LLY": {
-      "last_close": 1382.75,
-      "last_date": "2026-11-18",
+      "last_close": 1351.12,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "LMT": {
-      "last_close": 578.19,
-      "last_date": "2026-11-18",
+      "last_close": 571.85,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "LOW": {
-      "last_close": 222.78,
-      "last_date": "2026-11-18",
+      "last_close": 219.14,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "LRCX": {
-      "last_close": 211.67,
-      "last_date": "2026-11-18",
+      "last_close": 203.68,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "MA": {
-      "last_close": 643.37,
-      "last_date": "2026-11-18",
+      "last_close": 626.5,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "MCD": {
-      "last_close": 274.03,
-      "last_date": "2026-11-18",
+      "last_close": 272.35,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "MCK": {
-      "last_close": 1084.43,
-      "last_date": "2026-11-18",
+      "last_close": 1062.16,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "META": {
@@ -396,68 +396,68 @@
       "stale_feed": false
     },
     "MRK": {
-      "last_close": 137.78,
-      "last_date": "2026-11-18",
+      "last_close": 132.81,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "MRVL": {
-      "last_close": 145.54,
-      "last_date": "2026-11-18",
+      "last_close": 138.47,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "MS": {
-      "last_close": 181.17,
-      "last_date": "2026-11-18",
+      "last_close": 174.98,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "MSFT": {
-      "last_close": 508.29,
-      "last_date": "2026-11-18",
+      "last_close": 498.3,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "MU": {
-      "last_close": 705.27,
-      "last_date": "2026-11-18",
+      "last_close": 690.44,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "NEE": {
-      "last_close": 84.78,
-      "last_date": "2026-11-18",
+      "last_close": 83.79,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "NFLX": {
-      "last_close": 59.82,
-      "last_date": "2026-11-18",
+      "last_close": 58.46,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "NKE": {
-      "last_close": 36.31,
-      "last_date": "2026-11-18",
+      "last_close": 34.33,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "NSC": {
-      "last_close": 323.5,
-      "last_date": "2026-11-18",
+      "last_close": 316.82,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "NVDA": {
-      "last_close": 150.96,
-      "last_date": "2026-11-18",
+      "last_close": 145.98,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "NVO": {
-      "last_close": 39.43,
-      "last_date": "2026-11-18",
+      "last_close": 38.87,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "NVS": {
-      "last_close": 155.21,
-      "last_date": "2026-11-18",
+      "last_close": 151.22,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "ORCL": {
-      "last_close": 113.89,
-      "last_date": "2026-11-18",
+      "last_close": 110.57,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "PANW": {
@@ -466,13 +466,13 @@
       "stale_feed": false
     },
     "PEP": {
-      "last_close": 141.87,
-      "last_date": "2026-11-18",
+      "last_close": 139.0,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "PFE": {
-      "last_close": 28.06,
-      "last_date": "2026-11-18",
+      "last_close": 27.54,
+      "last_date": "2026-11-19",
       "stale_feed": false,
       "price_basis": {
         "factor": 1.0324,
@@ -482,13 +482,13 @@
       }
     },
     "PG": {
-      "last_close": 170.29,
-      "last_date": "2026-11-18",
+      "last_close": 167.85,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "PLD": {
-      "last_close": 125.22,
-      "last_date": "2026-11-18",
+      "last_close": 123.36,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "PLTR": {
@@ -497,13 +497,13 @@
       "stale_feed": false
     },
     "PM": {
-      "last_close": 192.73,
-      "last_date": "2026-11-18",
+      "last_close": 186.43,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "QCOM": {
-      "last_close": 159.81,
-      "last_date": "2026-11-18",
+      "last_close": 162.01,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "QGRPX": {
@@ -512,33 +512,33 @@
       "stale_feed": false
     },
     "QQQ": {
-      "last_close": 659.51,
-      "last_date": "2026-11-18",
+      "last_close": 645.04,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "RTX": {
-      "last_close": 197.45,
-      "last_date": "2026-11-18",
+      "last_close": 193.44,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "RY": {
-      "last_close": 190.12,
-      "last_date": "2026-11-18",
+      "last_close": 187.7,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "SAP": {
-      "last_close": 210.76,
-      "last_date": "2026-11-18",
+      "last_close": 203.23,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "SBUX": {
-      "last_close": 109.11,
-      "last_date": "2026-11-18",
+      "last_close": 104.47,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "SCHW": {
-      "last_close": 92.56,
-      "last_date": "2026-11-18",
+      "last_close": 92.12,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "SHEL": {
@@ -552,18 +552,18 @@
       "stale_feed": false
     },
     "SPY": {
-      "last_close": 730.2,
-      "last_date": "2026-11-18",
+      "last_close": 715.87,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "STM": {
-      "last_close": 44.91,
-      "last_date": "2026-11-18",
+      "last_close": 43.78,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "T": {
-      "last_close": 21.95,
-      "last_date": "2026-11-18",
+      "last_close": 21.85,
+      "last_date": "2026-11-19",
       "stale_feed": false,
       "price_basis": {
         "factor": 1.0248,
@@ -573,58 +573,58 @@
       }
     },
     "TD": {
-      "last_close": 115.66,
-      "last_date": "2026-11-18",
+      "last_close": 115.1,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "TGT": {
-      "last_close": 165.93,
-      "last_date": "2026-11-18",
+      "last_close": 167.46,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "TJX": {
-      "last_close": 140.3,
-      "last_date": "2026-11-18",
+      "last_close": 139.41,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "TM": {
-      "last_close": 210.14,
-      "last_date": "2026-11-18",
+      "last_close": 210.97,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "TMO": {
-      "last_close": 692.74,
-      "last_date": "2026-11-18",
+      "last_close": 688.75,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "TMUS": {
-      "last_close": 164.02,
-      "last_date": "2026-11-18",
+      "last_close": 162.53,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "TSLA": {
-      "last_close": 383.72,
-      "last_date": "2026-11-18",
+      "last_close": 374.41,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "TSM": {
-      "last_close": 362.62,
-      "last_date": "2026-11-18",
+      "last_close": 352.09,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "TSN": {
-      "last_close": 64.25,
-      "last_date": "2026-11-18",
+      "last_close": 63.86,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "TTE": {
-      "last_close": 87.14,
-      "last_date": "2026-11-18",
+      "last_close": 86.25,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "TXN": {
-      "last_close": 292.43,
-      "last_date": "2026-11-18",
+      "last_close": 285.75,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "UBER": {
@@ -633,38 +633,38 @@
       "stale_feed": false
     },
     "UNH": {
-      "last_close": 349.91,
-      "last_date": "2026-11-18",
+      "last_close": 330.48,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "UNP": {
-      "last_close": 300.9,
-      "last_date": "2026-11-18",
+      "last_close": 290.63,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "V": {
-      "last_close": 415.22,
-      "last_date": "2026-11-18",
+      "last_close": 402.25,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "VGT": {
-      "last_close": 107.03,
-      "last_date": "2026-11-18",
+      "last_close": 104.99,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "VOO": {
-      "last_close": 671.31,
-      "last_date": "2026-11-18",
+      "last_close": 658.01,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "VTI": {
-      "last_close": 359.48,
-      "last_date": "2026-11-18",
+      "last_close": 352.41,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "VZ": {
-      "last_close": 46.13,
-      "last_date": "2026-11-18",
+      "last_close": 45.74,
+      "last_date": "2026-11-19",
       "stale_feed": false,
       "price_basis": {
         "factor": 1.0328,
@@ -674,42 +674,222 @@
       }
     },
     "WELL": {
-      "last_close": 247.25,
-      "last_date": "2026-11-18",
+      "last_close": 243.19,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "WFC": {
-      "last_close": 80.92,
-      "last_date": "2026-11-18",
+      "last_close": 80.61,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "WMB": {
-      "last_close": 67.23,
-      "last_date": "2026-11-18",
+      "last_close": 66.13,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "WMT": {
-      "last_close": 127.36,
-      "last_date": "2026-11-18",
+      "last_close": 126.04,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "XLE": {
-      "last_close": 61.29,
-      "last_date": "2026-11-18",
+      "last_close": 60.89,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "XLF": {
-      "last_close": 56.42,
-      "last_date": "2026-11-18",
+      "last_close": 55.58,
+      "last_date": "2026-11-19",
       "stale_feed": false
     },
     "XOM": {
-      "last_close": 160.58,
-      "last_date": "2026-11-18",
+      "last_close": 158.93,
+      "last_date": "2026-11-19",
       "stale_feed": false
     }
   },
   "signals": [
+    {
+      "ticker": "DIA",
+      "ticker_name": "SPDR Dow Jones ETF",
+      "display": "SPDR Dow Jones ETF (DIA)",
+      "date": "2026-11-19",
+      "close": 490.79,
+      "signal": "BUY",
+      "signal_label": "Buy",
+      "signal_color": "#00C853",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.6003,
+      "description": "SPDR Dow Jones ETF (DIA) is trading 4.7% below its 20-day trend ($515.07) \u2014 a 4.3-sigma stretch for this ticker. A capitulation-grade washout: the stretch is at breakout extremes. Extreme downside stretches of this size historically rebound toward trend. 2 of 4 methods agree. Consider a mean-reversion long targeting the $515.07 trend line.",
+      "run_date": "2026-11-20",
+      "is_new": true,
+      "first_detected": "2026-11-20",
+      "detected_at": "2026-11-20",
+      "provenance": "live",
+      "details": {
+        "fourier_score": 0.598,
+        "mp_score": 0.0,
+        "ensemble_score": 0.769,
+        "ewma_score": 1.0,
+        "trajectory": "breakout",
+        "deviation_pct": -4.71,
+        "dev_z": -4.29,
+        "ewma_value": 515.07,
+        "close": 490.79
+      }
+    },
+    {
+      "ticker": "UNH",
+      "ticker_name": "UnitedHealth Group",
+      "display": "UnitedHealth Group (UNH)",
+      "date": "2026-11-19",
+      "close": 330.48,
+      "signal": "BUY",
+      "signal_label": "Buy",
+      "signal_color": "#00C853",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.5497,
+      "description": "UnitedHealth Group (UNH) is trading 15.4% below its 20-day trend ($390.67) \u2014 a 4.6-sigma stretch for this ticker. A capitulation-grade washout: the stretch is at breakout extremes. Extreme downside stretches of this size historically rebound toward trend. 2 of 4 methods agree. Consider a mean-reversion long targeting the $390.67 trend line.",
+      "run_date": "2026-11-20",
+      "is_new": true,
+      "first_detected": "2026-11-20",
+      "detected_at": "2026-11-20",
+      "provenance": "live",
+      "details": {
+        "fourier_score": 0.0,
+        "mp_score": 0.0,
+        "ensemble_score": 0.9989,
+        "ewma_score": 1.0,
+        "trajectory": "breakout",
+        "deviation_pct": -15.41,
+        "dev_z": -4.64,
+        "ewma_value": 390.67,
+        "close": 330.48
+      }
+    },
+    {
+      "ticker": "VTI",
+      "ticker_name": "Vanguard Total Stock Market",
+      "display": "Vanguard Total Stock Market (VTI)",
+      "date": "2026-11-19",
+      "close": 352.41,
+      "signal": "BUY",
+      "signal_label": "Buy",
+      "signal_color": "#00C853",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.4787,
+      "description": "Vanguard Total Stock Market (VTI) is trading 4.2% below its 20-day trend ($368.01) \u2014 a 4.0-sigma stretch for this ticker. A capitulation-grade washout: the stretch is at breakout extremes. Extreme downside stretches of this size historically rebound toward trend. 2 of 4 methods agree. Consider a mean-reversion long targeting the $368.01 trend line.",
+      "run_date": "2026-11-20",
+      "is_new": true,
+      "first_detected": "2026-11-20",
+      "detected_at": "2026-11-20",
+      "provenance": "live",
+      "details": {
+        "fourier_score": 0.0654,
+        "mp_score": 0.0,
+        "ensemble_score": 0.7205,
+        "ewma_score": 0.9977,
+        "trajectory": "breakout",
+        "deviation_pct": -4.24,
+        "dev_z": -3.99,
+        "ewma_value": 368.01,
+        "close": 352.41
+      }
+    },
+    {
+      "ticker": "RY",
+      "ticker_name": "Royal Bank of Canada",
+      "display": "Royal Bank of Canada (RY)",
+      "date": "2026-11-19",
+      "close": 187.7,
+      "signal": "SHORT",
+      "signal_label": "Short",
+      "signal_color": "#FF6D00",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.4623,
+      "description": "Royal Bank of Canada (RY) is trading 5.7% below its 20-day trend ($199.11) \u2014 a 2.8-sigma stretch for this ticker. Downward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a short position or protective puts; stops above the recent high.",
+      "run_date": "2026-11-20",
+      "is_new": true,
+      "first_detected": "2026-11-20",
+      "detected_at": "2026-11-20",
+      "provenance": "live",
+      "details": {
+        "fourier_score": 0.6471,
+        "mp_score": 0.0,
+        "ensemble_score": 0.5222,
+        "ewma_score": 0.7048,
+        "trajectory": "extending",
+        "deviation_pct": -5.73,
+        "dev_z": -2.82,
+        "ewma_value": 199.11,
+        "close": 187.7
+      }
+    },
+    {
+      "ticker": "VOO",
+      "ticker_name": "Vanguard S&P 500",
+      "display": "Vanguard S&P 500 (VOO)",
+      "date": "2026-11-19",
+      "close": 658.01,
+      "signal": "BUY",
+      "signal_label": "Buy",
+      "signal_color": "#00C853",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.4492,
+      "description": "Vanguard S&P 500 (VOO) is trading 4.3% below its 20-day trend ($687.75) \u2014 a 3.8-sigma stretch for this ticker. A capitulation-grade washout: the stretch is at breakout extremes. Extreme downside stretches of this size historically rebound toward trend. 2 of 4 methods agree. Consider a mean-reversion long targeting the $687.75 trend line.",
+      "run_date": "2026-11-20",
+      "is_new": true,
+      "first_detected": "2026-11-20",
+      "detected_at": "2026-11-20",
+      "provenance": "live",
+      "details": {
+        "fourier_score": 0.005,
+        "mp_score": 0.0,
+        "ensemble_score": 0.6995,
+        "ewma_score": 0.9535,
+        "trajectory": "breakout",
+        "deviation_pct": -4.32,
+        "dev_z": -3.81,
+        "ewma_value": 687.75,
+        "close": 658.01
+      }
+    },
+    {
+      "ticker": "SPY",
+      "ticker_name": "SPDR S&P 500 ETF",
+      "display": "SPDR S&P 500 ETF (SPY)",
+      "date": "2026-11-19",
+      "close": 715.87,
+      "signal": "BUY",
+      "signal_label": "Buy",
+      "signal_color": "#00C853",
+      "confidence": "Moderate",
+      "methods_flagged": 2,
+      "consensus_score": 0.4469,
+      "description": "SPDR S&P 500 ETF (SPY) is trading 4.3% below its 20-day trend ($748.17) \u2014 a 3.8-sigma stretch for this ticker. A capitulation-grade washout: the stretch is at breakout extremes. Extreme downside stretches of this size historically rebound toward trend. 2 of 4 methods agree. Consider a mean-reversion long targeting the $748.17 trend line.",
+      "run_date": "2026-11-20",
+      "is_new": true,
+      "first_detected": "2026-11-20",
+      "detected_at": "2026-11-20",
+      "provenance": "live",
+      "details": {
+        "fourier_score": 0.0058,
+        "mp_score": 0.0,
+        "ensemble_score": 0.6939,
+        "ewma_score": 0.9502,
+        "trajectory": "breakout",
+        "deviation_pct": -4.32,
+        "dev_z": -3.8,
+        "ewma_value": 748.17,
+        "close": 715.87
+      }
+    },
     {
       "ticker": "UNH",
       "ticker_name": "UnitedHealth Group",
@@ -724,7 +904,7 @@
       "consensus_score": 0.55,
       "description": "UnitedHealth Group (UNH) is trading 11.9% below its 20-day trend ($397.01) \u2014 a 4.0-sigma stretch for this ticker. A capitulation-grade washout: the stretch is at breakout extremes. Extreme downside stretches of this size historically rebound toward trend. 2 of 4 methods agree. Consider a mean-reversion long targeting the $397.01 trend line.",
       "run_date": "2026-11-19",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-11-19",
       "detected_at": "2026-11-19",
       "provenance": "live",
@@ -754,7 +934,7 @@
       "consensus_score": 0.4824,
       "description": "Royal Bank of Canada (RY) is trading 5.1% below its 20-day trend ($200.31) \u2014 a 2.6-sigma stretch for this ticker. Downward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a short position or protective puts; stops above the recent high.",
       "run_date": "2026-11-19",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-11-19",
       "detected_at": "2026-11-19",
       "provenance": "live",
@@ -6478,180 +6658,6 @@
         "deviation_pct": 20.49,
         "dev_z": 2.89,
         "ewma_value": 233.79
-      }
-    },
-    {
-      "ticker": "PLTR",
-      "ticker_name": "Palantir",
-      "display": "Palantir (PLTR)",
-      "date": "2026-05-29",
-      "close": 156.54,
-      "signal": "LONG",
-      "signal_label": "Long",
-      "signal_color": "#00897B",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.4421,
-      "description": "Palantir (PLTR) is trading 12.3% above its 20-day trend ($139.37) \u2014 a 2.9-sigma stretch for this ticker. Upward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a momentum long with a trailing stop below the trend line.",
-      "run_date": "2026-05-29",
-      "is_new": false,
-      "first_detected": "2026-05-29",
-      "detected_at": "2026-05-29",
-      "provenance": "backfill",
-      "details": {
-        "fourier_score": 0.3258,
-        "mp_score": 0.0,
-        "ensemble_score": 0.6557,
-        "ewma_score": 0.7208,
-        "trajectory": "extending",
-        "deviation_pct": 12.32,
-        "dev_z": 2.88,
-        "ewma_value": 139.37
-      }
-    },
-    {
-      "ticker": "DELL",
-      "ticker_name": "Dell Technologies",
-      "display": "Dell Technologies (DELL)",
-      "date": "2026-05-28",
-      "close": 317.05,
-      "signal": "SELL",
-      "signal_label": "Sell",
-      "signal_color": "#D50000",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.4606,
-      "description": "Dell Technologies (DELL) is trading 24.0% above its 20-day trend ($255.60) \u2014 a 4.7-sigma stretch for this ticker. A blowoff-grade extreme: the stretch is at breakout extremes. Stretches this far above trend historically stall or revert. 2 of 4 methods agree. Consider taking profits or tightening stops; trend value near $255.60.",
-      "run_date": "2026-05-28",
-      "is_new": false,
-      "first_detected": "2026-05-28",
-      "detected_at": "2026-05-28",
-      "provenance": "backfill",
-      "details": {
-        "fourier_score": 0.0276,
-        "mp_score": 0.0,
-        "ensemble_score": 0.6836,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": 24.04,
-        "dev_z": 4.69,
-        "ewma_value": 255.6
-      }
-    },
-    {
-      "ticker": "ARM",
-      "ticker_name": "Arm Holdings (ADR)",
-      "display": "Arm Holdings (ADR) (ARM)",
-      "date": "2026-05-28",
-      "close": 335.27,
-      "signal": "SELL",
-      "signal_label": "Sell",
-      "signal_color": "#D50000",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.397,
-      "description": "Arm Holdings (ADR) (ARM) is trading 33.0% above its 20-day trend ($252.15) \u2014 a 3.3-sigma stretch for this ticker. Overbought relative to its own typical variability, and the stretch is contracting \u2014 buying pressure is no longer building. 2 of 4 methods agree. Consider taking profits or tightening stops; trend value near $252.15.",
-      "run_date": "2026-05-28",
-      "is_new": false,
-      "first_detected": "2026-05-28",
-      "detected_at": "2026-05-28",
-      "provenance": "backfill",
-      "details": {
-        "fourier_score": 0.0,
-        "mp_score": 0.0,
-        "ensemble_score": 0.646,
-        "ewma_score": 0.8127,
-        "trajectory": "reverting",
-        "deviation_pct": 32.97,
-        "dev_z": 3.25,
-        "ewma_value": 252.15
-      }
-    },
-    {
-      "ticker": "SCHW",
-      "ticker_name": "Charles Schwab",
-      "display": "Charles Schwab (SCHW)",
-      "date": "2026-05-27",
-      "close": 85.61,
-      "signal": "SHORT",
-      "signal_label": "Short",
-      "signal_color": "#FF6D00",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.4124,
-      "description": "Charles Schwab (SCHW) is trading 5.1% below its 20-day trend ($90.25) \u2014 a 2.7-sigma stretch for this ticker. Downward momentum: the stretch is still widening, with 2 of 4 methods confirming the move is abnormal for this ticker. Consider a short position or protective puts; stops above the recent high.",
-      "run_date": "2026-05-27",
-      "is_new": false,
-      "first_detected": "2026-05-27",
-      "detected_at": "2026-05-27",
-      "provenance": "backfill",
-      "details": {
-        "fourier_score": 0.1077,
-        "mp_score": 0.0818,
-        "ensemble_score": 0.6673,
-        "ewma_score": 0.6808,
-        "trajectory": "extending",
-        "deviation_pct": -5.14,
-        "dev_z": -2.72,
-        "ewma_value": 90.25
-      }
-    },
-    {
-      "ticker": "DELL",
-      "ticker_name": "Dell Technologies",
-      "display": "Dell Technologies (DELL)",
-      "date": "2026-05-26",
-      "close": 305.08,
-      "signal": "SELL",
-      "signal_label": "Sell",
-      "signal_color": "#D50000",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.4631,
-      "description": "Dell Technologies (DELL) is trading 25.4% above its 20-day trend ($243.22) \u2014 a 5.2-sigma stretch for this ticker. A blowoff-grade extreme: the stretch is at breakout extremes. Stretches this far above trend historically stall or revert. 2 of 4 methods agree. Consider taking profits or tightening stops; trend value near $243.22.",
-      "run_date": "2026-05-26",
-      "is_new": false,
-      "first_detected": "2026-05-26",
-      "detected_at": "2026-05-26",
-      "provenance": "backfill",
-      "details": {
-        "fourier_score": 0.0538,
-        "mp_score": 0.0,
-        "ensemble_score": 0.6745,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": 25.44,
-        "dev_z": 5.15,
-        "ewma_value": 243.22
-      }
-    },
-    {
-      "ticker": "DELL",
-      "ticker_name": "Dell Technologies",
-      "display": "Dell Technologies (DELL)",
-      "date": "2026-05-22",
-      "close": 295.19,
-      "signal": "SELL",
-      "signal_label": "Sell",
-      "signal_color": "#D50000",
-      "confidence": "Moderate",
-      "methods_flagged": 2,
-      "consensus_score": 0.5671,
-      "description": "Dell Technologies (DELL) is trading 24.7% above its 20-day trend ($236.71) \u2014 a 5.2-sigma stretch for this ticker. A blowoff-grade extreme: the stretch is at breakout extremes. Stretches this far above trend historically stall or revert. 2 of 4 methods agree. Consider taking profits or tightening stops; trend value near $236.71.",
-      "run_date": "2026-05-22",
-      "is_new": false,
-      "first_detected": "2026-05-22",
-      "detected_at": "2026-05-22",
-      "provenance": "backfill",
-      "details": {
-        "fourier_score": 0.0856,
-        "mp_score": 0.0,
-        "ensemble_score": 1.0,
-        "ewma_score": 1.0,
-        "trajectory": "breakout",
-        "deviation_pct": 24.71,
-        "dev_z": 5.22,
-        "ewma_value": 236.71
       }
     }
   ]
