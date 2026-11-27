@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-11-26T03:55:14.670456Z",
+  "generated_at": "2026-11-27T03:56:34.020978Z",
   "run": {
-    "run_date": "2026-11-26",
-    "new_bars_scored": 130,
+    "run_date": "2026-11-27",
+    "new_bars_scored": 0,
     "latest_bar_date": "2026-11-25",
     "tickers_scored": 130,
-    "new_signals": 1
+    "new_signals": 0
   },
   "total_signals": 200,
-  "new_signals": 1,
+  "new_signals": 0,
   "ticker_status": {
     "AAPL": {
       "last_close": 355.58,
@@ -730,7 +730,7 @@
       "consensus_score": 0.4387,
       "description": "Goldman Sachs (GS) is trading 7.4% below its 20-day trend ($864.70) \u2014 a 2.5-sigma stretch for this ticker. Oversold relative to its own typical variability, and the stretch is holding steady \u2014 selling pressure is no longer building. 2 of 4 methods agree. Consider a mean-reversion long targeting the $864.70 trend line.",
       "run_date": "2026-11-26",
-      "is_new": true,
+      "is_new": false,
       "first_detected": "2026-11-26",
       "detected_at": "2026-11-26",
       "provenance": "live",
